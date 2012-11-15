@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <title>FooTable Responsive Demo</title>
+    <style type="text/css">
+        body { margin: 10px 0;padding: 0;}
+        
+        .frame-border {
+          padding: 20px;
+        }
+        
+        .device-selector {
+          text-align:center;
+        }
+        
+        .device-selector a {
+          background: url(device-sprite.png) no-repeat top left;
+          width: 48px; height: 48px;
+          margin:0 10px;
+          display:inline-block;
+          border:solid 5px transparent;
+          border-radius:3px;
+        }
+        
+          .device-selector a.tablet{ background-position: 0 0; } 
+          .device-selector a.tablet-landscape{ background-position: -96px 0; } 
+          .device-selector a.mobile{ background-position: -192px 0; } 
+          .device-selector a.mobile-landscape{ background-position: -288px 0; } 
+          .device-selector a.desktop{ background-position: -384px 0; }
+
+            .device-selector a:hover {
+              background-color:#eee;
+            }
+          
+            .device-selector a.chosen {
+              background-color:#ddd;
+            }
+            
+        #demo-frame {
+          border: solid 3px #ddd;
+          width: 1024px;
+          height: 600px;
+          margin-left:50%;
+          position:fixed;
+          left:-512px;
+          border-radius:5px;
+        }        
+        
+    </style>    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(function () {
+    		$('.device-selector a').click(function(e) {
+    			e.preventDefault();
+          var $this = $(this);
+          $this.addClass('chosen').siblings('a').removeClass('chosen');
+    			var width = $this.data('width');
+          var left = (parseInt(width) / 2) * -1;
+    			var height = $this.data('height');
+    			$('#demo-frame').animate({ 'width': width, 'height':height, 'left' : left });
+    		});
+      });
+    </script>
+  </head>
+  <body>
+    <div class="device-selector">
+      <a class="mobile" data-width="320px" data-height="480px" href="#mobile"></a>
+      <a class="tablet" data-width="768px" data-height="1024px" href="#tablet"></a>
+      <a class="desktop chosen" data-width="1224px" data-height="600px" href="#desktop"></a>
+    </div>
+    <div style="clear: both"></div>
+    <div class="frame-border">
+      <iframe id="demo-frame" src="demo.htm"></iframe>
+    </div>
+  </body>
+</html>
