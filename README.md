@@ -12,10 +12,12 @@ FooTable transforms your HTML tables into expandable responsive tables. This is 
 1. It hides certain columns of data at different resolutions (we call these breakpoints).
 2. Rows become expandable to show the data that was hidden.
 
-So simple! So all the data that is hidden can always be seen just by clicking the row. Play around with the [responsive demo](http://themergency.com/footable-demo/responsive-container.htm) to see it in action.
+So simple! So all the data that is hidden can always be seen just by clicking the row.
 
 Demo
 ----
+Check out the [FooTable homepage](http://themergency.com/footable/) where we will be adding more demos, including the responsive demo!
+
 
 Config via Data Attributes
 --------------------------
