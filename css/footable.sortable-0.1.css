@@ -1,0 +1,21 @@
+.footable > thead > tr > th > span.footable-sort-indicator {
+  width: 16px;
+  height: 16px;
+  display: block;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  margin-top: -8px;
+}
+
+.footable > thead > tr > th.footable-sorted > span.footable-sort-indicator {
+  background: url('img/down.png') no-repeat center center;
+}
+
+.footable > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator {
+  background: url('img/up.png') no-repeat center center;
+}
+
+.footable > thead > tr > th.footable-sortable:hover {
+  cursor:pointer;
+}
