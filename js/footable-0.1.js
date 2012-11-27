@@ -182,12 +182,10 @@
       ft.breakpoints.sort(function(a, b) { return a['width'] - b['width']; });
       
       $table.on('click', ft.options.toggleSelector, function (e) {
-        e.preventDefault();
         if ($table.is('.breakpoint')) {
           var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
           ft.toggleDetail($row.get(0));
         }
-        return false;
       });
       
       $window
@@ -300,7 +298,7 @@
       $row.find('> td:hidden').each(function () {
         var column = ft.columns[$(this).index()];
         if (column.ignore == true) return true;
-        values.push({ 'name': column.name, 'value': ft.parse(this, column), 'display': $.trim($(this).text()) });
+        values.push({ 'name': column.name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()) });
       });
       var colspan = $row.find('> td:visible').length;
       var exists = $next.hasClass('footable-row-detail');

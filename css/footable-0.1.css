@@ -1,8 +1,4 @@
-﻿.footable.loading thead
-  display: none;
-}
-
-.footable > thead > tr > th {
+﻿.footable > thead > tr > th {
   position: relative;
 }
 
@@ -89,4 +85,8 @@
   -moz-border-radius: 0 0 6px 0;
   -webkit-border-radius: 0 0 6px 0;
   border-radius: 0 0 6px 0;
+}
+
+.footable > tbody img {
+  vertical-align:middle;
 }
