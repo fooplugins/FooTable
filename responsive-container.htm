@@ -80,7 +80,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript">
       $(function () {
-    		$('.device-selector a').click(function(e) {
+    		$('.device-selector > a').click(function(e) {
     			e.preventDefault();
           var $this = $(this);
           $this.addClass('chosen').siblings('a').removeClass('chosen');
@@ -90,31 +90,36 @@
     			$('#demo-frame').animate({ 'width': width, 'left' : left });
     		});
         
-        $('.demo-selector a').click(function(e) {
+        $('.demo-selector > a').click(function(e) {
           e.preventDefault();
           var $this = $(this);
           $this.addClass('chosen').siblings('a').removeClass('chosen');
-          $('#demo-frame').attr('src', $this.data('url'));
+          var url = $this.data('url');
+          $('#demo-frame').attr('src', url);
+          $('.demo-desc span').text( $this.data('desc') );
+          $('.demo-desc a').attr('href', url);
         });
       });
     </script>
   </head>
   <body>
     <div class="device-selector">
+      <p>choose a viewport:</p>
       <a class="mobile" data-width="320px" data-height="480px" href="#mobile"></a>
       <a class="tablet" data-width="768px" data-height="1024px" href="#tablet"></a>
       <a class="desktop" data-width="1224px" data-height="600px" href="#desktop"></a>
     </div>
     <div class="demo-selector">
       <p>choose a demo:</p>
-      <a class="chosen" data-url="demo.htm" href="#simple">simple</a>
-      <a data-url="demo2.htm" href="#html">html</a>
-      <a data-url="demo-sorting.htm" href="#sorting">sorting</a>
-      <div style="display:none" class="demo-desc">This demo shows a really simple table that only contains text (nothing fancy) <a href="demo.htm" target="_blank">open in new window</a></div>
+      <a class="chosen" data-desc="This demo shows a really simple table that only contains text (nothing fancy)" data-url="demo.htm" href="#simple">simple</a>
+      <a data-url="demo2.htm" data-desc="This demo shows a table with some more involved html, including images and links" href="#html">html</a>
+      <a data-url="demo-sorting.htm" data-desc="This demo shows off the sortable plugin, so the table columns can be sorted by clicking the column headers" href="#sorting">sorting</a>
+      <div class="demo-desc"><span>This demo shows a really simple table that only contains text (nothing fancy)</span> <a href="demo.htm" title="open demo in new window" target="_blank"><img border="0" src="images/external.png" /></a></div>
     </div>
     <div style="clear: both"></div>
     <div class="frame-border">
       <iframe id="demo-frame" src="demo.htm"></iframe>
     </div>
+    <div style="clear: both"></div>
   </body>
 </html>
