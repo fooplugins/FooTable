@@ -9,7 +9,7 @@
 
     <title>FooTable Responsive Demo</title>
     <style type="text/css">
-        body { margin: 10px 0;padding: 0;}
+        body { margin: 5px 10px;padding: 0; font-family:courier new; font-size:12px; }
         
         .frame-border {
           padding: 20px;
@@ -42,6 +42,30 @@
               background-color:#ddd;
             }
             
+        .demo-selector {
+          text-align:center;
+        }
+        
+          .demo-selector p {
+            display:inline-block;
+          }
+          
+          .demo-selector a {
+            text-decoration:none;
+            color:#00f;
+          }
+          
+            .demo-selector a.chosen {
+              text-decoration:underline;
+              font-weight:bold;
+              color:#f00;
+            }
+            
+          .demo-selector .demo-desc {
+            font-size:18px;
+            font-family:arial;
+          }
+            
         #demo-frame {
           border: solid 3px #ddd;
           width: 1024px;
@@ -50,7 +74,7 @@
           position:fixed;
           left:-512px;
           border-radius:5px;
-        }        
+        }
         
     </style>    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
@@ -63,8 +87,15 @@
     			var width = $this.data('width');
           var left = (parseInt(width) / 2) * -1;
     			var height = $this.data('height');
-    			$('#demo-frame').animate({ 'width': width, 'height':height, 'left' : left });
+    			$('#demo-frame').animate({ 'width': width, 'left' : left });
     		});
+        
+        $('.demo-selector a').click(function(e) {
+          e.preventDefault();
+          var $this = $(this);
+          $this.addClass('chosen').siblings('a').removeClass('chosen');
+          $('#demo-frame').attr('src', $this.data('url'));
+        });
       });
     </script>
   </head>
@@ -72,7 +103,14 @@
     <div class="device-selector">
       <a class="mobile" data-width="320px" data-height="480px" href="#mobile"></a>
       <a class="tablet" data-width="768px" data-height="1024px" href="#tablet"></a>
-      <a class="desktop chosen" data-width="1224px" data-height="600px" href="#desktop"></a>
+      <a class="desktop" data-width="1224px" data-height="600px" href="#desktop"></a>
+    </div>
+    <div class="demo-selector">
+      <p>choose a demo:</p>
+      <a class="chosen" data-url="demo.htm" href="#simple">simple</a>
+      <a data-url="demo2.htm" href="#html">html</a>
+      <a data-url="demo-sorting.htm" href="#sorting">sorting</a>
+      <div style="display:none" class="demo-desc">This demo shows a really simple table that only contains text (nothing fancy) <a href="demo.htm" target="_blank">open in new window</a></div>
     </div>
     <div style="clear: both"></div>
     <div class="frame-border">
