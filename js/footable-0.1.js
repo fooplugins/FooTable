@@ -188,15 +188,29 @@
         }
       });
       
+      ft.raise('footable_initializing');
+      
+      $table.on('footable_initialized', function (e) {
+        //resize the footable onload
+        ft.resize();
+        
+        //remove the loading class
+        $table.removeClass('footable-loading');
+      
+        //hides all elements within the table that have the attribute data-hide="init"
+        $table.find('[data-init="hide"]').hide();
+        $table.find('[data-init="show"]').show();
+      });
+      
       $window
         .bind('resize.footable', function () {
           ft.timers.resize.stop();
           ft.timers.resize.start(function() {
+            ft.raise('footable_resizing');
             ft.resize();
-            $table.removeClass('footable-loading');
+            ft.raise('footable_resized');
           }, ft.options.delay);
-        })
-        .triggerHandler('resize.footable');
+        });
 
       ft.raise('footable_initialized');
     };
