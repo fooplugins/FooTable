@@ -26,7 +26,7 @@
       toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
       createDetail: function (element, data) {  //creates the contents of the detail row
         for (var i = 0; i < data.length; i++) {
-          element.append('<strong>' + data[i].name + '</strong> : ' + data[i].display + '</br>');
+          element.append('<div><strong>' + data[i].name + '</strong> : ' + data[i].display + '</div>');
         }
       },
       debug: false // Whether or not to log information to the console.
@@ -230,7 +230,7 @@
         'type': $th.data('type') || 'alpha',
         'name': $th.data('name') || $.trim($th.text()),
         'ignore': $th.data('ignore') || false,
-        'class': $th.data('class') || null
+        'className': $th.data('class') || null
       };
       data.hide['default'] = ($.inArray('default', hide) >= 0);
       
@@ -244,8 +244,8 @@
     ft.resize = function() {
       var $table = $(ft.table);
       var info = {
-        'width': (w.innerWidth > 0) ? w.innerWidth : screen.width,
-        'height': (w.innerHeight > 0) ? w.innerHeight : screen.height,
+        'width': $table.width(),	//no longer looks at the window width
+        'height': $table.height(),	//no longer looks at the window height
         'orientation': null
       };
       info.orientation = info.width > info.height ? 'landscape' : 'portrait';
@@ -272,7 +272,7 @@
             var count = data.index + 1;
             //get all the cells in the column
             var $column = $table.find('> tbody > tr > td:nth-child(' + count + ')').add(this);
-            if (data.class != null) $column.not(this).not('.footable-cell-detail').addClass(data.class);
+            if (data.className != null) $column.not(this).not('.footable-cell-detail').addClass(data.className);
             if (data.hide[breakpointName] == false) $column.show();
             else $column.hide();
           })
