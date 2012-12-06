@@ -46,7 +46,10 @@
             $(e.ft.table).find('tr th').each(function (ec) {
               var $th = $(this);
               var column = e.ft.columns[$th.index()];
-              if (column.sort.ignore != true) $th.addClass(cls.sortable);
+              if (column.sort.ignore != true) { 
+                $th.addClass(cls.sortable);
+                $('<span />').addClass(cls.indicator).appendTo($th);
+              }
             });
             
             $(e.ft.table).find('tr th.' + cls.sortable).click(function (ec) {
@@ -55,10 +58,10 @@
               if (column.sort.ignore == true) return true;
               ec.preventDefault();
       
-              $table.find('> thead > tr > th').not($th).removeClass(cls.sorted + ' ' + cls.descending).find('> span.' + cls.indicator).remove();
-              if ($th.find('> span.'+cls.indicator).length == 0) {
-                  $('<span />').addClass(cls.indicator).appendTo($th);
-              }
+              $table.find('> thead > tr > th').not($th).removeClass(cls.sorted + ' ' + cls.descending); //.find('> span.' + cls.indicator).remove();
+              // if ($th.find('> span.'+cls.indicator).length == 0) {
+                  // $('<span />').addClass(cls.indicator).appendTo($th);
+              // }
 
               if ($th.hasClass(cls.sorted)) {
                 p.reverse(e.ft, $tbody);
@@ -87,10 +90,12 @@
                         $th.addClass(cls.sorted);
                     }
 
-                    if ($th.find('> span.'+cls.indicator).length == 0) {
-                        $('<span />').addClass(cls.indicator).appendTo($th);
-                    }
+                    // if ($th.find('> span.'+cls.indicator).length == 0) {
+                        // $('<span />').addClass(cls.indicator).appendTo($th);
+                    // }
                     break;
+                } else if (column.sort.ignore != true) {
+                  
                 }
             }
           },

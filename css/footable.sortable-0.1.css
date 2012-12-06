@@ -2,20 +2,23 @@
   width: 16px;
   height: 16px;
   display: block;
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  margin-top: -8px;
-}
-
-.footable > thead > tr > th.footable-sorted > span.footable-sort-indicator {
-  background: url('img/down.png') no-repeat center center;
-}
-
-.footable > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator {
-  background: url('img/up.png') no-repeat center center;
+  float:right;
+  background: url('img/sorting_sprite.png') no-repeat top left;
 }
 
 .footable > thead > tr > th.footable-sortable:hover {
   cursor:pointer;
 }
+
+.footable > thead > tr > th.footable-sortable > span {
+  
+}
+
+.footable > thead > tr > th.footable-sorted > span.footable-sort-indicator {
+  background-position: 0 -16px;
+}
+
+.footable > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator {
+  background-position: 0 -32px;
+}
+
