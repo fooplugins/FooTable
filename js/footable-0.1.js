@@ -29,6 +29,12 @@
           element.append('<div><strong>' + data[i].name + '</strong> : ' + data[i].display + '</div>');
         }
       },
+      classes: {
+        loading : 'footable-loading',
+        sorted : 'footable-sorted',
+        descending : 'footable-sorted-desc',
+        indicator : 'footable-sort-indicator'
+      },
       debug: false // Whether or not to log information to the console.
     },
     
@@ -151,6 +157,9 @@
     ft.breakpoints = [];
     ft.breakpointNames = '';
     ft.columns = { };
+    
+    var opt = ft.options;
+    var cls = opt.classes;
 
     // This object simply houses all the timers used in the footable.
     ft.timers = {
@@ -164,24 +173,38 @@
     w.footable.plugins.init(ft);
 
     ft.init = function() {
-      var $window = $(w), $table = $(ft.table).addClass('footable-loading');
+      var $window = $(w), $table = $(ft.table);
+      
+      if ($table.hasClass(cls.loaded)) {
+        //already loaded FooTable for the table, so don't init again
+        ft.raise('footable_already_initialized');
+        return;
+      }
+      
+      $table.addClass(cls.loading);
 
       // Get the column data once for the life time of the plugin
       $table.find('> thead > tr > th').each(function() {
         var data = ft.getColumnData(this);
         ft.columns[data.index] = data;
+        
+        var count = data.index + 1;        
+        //get all the cells in the column
+        var $column = $table.find('> tbody > tr > td:nth-child(' + count + ')');
+        //add the className to the cells specified by data-class="blah"
+        if (data.className != null) $column.not('.footable-cell-detail').addClass(data.className);
       });
 
       // Create a nice friendly array to work with out of the breakpoints object.
-      for(var name in ft.options.breakpoints) {
-        ft.breakpoints.push({ 'name': name, 'width': ft.options.breakpoints[name] });
+      for(var name in opt.breakpoints) {
+        ft.breakpoints.push({ 'name': name, 'width': opt.breakpoints[name] });
         ft.breakpointNames += (name + ' ');
       }
       
       // Sort the breakpoints so the smallest is checked first
       ft.breakpoints.sort(function(a, b) { return a['width'] - b['width']; });
       
-      $table.on('click', ft.options.toggleSelector, function (e) {
+      $table.on('click', opt.toggleSelector, function (e) {
         if ($table.is('.breakpoint')) {
           var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
           ft.toggleDetail($row.get(0));
@@ -195,7 +218,7 @@
         ft.resize();
         
         //remove the loading class
-        $table.removeClass('footable-loading');
+        $table.removeClass(cls.loading);
       
         //hides all elements within the table that have the attribute data-hide="init"
         $table.find('[data-init="hide"]').hide();
@@ -209,14 +232,14 @@
             ft.raise('footable_resizing');
             ft.resize();
             ft.raise('footable_resized');
-          }, ft.options.delay);
+          }, opt.delay);
         });
 
       ft.raise('footable_initialized');
     };
 
     ft.parse = function(cell, column) {
-      var parser = ft.options.parsers[column.type] || ft.options.parsers.alpha;
+      var parser = opt.parsers[column.type] || opt.parsers.alpha;
       return parser(cell);
     };
 
@@ -234,7 +257,7 @@
       };
       data.hide['default'] = ($.inArray('default', hide) >= 0);
       
-      for(var name in ft.options.breakpoints) {
+      for(var name in opt.breakpoints) {
         data.hide[name] = ($.inArray(name, hide) >= 0);
       }
       var e = ft.raise('footable_column_data', { 'column': { 'data': data, 'th': th } });
@@ -244,8 +267,8 @@
     ft.resize = function() {
       var $table = $(ft.table);
       var info = {
-        'width': $table.width(),	//no longer looks at the window width
-        'height': $table.height(),	//no longer looks at the window height
+        'width': $table.width(),
+        'height': $table.height(),
         'orientation': null
       };
       info.orientation = info.width > info.height ? 'landscape' : 'portrait';
@@ -272,7 +295,7 @@
             var count = data.index + 1;
             //get all the cells in the column
             var $column = $table.find('> tbody > tr > td:nth-child(' + count + ')').add(this);
-            if (data.className != null) $column.not(this).not('.footable-cell-detail').addClass(data.className);
+            
             if (data.hide[breakpointName] == false) $column.show();
             else $column.hide();
           })
@@ -322,7 +345,7 @@
       }
       $next.find('> td:first').attr('colspan', colspan);
       $detail = $next.find('.footable-row-detail-inner').empty();
-      ft.options.createDetail($detail, values);
+      opt.createDetail($detail, values);
       return !exists;
     };
 
