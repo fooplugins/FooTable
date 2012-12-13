@@ -204,7 +204,7 @@
       // Sort the breakpoints so the smallest is checked first
       ft.breakpoints.sort(function(a, b) { return a['width'] - b['width']; });
       
-      $table.on('click', opt.toggleSelector, function (e) {
+      $table.find(opt.toggleSelector).on('click', function (e) {
         if ($table.is('.breakpoint')) {
           var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
           ft.toggleDetail($row.get(0));
