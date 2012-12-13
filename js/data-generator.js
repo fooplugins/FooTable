@@ -10,9 +10,10 @@
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   }
 
-  w.generateRows = function(num) {
-    num = num || 100;
-    for (var i = 0; i < num; i++) {
+  w.generateRows = function(rows, extraCols) {
+    rows = rows || 100;
+    extraCols = extraCols || 0;
+    for (var i = 0; i < rows; i++) {
       var data = {
         firstName: firstNames[Math.floor(Math.random() * firstNames.length)],
         lastName: lastNames[Math.floor(Math.random() * lastNames.length)],
@@ -27,6 +28,9 @@
       row += '<td>' + data.jobTitle + '</td>';
       row += '<td data-value="' + data.dob.getTime() + '">' + data.dob.getDate() + ' ' + months[data.dob.getMonth()] + ' ' + data.dob.getFullYear() +'</td>';
       row += '<td data-value="' + data.status.value + '">' + data.status.name + '</td>';
+      for (var j = 0; j < extraCols; j++) {
+        row += '<td>' + (i+1) + '.' + (j+1) + '</td>';
+      }
       row += '</tr>';
       document.writeln(row);
     }
