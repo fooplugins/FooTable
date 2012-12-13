@@ -255,23 +255,45 @@
         'ignore': $th.data('ignore') || false,
         'className': $th.data('class') || null
       };
-      data.hide['default'] = ($.inArray('default', hide) >= 0);
+      data.hide['default'] = ($th.data('hide')==="all") || ($.inArray('default', hide) >= 0);
       
       for(var name in opt.breakpoints) {
-        data.hide[name] = ($.inArray(name, hide) >= 0);
+        data.hide[name] = ($th.data('hide')==="all") || ($.inArray(name, hide) >= 0);
       }
       var e = ft.raise('footable_column_data', { 'column': { 'data': data, 'th': th } });
       return e.column.data;
+    };
+    
+    ft.getViewportWidth = function() {
+      return window.innerWidth || (document.body ? document.body.offsetWidth : 0);
+    };
+
+    ft.getViewportHeight = function() {
+      return window.innerHeight || (document.body ? document.body.offsetHeight : 0);
+    };
+
+    ft.hasBreakpointColumn = function(breakpoint) {
+      for(var c in ft.columns) {
+        if (ft.columns[c].hide[breakpoint]) {
+          return true;
+        }
+      }
+      return false;
     };
 
     ft.resize = function() {
       var $table = $(ft.table);
       var info = {
-        'width': $table.width(),
-        'height': $table.height(),
+        'width': $table.width(),                  //the table width
+        'height': $table.height(),                //the table height
+        'viewportWidth': ft.getViewportWidth(),   //the width of the viewport
+        'viewportHeight': ft.getViewportHeight(), //the width of the viewport
         'orientation': null
       };
-      info.orientation = info.width > info.height ? 'landscape' : 'portrait';
+      info.orientation = info.viewportWidth > info.viewportHeight ? 'landscape' : 'portrait';
+      
+      if (info.viewportWidth < info.width) info.width = info.viewportWidth;
+      if (info.viewportHeight < info.height) info.height = info.viewportHeight;      
 
       var pinfo = $table.data('footable_info');
       $table.data('footable_info', info);
@@ -286,10 +308,14 @@
             break;
           }
         }
+        
         var breakpointName = (current == null ? 'default' : current['name']);
+        
+        var hasBreakpointFired = ft.hasBreakpointColumn(breakpointName);
+        
         $table
           .removeClass('default breakpoint').removeClass(ft.breakpointNames)
-          .addClass(breakpointName + (current == null ? '' : ' breakpoint'))
+          .addClass(breakpointName + (hasBreakpointFired ? ' breakpoint' : ''))
           .find('> thead > tr > th').each(function() {
             var data = ft.columns[$(this).index()];
             var count = data.index + 1;
@@ -307,7 +333,7 @@
         $table.find('> tbody > tr.footable-detail-show').each(function() {
           var $next = $(this).next();
           if ($next.hasClass('footable-row-detail')) {
-            if (breakpointName == 'default') $next.hide();
+            if (breakpointName == 'default' && !hasBreakpointFired) $next.hide();
             else $next.show();
           }
         });
