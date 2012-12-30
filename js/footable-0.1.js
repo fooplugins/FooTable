@@ -185,7 +185,7 @@
       $table.addClass(cls.loading);
 
       // Get the column data once for the life time of the plugin
-      $table.find('> thead > tr > th').each(function() {
+      $table.find('> thead > tr > th, > thead > tr > td').each(function() {
         var data = ft.getColumnData(this);
         ft.columns[data.index] = data;
 
