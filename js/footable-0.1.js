@@ -331,7 +331,7 @@
             var data = ft.columns[$(this).index()];
             var count = data.index + 1;
             //get all the cells in the column
-            var $column = $table.find('> tbody > tr > td:nth-child(' + count + ')').add(this);
+            var $column = $table.find('> tbody > tr > td:nth-child(' + count + '), > tfoot > tr > td:nth-child(' + count + '), > colgroup > col:nth-child(' + count + ')').add(this);
 
             if (data.hide[breakpointName] == false) $column.show();
             else $column.hide();
