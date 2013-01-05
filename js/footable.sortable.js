@@ -58,10 +58,7 @@
               if (column.sort.ignore == true) return true;
               ec.preventDefault();
       
-              $table.find('> thead > tr > th').not($th).removeClass(cls.sorted + ' ' + cls.descending); //.find('> span.' + cls.indicator).remove();
-              // if ($th.find('> span.'+cls.indicator).length == 0) {
-                  // $('<span />').addClass(cls.indicator).appendTo($th);
-              // }
+              $table.find('> thead > tr > th').not($th).removeClass(cls.sorted + ' ' + cls.descending);
 
               if ($th.hasClass(cls.sorted)) {
                 p.reverse(e.ft, $tbody);
@@ -73,14 +70,16 @@
                 p.sort(e.ft, $tbody, column);
                 $th.removeClass(cls.descending).addClass(cls.sorted);
               }
+              e.ft.bindToggleSelectors();
               return false;
             });
 
+            var didSomeSorting = false;
             for(var c in e.ft.columns) {
                 var column = e.ft.columns[c];
                 if (column.sort.initial) {
                     p.sort(e.ft, $tbody, column);
-
+                    didSomeSorting = true;
                     var $th = $table.find('thead th:eq(' + c + ')');
 
                     if (column.sort.initial == "descending") {
@@ -90,14 +89,12 @@
                         $th.addClass(cls.sorted);
                     }
 
-                    // if ($th.find('> span.'+cls.indicator).length == 0) {
-                        // $('<span />').addClass(cls.indicator).appendTo($th);
-                    // }
                     break;
                 } else if (column.sort.ignore != true) {
                   
                 }
             }
+            if (didSomeSorting) { e.ft.bindToggleSelectors(); }
           },
           'footable_column_data': function(e) {
             var $th = $(e.column.th);

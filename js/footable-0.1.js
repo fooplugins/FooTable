@@ -205,12 +205,8 @@
       // Sort the breakpoints so the smallest is checked first
       ft.breakpoints.sort(function(a, b) { return a['width'] - b['width']; });
 
-      $table.find(opt.toggleSelector).on('click', function (e) {
-        if ($table.is('.breakpoint')) {
-          var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
-          ft.toggleDetail($row.get(0));
-        }
-      });
+      //bind the toggle selector click events
+      ft.bindToggleSelectors();
 
       ft.raise('footable_initializing');
 
@@ -240,6 +236,17 @@
         });
 
       ft.raise('footable_initialized');
+    };
+    
+    //moved this out into it's own function so that it can be called from other add-ons
+    ft.bindToggleSelectors = function() {
+      var $table = $(ft.table);
+      $table.find(opt.toggleSelector).on('click', function (e) {
+        if ($table.is('.breakpoint')) {
+          var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
+          ft.toggleDetail($row.get(0));
+        }
+      });      
     };
 
     ft.parse = function(cell, column) {
