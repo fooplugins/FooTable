@@ -44,9 +44,7 @@
                 var val = $(data.input).val() || '';
                 if (val.length < data.minimum) {
                   $table.find("> tbody > tr:not(.footable-row-detail)").each(function() {
-                    var $row = $(this), $next = $row.next();
-                    if ($row.hasClass('footable-detail-show') && $next.hasClass('footable-row-detail')) $row.add($next).show();
-                    else $row.show();
+                    p.showRow(this, e.ft);
                   });
                 } else {
                   var filters = val.split(" ");
@@ -57,9 +55,7 @@
                       rows = rows.filter("*:ftcontains('" + f + "')");
                   });
                   rows.each(function() {
-                    var $row = $(this), $next = $row.next();
-                    if ($row.hasClass('footable-detail-show') && $next.hasClass('footable-row-detail')) $row.add($next).show();
-                    else $row.show();
+                    p.showRow(this, e.ft);
                   });
                 }
               }, data.timeout);
@@ -67,6 +63,16 @@
           }
         });
       }
+    };
+    
+    p.showRow = function(row, ft) {
+      var $row = $(row), $next = $row.next(), $table = $(ft.table);
+      if ($row.is(':visible')) return; //already visible - do nothing
+      if ($table.hasClass('breakpoint') && $row.hasClass('footable-detail-show') && $next.hasClass('footable-row-detail')) {
+        $row.add($next).show();
+        ft.createOrUpdateDetailRow(row);
+      }
+      else $row.show();
     };
   };
   
