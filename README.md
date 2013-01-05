@@ -5,6 +5,8 @@ FooTable is a jQuery plugin that aims to make HTML tables on smaller devices loo
 
 ![FooTable](https://raw.github.com/bradvin/FooTable/master/screenshot.jpg "FooTable")
 
+FooTable also now has a sorting and filtering add-on. Footable also works with jQuery 1.4.4 and above!
+
 What Does It Do?
 ----------------
 FooTable transforms your HTML tables into expandable responsive tables. This is how it works:
@@ -114,10 +116,15 @@ And finally, call the FooTable plugin:
 
 Extensible
 ----------
-Another goal of FooTable was to make it super extensible. If you look at the code you will see that there is a plugin framework within the plugin, so extra mods can be attached just by including another javascript file. We also didn't want to bloat FooTable, so you can only use what you need and leave out everything else. We are in the process of finishing up a Sorting and Filtering add-on which we will release soon. Add-on ideas so far are:
+Another goal of FooTable was to make it super extensible. If you look at the code you will see that there is a plugin framework within the plugin, so extra mods can be attached just by including another javascript file. We also didn't want to bloat FooTable, so you can only use what you need and leave out everything else. 
+
+Working add-ons:
 
 * sorting
 * filtering
+
+Othere add-on ideas so far are:
+
 * conditional formatting
 * json loading
 
@@ -125,6 +132,7 @@ Thanks
 ------
 We would not have created FooTable without inspiration from others. Thanks must be given to:
 
+* Catalin for his [original table CSS](http://www.red-team-design.com/practical-css3-tables-with-rounded-corners)
 * [Chris Coyier](http://css-tricks.com/responsive-data-tables/) (also check out Chris' [responsive table roundup post](http://css-tricks.com/responsive-data-table-roundup/))
 * [Zurb](http://www.zurb.com/playground/responsive-tables)
 * [Dave Bushell](http://dbushell.com/2012/01/05/responsive-tables-2/)
