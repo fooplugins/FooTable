@@ -210,7 +210,7 @@
 
       ft.raise('footable_initializing');
 
-      $table.on('footable_initialized', function (e) {
+      $table.bind('footable_initialized', function (e) {
         //resize the footable onload
         ft.resize();
 
@@ -241,7 +241,7 @@
     //moved this out into it's own function so that it can be called from other add-ons
     ft.bindToggleSelectors = function() {
       var $table = $(ft.table);
-      $table.find(opt.toggleSelector).on('click', function (e) {
+      $table.find(opt.toggleSelector).unbind('click.footable').bind('click.footable', function (e) {
         if ($table.is('.breakpoint')) {
           var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
           ft.toggleDetail($row.get(0));
@@ -341,7 +341,7 @@
             ft.createOrUpdateDetailRow(this);
           });
 
-        $table.find('> tbody > tr.footable-detail-show').each(function() {
+        $table.find('> tbody > tr.footable-detail-show:visible').each(function() {
           var $next = $(this).next();
           if ($next.hasClass('footable-row-detail')) {
             if (breakpointName == 'default' && !hasBreakpointFired) $next.hide();
@@ -369,6 +369,7 @@
 
     ft.createOrUpdateDetailRow = function (actualRow) {
       var $row = $(actualRow), $next = $row.next(), $detail, values = [];
+      if ($row.is(':hidden')) return; //if the row is hidden for some readon (perhaps filtered) then get out of here
       $row.find('> td:hidden').each(function () {
         var column = ft.columns[$(this).index()];
         if (column.ignore == true) return true;
@@ -391,6 +392,7 @@
       var def = { 'ft': ft };
       $.extend(true, def, args);
       var e = $.Event(eventName, def);
+      if (!e.ft) { $.extend(true, e, def); } //pre jQuery 1.6 which did not allow data to be passed to event object constructor
       $(ft.table).trigger(e);
       return e;
     };
