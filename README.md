@@ -99,9 +99,9 @@ Create a simple table (don't forget to set the data attributes for each column!)
 Then include the FooTable CSS and JS in your page head:
 
 ```html
-<link href="css/footable-0.1.css" rel="stylesheet" type="text/css" />
+<link href="assets/stylesheets/footable/footable.css" rel="stylesheet" type="text/css" />
 <!-- obviously you have jQuery already included -->
-<script src="js/footable-0.1.js" type="text/javascript"></script>
+<script src="assets/javascripts/footable/footable.js" type="text/javascript"></script>
 ```
 
 And finally, call the FooTable plugin:
