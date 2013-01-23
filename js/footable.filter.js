@@ -1,4 +1,4 @@
-﻿(function ($, w, undefined) {
+(function ($, w, undefined) {
   if (w.footable == undefined || w.footable == null)
     throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
@@ -20,7 +20,8 @@
       enabled: true,
       input: '.footable-filter',
       timeout: 300,
-      minimum: 2
+      minimum: 2,
+      disableEnter: false
     }
   };
 
@@ -36,8 +37,17 @@
             var data = {
               'input': $table.data('filter') || e.ft.options.filter.input,
               'timeout': $table.data('filter-timeout') || e.ft.options.filter.timeout,
-              'minimum': $table.data('filter-minimum') || e.ft.options.filter.minimum
+              'minimum': $table.data('filter-minimum') || e.ft.options.filter.minimum,
+              'disableEnter': $table.data('filter-disable-enter') || e.ft.options.filter.disableEnter
             };
+            if (data.disableEnter) {
+                $(data.input).keypress(function(event){
+                    if (window.event)
+                        return (window.event.keyCode!=13);
+                    else
+                        return (event.which!=13);
+                });
+            }
             $(data.input).keyup(function () {
               e.ft.timers.filter.stop();
               e.ft.timers.filter.start(function() {
