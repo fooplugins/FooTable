@@ -15,12 +15,12 @@
 }
 
 .footable.breakpoint > tbody > tr > td.expand {
-  background: url('img/plus.png') no-repeat 5px center;
+  background: url('assets/images/plus.png') no-repeat 5px center;
   padding-left: 40px;
 }
 
 .footable.breakpoint > tbody > tr.footable-detail-show > td.expand {
-  background: url('img/minus.png') no-repeat 5px center;
+  background: url('assets/images/minus.png') no-repeat 5px center;
 }
 
 .footable.breakpoint > tbody > tr.footable-row-detail {

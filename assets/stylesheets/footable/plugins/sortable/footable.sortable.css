@@ -3,7 +3,7 @@
   height: 16px;
   display: block;
   float:right;
-  background: url('img/sorting_sprite.png') no-repeat top left;
+  background: url('assets/images/sorting_sprite.png') no-repeat top left;
 }
 
 .footable > thead > tr > th.footable-sortable:hover {
