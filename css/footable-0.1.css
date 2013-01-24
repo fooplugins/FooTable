@@ -63,7 +63,7 @@
   border-radius: 6px 0 0 0;
 }
 
-.footable > thead > tr > th:last-child, .footable > thead > tr > td:last-child {
+.footable > thead > tr > th.last, .footable > thead > tr > td.last {
   -moz-border-radius: 0 6px 0 0;
   -webkit-border-radius: 0 6px 0 0;
   border-radius: 0 6px 0 0;
@@ -81,7 +81,7 @@
   border-radius: 0 0 0 6px;
 }
 
-.footable > tbody > tr:last-child > td:last-child {
+.footable > tbody > tr:last-child > td.last {
   -moz-border-radius: 0 0 6px 0;
   -webkit-border-radius: 0 0 6px 0;
   border-radius: 0 0 6px 0;
