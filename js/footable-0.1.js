@@ -245,11 +245,6 @@
         if ($table.is('.breakpoint')) {
           var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
           ft.toggleDetail($row.get(0));
-          
-           if (typeof opt.onExpand == 'function') { // make sure the callback is a function
-             opt.onExpand.call(this); // brings the scope to the callback
-           }          
-          
         }
       });      
     };
