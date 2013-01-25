@@ -245,6 +245,11 @@
         if ($table.is('.breakpoint')) {
           var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
           ft.toggleDetail($row.get(0));
+          
+           if (typeof opt.onExpand == 'function') { // make sure the callback is a function
+             opt.onExpand.call(this); // brings the scope to the callback
+           }          
+          
         }
       });      
     };
@@ -349,11 +354,9 @@
           }
         });
         
-        // adding .last to the last th and td in order to allow for styling if the last column is hidden (which won't work using :last-child)
-        $table.find('> thead > tr > th.last').removeClass('last');
-        $table.find('> thead > tr > th:visible').last().addClass('last');
-        $table.find('> tbody > tr > td.last').removeClass('last');
-        $table.find('> tbody > tr > td:visible').last().addClass('last');
+        // adding .footable-last-column to the last th and td in order to allow for styling if the last column is hidden (which won't work using :last-child)
+       $table.find('> thead > tr > th.footable-last-column,> tbody > tr > td.footable-last-column').removeClass('footable-last-column');
+       $table.find('> thead > tr > th:visible:last,> tbody > tr > td:visible:last').addClass('footable-last-column');
 
         ft.raise('footable_breakpoint_' + breakpointName, { 'info': info });
       }
