@@ -348,6 +348,10 @@
             else $next.show();
           }
         });
+        
+        // adding .footable-last-column to the last th and td in order to allow for styling if the last column is hidden (which won't work using :last-child)
+       $table.find('> thead > tr > th.footable-last-column,> tbody > tr > td.footable-last-column').removeClass('footable-last-column');
+       $table.find('> thead > tr > th:visible:last,> tbody > tr > td:visible:last').addClass('footable-last-column');
 
         ft.raise('footable_breakpoint_' + breakpointName, { 'info': info });
       }
