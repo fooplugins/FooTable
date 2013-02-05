@@ -191,13 +191,14 @@
         ft.columns[data.index] = data;
 
         if (data.className != null) {
-          for (var m in data.matches) { //support for colspans
-            var count = m + 1;
-            //get all the cells in the column(s)
-            var $column = $table.find('> tbody > tr > td:nth-child(' + count + ')');
-            //add the className to the cells specified by data-class="blah"
-            $column.not('.footable-cell-detail').addClass(data.className);
-          }
+          var selector = '', first = true;
+          $.each(data.matches, function(m, match) { //support for colspans
+            if (!first) { selector += ', '; }
+            selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
+            first = false;
+          });
+          //add the className to the cells specified by data-class="blah"
+          $table.find(selector).not('.footable-cell-detail').addClass(data.className);
         }
       });
 
@@ -259,20 +260,6 @@
       return parser(cell);
     };
 
-    ft.getColumn = function(index) {
-      /// <summary>Returns the correct column data for the supplied index taking into account colspans.</summary>
-      /// <param name="index">The index to retrieve the column data for.</param>
-      /// <returns type="json">A JSON object containing the column data for the supplied index.</returns>
-      var result = null;
-      for (var column in ft.columns) {
-        if ($.inArray(index, ft.columns[column].matches) >= 0) {
-          result = ft.columns[column];
-          break;
-        }
-      }
-      return result;
-    };
-
     ft.getColumnData = function(th) {
       var $th = $(th), hide = $th.data('hide'), index = $th.index();
       hide = hide || '';
@@ -284,15 +271,23 @@
         'name': $th.data('name') || $.trim($th.text()),
         'ignore': $th.data('ignore') || false,
         'className': $th.data('class') || null,
-        'matches': []
+        'matches': [],
+        'names': { }
       };
 
-      indexOffset += parseInt($th.prev().attr('colspan') || 0);
-      var colspan = parseInt($th.attr('colspan') || 0);
+      var pcolspan = parseInt($th.prev().attr('colspan') || 0);
+      indexOffset += pcolspan > 1 ? pcolspan - 1 : 0;
+      var colspan = parseInt($th.attr('colspan') || 0), curindex = data.index + indexOffset;
       if (colspan > 0) {
-        for (var i = 0; i < colspan; i++) data.matches.push(i + indexOffset);
+        var names = $th.data('names');
+        names = names || '';
+        names = names.split(',');
+        for (var i = 0; i < colspan; i++) {
+          data.matches.push(i + curindex);
+          if (i < names.length) data.names[i + curindex] = names[i];
+        }
       } else {
-        data.matches.push(data.index + (indexOffset - 1));
+        data.matches.push(curindex);
       }
       
       data.hide['default'] = ($th.data('hide')==="all") || ($.inArray('default', hide) >= 0);
@@ -357,13 +352,18 @@
           .removeClass('default breakpoint').removeClass(ft.breakpointNames)
           .addClass(breakpointName + (hasBreakpointFired ? ' breakpoint' : ''))
           .find('> thead > tr > th').each(function() {
-            var data = ft.columns[$(this).index()];
-            var count = data.index + 1;
-            //get all the cells in the column
-            var $column = $table.find('> tbody > tr > td:nth-child(' + count + '), > tfoot > tr > td:nth-child(' + count + '), > colgroup > col:nth-child(' + count + ')').add(this);
-
-            if (data.hide[breakpointName] == false) $column.show();
-            else $column.hide();
+            var data = ft.columns[$(this).index()], selector = '', first = true;
+            $.each(data.matches, function(m, match) {
+              if (!first) { selector += ', '; }
+              var count = match + 1;
+              selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
+              selector += ', > tfoot > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
+              selector += ', > colgroup > col:nth-child(' + count + ')';
+              first = false;
+            });
+            var $column = $table.find(selector).add(this);
+            if (data.hide[breakpointName] == false) $column.css('display', 'table-cell');
+            else $column.css('display', 'none');
           })
           .end()
           .find('> tbody > tr.footable-detail-show').each(function() {
@@ -379,8 +379,8 @@
         });
         
         // adding .footable-last-column to the last th and td in order to allow for styling if the last column is hidden (which won't work using :last-child)
-       $table.find('> thead > tr > th.footable-last-column,> tbody > tr > td.footable-last-column').removeClass('footable-last-column');
-       $table.find('> thead > tr > th:visible:last,> tbody > tr > td:visible:last').addClass('footable-last-column');
+        $table.find('> thead > tr > th.footable-last-column,> tbody > tr > td.footable-last-column').removeClass('footable-last-column');
+        $table.find('> thead > tr > th:visible:last,> tbody > tr > td:visible:last').addClass('footable-last-column');
 
         ft.raise('footable_breakpoint_' + breakpointName, { 'info': info });
       }
@@ -401,14 +401,30 @@
       }
     };
 
+    ft.getColumnFromTdIndex = function(index) {
+      /// <summary>Returns the correct column data for the supplied index taking into account colspans.</summary>
+      /// <param name="index">The index to retrieve the column data for.</param>
+      /// <returns type="json">A JSON object containing the column data for the supplied index.</returns>
+      var result = null;
+      for (var column in ft.columns) {
+        if ($.inArray(index, ft.columns[column].matches) >= 0) {
+          result = ft.columns[column];
+          break;
+        }
+      }
+      return result;
+    };
+
     ft.createOrUpdateDetailRow = function (actualRow) {
       var $row = $(actualRow), $next = $row.next(), $detail, values = [];
       if ($row.is(':hidden')) return false; //if the row is hidden for some readon (perhaps filtered) then get out of here
       $row.find('> td:hidden').each(function () {
-        var column = ft.getColumn($(this).index());
+        var index = $(this).index(), column = ft.getColumnFromTdIndex(index), name = column.name;
         if (column.ignore == true) return true;
-        values.push({ 'name': column.name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()) });
-        return false;
+
+        if (index in column.names) name = column.names[index];
+        values.push({ 'name': name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()) });
+        return true;
       });
       if(values.length == 0) return false; //return if we don't have any data to show
       var colspan = $row.find('> td:visible').length;

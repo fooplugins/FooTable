@@ -39,13 +39,12 @@
       if (ft.options.sort == true) {
         $(ft.table).bind({
           'footable_initialized': function(e) {
-            var cls = ft.options.classes.sort;
+            var cls = ft.options.classes.sort, column;
 
-            var $table = $(e.ft.table), $tbody = $table.find('> tbody');
+            var $table = $(e.ft.table), $tbody = $table.find('> tbody'), $th;
 
             $(e.ft.table).find('tr th').each(function(ec) {
-              var $th = $(this);
-              var column = e.ft.columns[$th.index()];
+              $th = $(this), column = e.ft.columns[$th.index()];
               if (column.sort.ignore != true) {
                 $th.addClass(cls.sortable);
                 $('<span />').addClass(cls.indicator).appendTo($th);
@@ -53,8 +52,7 @@
             });
 
             $(e.ft.table).find('tr th.' + cls.sortable).click(function(ec) {
-              var $th = $(this);
-              var column = e.ft.columns[$th.index()];
+              $th = $(this), column = e.ft.columns[$th.index()];
               if (column.sort.ignore == true) return true;
               ec.preventDefault();
 
@@ -76,11 +74,11 @@
 
             var didSomeSorting = false;
             for (var c in e.ft.columns) {
-              var column = e.ft.columns[c];
+              column = e.ft.columns[c];
               if (column.sort.initial) {
                 p.sort(e.ft, $tbody, column);
                 didSomeSorting = true;
-                var $th = $table.find('thead th:eq(' + c + ')');
+                $th = $table.find('thead th:eq(' + c + ')');
 
                 if (column.sort.initial == "descending") {
                   p.reverse(e.ft, $tbody);
@@ -104,7 +102,10 @@
             e.column.data.sort.initial = $th.data('sort-initial') || false;
             e.column.data.sort.ignore = $th.data('sort-ignore') || false;
             e.column.data.sort.selector = $th.data('sort-selector') || null;
-            e.column.data.sort.match = $th.data('sort-match') || e.column.data.matches[0];
+
+            var match = $th.data('sort-match') || 0;
+            if (match >= e.column.data.matches.length) match = 0;
+            e.column.data.sort.match = e.column.data.matches[match];
           }
         });
       }
