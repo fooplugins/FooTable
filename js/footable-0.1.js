@@ -364,7 +364,9 @@
 
       if (!created && $next.is(':visible')) {
         $row.removeClass('footable-detail-show');
-        $next.hide();
+        //only hide the next row if it's a detail row
+        if($next.hasClass('footable-row-detail'))
+          $next.hide();
       } else {
         $row.addClass('footable-detail-show');
         $next.show();
@@ -379,6 +381,8 @@
         if (column.ignore == true) return true;
         values.push({ 'name': column.name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()) });
       });
+      if(values.length == 0) //return if we don't have any data to show
+        return;
       var colspan = $row.find('> td:visible').length;
       var exists = $next.hasClass('footable-row-detail');
       if (!exists) { // Create
