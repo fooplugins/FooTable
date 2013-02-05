@@ -6,8 +6,8 @@
     sort: true,
     sorters: {
       alpha: function (a, b) {
-        if (a[0] == b[0]) return 0;
-        if (a[0] < b[0]) return -1;
+        if (a == b) return 0;
+        if (a < b) return -1;
         return 1;
       },
       numeric: function (a, b) {
