@@ -186,7 +186,7 @@
       $table.addClass(cls.loading);
 
       // Get the column data once for the life time of the plugin
-      $table.find('> thead > tr > th, > thead > tr > td').each(function() {
+      $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function() {
         var data = ft.getColumnData(this);
         ft.columns[data.index] = data;
 
@@ -272,7 +272,8 @@
         'ignore': $th.data('ignore') || false,
         'className': $th.data('class') || null,
         'matches': [],
-        'names': { }
+        'names': { },
+        'group': $th.data('group') || null
       };
 
       var pcolspan = parseInt($th.prev().attr('colspan') || 0);
@@ -351,20 +352,34 @@
         $table
           .removeClass('default breakpoint').removeClass(ft.breakpointNames)
           .addClass(breakpointName + (hasBreakpointFired ? ' breakpoint' : ''))
-          .find('> thead > tr > th').each(function() {
-            var data = ft.columns[$(this).index()], selector = '', first = true;
-            $.each(data.matches, function(m, match) {
-              if (!first) { selector += ', '; }
-              var count = match + 1;
-              selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
-              selector += ', > tfoot > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
-              selector += ', > colgroup > col:nth-child(' + count + ')';
-              first = false;
-            });
-            var $column = $table.find(selector).add(this);
-            if (data.hide[breakpointName] == false) $column.css('display', 'table-cell');
-            else $column.css('display', 'none');
-          })
+          .find('> thead > tr:last-child > th')
+            .each(function() {
+              var data = ft.columns[$(this).index()], selector = '', first = true;
+              $.each(data.matches, function(m, match) {
+                if (!first) { selector += ', '; }
+                var count = match + 1;
+                selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
+                selector += ', > tfoot > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
+                selector += ', > colgroup > col:nth-child(' + count + ')';
+                first = false;
+              });
+              
+              selector += ', > thead > tr[data-group-row="true"] > th[data-group="'+data.group+'"]';
+              var $column = $table.find(selector).add(this);
+              if (data.hide[breakpointName] == false) $column.show();
+              else $column.hide();
+
+              if ($table.find('> thead > tr.footable-group-row').length == 1) {
+                var $groupcols = $table.find('> thead > tr:last-child > th[data-group="' + data.group + '"]:visible, > thead > tr:last-child > th[data-group="' + data.group + '"]:visible'),
+                  $group = $table.find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]'),
+                  groupspan = 0;
+
+                $.each($groupcols, function() { groupspan += parseInt($(this).attr('colspan') || 1); });
+
+                if (groupspan > 0) $group.attr('colspan', groupspan).show();
+                else $group.hide();
+              }
+            })
           .end()
           .find('> tbody > tr.footable-detail-show').each(function() {
             ft.createOrUpdateDetailRow(this);
@@ -378,10 +393,17 @@
           }
         });
         
-        // adding .footable-last-column to the last th and td in order to allow for styling if the last column is hidden (which won't work using :last-child)
-        $table.find('> thead > tr > th.footable-last-column,> tbody > tr > td.footable-last-column').removeClass('footable-last-column');
-        $table.find('> thead > tr > th:visible:last,> tbody > tr > td:visible:last').addClass('footable-last-column');
-
+        // adding .footable-first-column and .footable-last-column to the first and last th and td of each row in order to allow 
+        // for styling if the first or last column is hidden (which won't work using :first-child or :last-child)
+        $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column').removeClass('footable-last-column');
+        $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column').removeClass('footable-first-column');
+        $table.find('> thead > tr, > tbody > tr')
+          .find('> th:visible:last, > td:visible:last')
+            .addClass('footable-last-column')
+          .end()
+          .find('> th:visible:first, > td:visible:first')
+            .addClass('footable-first-column');
+        
         ft.raise('footable_breakpoint_' + breakpointName, { 'info': info });
       }
     };

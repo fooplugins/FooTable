@@ -43,7 +43,7 @@
 
             var $table = $(e.ft.table), $tbody = $table.find('> tbody'), $th;
 
-            $(e.ft.table).find('tr th').each(function(ec) {
+            $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function(ec) {
               $th = $(this), column = e.ft.columns[$th.index()];
               if (column.sort.ignore != true) {
                 $th.addClass(cls.sortable);
@@ -51,12 +51,12 @@
               }
             });
 
-            $(e.ft.table).find('tr th.' + cls.sortable).click(function(ec) {
+            $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).click(function(ec) {
               $th = $(this), column = e.ft.columns[$th.index()];
               if (column.sort.ignore == true) return true;
               ec.preventDefault();
 
-              $table.find('> thead > tr > th').not($th).removeClass(cls.sorted + ' ' + cls.descending);
+              $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
 
               if ($th.hasClass(cls.sorted)) {
                 p.reverse(e.ft, $tbody);
@@ -78,7 +78,7 @@
               if (column.sort.initial) {
                 p.sort(e.ft, $tbody, column);
                 didSomeSorting = true;
-                $th = $table.find('thead th:eq(' + c + ')');
+                $th = $table.find('> thead > tr:last-child > th:eq(' + c + '), > thead > tr:last-child > td:eq(' + c + ')');
 
                 if (column.sort.initial == "descending") {
                   p.reverse(e.ft, $tbody);
