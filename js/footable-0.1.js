@@ -24,9 +24,41 @@
         }
       },
       toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
-      createDetail: function (element, data) {  //creates the contents of the detail row
+      createDetail: function (element, data) {
+        /// <summary>This function is used by FooTable to generate the detail view seen when expanding a collapsed row.</summary>
+        /// <param name="element">This is the div that contains all the detail row information, anything could be added to it.</param>
+        /// <param name="data">
+        ///  This is an array of objects containing the cell information for the current row.
+        ///  These objects look like the below:
+        ///    obj = {
+        ///      'name': String, // The name of the column
+        ///      'value': Object, // The value parsed from the cell using the parsers. This could be a string, a number or whatever the parser outputs.
+        ///      'display': String, // This is the actual HTML from the cell, so if you have images etc you want moved this is the one to use and is the default value used.
+        ///      'group': String, // This is the identifier used in the data-group attribute of the column.
+        ///      'groupName': String // This is the actual name of the group the column belongs to.
+        ///    }
+        /// </param>
+        
+        var groups = { '_none': { 'name': null, 'data': [] } };
         for (var i = 0; i < data.length; i++) {
-          element.append('<div><strong>' + data[i].name + '</strong> : ' + data[i].display + '</div>');
+          var groupid = data[i].group;
+          if (groupid != null) {
+            if (!(groupid in groups))
+              groups[groupid] = { 'name': data[i].groupName, 'data': [] };
+            
+            groups[groupid].data.push(data[i]);
+          } else {
+            groups._none.data.push(data[i]);
+          }
+        }
+        
+        for (var group in groups) {
+          if (groups[group].data.length == 0) continue;
+          if (group != '_none') element.append('<h4>' + groups[group].name + '</h4>');
+          
+          for (var j = 0; j < groups[group].data.length; j++) {
+            element.append('<div><strong>' + groups[group].data[j].name + '</strong> : ' + groups[group].data[j].display + '</div>');
+          }
         }
       },
       classes: {
@@ -273,8 +305,14 @@
         'className': $th.data('class') || null,
         'matches': [],
         'names': { },
-        'group': $th.data('group') || null
+        'group': $th.data('group') || null,
+        'groupName': null
       };
+      
+      if (data.group != null) {
+        var $group = $(ft.table).find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]').first();
+        data.groupName = ft.parse($group, { 'type': 'alpha' });
+      }
 
       var pcolspan = parseInt($th.prev().attr('colspan') || 0);
       indexOffset += pcolspan > 1 ? pcolspan - 1 : 0;
@@ -445,7 +483,7 @@
         if (column.ignore == true) return true;
 
         if (index in column.names) name = column.names[index];
-        values.push({ 'name': name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()) });
+        values.push({ 'name': name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()), 'group': column.group, 'groupName': column.groupName });
         return true;
       });
       if(values.length == 0) return false; //return if we don't have any data to show
