@@ -242,7 +242,7 @@
     ft.bindToggleSelectors = function() {
       var $table = $(ft.table);
       $table.find(opt.toggleSelector).unbind('click.footable').bind('click.footable', function (e) {
-        if ($table.is('.breakpoint')) {
+        if ($table.is('.breakpoint') && $(e.target).is('td')) {
           var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
           ft.toggleDetail($row.get(0));
         }
