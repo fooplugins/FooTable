@@ -57,25 +57,25 @@
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
 
-.footable > thead > tr > th:first-child, .footable > thead > tr > td:first-child {
+.footable > thead > tr:first-child > th.footable-first-column, .footable > thead > tr:first-child > td.footable-first-column {
   -moz-border-radius: 6px 0 0 0;
   -webkit-border-radius: 6px 0 0 0;
   border-radius: 6px 0 0 0;
 }
 
-.footable > thead > tr > th.footable-last-column, .footable > thead > tr > td.footable-last-column {
+.footable > thead > tr:first-child > th.footable-last-column, .footable > thead > tr:first-child > td.footable-last-column {
   -moz-border-radius: 0 6px 0 0;
   -webkit-border-radius: 0 6px 0 0;
   border-radius: 0 6px 0 0;
 }
 
-.footable > thead > tr > th:only-child, .footable > thead > tr > td:only-child {
+.footable > thead > tr:first-child > th.footable-first-column.footable-last-column, .footable > thead > tr:first-child > td.footable-first-column.footable-last-column {
   -moz-border-radius: 6px 6px 0 0;
   -webkit-border-radius: 6px 6px 0 0;
   border-radius: 6px 6px 0 0;
 }
 
-.footable > tbody > tr:last-child > td:first-child {
+.footable > tbody > tr:last-child > td.footable-first-column {
   -moz-border-radius: 0 0 0 6px;
   -webkit-border-radius: 0 0 0 6px;
   border-radius: 0 0 0 6px;
@@ -85,6 +85,17 @@
   -moz-border-radius: 0 0 6px 0;
   -webkit-border-radius: 0 0 6px 0;
   border-radius: 0 0 6px 0;
+}
+
+.footable > tbody > tr:last-child > td.footable-first-column.footable-last-column {
+  -moz-border-radius: 0 0 6px 6px;
+  -webkit-border-radius: 0 0 6px 6px;
+  border-radius: 0 0 6px 6px;
+}
+
+.footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column,
+.footable > tbody > tr > td.footable-first-column {
+  border-left: none;
 }
 
 .footable > tbody img {
