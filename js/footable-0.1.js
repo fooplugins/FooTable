@@ -267,9 +267,7 @@
         .bind('resize.footable', function () {
           ft.timers.resize.stop();
           ft.timers.resize.start(function() {
-            ft.raise('footable_resizing');
             ft.resize();
-            ft.raise('footable_resized');
           }, opt.delay);
         });
 
@@ -371,6 +369,7 @@
 
       var pinfo = $table.data('footable_info');
       $table.data('footable_info', info);
+      ft.raise('footable_resizing', { 'old': pinfo, 'info': info });
 
       // This (if) statement is here purely to make sure events aren't raised twice as mobile safari seems to do
       if (!pinfo || ((pinfo && pinfo.width && pinfo.width != info.width) || (pinfo && pinfo.height && pinfo.height != info.height))) {
@@ -444,6 +443,8 @@
         
         ft.raise('footable_breakpoint_' + breakpointName, { 'info': info });
       }
+      
+      ft.raise('footable_resized', { 'old': pinfo, 'info': info });
     };
 
     ft.toggleDetail = function(actualRow) {
