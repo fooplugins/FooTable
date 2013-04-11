@@ -264,6 +264,10 @@
         //add the loaded class
         $table.addClass(cls.loaded);
       });
+	  
+	  $table.bind('footable_resize', function () {
+        ft.resize();	  
+	  });
 
       $window
         .bind('resize.footable', function () {
