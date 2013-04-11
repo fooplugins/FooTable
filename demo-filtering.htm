@@ -12,11 +12,18 @@
   <script type="text/javascript">
     $(function() {
       $('table').footable();
+	  
+	  $('.clear-filter').click(function(e) {
+		e.preventDefault();
+		
+		$('table').trigger('footable_clear_filter');
+	  });
+	  
     });
   </script>
 </head>
   <body>
-    search:<input id="filter" type="text" /> e.g. jun, elec, 1981
+    search:<input id="filter" type="text" /> e.g. jun, elec, 1981 <a href="#clear" class="clear-filter" title="clear filter">x</a>
     <table data-filter="#filter" class="footable">
       <thead>
         <tr>
