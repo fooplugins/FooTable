@@ -23,6 +23,7 @@
           return $(cell).data('value') || $.trim($(cell).text());
         }
       },
+			calculateWidthAndHeightOverride : null ,
       toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
       createDetail: function (element, data) {
         /// <summary>This function is used by FooTable to generate the detail view seen when expanding a collapsed row.</summary>
@@ -256,6 +257,7 @@
         $table.removeClass(cls.loading);
 
         //hides all elements within the table that have the attribute data-hide="init"
+		//what does this do? LOL
         $table.find('[data-init="hide"]').hide();
         $table.find('[data-init="show"]').show();
 
@@ -315,7 +317,7 @@
       var pcolspan = parseInt($th.prev().attr('colspan') || 0);
       indexOffset += pcolspan > 1 ? pcolspan - 1 : 0;
       var colspan = parseInt($th.attr('colspan') || 0), curindex = data.index + indexOffset;
-      if (colspan > 0) {
+      if (colspan > 1) {
         var names = $th.data('names');
         names = names || '';
         names = names.split(',');
@@ -343,6 +345,16 @@
     ft.getViewportHeight = function() {
       return window.innerHeight || (document.body ? document.body.offsetHeight : 0);
     };
+		
+		ft.calculateWidthAndHeight = function($table, info) {
+			if (jQuery.isFunction(opt.calculateWidthAndHeightOverride)) {
+				return opt.calculateWidthAndHeightOverride($table, info);
+			}
+			if (info.viewportWidth < info.width) info.width = info.viewportWidth;
+			if (info.viewportHeight < info.height) info.height = info.viewportHeight;
+
+			return info;
+		};
 
     ft.hasBreakpointColumn = function(breakpoint) {
       for(var c in ft.columns) {
@@ -363,9 +375,8 @@
         'orientation': null
       };
       info.orientation = info.viewportWidth > info.viewportHeight ? 'landscape' : 'portrait';
-
-      if (info.viewportWidth < info.width) info.width = info.viewportWidth;
-      if (info.viewportHeight < info.height) info.height = info.viewportHeight;
+			
+			info = ft.calculateWidthAndHeight($table, info);
 
       var pinfo = $table.data('footable_info');
       $table.data('footable_info', info);

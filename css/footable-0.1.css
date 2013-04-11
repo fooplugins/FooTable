@@ -3,6 +3,7 @@
 }
 
 .footable {
+	border-collapse: separate;
   border-spacing: 0;
   width: 100%;
   border: solid #ccc 1px;
