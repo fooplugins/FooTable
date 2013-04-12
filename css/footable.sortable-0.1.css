@@ -8,7 +8,7 @@
 .footable th.footable-sortable:hover {
   cursor: pointer;
 }
-.footable th.footable-sortable span.footable-sort-indicator {
+.footable th.footable-sorted span.footable-sort-indicator {
   background-position: 0 -16px;
 }
 .footable th.footable-sorted-desc span.footable-sort-indicator {
