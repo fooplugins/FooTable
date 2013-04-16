@@ -13,25 +13,24 @@
 		p.name = 'Footable Paginate';
 		p.pages = [];
 		p.currentPage = 0;
-		p.countRows = 0;
 		p.init = function(ft) {
 			if(ft.options.paginate == true) {
 				$(ft.table).bind({
           			'footable_initialized': function(e) {
           				var $table = $(e.ft.table), $tbody = $table.find('> tbody');
           				p.input = $table.data('nav') || e.ft.options.navigation;
-						var pages = 1;
-						var pageCount = pages * ft.options.increment;
+						var pageCount = 1;
+						var rowCount = pageCount * ft.options.increment;
 						var page = [];
 						var lastPage = [];
 						$.each(p.rows(ft, $tbody), function(i, row) {
 							page.push(row);
-							if (i === pageCount - 1){
+							if (i === rowCount - 1){
 								p.pages.push(page);
-								pages++;
-								pageCount = pages * ft.options.increment;
+								pageCount++;
+								rowCount = pageCount * ft.options.increment;
 								page = [];
-							} else if ( i >= p.rows(ft, $tbody).length - (p.rows(ft, $tbody).length % ft.options.increment)) {
+							} else if (i >= p.rows(ft, $tbody).length - (p.rows(ft, $tbody).length % ft.options.increment)) {
 								lastPage.push(row);
 							}
 						});
@@ -44,7 +43,7 @@
       				}
   				});
 			}
-		}
+		};
 
 		p.rows = function(ft, tbody) {
 			var rows = [];
@@ -63,7 +62,7 @@
 				element.append('<li class="arrow"><a href="#prev">&laquo;</a></li>');
 				$.each(p.pages, function(i, page){
 					if (page.length > 0) {
-						element.append('<li><a href="#" data-page=' + i + '>' + (i + 1) + '</a></li>');
+						element.append('<li class="page"><a href="#">' + (i + 1) + '</a></li>');
 					}
 				});
 				element.append('<li class="arrow"><a href="#next">&raquo;</a></li>');
@@ -85,9 +84,9 @@
 					}
 				}
 				$(p.input + ' li').removeClass('current');
-				$(p.input + ' a[data-page="' + p.currentPage + '"]').closest('li').addClass('current');
+				$(p.input + ' li.page:eq(' + p.currentPage + ')').addClass('current');
 			});
-			$(p.input + ' a[data-page="' + p.currentPage + '"]').closest('li').addClass('current');
+			$(p.input + ' li.page:eq(' + p.currentPage + ')').addClass('current');
 		};
 
 		p.clear = function(ft, tbody) {
