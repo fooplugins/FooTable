@@ -84,7 +84,7 @@
 		$(ft.table).find("> tbody > tr:not(.footable-row-detail)").each(function() {
 			p.showRow(this, ft);
 		});
-		ft.raise('footable_cleared');
+		ft.raise('footable_filtered');
 	};
     
     p.showRow = function(row, ft) {
