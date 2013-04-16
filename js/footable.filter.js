@@ -48,18 +48,18 @@
                         return (event.which!=13);
                 });
             }
-			$table.bind('footable_clear_filter', function() {
-				$(data.input).val('');
-				p.clearFilter(e.ft);
-			});
+      			$table.bind('footable_clear_filter', function() {
+      				$(data.input).val('');
+      				p.clearFilter(e.ft);
+      			});
             $(data.input).keyup(function (eve) {
               e.ft.timers.filter.stop();
-			  if (eve.which == 27) { $(data.input).val(''); }
+	            if (eve.which == 27) { $(data.input).val(''); }
               e.ft.timers.filter.start(function() {
-				e.ft.raise('footable_filtering');
+				        e.ft.raise('footable_filtering');
                 var val = $(data.input).val() || '';
                 if (val.length < data.minimum) {
-					p.clearFilter(e.ft);
+				          p.clearFilter(e.ft);
                 } else {
                   var filters = val.split(" ");
                   $table.find("> tbody > tr").hide();
@@ -71,7 +71,7 @@
                   rows.each(function() {
                     p.showRow(this, e.ft);
                   });
-				  e.ft.raise('footable_filtered');
+				          e.ft.raise('footable_filtered');
                 }
               }, data.timeout);
             });
@@ -84,7 +84,7 @@
 		$(ft.table).find("> tbody > tr:not(.footable-row-detail)").each(function() {
 			p.showRow(this, ft);
 		});
-		e.ft.raise('footable_filtered');
+		ft.raise('footable_filtered');
 	};
     
     p.showRow = function(row, ft) {
