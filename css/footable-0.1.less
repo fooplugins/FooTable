@@ -1,0 +1,99 @@
+// Footable
+// http://themergency.com/footable/
+// --------------------------------------------------
+
+// Border Radius
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
+@baseBorderRadius: 6px;
+
+.footable{
+  border-spacing: 0;
+  width: 100%;
+  border: solid #ccc 1px;
+  .border-radius(6px);
+  font-family: 'trebuchet MS' , 'Lucida sans' , Arial;
+  font-size: 14px;
+  color: #444;
+  td,
+  th{
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  thead{
+    td,
+    th{
+    background-color: #dce9f9;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
+    background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image: -moz-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image: -ms-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image: -o-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image: linear-gradient(to bottom, #ebf3fc, #dce9f9);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    -moz-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    border-top: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    }
+    tr{
+      &:first-child .footable-first-column {
+        .border-radius(6px 0 0 0);
+      }
+      &:first-child .footable-last-column{
+        .border-radius(0 6px 0 0);
+      }
+      &:first-child .footable-first-column.footable-last-column{
+        .border-radius(6px 6px 0 0);
+      }
+
+    }
+  }
+  tbody{
+    tr{
+      &:hover{
+        background: #fbf8e9;
+        &:not(.footable-row-detail) {
+          cursor: pointer;
+        }
+      }
+      &:last-child .footable-first-column {
+        .border-radius(0 0 0 6px);
+      }
+      &:last-child .footable-last-column {
+        .border-radius(0 0 6px 0);
+      }
+      &:last-child .footable-first-column.footable-last-column {
+        .border-radius(0 0 6px 6px);
+      }
+    }
+    img{
+      vertical-align:middle;
+    }
+  }
+  &.breakpoint{
+    td.expand{
+      background: url('img/plus.png') no-repeat 5px center;
+      padding-left: 40px;
+    }
+    tr{
+      &.footable-detail-show{
+        td.expand{
+          background: url('img/minus.png') no-repeat 5px center;
+        }
+      }
+      &.footable-row-detail{
+        background: #eee;
+      }
+    }
+  } 
+  .footable-first-column{
+    border-left: none;
+  }
+}

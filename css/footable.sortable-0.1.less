@@ -1,0 +1,28 @@
+.footable{
+	span.footable-sort-indicator{
+	  width: 16px;
+	  height: 16px;
+	  display: block;
+	  float:right;
+	  background: url('img/sorting_sprite.png') no-repeat top left;
+	}
+	th{
+		&.footable-sortable{
+			&:hover{
+	  			cursor:pointer;
+	  		}
+	  	}
+	  	&.footable-sorted{
+	  		span.footable-sort-indicator {
+				background-position: 0 -16px;
+			}
+	  	}
+		&.footable-sorted-desc{ 
+			span.footable-sort-indicator {
+			  background-position: 0 -32px;
+			}
+		}	
+	}
+
+}
+
