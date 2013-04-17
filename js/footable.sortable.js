@@ -69,6 +69,7 @@
                 $th.removeClass(cls.descending).addClass(cls.sorted);
               }
               e.ft.bindToggleSelectors();
+              e.ft.raise('footable_sorted', { column : column });
               return false;
             });
 
