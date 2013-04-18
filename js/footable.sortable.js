@@ -81,7 +81,7 @@
                 didSomeSorting = true;
                 $th = $table.find('> thead > tr:last-child > th:eq(' + c + '), > thead > tr:last-child > td:eq(' + c + ')');
 
-                if (column.sort.initial == "descending") {
+                if (column.sort.initial == 'descending') {
                   p.reverse(e.ft, $tbody);
                   $th.addClass(cls.descending);
                 } else {

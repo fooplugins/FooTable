@@ -8,7 +8,7 @@
       return $(a).html().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
     };
   } else { // For jQuery 1.8 and above
-    $.expr[":"].ftcontains = $.expr.createPseudo(function (arg) {
+    $.expr[':'].ftcontains = $.expr.createPseudo(function (arg) {
       return function (elem) {
         return $(elem).html().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
       };
@@ -61,16 +61,16 @@
                 if (val.length < data.minimum) {
                   p.clearFilter(e.ft);
                 } else {
-                  var filters = val.split(" ");
-                  $table.find("> tbody > tr").hide().addClass("footable-filtered");
-                  var rows = $table.find("> tbody > tr:not(.footable-row-detail)");
+                  var filters = val.split(' ');
+                  $table.find('> tbody > tr').hide().addClass('footable-filtered');
+                  var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
                   $.each(filters, function (i, f) {
                     if (f && f.length)
-                      rows = rows.filter("*:ftcontains('" + f + "')");
+                      rows = rows.filter('*:ftcontains("' + f + '")');
                   });
                   rows.each(function () {
                     p.showRow(this, e.ft);
-                    $(this).removeClass("footable-filtered");
+                    $(this).removeClass('footable-filtered');
                   });
                   e.ft.raise('footable_filtered', { filter : val });
                 }
@@ -82,7 +82,7 @@
     };
 
     p.clearFilter = function (ft) {
-      $(ft.table).find("> tbody > tr:not(.footable-row-detail)").removeClass("footable-filtered").each(function () {
+      $(ft.table).find('> tbody > tr:not(.footable-row-detail)').removeClass('footable-filtered').each(function () {
         p.showRow(this, ft);
       });
       ft.raise('footable_filtered', { cleared : true });
