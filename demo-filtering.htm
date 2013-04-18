@@ -13,11 +13,10 @@
     $(function() {
       $('table').footable();
 	  
-	  $('.clear-filter').click(function(e) {
-		e.preventDefault();
-		
-		$('table').trigger('footable_clear_filter');
-	  });
+	    $('.clear-filter').click(function(e) {
+		    e.preventDefault();
+		    $('table').trigger('footable_clear_filter');
+	    });
 	  
     });
   </script>
