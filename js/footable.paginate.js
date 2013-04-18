@@ -1,4 +1,3 @@
-/// <reference path="../demo-group-headers.htm" />
 (function ($, w, undefined) {
   if (w.footable == undefined || w.footable == null)
     throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
@@ -46,7 +45,7 @@
       var page = [];
       var lastPage = [];
       p.pages = [];
-      var rows = tbody.find('> tr:not(.footable-filtered)');
+      var rows = tbody.find('> tr:not(.footable-filtered,.footable-row-detail)');
       rows.each(function (i, row) {
         page.push(row);
         if (i === pageCount - 1) {
@@ -58,7 +57,8 @@
           lastPage.push(row);
         }
       });
-      if (lastPage.length>0) p.pages.push(lastPage);
+      if (lastPage.length > 0) p.pages.push(lastPage);
+      if (p.currentPage >= p.pages.length) p.currentPage = p.pages.length - 1;
     };
 
     p.createNavigation = function (ft, tbody) {
