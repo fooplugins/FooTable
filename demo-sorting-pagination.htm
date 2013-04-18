@@ -14,14 +14,12 @@
   <script src="js/footable.paginate.js" type="text/javascript"></script>
   <script type="text/javascript">
     $(function() {
-      $('table').footable({
-        'increment': 5
-      });
+      $('table').footable();
     });
   </script>
 </head>
   <body>
-    <table class="footable">
+    <table class="footable" data-page-size="5">
       <thead>
         <tr>
           <th data-class="expand" data-sort-initial="true">
