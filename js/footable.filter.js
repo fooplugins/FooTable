@@ -82,7 +82,7 @@
     };
 
     p.clearFilter = function (ft) {
-      $(ft.table).find("> tbody > tr:not(.footable-row-detail)").each(function () {
+      $(ft.table).find("> tbody > tr:not(.footable-row-detail)").removeClass("footable-filtered").each(function () {
         p.showRow(this, ft);
       });
       ft.raise('footable_filtered', { cleared : true });
