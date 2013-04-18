@@ -1,25 +1,31 @@
-.footable-nav{
+tfoot.footable-pagination tr td {
+  text-align: center;
+}
+
+.footable-nav {
 	list-style: none;
-	color: #333;
-	font-family: arial;
-	font-weight: bold;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
 }
 
-.footable-nav li{
-	display: inline-block;
-}
+  .footable-nav li {
+	  display: inline-block;
+  }
 
-.footable-nav a{
-	display: inline-block;
-	padding: 5px 10px;
-	text-decoration: none;
-	color: #0066cc;
-}
+    .footable-nav li a {
+	    display: inline-block;
+	    padding: 5px 10px;
+	    text-decoration: none;
+	    color: #0066cc;
+      font-weight: bold;
+    }
 
-.footable-nav .current{
-	background: #333;
-}
+  .footable-nav .footable-page-current {
+	  background: #888;
+    border-radius: 50%;
+  }
 
-.footable-nav .current a{
-	color: #fff;
-}
+    .footable-nav .footable-page-current a{
+	    color: #fff;
+    }
