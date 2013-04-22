@@ -77,33 +77,32 @@
             var info = ft.pageInfo;
             if (info.pages.length > 0) {
 
-                $nav.append('<li class="footable-page-arrow"><a href="#prev">&laquo;</a></li>');
+                $nav.append('<li class="footable-page-arrow"><a data-page="prev" href="#prev">&laquo;</a></li>');
                 $.each(info.pages, function (i, page) {
                     if (page.length > 0) {
-                        $nav.append('<li class="footable-page"><a href="#">' + (i + 1) + '</a></li>');
+                        $nav.append('<li class="footable-page"><a data-page="' + i + '" href="#">' + (i + 1) + '</a></li>');
                     }
                 });
-                $nav.append('<li class="footable-page-arrow"><a href="#next">&raquo;</a></li>');
+                $nav.append('<li class="footable-page-arrow"><a data-page="next" href="#next">&raquo;</a></li>');
             }
             $nav.find('a').click(function (e) {
                 e.preventDefault();
-                if ($(this).attr('href') == '#prev') {
-                    if (info.currentPage > 0) {
-                        p.fillPage(ft, tbody, info.currentPage - 1);
-                    }
-                } else if ($(this).attr('href') == '#next') {
-                    if (info.currentPage < info.pages.length - 1) {
-                        p.fillPage(ft, tbody, info.currentPage + 1);
-                    }
+                var page = $(this).data('page');
+                var newPage = info.currentPage;
+                if (page == 'prev') {
+                    if (newPage > 0) newPage--;
+                } else if (page == 'next') {
+                    if (newPage < info.pages.length - 1) newPage++;
                 } else {
-                    if (info.currentPage != ($(this).html() - 1)) {
-                        p.fillPage(ft, tbody, $(this).html() - 1);
-                    }
+                    newPage = page;
+                }
+                if (info.currentPage != newPage) {
+                    p.fillPage(ft, tbody, newPage);
                 }
                 $nav.find('li').removeClass('footable-page-current');
-                $nav.find('li.footable-page:eq(' + info.currentPage + ')').addClass('footable-page-current');
+                $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('footable-page-current');
             });
-            $nav.find('li.footable-page:eq(' + info.currentPage + ')').addClass('footable-page-current');
+            $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('footable-page-current');
         };
 
         p.fillPage = function (ft, tbody, pageNumber) {
