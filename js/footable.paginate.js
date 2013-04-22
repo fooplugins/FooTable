@@ -7,33 +7,40 @@
     pageSize: 10,
     pageNavigation: '.footable-nav'
   };
-
+  
+  function pageInfo(ft) {
+	var $table = $(ft.table), $tbody = $table.find('> tbody');
+	this.pageNavigation = $table.data('page-navigation') || ft.options.pageNavigation;
+	this.pageSize = $table.data('page-size') || ft.options.pageSize;
+	this.currentPage = 0;
+	this.pages = [];
+  };
+  
   function Paginate() {
     var p = this;
     p.name = 'Footable Paginate';
-    p.pages = [];
-    p.currentPage = 0;
-    p.pageSize = 0;
     
     p.init = function (ft) {
       if (ft.options.paginate == true) {
         var $table = $(ft.table), $tbody = $table.find('> tbody');
-        $table.bind({
+        $(ft.table).bind({
           'footable_initialized': function (e) {
-            p.input = $table.data('page-navigation') || e.ft.options.pageNavigation;
-            p.pageSize = $table.data('page-size') || e.ft.options.pageSize;
-            p.createPages(ft, $tbody);
-            p.createNavigation(ft, $tbody);
-            p.fillPage(ft, $tbody, 0);
+			e.ft.pageInfo = new pageInfo(e.ft);
+			var $table = $(e.ft.table), $tbody = $table.find('> tbody');
+            p.createPages(e.ft, $tbody);
+            p.createNavigation(e.ft, $tbody);
+            p.fillPage(e.ft, $tbody, 0);
           },
           'footable_sorted': function (e) {
-            p.createPages(ft, $tbody);
-            p.fillPage(ft, $tbody, p.currentPage);
+			var $tbody = $(e.ft.table).find('> tbody');
+            p.createPages(e.ft, $tbody);
+            p.fillPage(e.ft, $tbody, e.ft.pageInfo.currentPage);
           },
           'footable_filtered' : function(e) {
-            p.createPages(ft, $tbody);
-            p.createNavigation(ft, $tbody);
-            p.fillPage(ft, $tbody, p.currentPage);
+			var $tbody = $(e.ft.table).find('> tbody');
+            p.createPages(e.ft, $tbody);
+            p.createNavigation(e.ft, $tbody);
+            p.fillPage(e.ft, $tbody, e.ft.pageInfo.currentPage);
           }
         });
       }
@@ -41,34 +48,37 @@
     
     p.createPages = function (ft, tbody) {
       var pages = 1;
-      var pageCount = pages * p.pageSize;
+	  var info = ft.pageInfo;
+      var pageCount = pages * info.pageSize;
       var page = [];
       var lastPage = [];
-      p.pages = [];
+      info.pages = [];
       var rows = tbody.find('> tr:not(.footable-filtered,.footable-row-detail)');
       rows.each(function (i, row) {
         page.push(row);
         if (i === pageCount - 1) {
-          p.pages.push(page);
+          info.pages.push(page);
           pages++;
-          pageCount = pages * p.pageSize;
+          pageCount = pages * info.pageSize;
           page = [];
-        } else if (i >= rows.length - (rows.length % p.pageSize)) {
+        } else if (i >= rows.length - (rows.length % info.pageSize)) {
           lastPage.push(row);
         }
       });
-      if (lastPage.length > 0) p.pages.push(lastPage);
-      if (p.currentPage >= p.pages.length) p.currentPage = p.pages.length - 1;
+      if (lastPage.length > 0) info.pages.push(lastPage);
+      if (info.currentPage >= info.pages.length) info.currentPage = info.pages.length - 1;
+	  if (info.currentPage < 0) info.currentPage = 0;
     };
 
     p.createNavigation = function (ft, tbody) {
-      var $nav = $(p.input);
+      var $nav = $(ft.pageInfo.pageNavigation);
       if ($nav.length == 0) return;
       $nav.find('li').remove();
-      if (p.pages.length > 0) {
+	  var info = ft.pageInfo;
+      if (info.pages.length > 0) {
         
         $nav.append('<li class="footable-page-arrow"><a href="#prev">&laquo;</a></li>');
-        $.each(p.pages, function (i, page) {
+        $.each(info.pages, function (i, page) {
           if (page.length > 0) {
             $nav.append('<li class="footable-page"><a href="#">' + (i + 1) + '</a></li>');
           }
@@ -78,29 +88,28 @@
       $nav.find('a').click(function (e) {
         e.preventDefault();
         if ($(this).attr('href') == '#prev') {
-          if (p.currentPage > 0) {
-            p.fillPage(ft, tbody, p.currentPage - 1);
+          if (info.currentPage > 0) {
+            p.fillPage(ft, tbody, info.currentPage - 1);
           }
         } else if ($(this).attr('href') == '#next') {
-          if (p.currentPage < p.pages.length - 1) {
-            p.fillPage(ft, tbody, p.currentPage + 1);
+          if (info.currentPage < info.pages.length - 1) {
+            p.fillPage(ft, tbody, info.currentPage + 1);
           }
         } else {
-          if (p.currentPage != ($(this).html() - 1)) {
+          if (info.currentPage != ($(this).html() - 1)) {
             p.fillPage(ft, tbody, $(this).html() - 1);
           }
         }
         $nav.find('li').removeClass('footable-page-current');
-        $nav.find('li.footable-page:eq(' + p.currentPage + ')').addClass('footable-page-current');
+        $nav.find('li.footable-page:eq(' + info.currentPage + ')').addClass('footable-page-current');
       });
-      $nav.find('li.footable-page:eq(' + p.currentPage + ')').addClass('footable-page-current');
+      $nav.find('li.footable-page:eq(' + info.currentPage + ')').addClass('footable-page-current');
     };
 
     p.fillPage = function (ft, tbody, pageNumber) {
-      p.currentPage = pageNumber;
-
+      ft.pageInfo.currentPage = pageNumber;
       tbody.find('> tr:visible').hide();
-      $(p.pages[pageNumber]).show().each(function () {
+      $(ft.pageInfo.pages[pageNumber]).each(function () {
         p.showRow(this, ft);
       });
     };
