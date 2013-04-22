@@ -26,6 +26,7 @@
             },
             calculateWidthAndHeightOverride: null,
             toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
+            columnDataSelector: '> thead > tr:last-child > th, > thead > tr:last-child > td', //the selector used to find the column data in the thead
             createDetail: function (element, data) {
                 /// <summary>This function is used by FooTable to generate the detail view seen when expanding a collapsed row.</summary>
                 /// <param name="element">This is the div that contains all the detail row information, anything could be added to it.</param>
@@ -222,7 +223,7 @@
             $table.addClass(cls.loading);
 
             // Get the column data once for the life time of the plugin
-            $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function () {
+            $table.find(opt.columnDataSelector).each(function () {
                 var data = ft.getColumnData(this);
                 ft.columns[data.index] = data;
 
