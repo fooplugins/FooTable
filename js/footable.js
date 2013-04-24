@@ -506,6 +506,7 @@
         ft.createOrUpdateDetailRow = function (actualRow) {
             var $row = $(actualRow), $next = $row.next(), $detail, values = [];
             if ($row.is(':hidden')) return false; //if the row is hidden for some readon (perhaps filtered) then get out of here
+            ft.raise('footable_rowdetailupdated', { 'row': $row, 'detail': $next });
             $row.find('> td:hidden').each(function () {
                 var index = $(this).index(), column = ft.getColumnFromTdIndex(index), name = column.name;
                 if (column.ignore == true) return true;
