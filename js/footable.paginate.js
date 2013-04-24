@@ -107,7 +107,7 @@
 
         p.fillPage = function (ft, tbody, pageNumber) {
             ft.pageInfo.currentPage = pageNumber;
-            tbody.find('> tr:visible').hide();
+            tbody.find('> tr').hide();
             $(ft.pageInfo.pages[pageNumber]).each(function () {
                 p.showRow(this, ft);
             });
