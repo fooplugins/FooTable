@@ -60,7 +60,7 @@
                     if (group != '_none') element.append('<h4>' + groups[group].name + '</h4>');
 
                     for (var j = 0; j < groups[group].data.length; j++) {
-                        var separator = (groups[group].data[j].name != '') ? ':' : '';
+                        var separator = (groups[group].data[j].name) ? ':' : '';
                         element.append('<div><strong>' + groups[group].data[j].name + '</strong> ' + separator + ' ' + groups[group].data[j].display + '</div>');
                     }
                 }
