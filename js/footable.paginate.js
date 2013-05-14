@@ -22,29 +22,24 @@
 
         p.init = function (ft) {
             if (ft.options.paginate == true) {
-                var $table = $(ft.table), $tbody = $table.find('> tbody');
                 $(ft.table).bind({
                     'footable_initialized': function (e) {
                         e.ft.pageInfo = new pageInfo(e.ft);
-                        var $table = $(e.ft.table), $tbody = $table.find('> tbody');
-                        p.createPages(e.ft, $tbody);
-                        p.createNavigation(e.ft, $tbody);
-                        p.fillPage(e.ft, $tbody, 0);
+						e.ft.raise('footable_setup_paging');
                     },
-                    'footable_sorted': function (e) {
-                        var $tbody = $(e.ft.table).find('> tbody');
-                        p.createPages(e.ft, $tbody);
-                        p.fillPage(e.ft, $tbody, e.ft.pageInfo.currentPage);
-                    },
-                    'footable_filtered': function (e) {
-                        var $tbody = $(e.ft.table).find('> tbody');
-                        p.createPages(e.ft, $tbody);
-                        p.createNavigation(e.ft, $tbody);
-                        p.fillPage(e.ft, $tbody, e.ft.pageInfo.currentPage);
+                    'footable_sorted footable_filtered footable_setup_paging': function () {
+                        p.setupPaging(ft);
                     }
                 });
             }
         };
+		
+		p.setupPaging = function(ft) {
+			var $tbody = $(ft.table).find('> tbody');
+			p.createPages(ft, $tbody);
+			p.createNavigation(ft, $tbody);
+			p.fillPage(ft, $tbody, ft.pageInfo.currentPage);
+		};
 
         p.createPages = function (ft, tbody) {
             var pages = 1;
