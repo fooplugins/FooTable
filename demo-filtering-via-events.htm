@@ -7,7 +7,7 @@
   <link href="css/footable-0.1.css" rel="stylesheet" type="text/css" />
   
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
-  <script src="js/footable-0.1.js" type="text/javascript"></script>
+  <script src="js/footable.js" type="text/javascript"></script>
   <script src="js/footable.filter.js" type="text/javascript"></script>
   <script type="text/javascript">
     $(function() {
@@ -20,6 +20,7 @@
 		
 		$('.do-filter').click(function(e) {
 			e.preventDefault();
+			$('#filter').val($(this).text());
 			$('table').trigger('footable_filter', {filter : $(this).text()} );
 		});
 	  
