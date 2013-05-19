@@ -453,7 +453,7 @@
                 $table.find('> tbody > tr.footable-detail-show:visible').each(function () {
                     var $next = $(this).next();
                     if ($next.hasClass('footable-row-detail')) {
-                        if (breakpointName == 'default' && !hasBreakpointFired) $next.hide();
+                        if (!hasBreakpointFired) $next.hide();
                         else $next.show();
                     }
                 });
