@@ -313,7 +313,7 @@
                 'index': index,
                 'hide': { },
                 'type': $th.data('type') || 'alpha',
-                'name': $th.data('name') || $.trim($th.text()),
+                'name': $.trim($th.data('name') || $th.text()),
                 'ignore': $th.data('ignore') || false,
                 'className': $th.data('class') || null,
                 'matches': [],
