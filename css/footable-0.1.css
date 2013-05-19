@@ -39,6 +39,10 @@
   text-align: left;
 }
 
+.footable > tbody > tr > td.footable-cell-detail {
+  border-left: none;
+}
+
 .footable > thead > tr > th, .footable > thead > tr > td {
   background-color: #dce9f9;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
