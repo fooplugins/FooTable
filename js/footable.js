@@ -227,19 +227,6 @@
             $table.find(opt.columnDataSelector).each(function () {
                 var data = ft.getColumnData(this);
                 ft.columns[data.index] = data;
-
-                if (data.className != null) {
-                    var selector = '', first = true;
-                    $.each(data.matches, function (m, match) { //support for colspans
-                        if (!first) {
-                            selector += ', ';
-                        }
-                        selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
-                        first = false;
-                    });
-                    //add the className to the cells specified by data-class="blah"
-                    $table.find(selector).not('.footable-cell-detail').addClass(data.className);
-                }
             });
 
             // Create a nice friendly array to work with out of the breakpoints object.
@@ -253,22 +240,23 @@
                 return a['width'] - b['width'];
             });
 
-            //bind the toggle selector click events
-            ft.bindToggleSelectors();
-
             ft.raise('footable_initializing');
 
             $table.bind('footable_initialized', function () {
+				//remove previously capture table info (to "force" a resize)
+				$table.removeData('footable_info');
+				
+				//bind the toggle selector click events
+				ft.bindToggleSelectors();
+				
+				//set any cell classes defined for the columns
+				ft.setColumnClasses();
+			
                 //resize the footable onload
                 ft.resize();
-
+				
                 //remove the loading class
                 $table.removeClass(cls.loading);
-
-                //hides all elements within the table that have the attribute data-hide="init"
-                //what does this do? LOL
-                $table.find('[data-init="hide"]').hide();
-                $table.find('[data-init="show"]').show();
 
                 //add the loaded class
                 $table.addClass(cls.loaded);
@@ -288,6 +276,25 @@
 
             ft.raise('footable_initialized');
         };
+		
+		ft.setColumnClasses = function() {
+			$table = $(ft.table);
+			for (var c in ft.columns) {
+				var col = ft.columns[c];
+				if (col.className != null) {
+					var selector = '', first = true;
+					$.each(col.matches, function (m, match) { //support for colspans
+						if (!first) {
+							selector += ', ';
+						}
+						selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
+						first = false;
+					});
+					//add the className to the cells specified by data-class="blah"
+					$table.find(selector).not('.footable-cell-detail').addClass(col.className);
+				}
+			}
+		};
 
         //moved this out into it's own function so that it can be called from other add-ons
         ft.bindToggleSelectors = function () {
@@ -313,7 +320,7 @@
                 'index': index,
                 'hide': { },
                 'type': $th.data('type') || 'alpha',
-                'name': $th.data('name') || $.trim($th.text()),
+                'name': $.trim($th.data('name') || $th.text()),
                 'ignore': $th.data('ignore') || false,
                 'className': $th.data('class') || null,
                 'matches': [],
@@ -453,7 +460,7 @@
                 $table.find('> tbody > tr.footable-detail-show:visible').each(function () {
                     var $next = $(this).next();
                     if ($next.hasClass('footable-row-detail')) {
-                        if (breakpointName == 'default' && !hasBreakpointFired) $next.hide();
+                        if (!hasBreakpointFired) $next.hide();
                         else $next.show();
                     }
                 });
