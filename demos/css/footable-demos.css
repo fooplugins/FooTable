@@ -1,0 +1,41 @@
+body{
+    font-family: "courier new";
+    color:#2B2B2B;
+}
+
+    body.dark {
+        background: #444;
+        color:#ffd;
+    }
+	
+.demo-container {
+	margin:10px;
+}
+
+code {
+    background: #ddd;
+    padding:2px 5px;
+}
+
+.status-metro {
+    display: inline-block;
+    padding: 2px 5px;
+	font-weight:bold;
+	color:#fff;
+}
+
+.status-metro.status-active {
+    background: #43c83c;
+}
+
+.status-metro.status-disabled {
+    background: #999999;
+}
+
+.status-metro.status-suspended {
+    background: #fa3031;
+}
+
+.foo-setup li {
+	margin-bottom:30px;
+}

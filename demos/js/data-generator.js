@@ -10,9 +10,11 @@
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   }
 
-  w.generateRows = function(rows, extraCols) {
+  w.generateRows = function(rows, extraCols, return_rows) {
     rows = rows || 100;
     extraCols = extraCols || 0;
+	return_rows = return_rows || false;
+	var output = '';
     for (var i = 0; i < rows; i++) {
       var data = {
         firstName: firstNames[Math.floor(Math.random() * firstNames.length)],
@@ -32,7 +34,11 @@
         row += '<td>' + (i+1) + '.' + (j+1) + '</td>';
       }
       row += '</tr>';
-      document.writeln(row);
+	  if (return_rows) document.writeln(row);
+	  else
+		output += row;
     }
+	
+	if (!return_rows) return output;
   };
 })(window);
