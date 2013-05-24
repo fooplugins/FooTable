@@ -66,8 +66,10 @@
                 }
             },
             classes: {
+				main: 'footable',
                 loading: 'footable-loading',
                 loaded: 'footable-loaded',
+				expand: 'footable-expand',
                 sorted: 'footable-sorted',
                 descending: 'footable-sorted-desc',
                 indicator: 'footable-sort-indicator'
@@ -258,8 +260,8 @@
                 //remove the loading class
                 $table.removeClass(cls.loading);
 
-                //add the loaded class
-                $table.addClass(cls.loaded);
+                //add the footable and loaded class
+                $table.addClass(cls.loaded).addClass(cls.main);
             });
 
             $table.bind('footable_resize', function () {
@@ -278,21 +280,25 @@
         };
 		
 		ft.setColumnClasses = function() {
+			var hasExpandColumn = false;
 			$table = $(ft.table);
 			for (var c in ft.columns) {
 				var col = ft.columns[c];
 				if (col.className != null) {
+					if (col.className == cls.expand) hasExpandColumn = true;
 					var selector = '', first = true;
 					$.each(col.matches, function (m, match) { //support for colspans
-						if (!first) {
-							selector += ', ';
-						}
+						if (!first) selector += ', ';
 						selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
 						first = false;
 					});
 					//add the className to the cells specified by data-class="blah"
 					$table.find(selector).not('.footable-cell-detail').addClass(col.className);
 				}
+			}
+			//check if we have an expand column. If not then add it to the first column just to be safe
+			if (!hasExpandColumn) {
+				$table.find('> tbody > tr:not(.footable-row-detail) > td:first-child').not('.footable-cell-detail').addClass(cls.expand);
 			}
 		};
 
@@ -320,7 +326,7 @@
                 'index': index,
                 'hide': { },
                 'type': $th.data('type') || 'alpha',
-                'name': $.trim($th.data('name') || $th.text()),
+                'name': $th.data('name') || $.trim($th.text()),
                 'ignore': $th.data('ignore') || false,
                 'className': $th.data('class') || null,
                 'matches': [],
@@ -460,7 +466,7 @@
                 $table.find('> tbody > tr.footable-detail-show:visible').each(function () {
                     var $next = $(this).next();
                     if ($next.hasClass('footable-row-detail')) {
-                        if (!hasBreakpointFired) $next.hide();
+                        if (breakpointName == 'default' && !hasBreakpointFired) $next.hide();
                         else $next.show();
                     }
                 });
