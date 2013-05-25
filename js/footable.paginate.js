@@ -81,12 +81,14 @@
 			}
 			//if we still cannot find the control, then don't do anything
             if ($nav.length == 0) return;
-			//if the nav is not a UL, then create a UL
-			if (!$nav.is('ul')) { $nav.append('<ul />'); $nav = $nav.find('ul'); }
+			//if the nav is not a UL, then find or create a UL
+			if (!$nav.is('ul')) { 
+				if ($nav.find('ul:first').length == 0) { $nav.append('<ul />'); }
+				$nav = $nav.find('ul');
+			}
             $nav.find('li').remove();
             var info = ft.pageInfo;
             if (info.pages.length > 0) {
-
                 $nav.append('<li class="footable-page-arrow"><a data-page="prev" href="#prev">'+ft.pageInfo.previousText+'</a></li>');
                 $.each(info.pages, function (i, page) {
                     if (page.length > 0) {
@@ -119,9 +121,11 @@
                 }
             });
             $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
-			$nav.find('li.footable-page-arrow > a[data-page="prev"]').parent().addClass('disabled');
 			if (info.currentPage >= info.pages.length - 1) {
 				$nav.find('li.footable-page-arrow > a[data-page="next"]').parent().addClass('disabled');
+			}
+			if (info.currentPage < 1) {
+				$nav.find('li.footable-page-arrow > a[data-page="prev"]').parent().addClass('disabled');
 			}
         };
 
