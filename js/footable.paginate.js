@@ -109,10 +109,10 @@
                 if (info.currentPage != newPage) {
                     p.fillPage(ft, tbody, newPage);
                 }
-                $nav.find('li').removeClass('footable-page-current');
-                $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('footable-page-current');
+                $nav.find('li').removeClass('active');
+                $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
             });
-            $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('footable-page-current');
+            $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
         };
 
         p.fillPage = function (ft, tbody, pageNumber) {
