@@ -76,7 +76,7 @@
 				main: 'footable',
                 loading: 'footable-loading',
                 loaded: 'footable-loaded',
-				expand: 'footable-expand',
+				toggle: 'footable-toggle',
                 sorted: 'footable-sorted',
                 descending: 'footable-sorted-desc',
                 indicator: 'footable-sort-indicator',
@@ -260,6 +260,9 @@
 				//remove previously capture table info (to "force" a resize)
 				$table.removeData('footable_info');
 				
+				//add the toggler to each row
+				ft.addRowToggle();
+				
 				//bind the toggle selector click events
 				ft.bindToggleSelectors();
 				
@@ -291,13 +294,31 @@
             ft.raise('footable_initialized');
         };
 		
+		ft.addRowToggle = function() {
+			var hasToggleColumn = false;
+			$table = $(ft.table);
+			for (var c in ft.columns) {
+				var col = ft.columns[c];
+				if (col.toggle) {
+					hasToggleColumn = true;
+					var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index) + 1) + ')';
+					$table.find(selector).not('.footable-cell-detail').prepend( $('<span />').addClass(cls.toggle) );
+				}
+			}
+			//check if we have an toggle column. If not then add it to the first column just to be safe
+			if (!hasToggleColumn) {
+				$table
+					.find('> tbody > tr:not(.footable-row-detail) > td:first-child')
+					.not('.footable-cell-detail')
+					.prepend( $('<span />').addClass(cls.toggle) );
+			}
+		};
+		
 		ft.setColumnClasses = function() {
-			var hasExpandColumn = false;
 			$table = $(ft.table);
 			for (var c in ft.columns) {
 				var col = ft.columns[c];
 				if (col.className != null) {
-					if (col.className == cls.expand) hasExpandColumn = true;
 					var selector = '', first = true;
 					$.each(col.matches, function (m, match) { //support for colspans
 						if (!first) selector += ', ';
@@ -307,10 +328,6 @@
 					//add the className to the cells specified by data-class="blah"
 					$table.find(selector).not('.footable-cell-detail').addClass(col.className);
 				}
-			}
-			//check if we have an expand column. If not then add it to the first column just to be safe
-			if (!hasExpandColumn) {
-				$table.find('> tbody > tr:not(.footable-row-detail) > td:first-child').not('.footable-cell-detail').addClass(cls.expand);
 			}
 		};
 
@@ -340,6 +357,7 @@
                 'type': $th.data('type') || 'alpha',
                 'name': $th.data('name') || $.trim($th.text()),
                 'ignore': $th.data('ignore') || false,
+				'toggle': $th.data('toggle') || false,
                 'className': $th.data('class') || null,
                 'matches': [],
                 'names': { },
