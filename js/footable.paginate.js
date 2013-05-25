@@ -108,9 +108,9 @@
                 }
                 if (info.currentPage != newPage) {
                     p.fillPage(ft, tbody, newPage);
+					$nav.find('li').removeClass('active');
+					$nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
                 }
-                $nav.find('li').removeClass('active');
-                $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
             });
             $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
         };
