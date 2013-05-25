@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>FooTable - jQuery plugin for responsive HTML tables</title>
+  <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />
+  
+  <link href="css/footable-0.1.css" rel="stylesheet" type="text/css" />
+  
+  <script src="js/data-generator.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+  <script src="js/footable.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(function() {
+      $('table').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('zebra');
+    });
+  </script>
+  <style type="text/css">
+    .footable tbody tr.zebra {
+      background:#fee;
+    }
+  </style>
+</head>
+  <body>
+    <table class="footable">
+      <thead>
+        <tr>
+          <th data-class="expand">
+            First Name
+          </th>
+          <th>
+            Last Name
+          </th>
+          <th data-hide="phone,tablet">
+            Job Title
+          </th>
+          <th data-hide="phone,tablet">
+            DOB
+          </th>
+          <th data-hide="phone">
+            Status
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <script type="text/javascript">
+          window.generateRows(20);
+        </script>
+      </tbody>
+    </table>
+    
+  </body>
+</html>

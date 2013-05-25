@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>FooTable - jQuery plugin for responsive HTML tables</title>
+  <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />
+  
+  <link href="css/footable-0.1.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    .footable-row-detail-inner ul { padding:0 20px; margin:0; }
+    .footable tbody { display:none; }
+    .footable tfoot tr td { padding:10px; text-align:center; }
+  </style>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+  <script src="js/footable.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(function() {
+      setTimeout(function() {
+        $('table').footable({
+          createDetail: function (element, data) {  //creates the contents of the detail row
+            for (var i = 0; i < data.length; i++) {
+              element.append(data[i].display);
+            }
+          },
+        });
+      }, 2000);
+    });
+  </script>
+</head>
+  <body>
+	<div style="width:320px">
+		<table class="footable">
+		  <thead>
+			<tr>
+			  <th data-class="expand">
+				Chapter
+			  </th>
+			  <th data-hide="default,phone,tablet">
+				Sections
+			  </th>
+			</tr>
+		  </thead>
+		  <tbody data-init="show">
+			<tr><td>Getting Started</td><td><ul><li>Your First FooTable</li><li>Options</li><li>Configuration via Data Attributes</li></ul></td></tr>
+			<tr><td>Sorting Plugin</td><td><ul><li>How to setup</li><li>Sorting Options</li><li>Data Attributes</li><li>Styling</li></ul></td></tr>
+			<tr><td>Extend FooTable</td><td></td></tr>
+		  </tbody>
+		  <tfoot data-init="hide">
+			<tr>
+			  <td colspan="2">2 seconds to load data...</td>
+			</tr>
+		  </tfoot>
+		</table>
+    </div>
+  </body>
+</html>
