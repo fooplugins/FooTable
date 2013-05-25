@@ -42,6 +42,8 @@
             var cls = ft.options.classes.sort, column;
 
             var $table = $(e.ft.table), $tbody = $table.find('> tbody'), $th;
+			
+			if ($table.data('sort') === false) return;
 
             $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function(ec) {
               $th = $(this), column = e.ft.columns[$th.index()];
