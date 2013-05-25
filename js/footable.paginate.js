@@ -5,7 +5,7 @@
     var defaults = {
         paginate: true,
         pageSize: 10,
-        pageNavigation: '.footable-nav'
+        pageNavigation: '.pagination'
     };
 
     function pageInfo(ft) {
@@ -66,8 +66,19 @@
         };
 
         p.createNavigation = function (ft, tbody) {
-            var $nav = $(ft.pageInfo.pageNavigation);
+            var $nav = $(ft.table).find(ft.pageInfo.pageNavigation);
+			//if we cannot find the navigation control within the table, then try find it outside
+			if ($nav.length == 0) {
+				$nav = $(ft.pageInfo.pageNavigation);
+				//if the navigation control is inside another table, then get out
+				if ($nav.parents('table:first') != $(ft.table)) return;
+				//if we found more than one navigation control, write error to console
+				if ($nav.length > 1 && ft.options.debug == true) console.error('More than one pagination control was found!');
+			}
+			//if we still cannot find the control, then don't do anything
             if ($nav.length == 0) return;
+			//if the nav is not a UL, then create a UL
+			if (!$nav.is('ul')) { $nav.append('<ul />'); $nav = $nav.find('ul'); }
             $nav.find('li').remove();
             var info = ft.pageInfo;
             if (info.pages.length > 0) {
