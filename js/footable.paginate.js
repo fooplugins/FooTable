@@ -111,23 +111,21 @@
                 if (info.currentPage != newPage) {
                     p.fillPage(ft, tbody, newPage);
 					$nav.find('li').removeClass('active disabled');
-					$nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
-					if (info.currentPage >= info.pages.length - 1) {
-						$nav.find('li.footable-page-arrow > a[data-page="next"]').parent().addClass('disabled');
-					}
-					if (info.currentPage < 1) {
-						$nav.find('li.footable-page-arrow > a[data-page="prev"]').parent().addClass('disabled');
-					}
+					p.setPagingClasses($nav, info.currentPage, info.pages.length);
                 }
             });
-            $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('active');
-			if (info.currentPage >= info.pages.length - 1) {
-				$nav.find('li.footable-page-arrow > a[data-page="next"]').parent().addClass('disabled');
-			}
-			if (info.currentPage < 1) {
-				$nav.find('li.footable-page-arrow > a[data-page="prev"]').parent().addClass('disabled');
-			}
+			p.setPagingClasses($nav, info.currentPage, info.pages.length);
         };
+		
+		p.setPagingClasses = function(nav, currentPage, pageCount) {
+            nav.find('li.footable-page > a[data-page=' + currentPage + ']').parent().addClass('active');
+			if (currentPage >= pageCount - 1) {
+				nav.find('li.footable-page-arrow > a[data-page="next"]').parent().addClass('disabled');
+			}
+			if (currentPage < 1) {
+				nav.find('li.footable-page-arrow > a[data-page="prev"]').parent().addClass('disabled');
+			}
+		};
 
         p.fillPage = function (ft, tbody, pageNumber) {
             ft.pageInfo.currentPage = pageNumber;
