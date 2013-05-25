@@ -27,7 +27,23 @@
             calculateWidthAndHeightOverride: null,
             toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
             columnDataSelector: '> thead > tr:last-child > th, > thead > tr:last-child > td', //the selector used to find the column data in the thead
-            createDetail: function (element, data) {
+			detailSeparator : ':', //the seperator character used when building up the detail row
+			createGroupedDetail: function(data) {
+				var groups = { '_none': { 'name': null, 'data': [] } };
+                for (var i = 0; i < data.length; i++) {
+                    var groupid = data[i].group;
+                    if (groupid != null) {
+                        if (!(groupid in groups))
+                            groups[groupid] = { 'name': data[i].groupName || data[i].group, 'data': [] };
+
+                        groups[groupid].data.push(data[i]);
+                    } else {
+                        groups._none.data.push(data[i]);
+                    }
+                }
+				return groups;
+			},
+            createDetail: function (element, data, createGroupedDetail, separatorChar, classes) {
                 /// <summary>This function is used by FooTable to generate the detail view seen when expanding a collapsed row.</summary>
                 /// <param name="element">This is the div that contains all the detail row information, anything could be added to it.</param>
                 /// <param name="data">
@@ -41,27 +57,18 @@
                 ///      'groupName': String // This is the actual name of the group the column belongs to.
                 ///    }
                 /// </param>
+				/// <param name="createGroupedDetail">The grouping function to group the data</param>
+				/// <param name="separatorChar">The separator charactor used</param>
+				/// <param name="classes">The array of class names used to build up the detail row</param>
 
-                var groups = { '_none': { 'name': null, 'data': [] } };
-                for (var i = 0; i < data.length; i++) {
-                    var groupid = data[i].group;
-                    if (groupid != null) {
-                        if (!(groupid in groups))
-                            groups[groupid] = { 'name': data[i].groupName, 'data': [] };
-
-                        groups[groupid].data.push(data[i]);
-                    } else {
-                        groups._none.data.push(data[i]);
-                    }
-                }
-
+				var groups = createGroupedDetail(data);
                 for (var group in groups) {
                     if (groups[group].data.length == 0) continue;
-                    if (group != '_none') element.append('<h4>' + groups[group].name + '</h4>');
+                    if (group != '_none') element.append('<div class="'+classes.detailInnerGroup+'">' + groups[group].name + '</div>');
 
                     for (var j = 0; j < groups[group].data.length; j++) {
-                        var separator = (groups[group].data[j].name) ? ':' : '';
-                        element.append('<div><strong>' + groups[group].data[j].name + '</strong> ' + separator + ' ' + groups[group].data[j].display + '</div>');
+                        var separator = (groups[group].data[j].name) ? separatorChar : '';
+                        element.append('<div class="'+classes.detailInnerRow+'"><div class="'+classes.detailInnerName+'">' + groups[group].data[j].name + separator + '</div><div class="'+classes.detailInnerValue+'">' + groups[group].data[j].display + '</div></div>');
                     }
                 }
             },
@@ -72,7 +79,12 @@
 				expand: 'footable-expand',
                 sorted: 'footable-sorted',
                 descending: 'footable-sorted-desc',
-                indicator: 'footable-sort-indicator'
+                indicator: 'footable-sort-indicator',
+				detailInner: 'footable-row-detail-inner',
+				detailInnerRow: 'footable-row-detail-row',
+				detailInnerGroup: 'footable-row-detail-group',
+				detailInnerName: 'footable-row-detail-name',
+				detailInnerValue: 'footable-row-detail-value'
             },
             debug: false // Whether or not to log information to the console.
         },
@@ -533,12 +545,12 @@
             var colspan = $row.find('> td:visible').length;
             var exists = $next.hasClass('footable-row-detail');
             if (!exists) { // Create
-                $next = $('<tr class="footable-row-detail"><td class="footable-cell-detail"><div class="footable-row-detail-inner"></div></td></tr>');
+                $next = $('<tr class="footable-row-detail"><td class="footable-cell-detail"><div class="' + cls.detailInner + '"></div></td></tr>');
                 $row.after($next);
             }
             $next.find('> td:first').attr('colspan', colspan);
-            $detail = $next.find('.footable-row-detail-inner').empty();
-            opt.createDetail($detail, values);
+            $detail = $next.find('.' + cls.detailInner).empty();
+            opt.createDetail($detail, values, opt.createGroupedDetail, opt.detailSeparator, cls);
             return !exists;
         };
 
