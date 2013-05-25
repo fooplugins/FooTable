@@ -5,13 +5,17 @@
     var defaults = {
         paginate: true,
         pageSize: 10,
-        pageNavigation: '.pagination'
+        pageNavigation: '.pagination',
+		previousText: '&laquo;',
+		nextText: '&raquo;'
     };
 
     function pageInfo(ft) {
         var $table = $(ft.table), $tbody = $table.find('> tbody');
         this.pageNavigation = $table.data('page-navigation') || ft.options.pageNavigation;
         this.pageSize = $table.data('page-size') || ft.options.pageSize;
+		this.previousText = $table.data('page-previous-text') || ft.options.previousText;
+		this.nextText = $table.data('page-next-text') || ft.options.nextText;
         this.currentPage = 0;
         this.pages = [];
     };
@@ -83,13 +87,13 @@
             var info = ft.pageInfo;
             if (info.pages.length > 0) {
 
-                $nav.append('<li class="footable-page-arrow"><a data-page="prev" href="#prev">&laquo;</a></li>');
+                $nav.append('<li class="footable-page-arrow"><a data-page="prev" href="#prev">'+ft.pageInfo.previousText+'</a></li>');
                 $.each(info.pages, function (i, page) {
                     if (page.length > 0) {
                         $nav.append('<li class="footable-page"><a data-page="' + i + '" href="#">' + (i + 1) + '</a></li>');
                     }
                 });
-                $nav.append('<li class="footable-page-arrow"><a data-page="next" href="#next">&raquo;</a></li>');
+                $nav.append('<li class="footable-page-arrow"><a data-page="next" href="#next">'+ft.pageInfo.nextText+'</a></li>');
             }
             $nav.find('a').click(function (e) {
                 e.preventDefault();
