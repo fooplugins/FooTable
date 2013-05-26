@@ -27,9 +27,9 @@
             calculateWidthAndHeightOverride: null,
             toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
             columnDataSelector: '> thead > tr:last-child > th, > thead > tr:last-child > td', //the selector used to find the column data in the thead
-			detailSeparator : ':', //the seperator character used when building up the detail row
-			createGroupedDetail: function(data) {
-				var groups = { '_none': { 'name': null, 'data': [] } };
+            detailSeparator: ':', //the seperator character used when building up the detail row
+            createGroupedDetail: function (data) {
+                var groups = { '_none': { 'name': null, 'data': [] } };
                 for (var i = 0; i < data.length; i++) {
                     var groupid = data[i].group;
                     if (groupid != null) {
@@ -41,8 +41,8 @@
                         groups._none.data.push(data[i]);
                     }
                 }
-				return groups;
-			},
+                return groups;
+            },
             createDetail: function (element, data, createGroupedDetail, separatorChar, classes) {
                 /// <summary>This function is used by FooTable to generate the detail view seen when expanding a collapsed row.</summary>
                 /// <param name="element">This is the div that contains all the detail row information, anything could be added to it.</param>
@@ -57,34 +57,34 @@
                 ///      'groupName': String // This is the actual name of the group the column belongs to.
                 ///    }
                 /// </param>
-				/// <param name="createGroupedDetail">The grouping function to group the data</param>
-				/// <param name="separatorChar">The separator charactor used</param>
-				/// <param name="classes">The array of class names used to build up the detail row</param>
+                /// <param name="createGroupedDetail">The grouping function to group the data</param>
+                /// <param name="separatorChar">The separator charactor used</param>
+                /// <param name="classes">The array of class names used to build up the detail row</param>
 
-				var groups = createGroupedDetail(data);
+                var groups = createGroupedDetail(data);
                 for (var group in groups) {
                     if (groups[group].data.length == 0) continue;
-                    if (group != '_none') element.append('<div class="'+classes.detailInnerGroup+'">' + groups[group].name + '</div>');
+                    if (group != '_none') element.append('<div class="' + classes.detailInnerGroup + '">' + groups[group].name + '</div>');
 
                     for (var j = 0; j < groups[group].data.length; j++) {
                         var separator = (groups[group].data[j].name) ? separatorChar : '';
-                        element.append('<div class="'+classes.detailInnerRow+'"><div class="'+classes.detailInnerName+'">' + groups[group].data[j].name + separator + '</div><div class="'+classes.detailInnerValue+'">' + groups[group].data[j].display + '</div></div>');
+                        element.append('<div class="' + classes.detailInnerRow + '"><div class="' + classes.detailInnerName + '">' + groups[group].data[j].name + separator + '</div><div class="' + classes.detailInnerValue + '">' + groups[group].data[j].display + '</div></div>');
                     }
                 }
             },
             classes: {
-				main: 'footable',
+                main: 'footable',
                 loading: 'footable-loading',
                 loaded: 'footable-loaded',
-				toggle: 'footable-toggle',
+                toggle: 'footable-toggle',
                 sorted: 'footable-sorted',
                 descending: 'footable-sorted-desc',
                 indicator: 'footable-sort-indicator',
-				detailInner: 'footable-row-detail-inner',
-				detailInnerRow: 'footable-row-detail-row',
-				detailInnerGroup: 'footable-row-detail-group',
-				detailInnerName: 'footable-row-detail-name',
-				detailInnerValue: 'footable-row-detail-value'
+                detailInner: 'footable-row-detail-inner',
+                detailInnerRow: 'footable-row-detail-row',
+                detailInnerGroup: 'footable-row-detail-group',
+                detailInnerName: 'footable-row-detail-name',
+                detailInnerValue: 'footable-row-detail-value'
             },
             debug: false // Whether or not to log information to the console.
         },
@@ -257,21 +257,21 @@
             ft.raise('footable_initializing');
 
             $table.bind('footable_initialized', function () {
-				//remove previously capture table info (to "force" a resize)
-				$table.removeData('footable_info');
-				
-				//add the toggler to each row
-				ft.addRowToggle();
-				
-				//bind the toggle selector click events
-				ft.bindToggleSelectors();
-				
-				//set any cell classes defined for the columns
-				ft.setColumnClasses();
-			
+                //remove previously capture table info (to "force" a resize)
+                $table.removeData('footable_info');
+
+                //add the toggler to each row
+                ft.addRowToggle();
+
+                //bind the toggle selector click events
+                ft.bindToggleSelectors();
+
+                //set any cell classes defined for the columns
+                ft.setColumnClasses();
+
                 //resize the footable onload
                 ft.resize();
-				
+
                 //remove the loading class
                 $table.removeClass(cls.loading);
 
@@ -293,49 +293,49 @@
 
             ft.raise('footable_initialized');
         };
-		
-		ft.addRowToggle = function() {
-			var hasToggleColumn = false;
-			$table = $(ft.table);
-			for (var c in ft.columns) {
-				var col = ft.columns[c];
-				if (col.toggle) {
-					hasToggleColumn = true;
-					var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index) + 1) + ')';
-					$table.find(selector).not('.footable-cell-detail').prepend( $('<span />').addClass(cls.toggle) );
-				}
-			}
-			//check if we have an toggle column. If not then add it to the first column just to be safe
-			if (!hasToggleColumn) {
-				$table
-					.find('> tbody > tr:not(.footable-row-detail) > td:first-child')
-					.not('.footable-cell-detail')
-					.prepend( $('<span />').addClass(cls.toggle) );
-			}
-		};
-		
-		ft.setColumnClasses = function() {
-			$table = $(ft.table);
-			for (var c in ft.columns) {
-				var col = ft.columns[c];
-				if (col.className != null) {
-					var selector = '', first = true;
-					$.each(col.matches, function (m, match) { //support for colspans
-						if (!first) selector += ', ';
-						selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
-						first = false;
-					});
-					//add the className to the cells specified by data-class="blah"
-					$table.find(selector).not('.footable-cell-detail').addClass(col.className);
-				}
-			}
-		};
+
+        ft.addRowToggle = function () {
+            var hasToggleColumn = false;
+            $table = $(ft.table);
+            for (var c in ft.columns) {
+                var col = ft.columns[c];
+                if (col.toggle) {
+                    hasToggleColumn = true;
+                    var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index) + 1) + ')';
+                    $table.find(selector).not('.footable-cell-detail').prepend($('<span />').addClass(cls.toggle));
+                }
+            }
+            //check if we have an toggle column. If not then add it to the first column just to be safe
+            if (!hasToggleColumn) {
+                $table
+                    .find('> tbody > tr:not(.footable-row-detail) > td:first-child')
+                    .not('.footable-cell-detail')
+                    .prepend($('<span />').addClass(cls.toggle));
+            }
+        };
+
+        ft.setColumnClasses = function () {
+            $table = $(ft.table);
+            for (var c in ft.columns) {
+                var col = ft.columns[c];
+                if (col.className != null) {
+                    var selector = '', first = true;
+                    $.each(col.matches, function (m, match) { //support for colspans
+                        if (!first) selector += ', ';
+                        selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
+                        first = false;
+                    });
+                    //add the className to the cells specified by data-class="blah"
+                    $table.find(selector).not('.footable-cell-detail').addClass(col.className);
+                }
+            }
+        };
 
         //moved this out into it's own function so that it can be called from other add-ons
         ft.bindToggleSelectors = function () {
             var $table = $(ft.table);
             $table.find(opt.toggleSelector).unbind('click.footable').bind('click.footable', function (e) {
-                if ($table.is('.breakpoint') && $(e.target).is('td')) {
+                if ($table.is('.breakpoint') && $(e.target).is('td,.footable-toggle')) {
                     var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
                     ft.toggleDetail($row.get(0));
                 }
@@ -357,7 +357,7 @@
                 'type': $th.data('type') || 'alpha',
                 'name': $th.data('name') || $.trim($th.text()),
                 'ignore': $th.data('ignore') || false,
-				'toggle': $th.data('toggle') || false,
+                'toggle': $th.data('toggle') || false,
                 'className': $th.data('class') || null,
                 'matches': [],
                 'names': { },
