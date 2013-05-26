@@ -1,24 +1,11 @@
-﻿@font-face {
-    font-family: 'footable-metro';
-    src:url('fonts/footable-metro.eot');
-}
-@font-face {
-    font-family: 'footable-metro';
-    src: url(data:application/x-font-woff;charset=utf-8;base64,d09GRk9UVE8AAAS8AAsAAAAAB9wAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABDRkYgAAABCAAAAWkAAAKaBZ8QI0ZGVE0AAAJ0AAAAGgAAABxnxG6OR0RFRgAAApAAAAAdAAAAIAA4AARPUy8yAAACsAAAAEsAAABgT/7cQGNtYXAAAAL8AAAAVwAAAWQPbvkwaGVhZAAAA1QAAAAuAAAANvymDHtoaGVhAAADhAAAAB4AAAAkBBD/7GhtdHgAAAOkAAAAGQAAACwUAAIgbWF4cAAAA8AAAAAGAAAABgALUABuYW1lAAADyAAAAOUAAAHUVErqhXBvc3QAAASwAAAADAAAACAAAwAAeJx1T8FKw0AQnUk2Ta0h1ZKIQmwvXmoQesjZg1R/oP5AhYpStSDx7kHwsDfZq+DBT6hXP8CDJxH/IR+wCxtYJ6nWKnHnMLPvzXtvF4ExQMTm8WSSDo/ORjvno/RyAmgBwq6KLLVpq3XGPZt7rN2AjUHLcD4fPJePlVCpEwFvRgArETysRlCPrLsW2IVHHdZg6+ri9KDX6/3O+JNIxwIbasDAARdOYAkaeAvLhYkFL7iN+zjAIV7jPT7hK3746kZOQwP1d2bA7ebGKJqM7Oad2C37F/INt3Vf92uVTLwIl2aFbUeSwK1kMncheA63ZV9SQhWT1SpfSv6+fGSVEpVWa/75XZ5Wf8JXgRShFlwGMnB0oNNQCk49cHyCpj83Wkzmi74SxGlhDMAeNTDmOctkohNJRdKEGSRKzigt4rigNBWRb2OSyrKyWCczhvBDVaTrsuJMJjM/x+cqZblQwqXYgIfca3wCulMxBAAAAHicY2BgYGQAgjO2i86D6LOHU+/DaABSuwgkAAB4nGNgZGBg4ANiCQYQYGJgBEIuIGYB8xgABLgAPQAAAHicY2BmYmCcwMDKwMHow5jGwMDgDqW/MkgytDAwMDGwMjPAAKMAAwIEpLmmMDgwKH5gYHzw/wGDHuMDBoUGoBq4AgUgZAQA+GULYQB4nGNgYGBmgGAZBkYGEIgD8hjBfBYGJyDNAYRMYBnNDwz//4NZijCWABdYLRtYlBGojoWBFaifjYEdqIsTKMTGADUWD2BkYmFlZmPn4CSkcGgCABJIB6MAeJxjYGRgYADit9KvE+L5bb4ycDMxgMDZw6n3EfT/B0wMjA+AXA4GsDQAXOkMdgAAeJxjYGRgYHzw/wGDHhMDA8M/BiAJFEEB3ABt7wP+AAB4nGNiYGBgQuAGJAwTcwDiBCCTAQAr1AI1AAAAAABQAAALAAB4nJWOTWrDMBCFPyV2oD8EuukqFK0Ldm2FLJpNdz5ByT4BJQQSCxRdpT1PT9Ib9A59TrVoN4VIjPTNm6fRALe8YxiWYcpD5hElz5nHPPKWuZDnM3PJjSkzT5iaJzlNcSVldn418IhrqsxjXnnJXMjzkbnknq/ME2bmji1BO7FmwwGvDkediSiVbQhpvTn46uhTVP6rlJVO3Esb7shOdYujptG9VPzX/sfhmEtdKJxetcroQp+6EHfeurqxS/t3DAluXi0q17TyXjT/SqXIif15aqvfhklZ+Xjah962dXNZw28w/EzYAAAAeJxjYGbACwAAfQAE) format('woff'),
-    url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-.footable {
+﻿.footable {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
     border: solid #52b9e9 3px;
     font-family: "Open Sans", Arial, Helvetica, sans-serif;
     color: #444;
-    background: #ffe;
-    font-size: 0.8em;
+    background: #efefef;
 }
 
 .footable.breakpoint > tbody > tr.footable-row-detail {
@@ -29,10 +16,9 @@
     background: #ddd;
 }
 
-    .footable > tbody > tr:hover:not(.footable-row-detail) > td {
-        color:#000;
-    }
-
+.footable > tbody > tr:hover:not(.footable-row-detail) > td {
+    color: #000;
+}
 
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
     cursor: pointer;
@@ -45,7 +31,7 @@
 }
 
 .footable > tbody > tr:last-child > td {
-    border-bottom:none;
+    border-bottom: none;
 }
 
 .footable > tbody > tr > td.footable-cell-detail {
@@ -74,65 +60,90 @@
     border: 1px solid #52b9e9;
     color: #fff;
     border-top: none;
-	padding:5px;
+    padding: 5px;
+}
+
+/* PAGINATION */
+.footable tfoot .pagination ul > li > a {
+    border: 2px solid transparent;
+    margin: 0 3px;
+    color:#fff;
+    background: transparent;
+}
+
+    .footable tfoot .pagination ul > li.disable > a {
+        color:#888;
+    }
+
+    .footable tfoot .pagination ul > li.active > a {
+        border-color:#fff;
+    }
+
+.footable tfoot .pagination ul > li:first-child > a,
+.footable tfoot .pagination ul > li:first-child > span,
+.footable tfoot .pagination ul > li:last-child > a,
+.footable tfoot .pagination ul > li:last-child > span {
+    border-radius: 0;
+    -webkit-border-radius:0;
+    -moz-border-radius:0;
 }
 
 /* RED */
 .footable.metro-red {
-	border-color:#fa3031;
+    border-color: #fa3031;
 }
 
-	.footable.metro-red > thead > tr > th, .footable.metro-red > thead > tr > td {
-		background-color:#fa3031;
-		border-color:#fa3031;
-	}
+.footable.metro-red > thead > tr > th, .footable.metro-red > thead > tr > td {
+    background-color: #fa3031;
+    border-color: #fa3031;
+}
 
-	.footable.metro-red > tfoot > tr > th, .footable.metro-red > tfoot > tr > td {
-		background-color:#fa3031;
-		border-color:#fa3031;
-	}
+.footable.metro-red > tfoot > tr > th, .footable.metro-red > tfoot > tr > td {
+    background-color: #fa3031;
+    border-color: #fa3031;
+}
 
 /* PURPLE */
 .footable.metro-purple {
-	border-color:#932ab6;
+    border-color: #932ab6;
 }
 
-	.footable.metro-purple > thead > tr > th, .footable.metro-purple > thead > tr > td {
-		background-color:#932ab6;
-		border-color:#932ab6;
-	}
+.footable.metro-purple > thead > tr > th, .footable.metro-purple > thead > tr > td {
+    background-color: #932ab6;
+    border-color: #932ab6;
+}
 
-	.footable.metro-purple > tfoot > tr > th, .footable.metro-purple > tfoot > tr > td {
-		background-color:#932ab6;
-		border-color:#932ab6;
-	}
-	
+.footable.metro-purple > tfoot > tr > th, .footable.metro-purple > tfoot > tr > td {
+    background-color: #932ab6;
+    border-color: #932ab6;
+}
+
 /* GREEN */
 .footable.metro-green {
-	border-color:#43c83c;
+    border-color: #43c83c;
 }
 
-	.footable.metro-green > thead > tr > th, .footable.metro-green > thead > tr > td {
-		background-color:#43c83c;
-		border-color:#43c83c;
-	}
+.footable.metro-green > thead > tr > th, .footable.metro-green > thead > tr > td {
+    background-color: #43c83c;
+    border-color: #43c83c;
+}
 
-	.footable.metro-green > tfoot > tr > th, .footable.metro-green > tfoot > tr > td {
-		background-color:#43c83c;
-		border-color:#43c83c;
-	}
+.footable.metro-green > tfoot > tr > th, .footable.metro-green > tfoot > tr > td {
+    background-color: #43c83c;
+    border-color: #43c83c;
+}
 
 /* BLUE */
 .footable.metro-blue {
-	border-color:#1171a3;
+    border-color: #1171a3;
 }
 
-	.footable.metro-blue > thead > tr > th, .footable.metro-blue > thead > tr > td {
-		background-color:#1171a3;
-		border-color:#1171a3;
-	}
+.footable.metro-blue > thead > tr > th, .footable.metro-blue > thead > tr > td {
+    background-color: #1171a3;
+    border-color: #1171a3;
+}
 
-	.footable.metro-blue > tfoot > tr > th, .footable.metro-blue > tfoot > tr > td {
-		background-color:#1171a3;
-		border-color:#1171a3;
-	}
+.footable.metro-blue > tfoot > tr > th, .footable.metro-blue > tfoot > tr > td {
+    background-color: #1171a3;
+    border-color: #1171a3;
+}
