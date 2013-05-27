@@ -63,7 +63,6 @@
               e.ft.timers.filter.stop();
               if (eve.which == 27) { $(data.input).val(''); }
               e.ft.timers.filter.start(function () {
-                e.ft.raise('footable_filtering');
                 var val = $(data.input).val() || '';
                 p.filter(e.ft, val);
               }, data.timeout);
@@ -76,10 +75,17 @@
 	p.filter = function(ft, filterString) {
 		var $table = $(ft.table);
 		var minimum = $table.data('filter-minimum') || ft.options.filter.minimum;
-		if (!filterString || filterString.length < minimum) {
+        var clear = !filterString || filterString.length < minimum;
+
+        //raise a pre-filter event so that we can cancel the filtering if needed
+        var event = ft.raise('footable_filtering', { filter: filterString, clear: clear });
+        if (event && event.result === false) return;
+
+		if (clear) {
 			p.clearFilter(ft);
 		} else {
 			var filters = filterString.split(' ');
+
 			$table.find('> tbody > tr').hide().addClass('footable-filtered');
 			var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
 			$.each(filters, function (i, f) {
