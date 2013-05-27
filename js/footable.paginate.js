@@ -18,6 +18,7 @@
 		this.nextText = $table.data('page-next-text') || ft.options.nextText;
         this.currentPage = 0;
         this.pages = [];
+        this.control = false;
     };
 
     function Paginate() {
@@ -88,6 +89,7 @@
 			}
             $nav.find('li').remove();
             var info = ft.pageInfo;
+            info.control = $nav;
             if (info.pages.length > 0) {
                 $nav.append('<li class="footable-page-arrow"><a data-page="prev" href="#prev">'+ft.pageInfo.previousText+'</a></li>');
                 $.each(info.pages, function (i, page) {
@@ -108,13 +110,24 @@
                 } else {
                     newPage = page;
                 }
-                if (info.currentPage != newPage) {
-                    p.fillPage(ft, tbody, newPage);
-					$nav.find('li').removeClass('active disabled');
-					p.setPagingClasses($nav, info.currentPage, info.pages.length);
-                }
+                p.paginate(ft, newPage);
             });
 			p.setPagingClasses($nav, info.currentPage, info.pages.length);
+        };
+
+        p.paginate = function (ft, newPage) {
+            var info = ft.pageInfo;
+            if (info.currentPage != newPage) {
+                var $tbody = $(ft.table).find('> tbody');
+
+                //raise a pre-pagin event so that we can cancel the paging if needed
+                var event = ft.raise('footable_paging', { page: newPage, size: info.pageSize });
+                if (event && event.result === false) return;
+
+                p.fillPage(ft, $tbody, newPage);
+                info.control.find('li').removeClass('active disabled');
+                p.setPagingClasses(info.control, info.currentPage, info.pages.length);
+            }
         };
 		
 		p.setPagingClasses = function(nav, currentPage, pageCount) {
