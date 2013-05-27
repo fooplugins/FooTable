@@ -64,11 +64,13 @@
 }
 
 /* PAGINATION */
-.footable tfoot .pagination ul > li > a {
+.footable tfoot .pagination ul > li > a,
+.footable tfoot .pagination ul > li > span{
     border: 2px solid transparent;
     margin: 0 3px;
     color:#fff;
     background: transparent;
+    padding:1px 5px;
 }
 
     .footable tfoot .pagination ul > li.disable > a {
