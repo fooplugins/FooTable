@@ -60,18 +60,34 @@
 
                             $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
 
+                            var sort = true;
+                            var ascending = true;
+
                             if ($th.hasClass(cls.sorted)) {
-                                p.reverse(e.ft, $tbody);
-                                $th.removeClass(cls.sorted).addClass(cls.descending);
+                                sort = false;
+                                ascending = false;
                             } else if ($th.hasClass(cls.descending)) {
-                                p.reverse(e.ft, $tbody);
+                                sort = false;
+                            }
+
+                            if (ascending) {
                                 $th.removeClass(cls.descending).addClass(cls.sorted);
                             } else {
-                                p.sort(e.ft, $tbody, column);
-                                $th.removeClass(cls.descending).addClass(cls.sorted);
+                                $th.removeClass(cls.sorted).addClass(cls.descending);
                             }
+
+                            //raise a pre-sorting event so that we can cancel the sorting if needed
+                            var event = e.ft.raise('footable_sorting', { column: column, direction: ascending ? 'ASC' : 'DESC' });
+                            if (event && event.result === false) return;
+
+                            if (sort) {
+                                p.sort(e.ft, $tbody, column);
+                            } else {
+                                p.reverse(e.ft, $tbody);
+                            }
+
                             e.ft.bindToggleSelectors();
-                            e.ft.raise('footable_sorted', { column: column });
+                            e.ft.raise('footable_sorted', { column: column, ascending: ascending });
                             return false;
                         });
 
