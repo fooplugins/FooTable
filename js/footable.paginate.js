@@ -6,16 +6,20 @@
         paginate: true,
         pageSize: 10,
         pageNavigation: '.pagination',
+        firstText: '&lsaquo;',
 		previousText: '&laquo;',
-		nextText: '&raquo;'
+		nextText: '&raquo;',
+        lastText: '&rsaquo;'
     };
 
     function pageInfo(ft) {
         var $table = $(ft.table), $tbody = $table.find('> tbody');
         this.pageNavigation = $table.data('page-navigation') || ft.options.pageNavigation;
         this.pageSize = $table.data('page-size') || ft.options.pageSize;
+        this.firstText = $table.data('page-first-text') || ft.options.firstText;
 		this.previousText = $table.data('page-previous-text') || ft.options.previousText;
 		this.nextText = $table.data('page-next-text') || ft.options.nextText;
+        this.lastText = $table.data('page-last-text') || ft.options.lastText;
         this.currentPage = 0;
         this.pages = [];
         this.control = false;
@@ -91,6 +95,7 @@
             var info = ft.pageInfo;
             info.control = $nav;
             if (info.pages.length > 0) {
+                $nav.append('<li class="footable-page-arrow"><a data-page="first" href="#first">'+ft.pageInfo.firstText+'</a>');
                 $nav.append('<li class="footable-page-arrow"><a data-page="prev" href="#prev">'+ft.pageInfo.previousText+'</a></li>');
                 $.each(info.pages, function (i, page) {
                     if (page.length > 0) {
@@ -98,15 +103,20 @@
                     }
                 });
                 $nav.append('<li class="footable-page-arrow"><a data-page="next" href="#next">'+ft.pageInfo.nextText+'</a></li>');
+                $nav.append('<li class="footable-page-arrow"><a data-page="last" href="#last">'+ft.pageInfo.lastText+'</a></li>');
             }
             $nav.find('a').click(function (e) {
                 e.preventDefault();
                 var page = $(this).data('page');
                 var newPage = info.currentPage;
-                if (page == 'prev') {
+                if (page == 'first') {
+                    newPage = 0;
+                } else if (page == 'prev') {
                     if (newPage > 0) newPage--;
                 } else if (page == 'next') {
                     if (newPage < info.pages.length - 1) newPage++;
+                } else if (page == 'last') {
+                    newPage = info.pages.length - 1;
                 } else {
                     newPage = page;
                 }
@@ -134,8 +144,10 @@
             nav.find('li.footable-page > a[data-page=' + currentPage + ']').parent().addClass('active');
 			if (currentPage >= pageCount - 1) {
 				nav.find('li.footable-page-arrow > a[data-page="next"]').parent().addClass('disabled');
+                nav.find('li.footable-page-arrow > a[data-page="last"]').parent().addClass('disabled');
 			}
 			if (currentPage < 1) {
+                nav.find('li.footable-page-arrow > a[data-page="first"]').parent().addClass('disabled');
 				nav.find('li.footable-page-arrow > a[data-page="prev"]').parent().addClass('disabled');
 			}
 		};
