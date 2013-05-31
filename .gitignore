@@ -161,3 +161,7 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+# Grunt related
+/node_modules/
+/dist/

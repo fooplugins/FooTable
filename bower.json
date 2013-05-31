@@ -1,0 +1,14 @@
+{
+    "name": "footable",
+    "version": "2.0.0",
+    "description": "jQuery plugin to make HTML tables responsive",
+    "keywords": [
+        "table",
+        "responsive"
+    ],
+    "main": "js/footable.js",
+    "dependencies": {
+        "jquery": ">=1.4.4",
+    },
+    "license": "MIT"
+}
