@@ -6,12 +6,25 @@
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
   color: #444;
   background: #efefef;
+  /* PAGINATION */
+
+  /* RED */
+
+  /* PURPLE */
+
+  /* GREEN */
+
+  /* BLUE */
+
 }
 .footable.breakpoint > tbody > tr.footable-row-detail {
   background: #eee;
 }
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
   cursor: pointer;
+}
+.footable > tbody img {
+  vertical-align: middle;
 }
 .footable > tbody > tr:hover:not(.footable-row-detail) {
   background: #ddd;
@@ -22,14 +35,19 @@
 .footable > tbody > tr:last-child > td {
   border-bottom: none;
 }
-.footable > tbody > tr > td,
-.footable > thead > tr > th {
+.footable > tbody > tr > td {
   border-bottom: 1px solid #ddd;
   padding: 10px;
   text-align: left;
 }
-.footable > tbody > tr > td.footable-cell-detail {
+.footable > tbody > tr > td.footable-cell-detail,
+.footable > tbody > tr > td.footable-first-column {
   border-left: none;
+}
+.footable > thead > tr > th {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
 }
 .footable > thead > tr > th,
 .footable > thead > tr > td {
@@ -40,12 +58,8 @@
   font-weight: normal;
 }
 .footable > thead > tr > th.footable-first-column,
-.footable > thead > tr > td.footable-first-column,
-.footable > tbody > tr > td.footable-first-column {
+.footable > thead > tr > td.footable-first-column {
   border-left: none;
-}
-.footable > tbody img {
-  vertical-align: middle;
 }
 .footable > tfoot > tr > th,
 .footable > tfoot > tr > td {
@@ -55,7 +69,6 @@
   border-top: none;
   padding: 5px;
 }
-/* PAGINATION */
 .footable tfoot .pagination ul > li > a,
 .footable tfoot .pagination ul > li > span {
   border: 2px solid transparent;
@@ -71,14 +84,13 @@
   border-color: #fff;
 }
 .footable tfoot .pagination ul > li:first-child > a,
-.footable tfoot .pagination ul > li:first-child > span,
 .footable tfoot .pagination ul > li:last-child > a,
+.footable tfoot .pagination ul > li:first-child > span,
 .footable tfoot .pagination ul > li:last-child > span {
   border-radius: 0;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
 }
-/* RED */
 .footable.metro-red {
   border-color: #fa3031;
 }
@@ -92,7 +104,6 @@
   background-color: #fa3031;
   border-color: #fa3031;
 }
-/* PURPLE */
 .footable.metro-purple {
   border-color: #932ab6;
 }
@@ -106,7 +117,6 @@
   background-color: #932ab6;
   border-color: #932ab6;
 }
-/* GREEN */
 .footable.metro-green {
   border-color: #43c83c;
 }
@@ -120,7 +130,6 @@
   background-color: #43c83c;
   border-color: #43c83c;
 }
-/* BLUE */
 .footable.metro-blue {
   border-color: #1171a3;
 }
