@@ -12,6 +12,10 @@
     background: #eee;
 }
 
+.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
+  cursor: pointer;
+}
+
 .footable > tbody > tr:hover:not(.footable-row-detail) {
     background: #ddd;
 }
@@ -20,18 +24,14 @@
     color: #000;
 }
 
-.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
-    cursor: pointer;
+.footable > tbody > tr:last-child > td {
+    border-bottom: none;
 }
 
 .footable > tbody > tr > td, .footable > thead > tr > th {
-    border-bottom: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
-
-.footable > tbody > tr:last-child > td {
-    border-bottom: none;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
 }
 
 .footable > tbody > tr > td.footable-cell-detail {
@@ -46,7 +46,8 @@
     font-weight: normal;
 }
 
-.footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column,
+.footable > thead > tr > th.footable-first-column,
+.footable > thead > tr > td.footable-first-column,
 .footable > tbody > tr > td.footable-first-column {
     border-left: none;
 }

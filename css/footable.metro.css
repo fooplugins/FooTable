@@ -10,23 +10,23 @@
 .footable.breakpoint > tbody > tr.footable-row-detail {
   background: #eee;
 }
+.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
+  cursor: pointer;
+}
 .footable > tbody > tr:hover:not(.footable-row-detail) {
   background: #ddd;
 }
 .footable > tbody > tr:hover:not(.footable-row-detail) > td {
   color: #000;
 }
-.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
-  cursor: pointer;
+.footable > tbody > tr:last-child > td {
+  border-bottom: none;
 }
 .footable > tbody > tr > td,
 .footable > thead > tr > th {
   border-bottom: 1px solid #ddd;
   padding: 10px;
   text-align: left;
-}
-.footable > tbody > tr:last-child > td {
-  border-bottom: none;
 }
 .footable > tbody > tr > td.footable-cell-detail {
   border-left: none;
