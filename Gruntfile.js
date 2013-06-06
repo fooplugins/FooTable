@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('footable.jquery.json'),
@@ -45,8 +45,8 @@ module.exports = function(grunt) {
             src: {
                 files: '<%= jshint.src.src %>',
                 tasks: ['jshint:src']
-            },
-        },
+            }
+        }
     });
 
     // Load grunt tasks
