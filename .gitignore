@@ -167,3 +167,6 @@ pip-log.txt
 
 # WebStorm IDE
 /.idea
+
+# npm
+npm-debug.log
