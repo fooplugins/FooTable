@@ -1,4 +1,4 @@
-﻿.footable {
+﻿.footable { 
 	border-collapse: separate;
 	border-spacing: 0;
 	border: solid #ccc 1px;
@@ -10,22 +10,29 @@
 	color: #444;
 }
 
-.footable.breakpoint > tbody > tr.footable-row-detail {
-	background: #eee;
+.footable > thead > tr:first-child > th.footable-first-column,
+.footable > thead > tr:first-child > td.footable-first-column {
+  -moz-border-radius: 6px 0 0 0;
+  -webkit-border-radius: 6px 0 0 0;
+  border-radius: 6px 0 0 0;
 }
 
-.footable > tbody > tr:hover {
-	background: #fbf8e9;
+.footable > thead > tr:first-child > th.footable-last-column,
+.footable > thead > tr:first-child > td.footable-last-column {
+  -moz-border-radius: 0 6px 0 0;
+  -webkit-border-radius: 0 6px 0 0;
+  border-radius: 0 6px 0 0;
 }
 
-.footable > tbody > tr > td, .footable > thead > tr > th {
-	border-left: 1px solid #ccc;
-	border-top: 1px solid #ccc;
-	padding: 10px;
-	text-align: left;
+.footable > thead > tr:first-child > th.footable-first-column.footable-last-column,
+.footable > thead > tr:first-child > td.footable-first-column.footable-last-column {
+  -moz-border-radius: 6px 6px 0 0;
+  -webkit-border-radius: 6px 6px 0 0;
+  border-radius: 6px 6px 0 0;
 }
 
-.footable > thead > tr > th, .footable > thead > tr > td {
+.footable > thead > tr > th,
+.footable > thead > tr > td {
 	background-color: #dce9f9;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
 	background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
@@ -40,22 +47,12 @@
 	text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
 
-.footable > thead > tr:first-child > th.footable-first-column, .footable > thead > tr:first-child > td.footable-first-column {
-	-moz-border-radius: 6px 0 0 0;
-	-webkit-border-radius: 6px 0 0 0;
-	border-radius: 6px 0 0 0;
+.footable.breakpoint > tbody > tr.footable-row-detail {
+  background: #eee;
 }
 
-.footable > thead > tr:first-child > th.footable-last-column, .footable > thead > tr:first-child > td.footable-last-column {
-	-moz-border-radius: 0 6px 0 0;
-	-webkit-border-radius: 0 6px 0 0;
-	border-radius: 0 6px 0 0;
-}
-
-.footable > thead > tr:first-child > th.footable-first-column.footable-last-column, .footable > thead > tr:first-child > td.footable-first-column.footable-last-column {
-	-moz-border-radius: 6px 6px 0 0;
-	-webkit-border-radius: 6px 6px 0 0;
-	border-radius: 6px 6px 0 0;
+.footable > tbody > tr:hover {
+  background: #fbf8e9;
 }
 
 .footable > tbody > tr:last-child > td.footable-first-column {
@@ -76,7 +73,16 @@
 	border-radius: 0 0 6px 6px;
 }
 
-.footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column,
+.footable > tbody > tr > td,
+.footable > thead > tr > th {
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.footable > thead > tr > th.footable-first-column,
+.footable > thead > tr > td.footable-first-column,
 .footable > tbody > tr > td.footable-first-column {
 	border-left: none;
 }
@@ -85,7 +91,8 @@
 	vertical-align:middle;
 }
 
-.footable > tfoot > tr > th, .footable > tfoot > tr > td {
+.footable > tfoot > tr > th,
+.footable > tfoot > tr > td {
 	background-color: #dce9f9;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
 	background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
