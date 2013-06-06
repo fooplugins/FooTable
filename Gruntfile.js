@@ -37,6 +37,25 @@ module.exports = function (grunt) {
                 src: ['js/**/*.js']
             }
         },
+        less: {
+            development: {
+                files: {
+                    "css/footable.css": "less/footable.less",
+                    "css/footable.metro.css": "less/footable.metro.less",
+                    "css/footable.standalone.css": "less/footable.standalone.less"
+                }
+            },
+            production: {
+                options: {
+                    yuicompress: true
+                },
+                files: {
+                    "css/footable.min.css": "less/footable.less",
+                    "css/footable.metro.min.css": "less/footable.metro.less",
+                    "css/footable.standalone.min.css": "less/footable.standalone.less"
+                }
+            }
+        },
         watch: {
             gruntfile: {
                 files: '<%= jshint.gruntfile.src %>',
@@ -54,9 +73,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-less');
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'clean', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'less']);
 
     // Test task
     grunt.registerTask('test', ['jshint']);
