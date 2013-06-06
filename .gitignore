@@ -44,57 +44,14 @@ local.properties
 # Build results
 [Dd]ebug/
 [Rr]elease/
-*_i.c
-*_p.c
-*.ilk
-*.meta
-*.obj
-*.pch
-*.pdb
-*.pgc
-*.pgd
-*.rsp
-*.sbr
-*.tlb
-*.tli
-*.tlh
-*.tmp
-*.vspscc
-.builds
-*.dotCover
-
-## TODO: If you have NuGet Package Restore enabled, uncomment this
-#packages/
-
-# Visual C++ cache files
-ipch/
-*.aps
-*.ncb
-*.opensdf
-*.sdf
 
 # Visual Studio profiler
 *.psess
 *.vsp
 
-# ReSharper is a .NET coding add-in
+# ReSharper and DotCover are .NET coding add-in
 _ReSharper*
-
-# Installshield output folder
-[Ee]xpress
-
-# DocProject is a documentation generator add-in
-DocProject/buildhelp/
-DocProject/Help/*.HxT
-DocProject/Help/*.HxC
-DocProject/Help/*.hhc
-DocProject/Help/*.hhk
-DocProject/Help/*.hhp
-DocProject/Help/Html2
-DocProject/Help/html
-
-# Click-Once directory
-publish
+*.dotCover
 
 # Others
 [Bb]in
@@ -116,35 +73,11 @@ UpgradeLog*.XML
 
 
 
-############
-## Windows
-############
-
 # Windows image file caches
 Thumbs.db
 
-# Folder config file
+# Windows folder config file
 Desktop.ini
-
-
-#############
-## Python
-#############
-
-*.py[co]
-
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
 
 # Installer logs
 pip-log.txt
@@ -164,4 +97,9 @@ pip-log.txt
 
 # Grunt related
 /node_modules/
-/dist/
+
+# WebStorm IDE
+/.idea
+
+# npm
+npm-debug.log
