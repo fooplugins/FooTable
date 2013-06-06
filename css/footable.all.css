@@ -292,6 +292,12 @@
   -webkit-border-radius: 6px 6px 0 0;
   border-radius: 6px 6px 0 0;
 }
+.footable > thead > tr > th {
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
 .footable > thead > tr > th,
 .footable > thead > tr > td {
   background-color: #dce9f9;
@@ -307,8 +313,15 @@
   border-top: none;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
+.footable > thead > tr > th.footable-first-column,
+.footable > thead > tr > td.footable-first-column {
+  border-left: none;
+}
 .footable.breakpoint > tbody > tr.footable-row-detail {
   background: #eee;
+}
+.footable > tbody img {
+  vertical-align: middle;
 }
 .footable > tbody > tr:hover {
   background: #fbf8e9;
@@ -328,20 +341,14 @@
   -webkit-border-radius: 0 0 6px 6px;
   border-radius: 0 0 6px 6px;
 }
-.footable > tbody > tr > td,
-.footable > thead > tr > th {
+.footable > tbody > tr > td {
   border-left: 1px solid #ccc;
   border-top: 1px solid #ccc;
   padding: 10px;
   text-align: left;
 }
-.footable > thead > tr > th.footable-first-column,
-.footable > thead > tr > td.footable-first-column,
 .footable > tbody > tr > td.footable-first-column {
   border-left: none;
-}
-.footable > tbody img {
-  vertical-align: middle;
 }
 .footable > tfoot > tr > th,
 .footable > tfoot > tr > td {
