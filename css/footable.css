@@ -15,6 +15,22 @@
 }
 .footable {
   width: 100%;
+  /** SORTING **/
+
+  /** PAGINATION **/
+
+}
+.footable.breakpoint.table-bordered > tbody > tr > td.footable-expand,
+.footable.breakpoint.table-bordered > tbody > tr.footable-detail-show > td.footable-expand {
+  background-position: 5px center;
+}
+.footable.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
+  content: "\e001";
+  /* minus */
+
+}
+.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
+  cursor: pointer;
 }
 .footable.breakpoint > tbody > tr > td > span.footable-toggle {
   display: inline-block;
@@ -34,9 +50,9 @@
   /* plus */
 
 }
-.footable.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
-  content: "\e001";
-  /* minus */
+.footable.toggle-circle-arrow.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
+  content: "\e002";
+  /* circle arrow up */
 
 }
 .footable.toggle-circle-arrow.breakpoint > tbody > tr > td > span.footable-toggle:before {
@@ -44,9 +60,9 @@
   /* circle arrow down */
 
 }
-.footable.toggle-circle-arrow.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
-  content: "\e002";
-  /* circle arrow up */
+.footable.toggle-circle.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
+  content: "\e005";
+  /* circle minus */
 
 }
 .footable.toggle-circle.breakpoint > tbody > tr > td > span.footable-toggle:before {
@@ -54,17 +70,30 @@
   /* circle plus */
 
 }
-.footable.toggle-circle.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
-  content: "\e005";
-  /* circle minus */
-
-}
-.footable.breakpoint.table-bordered > tbody > tr > td.footable-expand,
-.footable.breakpoint.table-bordered > tbody > tr.footable-detail-show > td.footable-expand {
-  background-position: 5px center;
-}
-.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
+.footable > thead > tr > th.footable-sortable:hover {
   cursor: pointer;
+}
+.footable > thead > tr > th.footable-sorted > span.footable-sort-indicator:before {
+  content: "\e007";
+}
+.footable > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator:before {
+  content: "\e008";
+}
+.footable > thead > tr > th > span.footable-sort-indicator {
+  display: inline-block;
+  font-family: 'footable';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+}
+.footable > thead > tr > th > span.footable-sort-indicator:before {
+  content: "\e006";
+}
+.footable > tfoot .pagination {
+  margin: 0;
 }
 .footable-row-detail-inner {
   display: table;
@@ -86,31 +115,4 @@
 }
 .footable-row-detail-value {
   display: table-cell;
-}
-/** SORTING **/
-.footable > thead > tr > th > span.footable-sort-indicator {
-  display: inline-block;
-  font-family: 'footable';
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  -webkit-font-smoothing: antialiased;
-}
-.footable > thead > tr > th > span.footable-sort-indicator:before {
-  content: "\e006";
-}
-.footable > thead > tr > th.footable-sortable:hover {
-  cursor: pointer;
-}
-.footable > thead > tr > th.footable-sorted > span.footable-sort-indicator:before {
-  content: "\e007";
-}
-.footable > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator:before {
-  content: "\e008";
-}
-/** PAGINATION **/
-.footable > tfoot .pagination {
-  margin: 0;
 }
