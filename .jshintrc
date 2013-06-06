@@ -1,36 +1,17 @@
 {
-    // Unknown option names (and their error messages)
-    "-W030": false, // Expected an assignment or function call and instead saw an expression.
-    "-W032": false, // Unnecessary semicolon.
-    "-W035": false, // Empty block.
-    "-W041": false, // Use '!==' to compare with 'true'. // Use '===' to compare with 'true'. // Use '===' to compare with 'false'. // Use '===' to compare with 'undefined'. // Use '===' to compare with '0'.
-    "-W065": false, // Missing radix parameter.
-    "-W069": false, // ['name'] is better written in dot notation.
-    "-W071": false, // This function has too many statements.
-    "-W072": false, // This function has too many parameters.
-    "-W073": false, // Blocks are nested too deeply.
-    "-W074": false, // This function's cyclomatic complexity is too high.
-    "-W083": false, // Don't make functions within a loop.
-    "-W089": false, // The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.
-    "-W101": false, // Line is too long.
-    "-W117": false, // 'variablename' is not defined.
+    "curly":    false,
+    "eqeqeq":   false,
+    "indent":   false,
+    "newcap":   false,
+    "plusplus": false,
+    "quotmark": false,
+    "unused":   false,
+    "strict":   false,
+    "trailing": false,
 
-    // Enforcing options
-    "curly":    false, // partial W116
-    "eqeqeq":   false, // partial W116
-    "indent":   false, // W015
-    "newcap":   false, // W055
-    "plusplus": false, // W016
-    "quotmark": false, // W110
-    "unused":   false, // W098
-    "strict":   false, // E007
-    "trailing": false, // W102
+    "eqnull":    true,
+    "smarttabs": true,
 
-    // Relaxing options
-    "eqnull":    true, // partial W041
-    "smarttabs": true, // W099
-
-    // Environments
-    "browser":   true, // partial W117
-    "jquery":    true  // partial W117
+    "browser":   true,
+    "jquery":    true
 }

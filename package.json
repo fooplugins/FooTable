@@ -42,7 +42,7 @@
     "grunt-contrib-watch": "~0.2.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt": "~0.4.1",
-    "grunt-cli": "~0.1.9" // Needed for Travis-CI. Not recommended otherwise, it should be installed globally.
+    "grunt-cli": "~0.1.9"
   },
   "scripts": {
     "test": "grunt test"
