@@ -42,7 +42,8 @@ module.exports = function (grunt) {
                 files: {
                     "css/footable.css": "less/footable.less",
                     "css/footable.metro.css": "less/footable.metro.less",
-                    "css/footable.standalone.css": "less/footable.standalone.less"
+                    "css/footable.standalone.css": "less/footable.standalone.less",
+                    "css/footable.all.css": ["less/footable.less", "less/footable.metro.less", "less/footable.standalone.less"]
                 }
             },
             production: {
@@ -52,7 +53,8 @@ module.exports = function (grunt) {
                 files: {
                     "css/footable.min.css": "less/footable.less",
                     "css/footable.metro.min.css": "less/footable.metro.less",
-                    "css/footable.standalone.min.css": "less/footable.standalone.less"
+                    "css/footable.standalone.min.css": "less/footable.standalone.less",
+                    "css/footable.all.min.css": ["less/footable.less", "less/footable.metro.less", "less/footable.standalone.less"]
                 }
             }
         },
