@@ -50,22 +50,22 @@
   /* plus */
 
 }
-.footable.toggle-circle-arrow.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
+.footable.breakpoint.toggle-circle-arrow > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
   content: "\e002";
   /* circle arrow up */
 
 }
-.footable.toggle-circle-arrow.breakpoint > tbody > tr > td > span.footable-toggle:before {
+.footable.breakpoint.toggle-circle-arrow > tbody > tr > td > span.footable-toggle:before {
   content: "\e003";
   /* circle arrow down */
 
 }
-.footable.toggle-circle.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
+.footable.breakpoint.toggle-circle > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
   content: "\e005";
   /* circle minus */
 
 }
-.footable.toggle-circle.breakpoint > tbody > tr > td > span.footable-toggle:before {
+.footable.breakpoint.toggle-circle > tbody > tr > td > span.footable-toggle:before {
   content: "\e004";
   /* circle plus */
 
