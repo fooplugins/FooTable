@@ -165,3 +165,6 @@ pip-log.txt
 # Grunt related
 /node_modules/
 /dist/
+
+# WebStorm IDE
+/.idea
