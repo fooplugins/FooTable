@@ -16,74 +16,21 @@
     "-W117": false, // 'variablename' is not defined.
 
     // Enforcing options
-    "bitwise": true,
-    "camelcase": true,
-    "curly": false, // partial W116
-    "eqeqeq": false, // partial W116
-    "es3": true,
-    "forin": true,
-    "immed": true,
-    "indent": false, // W015
-    "latedef": true,
-    "newcap": false, // W055
-    "noarg": true,
-    "noempty": true,
-    "nonew": true,
+    "curly":    false, // partial W116
+    "eqeqeq":   false, // partial W116
+    "indent":   false, // W015
+    "newcap":   false, // W055
     "plusplus": false, // W016
     "quotmark": false, // W110
-    "undef": true,
-    "unused": false, // W098
-    "strict": false, // E007
+    "unused":   false, // W098
+    "strict":   false, // E007
     "trailing": false, // W102
-    "maxparams": true,
-    "maxdepth": true,
-    "maxstatements": true,
-    "maxcomplexity": true,
-    "maxlen": true,
 
     // Relaxing options
-    "asi": false,
-    "boss": false,
-    "debug": false,
-    "eqnull": true, // partial W041
-    "esnext": false,
-    "evil": false,
-    "expr": false,
-    "funcscope": false,
-    "globalstrict": false,
-    "iterator": false,
-    "lastsemic": false,
-    "laxbreak": false,
-    "laxcomma": false,
-    "loopfunc": false,
-    "moz": false,
-    "multistr": false,
-    "proto": false,
-    "scripturl": false,
+    "eqnull":    true, // partial W041
     "smarttabs": true, // W099
-    "shadow": false,
-    "sub": false,
-    "supernew": false,
-    "validthis": false,
 
     // Environments
-    "browser": true, // partial W117
-    "couch": false,
-    "devel": false,
-    "dojo": false,
-    "jquery": true, // partial W117
-    "mootools": false,
-    "node": false,
-    "nonstandard": false,
-    "prototypejs": false,
-    "rhino": false,
-    "worker": false,
-    "wsh": false,
-    "yui": false,
-
-    // Legacy
-    "nomen": false,
-    "onevar": false,
-    "passfail": false,
-    "white": false
+    "browser":   true, // partial W117
+    "jquery":    true  // partial W117
 }
