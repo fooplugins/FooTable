@@ -1,15 +1,55 @@
-﻿.footable {
+﻿// Variables
+
+@colorRed: #fa3031;
+@colorPurple: #932ab6;
+@colorGreen: #43c83c;
+@colorBlue: #1171a3;
+@colorLightBlue: #52b9e9;
+@colorGrey: #444;
+@colorLightest: #efefef;
+@colorLight: #eee;
+@colorLightGrey: #ddd;
+@colorBlack: #000;
+@colorWhite: #fff;
+@fontDefault: "Open Sans", Arial, Helvetica, sans-serif;
+
+
+// Mixins
+
+.metroTheme(@color) {
+  border-color: @color;
+
+  > tfoot > tr,
+  > thead > tr {
+    > th,
+    > td {
+      background-color: @color;
+      border-color: @color;
+    }
+  }
+}
+
+.borderRadius(@radius) {
+  border-radius: @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+}
+
+
+// Classes
+
+.footable {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
-  border: solid #52b9e9 3px;
-  font-family: "Open Sans", Arial, Helvetica, sans-serif;
-  color: #444;
-  background: #efefef;
+  border: 3px solid @colorLightBlue;
+  font-family: @fontDefault;
+  color: @colorGrey;
+  background: @colorLightest;
 
   &.breakpoint > tbody > tr {
     &.footable-row-detail {
-        background: #eee;
+        background: @colorLight;
     }
 
     &:hover:not(.footable-row-detail) {
@@ -24,10 +64,10 @@
 
     > tr {
       &:hover:not(.footable-row-detail) {
-        background: #ddd;
+        background: @colorLightGrey;
 
         > td {
-          color: #000;
+          color: @colorBlack;
         }
       }
 
@@ -36,7 +76,7 @@
       }
 
       > td {
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid @colorLightGrey;
         padding: 10px;
         text-align: left;
 
@@ -50,16 +90,16 @@
 
   > thead > tr {
     > th {
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid @colorLightGrey;
       padding: 10px;
       text-align: left;
     }
 
     > th,
     > td {
-      background-color: #52b9e9;
-      border: 1px solid #52b9e9;
-      color: #fff;
+      background-color: @colorLightBlue;
+      border: 1px solid @colorLightBlue;
+      color: @colorWhite;
       border-top: none;
       font-weight: normal;
 
@@ -73,9 +113,9 @@
     > tr {
       > th,
       > td {
-        background-color: #52b9e9;
-        border: 1px solid #52b9e9;
-        color: #fff;
+        background-color: @colorLightBlue;
+        border: 1px solid @colorLightBlue;
+        color: @colorWhite;
         border-top: none;
         padding: 5px;
       }
@@ -86,115 +126,40 @@
   tfoot .pagination ul > li {
     > a,
     > span{
-        border: 2px solid transparent;
-        margin: 0 3px;
-        color:#fff;
-        background: transparent;
-        padding:1px 5px;
+      border: 2px solid transparent;
+      margin: 0 3px;
+      color: @colorWhite;
+      background: transparent;
+      padding:1px 5px;
     }
 
     &.disable > a {
-        color:#888;
+      color:#888;
     }
 
     &.active > a {
-        border-color:#fff;
+        border-color: @colorWhite;
     }
 
     &:first-child,
     &:last-child {
       > a,
       > span {
-        border-radius: 0;
-        -webkit-border-radius:0;
-        -moz-border-radius:0;
+        .borderRadius(0);
       }
     }
   }
 
-  /* RED */
   &.metro-red {
-      border-color: #fa3031;
-
-    > thead > tr {
-      > th,
-      > td {
-        background-color: #fa3031;
-        border-color: #fa3031;
-      }
-    }
-
-    > tfoot > tr {
-      > th,
-      > td {
-        background-color: #fa3031;
-        border-color: #fa3031;
-      }
-    }
+    .metroTheme(@colorRed);
   }
-
-
-
-  /* PURPLE */
   &.metro-purple {
-    border-color: #932ab6;
-
-    > thead > tr {
-      > th,
-      > td {
-        background-color: #932ab6;
-        border-color: #932ab6;
-      }
-    }
-
-    > tfoot > tr {
-      > th,
-      > td {
-        background-color: #932ab6;
-        border-color: #932ab6;
-      }
-    }
+    .metroTheme(@colorPurple);
   }
-
-  /* GREEN */
   &.metro-green {
-    border-color: #43c83c;
-
-    > thead > tr {
-      > th,
-      > td {
-        background-color: #43c83c;
-        border-color: #43c83c;
-      }
-    }
-
-    > tfoot > tr {
-      > th,
-      > td {
-        background-color: #43c83c;
-        border-color: #43c83c;
-      }
-    }
+    .metroTheme(@colorGreen);
   }
-
-  /* BLUE */
   &.metro-blue {
-    border-color: #1171a3;
-
-    > thead > tr {
-      > th,
-      > td {
-        background-color: #1171a3;
-        border-color: #1171a3;
-      }
-    }
-
-    > tfoot > tr {
-      > th,
-      > td {
-        background-color: #1171a3;
-        border-color: #1171a3;
-      }
-    }
+    .metroTheme(@colorBlue);
   }
 }

@@ -2,23 +2,15 @@
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
-  border: solid #52b9e9 3px;
+  border: 3px solid #52b9e9;
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
-  color: #444;
+  color: #444444;
   background: #efefef;
   /* PAGINATION */
 
-  /* RED */
-
-  /* PURPLE */
-
-  /* GREEN */
-
-  /* BLUE */
-
 }
 .footable.breakpoint > tbody > tr.footable-row-detail {
-  background: #eee;
+  background: #eeeeee;
 }
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
   cursor: pointer;
@@ -27,16 +19,16 @@
   vertical-align: middle;
 }
 .footable > tbody > tr:hover:not(.footable-row-detail) {
-  background: #ddd;
+  background: #dddddd;
 }
 .footable > tbody > tr:hover:not(.footable-row-detail) > td {
-  color: #000;
+  color: #000000;
 }
 .footable > tbody > tr:last-child > td {
   border-bottom: none;
 }
 .footable > tbody > tr > td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #dddddd;
   padding: 10px;
   text-align: left;
 }
@@ -45,7 +37,7 @@
   border-left: none;
 }
 .footable > thead > tr > th {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #dddddd;
   padding: 10px;
   text-align: left;
 }
@@ -53,7 +45,7 @@
 .footable > thead > tr > td {
   background-color: #52b9e9;
   border: 1px solid #52b9e9;
-  color: #fff;
+  color: #ffffff;
   border-top: none;
   font-weight: normal;
 }
@@ -65,7 +57,7 @@
 .footable > tfoot > tr > td {
   background-color: #52b9e9;
   border: 1px solid #52b9e9;
-  color: #fff;
+  color: #ffffff;
   border-top: none;
   padding: 5px;
 }
@@ -73,7 +65,7 @@
 .footable tfoot .pagination ul > li > span {
   border: 2px solid transparent;
   margin: 0 3px;
-  color: #fff;
+  color: #ffffff;
   background: transparent;
   padding: 1px 5px;
 }
@@ -81,7 +73,7 @@
   color: #888;
 }
 .footable tfoot .pagination ul > li.active > a {
-  border-color: #fff;
+  border-color: #ffffff;
 }
 .footable tfoot .pagination ul > li:first-child > a,
 .footable tfoot .pagination ul > li:last-child > a,
@@ -94,52 +86,40 @@
 .footable.metro-red {
   border-color: #fa3031;
 }
-.footable.metro-red > thead > tr > th,
-.footable.metro-red > thead > tr > td {
-  background-color: #fa3031;
-  border-color: #fa3031;
-}
 .footable.metro-red > tfoot > tr > th,
-.footable.metro-red > tfoot > tr > td {
+.footable.metro-red > thead > tr > th,
+.footable.metro-red > tfoot > tr > td,
+.footable.metro-red > thead > tr > td {
   background-color: #fa3031;
   border-color: #fa3031;
 }
 .footable.metro-purple {
   border-color: #932ab6;
 }
-.footable.metro-purple > thead > tr > th,
-.footable.metro-purple > thead > tr > td {
-  background-color: #932ab6;
-  border-color: #932ab6;
-}
 .footable.metro-purple > tfoot > tr > th,
-.footable.metro-purple > tfoot > tr > td {
+.footable.metro-purple > thead > tr > th,
+.footable.metro-purple > tfoot > tr > td,
+.footable.metro-purple > thead > tr > td {
   background-color: #932ab6;
   border-color: #932ab6;
 }
 .footable.metro-green {
   border-color: #43c83c;
 }
-.footable.metro-green > thead > tr > th,
-.footable.metro-green > thead > tr > td {
-  background-color: #43c83c;
-  border-color: #43c83c;
-}
 .footable.metro-green > tfoot > tr > th,
-.footable.metro-green > tfoot > tr > td {
+.footable.metro-green > thead > tr > th,
+.footable.metro-green > tfoot > tr > td,
+.footable.metro-green > thead > tr > td {
   background-color: #43c83c;
   border-color: #43c83c;
 }
 .footable.metro-blue {
   border-color: #1171a3;
 }
-.footable.metro-blue > thead > tr > th,
-.footable.metro-blue > thead > tr > td {
-  background-color: #1171a3;
-  border-color: #1171a3;
-}
 .footable.metro-blue > tfoot > tr > th,
-.footable.metro-blue > tfoot > tr > td {
+.footable.metro-blue > thead > tr > th,
+.footable.metro-blue > tfoot > tr > td,
+.footable.metro-blue > thead > tr > td {
   background-color: #1171a3;
   border-color: #1171a3;
 }
