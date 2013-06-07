@@ -122,34 +122,43 @@
     }
   }
 
-  /* PAGINATION */
-  tfoot .pagination ul > li {
-    > a,
-    > span{
-      border: 2px solid transparent;
-      margin: 0 3px;
-      color: @colorWhite;
-      background: transparent;
-      padding:1px 5px;
-    }
+  // PAGINATION
+  tfoot .pagination ul {
+    -webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	vertical-align: middle;
+	
+    > li {
+		> a,
+		> span{
+		  border: 2px solid transparent;
+		  margin: 0 3px;
+		  color: @colorWhite;
+		  background: transparent;
+		  padding:1px 5px;
+		}
 
-    &.disable > a {
-      color:#888;
-    }
+		&.disable > a {
+		  color:#888;
+		}
 
-    &.active > a {
-      border-color: @colorWhite;
-    }
+		&.active > a {
+		  border-color: @colorWhite;
+		}
 
-    &:first-child,
-    &:last-child {
-      > a,
-      > span {
-        .borderRadius(0);
-      }
-    }
+		&:first-child,
+		&:last-child {
+		  > a,
+		  > span {
+			.borderRadius(0);
+		  }
+		}
+	}
   }
 
+  //Metro Themes
+  
   &.metro-red {
     .metroTheme(@colorRed);
   }

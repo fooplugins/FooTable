@@ -6,8 +6,6 @@
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
   color: #444444;
   background: #efefef;
-  /* PAGINATION */
-
 }
 .footable.breakpoint > tbody > tr.footable-row-detail {
   background: #eeeeee;
@@ -60,6 +58,12 @@
   color: #ffffff;
   border-top: none;
   padding: 5px;
+}
+.footable tfoot .pagination ul {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  vertical-align: middle;
 }
 .footable tfoot .pagination ul > li > a,
 .footable tfoot .pagination ul > li > span {
