@@ -84,8 +84,8 @@
                     start = 0;
                   }
                   end = info.currentPage + offset;
-                  if(end < 4) { 
-                    end = 4;
+                  if(end < (offset * 2)) { 
+                    end = (offset * 2);
                   }
                   if(end > (info.pages.length - 1)) {
                     end = info.pages.length - 1;
