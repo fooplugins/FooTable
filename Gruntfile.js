@@ -40,10 +40,10 @@ module.exports = function (grunt) {
         less: {
             development: {
                 files: {
-                    "css/footable.css": "less/footable.less",
+                    "css/footable.core.css": "less/footable.core.less",
                     "css/footable.metro.css": "less/footable.metro.less",
                     "css/footable.standalone.css": "less/footable.standalone.less",
-                    "css/footable.all.css": "less/*.less"
+                    "css/footable.css": "less/*.less"
                 }
             },
             production: {
@@ -51,10 +51,10 @@ module.exports = function (grunt) {
                     yuicompress: true
                 },
                 files: {
-                    "css/footable.min.css": "less/footable.less",
+                    "css/footable.core.min.css": "less/footable.core.less",
                     "css/footable.metro.min.css": "less/footable.metro.less",
                     "css/footable.standalone.min.css": "less/footable.standalone.less",
-                    "css/footable.all.min.css": "less/*.less"
+                    "css/footable.min.css": "less/*.less"
                 }
             }
         },
