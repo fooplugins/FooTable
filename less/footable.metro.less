@@ -1,0 +1,165 @@
+﻿// Variables
+
+@colorRed: #fa3031;
+@colorPurple: #932ab6;
+@colorGreen: #43c83c;
+@colorBlue: #1171a3;
+@colorLightBlue: #52b9e9;
+@colorGrey: #444;
+@colorLightest: #efefef;
+@colorLight: #eee;
+@colorLightGrey: #ddd;
+@colorBlack: #000;
+@colorWhite: #fff;
+@fontDefault: "Open Sans", Arial, Helvetica, sans-serif;
+
+
+// Mixins
+
+.metroTheme(@color) {
+  border-color: @color;
+
+  > tfoot > tr,
+  > thead > tr {
+    > th,
+    > td {
+      background-color: @color;
+      border-color: @color;
+    }
+  }
+}
+
+.borderRadius(@radius) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+
+// Classes
+
+.footable {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border: 3px solid @colorLightBlue;
+  font-family: @fontDefault;
+  color: @colorGrey;
+  background: @colorLightest;
+
+  &.breakpoint > tbody > tr {
+    &.footable-row-detail {
+        background: @colorLight;
+    }
+
+    &:hover:not(.footable-row-detail) {
+      cursor: pointer;
+    }
+  }
+
+  > tbody {
+    img {
+      vertical-align: middle;
+    }
+
+    > tr {
+      &:hover:not(.footable-row-detail) {
+        background: @colorLightGrey;
+
+        > td {
+          color: @colorBlack;
+        }
+      }
+
+      &:last-child > td {
+          border-bottom: none;
+      }
+
+      > td {
+        border-bottom: 1px solid @colorLightGrey;
+        padding: 10px;
+        text-align: left;
+
+        &.footable-cell-detail,
+        &.footable-first-column {
+          border-left: none;
+        }
+      }
+    }
+  }
+
+  > thead > tr {
+    > th {
+      border-bottom: 1px solid @colorLightGrey;
+      padding: 10px;
+      text-align: left;
+    }
+
+    > th,
+    > td {
+      background-color: @colorLightBlue;
+      border: 1px solid @colorLightBlue;
+      color: @colorWhite;
+      border-top: none;
+      font-weight: normal;
+
+      &.footable-first-column {
+        border-left: none;
+      }
+    }
+  }
+
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        background-color: @colorLightBlue;
+        border: 1px solid @colorLightBlue;
+        color: @colorWhite;
+        border-top: none;
+        padding: 5px;
+      }
+    }
+  }
+
+  /* PAGINATION */
+  tfoot .pagination ul > li {
+    > a,
+    > span{
+      border: 2px solid transparent;
+      margin: 0 3px;
+      color: @colorWhite;
+      background: transparent;
+      padding:1px 5px;
+    }
+
+    &.disable > a {
+      color:#888;
+    }
+
+    &.active > a {
+      border-color: @colorWhite;
+    }
+
+    &:first-child,
+    &:last-child {
+      > a,
+      > span {
+        .borderRadius(0);
+      }
+    }
+  }
+
+  &.metro-red {
+    .metroTheme(@colorRed);
+  }
+  &.metro-purple {
+    .metroTheme(@colorPurple);
+  }
+  &.metro-green {
+    .metroTheme(@colorGreen);
+  }
+  &.metro-blue {
+    .metroTheme(@colorBlue);
+  }
+}
