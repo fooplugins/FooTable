@@ -57,7 +57,12 @@
               p.clearFilter(e.ft);
             });
             $table.bind('footable_filter', function (event, args) {
-				p.filter(e.ft, args.filter);
+      				p.filter(e.ft, args.filter);
+            });
+            $(data.input).bind('input', function () {               
+              if($(data.input).val() == '') {                 
+                p.clearFilter(e.ft);               
+              }             
             });
             $(data.input).keyup(function (eve) {
               e.ft.timers.filter.stop();
