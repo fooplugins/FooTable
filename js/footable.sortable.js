@@ -126,7 +126,7 @@
         }
         rows.push(row);
         return true;
-      }).remove();
+      }).detach();
       return rows;
     };
 

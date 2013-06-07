@@ -5,12 +5,16 @@
   var jQversion = w.footable.version.parse($.fn.jquery);
   if (jQversion.major == 1 && jQversion.minor < 8) { // For older versions of jQuery, anything below 1.8
     $.expr[':'].ftcontains = function (a, i, m) {
-      return $(a).html().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+      return $(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
     };
   } else { // For jQuery 1.8 and above
     $.expr[':'].ftcontains = $.expr.createPseudo(function (arg) {
       return function (elem) {
-        return $(elem).html().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+	  var text = $(elem).find('td').text();
+	  var data = $(elem).find('td[data-value]').each(function() {
+		text += $(this).data('value');
+	  });
+        return text.toUpperCase().indexOf(arg.toUpperCase()) >= 0;
       };
     });
   }
@@ -52,34 +56,43 @@
               $(data.input).val('');
               p.clearFilter(e.ft);
             });
+            $table.bind('footable_filter', function (event, args) {
+				p.filter(e.ft, args.filter);
+            });
             $(data.input).keyup(function (eve) {
               e.ft.timers.filter.stop();
               if (eve.which == 27) { $(data.input).val(''); }
               e.ft.timers.filter.start(function () {
                 e.ft.raise('footable_filtering');
                 var val = $(data.input).val() || '';
-                if (val.length < data.minimum) {
-                  p.clearFilter(e.ft);
-                } else {
-                  var filters = val.split(' ');
-                  $table.find('> tbody > tr').hide().addClass('footable-filtered');
-                  var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
-                  $.each(filters, function (i, f) {
-                    if (f && f.length)
-                      rows = rows.filter('*:ftcontains("' + f + '")');
-                  });
-                  rows.each(function () {
-                    p.showRow(this, e.ft);
-                    $(this).removeClass('footable-filtered');
-                  });
-                  e.ft.raise('footable_filtered', { filter : val });
-                }
+                p.filter(e.ft, val);
               }, data.timeout);
             });
           }
         });
       }
     };
+	
+	p.filter = function(ft, filterString) {
+		var $table = $(ft.table);
+		var minimum = $table.data('filter-minimum') || ft.options.filter.minimum;
+		if (!filterString || filterString.length < minimum) {
+			p.clearFilter(ft);
+		} else {
+			var filters = filterString.split(' ');
+			$table.find('> tbody > tr').hide().addClass('footable-filtered');
+			var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
+			$.each(filters, function (i, f) {
+				if (f && f.length)
+					rows = rows.filter('*:ftcontains("' + f + '")');
+			});
+			rows.each(function () {
+				p.showRow(this, ft);
+				$(this).removeClass('footable-filtered');
+			});
+			ft.raise('footable_filtered', { filter : filterString });
+		}		
+	};
 
     p.clearFilter = function (ft) {
       $(ft.table).find('> tbody > tr:not(.footable-row-detail)').removeClass('footable-filtered').each(function () {

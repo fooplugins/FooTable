@@ -12,13 +12,24 @@
   <script type="text/javascript">
     $(function() {
       $('table').footable();
+	  
+	    $('.clear-filter').click(function(e) {
+		    e.preventDefault();
+		    $('table').trigger('footable_clear_filter');
+	    });
+		
+		$('.do-filter').click(function(e) {
+			e.preventDefault();
+			$('#filter').val($(this).text());
+			$('table').trigger('footable_filter', {filter : $(this).text()} );
+		});
+	  
     });
   </script>
 </head>
   <body>
-    search:<input id="filter" type="text" /> e.g. jun, elec, 1981
-    <form action="" method="get" name="dummy-form">
-    <table data-filter="#filter" data-filter-disable-enter="true" class="footable">
+    search:<input id="filter" type="text" /> e.g. <a href="#filter" class="do-filter">jun</a>, <a href="#filter" class="do-filter">elec</a>, <a href="#filter" class="do-filter">1981</a> - <a href="#clear" class="clear-filter" title="clear filter">x</a>
+    <table data-filter="#filter" class="footable">
       <thead>
         <tr>
           <th data-class="expand">
@@ -61,7 +72,6 @@
 			<tr><td>Jason</td><td>Mcfetridge</td><td>Staff Electronic Warfare Officer</td><td data-value="361093678671">11 Jun 1981</td><td data-value="disabled"><img title="disabled" src="images/disabled.png" /></td></tr>
       </tbody>	  
     </table>
-    </form>
     
   </body>
 </html>
