@@ -7,6 +7,14 @@ module.exports = function (grunt) {
         clean: {
             files: ['dist']
         },
+        csslint: {
+            strict: {
+                options: {
+                    csslintrc: '.csslintrc'
+                },
+                src: ['css/*.css']
+            }
+        },
         uglify: {
             all : {
                 options: {
@@ -70,6 +78,10 @@ module.exports = function (grunt) {
             less: {
                 files: 'less/*.less',
                 tasks: ['less:development']
+            },
+            csslint: {
+                files: 'css/*.css',
+                tasks: ['csslint']
             }
         }
     });
@@ -80,9 +92,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-csslint');
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'less']);
+    grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'less', 'csslint']);
 
     // Test task
     grunt.registerTask('test', ['jshint']);

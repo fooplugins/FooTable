@@ -79,9 +79,9 @@
 .footable tfoot .pagination ul > li:last-child > a,
 .footable tfoot .pagination ul > li:first-child > span,
 .footable tfoot .pagination ul > li:last-child > span {
-  border-radius: 0;
-  -webkit-border-radius: 0;
   -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
 }
 .footable.metro-red {
   border-color: #fa3031;
