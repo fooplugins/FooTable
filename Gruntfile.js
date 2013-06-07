@@ -7,6 +7,14 @@ module.exports = function (grunt) {
         clean: {
             files: ['dist']
         },
+        csslint: {
+            strict: {
+                options: {
+                    csslintrc: '.csslintrc'
+                },
+                src: ['css/*.css']
+            }
+        },
         uglify: {
             all : {
                 options: {
@@ -37,6 +45,27 @@ module.exports = function (grunt) {
                 src: ['js/**/*.js']
             }
         },
+        less: {
+            development: {
+                files: {
+                    "css/footable.core.css": "less/footable.core.less",
+                    "css/footable.metro.css": "less/footable.metro.less",
+                    "css/footable.standalone.css": "less/footable.standalone.less",
+                    "css/footable.css": "less/*.less"
+                }
+            },
+            production: {
+                options: {
+                    yuicompress: true
+                },
+                files: {
+                    "css/footable.core.min.css": "less/footable.core.less",
+                    "css/footable.metro.min.css": "less/footable.metro.less",
+                    "css/footable.standalone.min.css": "less/footable.standalone.less",
+                    "css/footable.min.css": "less/*.less"
+                }
+            }
+        },
         watch: {
             gruntfile: {
                 files: '<%= jshint.gruntfile.src %>',
@@ -45,6 +74,14 @@ module.exports = function (grunt) {
             src: {
                 files: '<%= jshint.src.src %>',
                 tasks: ['jshint:src']
+            },
+            less: {
+                files: 'less/*.less',
+                tasks: ['less:development']
+            },
+            csslint: {
+                files: 'css/*.css',
+                tasks: ['csslint']
             }
         }
     });
@@ -54,9 +91,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-csslint');
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'clean', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'less', 'csslint']);
 
     // Test task
     grunt.registerTask('test', ['jshint']);
