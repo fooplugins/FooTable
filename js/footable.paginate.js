@@ -5,13 +5,15 @@
     var defaults = {
         paginate: true,
         pageSize: 10,
-        pageNavigation: '.footable-nav'
+        pageNavigation: '.footable-nav',
+        pageNavigationSize: 0
     };
 
     function pageInfo(ft) {
         var $table = $(ft.table), $tbody = $table.find('> tbody');
         this.pageNavigation = $table.data('page-navigation') || ft.options.pageNavigation;
         this.pageSize = $table.data('page-size') || ft.options.pageSize;
+        this.pageNavigationSize = $table.data('page-navigation-size') || ft.options.pageNavigationSize;
         this.currentPage = 0;
         this.pages = [];
     };
@@ -73,11 +75,42 @@
             if (info.pages.length > 0) {
 
                 $nav.append('<li class="footable-page-arrow"><a data-page="prev" href="#prev">&laquo;</a></li>');
-                $.each(info.pages, function (i, page) {
-                    if (page.length > 0) {
-                        $nav.append('<li class="footable-page"><a data-page="' + i + '" href="#">' + (i + 1) + '</a></li>');
+                // limiting page navigation must be an odd number
+                if(info.pageNavigationSize % 2 != 0) {
+                  var offset = Math.floor(info.pageNavigationSize / 2);
+                  
+                  var start = info.currentPage - offset;
+                  if(start < 0) {
+                    start = 0;
+                  }
+                  end = info.currentPage + offset;
+                  if(end < 4) { 
+                    end = 4;
+                  }
+                  if(end > (info.pages.length - 1)) {
+                    end = info.pages.length - 1;
+                  }
+                  if(info.pageNavigationSize > (1 + end - start)) {
+                    start = 1 + end - info.pageNavigationSize;
+                    if(start < 0) {
+                      start = 0;
                     }
-                });
+                  }
+
+                  for(var i = start; i <= end; i++) {
+                    var page = info.pages[i];
+                    if (page.length > 0) {
+                      $nav.append('<li class="footable-page"><a data-page="' + i + '" href="#">' + (i + 1)+ '</a></li>');
+                    }
+                  }
+                } else {
+
+                  $.each(info.pages, function (i, page) {
+                      if (page.length > 0) {
+                          $nav.append('<li class="footable-page"><a data-page="' + i + '" href="#">' + (i + 1) + '</a></li>');
+                      }
+                  });
+                }
                 $nav.append('<li class="footable-page-arrow"><a data-page="next" href="#next">&raquo;</a></li>');
             }
             $nav.find('a').click(function (e) {
@@ -95,6 +128,7 @@
                     p.fillPage(ft, tbody, newPage);
                 }
                 $nav.find('li').removeClass('footable-page-current');
+                p.createNavigation(ft, tbody);
                 $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('footable-page-current');
             });
             $nav.find('li.footable-page > a[data-page=' + info.currentPage + ']').parent().addClass('footable-page-current');
