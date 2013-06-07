@@ -234,13 +234,13 @@
 .footable {
   border-collapse: separate;
   border-spacing: 0;
-  border: solid #ccc 1px;
+  border: 1px solid #cccccc;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   border-radius: 6px;
   font-family: 'trebuchet MS', 'Lucida sans', Arial;
   font-size: 14px;
-  color: #444;
+  color: #444444;
 }
 .footable > thead > tr:first-child > th.footable-first-column,
 .footable > thead > tr:first-child > td.footable-first-column {
@@ -261,8 +261,8 @@
   border-radius: 6px 6px 0 0;
 }
 .footable > thead > tr > th {
-  border-left: 1px solid #ccc;
-  border-top: 1px solid #ccc;
+  border-left: 1px solid #cccccc;
+  border-top: 1px solid #cccccc;
   padding: 10px;
   text-align: left;
 }
@@ -286,7 +286,7 @@
   border-left: none;
 }
 .footable.breakpoint > tbody > tr.footable-row-detail {
-  background: #eee;
+  background: #eeeeee;
 }
 .footable > tbody img {
   vertical-align: middle;
@@ -310,8 +310,8 @@
   border-radius: 0 0 6px 6px;
 }
 .footable > tbody > tr > td {
-  border-left: 1px solid #ccc;
-  border-top: 1px solid #ccc;
+  border-left: 1px solid #cccccc;
+  border-top: 1px solid #cccccc;
   padding: 10px;
   text-align: left;
 }
@@ -330,7 +330,7 @@
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #cccccc;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   padding: 10px;
 }

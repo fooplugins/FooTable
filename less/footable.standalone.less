@@ -1,59 +1,89 @@
-﻿.footable {
+﻿// Variables
+
+@colorGrey: #444;
+@colorLightGrey: #dce9f9;
+@colorLighterGrey: #ebf3fc;
+@colorSoftGrey: #ccc;
+@colorSoftWhite: #fbf8e9;
+@colorTransparentWhite: rgba(255,255,255,.8);
+@colorLucidWhite: rgba(255,255,255,.5);
+@colorLightest: #eee;
+@fontFamily: 'trebuchet MS' , 'Lucida sans' , Arial;
+
+
+// Mixins
+
+.borderRadius(@radius) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.borderRadius(@r1, @r2, @r3, @r4) {
+  -moz-border-radius: @r1 @r2 @r3 @r4;
+  -webkit-border-radius: @r1 @r2 @r3 @r4;
+  border-radius: @r1 @r2 @r3 @r4;
+}
+
+.boxShadow(@x, @y, @z, @color) {
+  -webkit-box-shadow: @x @y @z @color inset;
+  -moz-box-shadow: @x @y @z @color inset;
+  box-shadow: @x @y @z @color inset;
+}
+
+.linearGradient(@colorFrom, @colorTo) {
+  background-color: @colorTo;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(@colorFrom), to(@colorTo));
+  background-image: -webkit-linear-gradient(top, @colorFrom, @colorTo);
+  background-image: -moz-linear-gradient(top, @colorFrom, @colorTo);
+  background-image: -ms-linear-gradient(top, @colorFrom, @colorTo);
+  background-image: -o-linear-gradient(top, @colorFrom, @colorTo);
+  background-image: linear-gradient(to bottom, @colorFrom, @colorTo);
+}
+
+
+// Classes
+
+.footable {
 	border-collapse: separate;
 	border-spacing: 0;
-	border: solid #ccc 1px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
-	border-radius: 6px;
-	font-family: 'trebuchet MS' , 'Lucida sans' , Arial;
+	border: 1px solid @colorSoftGrey;
+    .borderRadius(6px);
+	font-family: @fontFamily;
 	font-size: 14px;
-	color: #444;
+	color: @colorGrey;
 
   > thead > tr {
     &:first-child {
       > th,
       > td {
         &.footable-first-column {
-          -moz-border-radius: 6px 0 0 0;
-          -webkit-border-radius: 6px 0 0 0;
-          border-radius: 6px 0 0 0;
+          .borderRadius(6px, 0, 0, 0);
         }
 
         &.footable-last-column {
-          -moz-border-radius: 0 6px 0 0;
-          -webkit-border-radius: 0 6px 0 0;
-          border-radius: 0 6px 0 0;
+          .borderRadius(0, 6px, 0, 0);
         }
 
         &.footable-first-column.footable-last-column {
-          -moz-border-radius: 6px 6px 0 0;
-          -webkit-border-radius: 6px 6px 0 0;
-          border-radius: 6px 6px 0 0;
+          .borderRadius(6px, 6px, 0, 0);
         }
       }
     }
 
     > th {
-      border-left: 1px solid #ccc;
-      border-top: 1px solid #ccc;
+      border-left: 1px solid @colorSoftGrey;
+      border-top: 1px solid @colorSoftGrey;
       padding: 10px;
       text-align: left;
     }
 
     > th,
     > td {
-      background-color: #dce9f9;
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
-      background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: -moz-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: -ms-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: -o-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: linear-gradient(to bottom, #ebf3fc, #dce9f9);
-      -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
-      -moz-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
-      box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+      .linearGradient(@colorLighterGrey, @colorLightGrey);
+      .boxShadow(0, 1px, 0, @colorTransparentWhite);
       border-top: none;
-      text-shadow: 0 1px 0 rgba(255,255,255,.5);
+      text-shadow: 0 1px 0 @colorLucidWhite;
 
       &.footable-first-column {
         border-left: none;
@@ -62,42 +92,36 @@
   }
 
   &.breakpoint > tbody > tr.footable-row-detail {
-    background: #eee;
+    background: @colorLightest;
   }
 
   > tbody {
     img {
-      vertical-align:middle;
+      vertical-align: middle;
     }
 
     > tr {
       &:hover {
-        background: #fbf8e9;
+        background: @colorSoftWhite;
       }
 
       &:last-child > td {
         &.footable-first-column {
-            -moz-border-radius: 0 0 0 6px;
-            -webkit-border-radius: 0 0 0 6px;
-            border-radius: 0 0 0 6px;
+            .borderRadius(0, 0, 0, 6px);
         }
 
         &.footable-last-column {
-            -moz-border-radius: 0 0 6px 0;
-            -webkit-border-radius: 0 0 6px 0;
-            border-radius: 0 0 6px 0;
+          .borderRadius(0, 0, 6px, 0);
         }
 
         &.footable-first-column.footable-last-column {
-            -moz-border-radius: 0 0 6px 6px;
-            -webkit-border-radius: 0 0 6px 6px;
-            border-radius: 0 0 6px 6px;
+          .borderRadius(0, 0, 6px, 6px);
         }
       }
 
       > td {
-        border-left: 1px solid #ccc;
-        border-top: 1px solid #ccc;
+        border-left: 1px solid @colorSoftGrey;
+        border-top: 1px solid @colorSoftGrey;
         padding: 10px;
         text-align: left;
 
@@ -111,18 +135,10 @@
   > tfoot > tr {
     > th,
     > td {
-      background-color: #dce9f9;
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
-      background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: -moz-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: -ms-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: -o-linear-gradient(top, #ebf3fc, #dce9f9);
-      background-image: linear-gradient(to bottom, #ebf3fc, #dce9f9);
-      -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
-      -moz-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
-      box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
-      border-top: 1px solid #ccc;
-      text-shadow: 0 1px 0 rgba(255,255,255,.5);
+      .linearGradient(@colorLighterGrey, @colorLightGrey);
+      .boxShadow(0, 1px, 0, @colorTransparentWhite);
+      border-top: 1px solid @colorSoftGrey;
+      text-shadow: 0 1px 0 @colorLucidWhite;
       padding: 10px;
     }
   }
