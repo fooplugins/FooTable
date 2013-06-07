@@ -26,8 +26,6 @@
 }
 .footable.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
   content: "\e001";
-  /* minus */
-
 }
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
   cursor: pointer;
@@ -43,32 +41,22 @@
   -webkit-font-smoothing: antialiased;
   padding-right: 5px;
   font-size: 1.5em;
-  color: #888;
+  color: #888888;
 }
 .footable.breakpoint > tbody > tr > td > span.footable-toggle:before {
   content: "\e000";
-  /* plus */
-
 }
 .footable.breakpoint.toggle-circle-arrow > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
   content: "\e002";
-  /* circle arrow up */
-
 }
 .footable.breakpoint.toggle-circle-arrow > tbody > tr > td > span.footable-toggle:before {
   content: "\e003";
-  /* circle arrow down */
-
 }
 .footable.breakpoint.toggle-circle > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
   content: "\e005";
-  /* circle minus */
-
 }
 .footable.breakpoint.toggle-circle > tbody > tr > td > span.footable-toggle:before {
   content: "\e004";
-  /* circle plus */
-
 }
 .footable > thead > tr > th.footable-sortable:hover {
   cursor: pointer;

@@ -1,4 +1,19 @@
-﻿@font-face {
+﻿// Characters
+@charMinus: "\e001";
+@charPlus: "\e000";
+@charCircleArrowUp: "\e002";
+@charCircleArrowDown: "\e003";
+@charCircleMinus: "\e005";
+@charCirclePlus: "\e004";
+@charArrowUp: "\e007";
+@charArrowDown: "\e008";
+@charArrowUpDown: "\e006";
+
+// Colors
+@colorDarkGrey: #888;
+
+
+@font-face {
   font-family: 'footable';
   src: url('fonts/footable.eot#iefix');
   src:
@@ -30,7 +45,7 @@
 
     > tbody > tr {
       &.footable-detail-show > td > span.footable-toggle:before {
-        content: "\e001"; /* minus */
+        content: @charMinus;
       }
 
       &:hover:not(.footable-row-detail) {
@@ -48,31 +63,31 @@
         -webkit-font-smoothing: antialiased;
         padding-right:5px;
         font-size:1.5em;
-        color:#888;
+        color: @colorDarkGrey;
 
         &:before {
-          content: "\e000"; /* plus */
+          content: @charPlus;
         }
       }
     }
 
     &.toggle-circle-arrow > tbody > tr {
       &.footable-detail-show > td > span.footable-toggle:before {
-        content: "\e002"; /* circle arrow up */
+        content: @charCircleArrowUp;
       }
 
       > td > span.footable-toggle:before {
-        content: "\e003"; /* circle arrow down */
+        content: @charCircleArrowDown;
       }
     }
 
     &.toggle-circle > tbody > tr {
       &.footable-detail-show > td > span.footable-toggle:before {
-        content: "\e005"; /* circle minus */
+        content: @charCircleMinus;
       }
 
       > td > span.footable-toggle:before {
-        content: "\e004"; /* circle plus */
+        content: @charCirclePlus;
       }
     }
   }
@@ -84,11 +99,11 @@
     }
 
     &.footable-sorted > span.footable-sort-indicator:before {
-      content: "\e007";
+      content: @charArrowUp;
     }
 
     &.footable-sorted-desc > span.footable-sort-indicator:before {
-      content: "\e008";
+      content: @charArrowDown;
     }
 
     > span.footable-sort-indicator {
@@ -102,7 +117,7 @@
       -webkit-font-smoothing: antialiased;
 
       &:before {
-        content: "\e006";
+        content: @charArrowUpDown;
       }
     }
   }
