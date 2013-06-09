@@ -586,5 +586,5 @@
 
         ft.init();
         return ft;
-    };
+    }
 })(jQuery, window);

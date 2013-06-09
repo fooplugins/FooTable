@@ -116,7 +116,7 @@
       }
       else $row.show();
     };
-  };
+  }
 
   w.footable.plugins.register(new Filter(), defaults);
 

@@ -37,7 +37,7 @@
         */
       });
     };
-  };
+  }
   
   w.footable.plugins.register(new MyPlugin(), defaults);
   

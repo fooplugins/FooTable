@@ -173,8 +173,6 @@
         };
     }
 
-    ;
-
     w.footable.plugins.register(new Sortable(), defaults);
 
 })(jQuery, window);

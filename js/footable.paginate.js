@@ -23,7 +23,7 @@
         this.currentPage = 0;
         this.pages = [];
         this.control = false;
-    };
+    }
 
     function Paginate() {
         var p = this;
@@ -168,7 +168,7 @@
             }
             else $row.show();
         };
-    };
+    }
 
     w.footable.plugins.register(new Paginate(), defaults);
 
