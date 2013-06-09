@@ -97,9 +97,9 @@
             parse: function (str) {
                 version = /(\d+)\.?(\d+)?\.?(\d+)?/.exec(str);
                 return {
-                    major: parseInt(version[1]) || 0,
-                    minor: parseInt(version[2]) || 0,
-                    patch: parseInt(version[3]) || 0
+                    major: parseInt(version[1], 10) || 0,
+                    minor: parseInt(version[2], 10) || 0,
+                    patch: parseInt(version[3], 10) || 0
                 };
             }
         },
@@ -195,7 +195,7 @@
                 t.busy = false;
             }
         };
-    };
+    }
 
     function Footable(t, o, id) {
         ///<summary>Inits a new instance of the plugin.</summary>
@@ -301,7 +301,7 @@
                 var col = ft.columns[c];
                 if (col.toggle) {
                     hasToggleColumn = true;
-                    var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index) + 1) + ')';
+                    var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
                     $table.find(selector).not('.footable-cell-detail').prepend($('<span />').addClass(cls.toggle));
                 }
             }
@@ -322,7 +322,7 @@
                     var selector = '', first = true;
                     $.each(col.matches, function (m, match) { //support for colspans
                         if (!first) selector += ', ';
-                        selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
+                        selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match, 10) + 1) + ')';
                         first = false;
                     });
                     //add the className to the cells specified by data-class="blah"
@@ -370,9 +370,9 @@
                 data.groupName = ft.parse($group, { 'type': 'alpha' });
             }
 
-            var pcolspan = parseInt($th.prev().attr('colspan') || 0);
+            var pcolspan = parseInt($th.prev().attr('colspan') || 0, 10);
             indexOffset += pcolspan > 1 ? pcolspan - 1 : 0;
-            var colspan = parseInt($th.attr('colspan') || 0), curindex = data.index + indexOffset;
+            var colspan = parseInt($th.attr('colspan') || 0, 10), curindex = data.index + indexOffset;
             if (colspan > 1) {
                 var names = $th.data('names');
                 names = names || '';
@@ -481,7 +481,7 @@
                                 groupspan = 0;
 
                             $.each($groupcols, function () {
-                                groupspan += parseInt($(this).attr('colspan') || 1);
+                                groupspan += parseInt($(this).attr('colspan') || 1, 10);
                             });
 
                             if (groupspan > 0) $group.attr('colspan', groupspan).show();
