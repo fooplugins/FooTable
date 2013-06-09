@@ -1,12 +1,12 @@
 ﻿(function ($, w, undefined) {
-    if (w.footable == undefined || w.footable == null)
+    if (w.footable === undefined || w.footable === null)
         throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
     var defaults = {
         sort: true,
         sorters: {
             alpha: function (a, b) {
-                if (a == b) return 0;
+                if (a === b) return 0;
                 if (a < b) return -1;
                 return 1;
             },
@@ -36,7 +36,7 @@
         var p = this;
         p.name = 'Footable Sortable';
         p.init = function (ft) {
-            if (ft.options.sort == true) {
+            if (ft.options.sort === true) {
                 $(ft.table).bind({
                     'footable_initialized': function (e) {
                         var cls = ft.options.classes.sort, column;
@@ -47,7 +47,7 @@
 
                         $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function (ec) {
                             $th = $(this), column = e.ft.columns[$th.index()];
-                            if (column.sort.ignore != true) {
+                            if (column.sort.ignore !== true) {
                                 $th.addClass(cls.sortable);
                                 $('<span />').addClass(cls.indicator).appendTo($th);
                             }
@@ -55,7 +55,7 @@
 
                         $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).click(function (ec) {
                             $th = $(this), column = e.ft.columns[$th.index()];
-                            if (column.sort.ignore == true) return true;
+                            if (column.sort.ignore === true) return true;
                             ec.preventDefault();
 
                             $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
@@ -99,7 +99,7 @@
                                 didSomeSorting = true;
                                 $th = $table.find('> thead > tr:last-child > th:eq(' + c + '), > thead > tr:last-child > td:eq(' + c + ')');
 
-                                if (column.sort.initial == 'descending') {
+                                if (column.sort.initial === 'descending') {
                                     p.reverse(e.ft, $tbody);
                                     $th.addClass(cls.descending);
                                 } else {
@@ -107,7 +107,7 @@
                                 }
 
                                 break;
-                            } else if (column.sort.ignore != true) {
+                            } else if (column.sort.ignore !== true) {
 
                             }
                         }
@@ -139,7 +139,7 @@
                     $next = $row.next().get(0);
                 }
                 var row = { 'row': $row, 'detail': $next };
-                if (column != undefined) {
+                if (column !== undefined) {
                     row.value = ft.parse(this.cells[column.sort.match], column);
                 }
                 rows.push(row);
@@ -156,7 +156,7 @@
             });
             for (var j = 0; j < rows.length; j++) {
                 tbody.append(rows[j].row);
-                if (rows[j].detail != null) {
+                if (rows[j].detail !== null) {
                     tbody.append(rows[j].detail);
                 }
             }
@@ -166,7 +166,7 @@
             var rows = p.rows(ft, tbody);
             for (var i = rows.length - 1; i >= 0; i--) {
                 tbody.append(rows[i].row);
-                if (rows[i].detail != null) {
+                if (rows[i].detail !== null) {
                     tbody.append(rows[i].detail);
                 }
             }

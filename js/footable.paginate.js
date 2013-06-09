@@ -1,5 +1,5 @@
 (function ($, w, undefined) {
-    if (w.footable == undefined || w.footable == null)
+    if (w.footable === undefined || w.footable === null)
         throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
     var defaults = {
@@ -30,7 +30,7 @@
         p.name = 'Footable Paginate';
 
         p.init = function (ft) {
-            if (ft.options.paginate == true) {
+            if (ft.options.paginate === true) {
                 $(ft.table).bind({
                     'footable_initialized': function (e) {
                         e.ft.pageInfo = new pageInfo(e.ft);
@@ -77,18 +77,18 @@
         p.createNavigation = function (ft, tbody) {
             var $nav = $(ft.table).find(ft.pageInfo.pageNavigation);
 			//if we cannot find the navigation control within the table, then try find it outside
-			if ($nav.length == 0) {
+			if ($nav.length === 0) {
 				$nav = $(ft.pageInfo.pageNavigation);
 				//if the navigation control is inside another table, then get out
-				if ($nav.parents('table:first') != $(ft.table)) return;
+				if ($nav.parents('table:first') !== $(ft.table)) return;
 				//if we found more than one navigation control, write error to console
-				if ($nav.length > 1 && ft.options.debug == true) console.error('More than one pagination control was found!');
+				if ($nav.length > 1 && ft.options.debug === true) console.error('More than one pagination control was found!');
 			}
 			//if we still cannot find the control, then don't do anything
-            if ($nav.length == 0) return;
+            if ($nav.length === 0) return;
 			//if the nav is not a UL, then find or create a UL
 			if (!$nav.is('ul')) { 
-				if ($nav.find('ul:first').length == 0) { $nav.append('<ul />'); }
+				if ($nav.find('ul:first').length === 0) { $nav.append('<ul />'); }
 				$nav = $nav.find('ul');
 			}
             $nav.find('li').remove();
@@ -109,13 +109,13 @@
                 e.preventDefault();
                 var page = $(this).data('page');
                 var newPage = info.currentPage;
-                if (page == 'first') {
+                if (page === 'first') {
                     newPage = 0;
-                } else if (page == 'prev') {
+                } else if (page === 'prev') {
                     if (newPage > 0) newPage--;
-                } else if (page == 'next') {
+                } else if (page === 'next') {
                     if (newPage < info.pages.length - 1) newPage++;
-                } else if (page == 'last') {
+                } else if (page === 'last') {
                     newPage = info.pages.length - 1;
                 } else {
                     newPage = page;
@@ -127,7 +127,7 @@
 
         p.paginate = function (ft, newPage) {
             var info = ft.pageInfo;
-            if (info.currentPage != newPage) {
+            if (info.currentPage !== newPage) {
                 var $tbody = $(ft.table).find('> tbody');
 
                 //raise a pre-pagin event so that we can cancel the paging if needed

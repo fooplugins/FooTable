@@ -1,9 +1,9 @@
 (function ($, w, undefined) {
-  if (w.footable == undefined || w.footable == null)
+  if (w.footable === undefined || w.footable === null)
     throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
   var jQversion = w.footable.version.parse($.fn.jquery);
-  if (jQversion.major == 1 && jQversion.minor < 8) { // For older versions of jQuery, anything below 1.8
+  if (jQversion.major === 1 && jQversion.minor < 8) { // For older versions of jQuery, anything below 1.8
     $.expr[':'].ftcontains = function (a, i, m) {
       return $(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
     };
@@ -33,7 +33,7 @@
     var p = this;
     p.name = 'Footable Filter';
     p.init = function (ft) {
-      if (ft.options.filter.enabled == true) {
+      if (ft.options.filter.enabled === true) {
         ft.timers.register('filter');
         $(ft.table).bind({
           'footable_initialized': function (e) {
@@ -47,9 +47,9 @@
             if (data.disableEnter) {
               $(data.input).keypress(function (event) {
                 if (window.event)
-                  return (window.event.keyCode != 13);
+                  return (window.event.keyCode !== 13);
                 else
-                  return (event.which != 13);
+                  return (event.which !== 13);
               });
             }
             $table.bind('footable_clear_filter', function () {
@@ -61,7 +61,7 @@
             });
             $(data.input).keyup(function (eve) {
               e.ft.timers.filter.stop();
-              if (eve.which == 27) { $(data.input).val(''); }
+              if (eve.which === 27) { $(data.input).val(''); }
               e.ft.timers.filter.start(function () {
                 var val = $(data.input).val() || '';
                 p.filter(e.ft, val);

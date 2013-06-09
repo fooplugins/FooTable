@@ -1,5 +1,5 @@
 ﻿(function ($, w, undefined) {
-  if (w.footable == undefined || w.foobox == null)
+  if (w.footable === undefined || w.foobox === null)
     throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
   var defaults = {
@@ -26,7 +26,7 @@
 
             $(ft.table).bind({
               'footable_initialized': function(e){
-                if (e.ft.options.myPlugin.enabled == true){
+                if (e.ft.options.myPlugin.enabled === true){
                   alert('Hello World');
                 }
               }
