@@ -32,7 +32,7 @@
                 var groups = { '_none': { 'name': null, 'data': [] } };
                 for (var i = 0; i < data.length; i++) {
                     var groupid = data[i].group;
-                    if (groupid != null) {
+                    if (groupid !== null) {
                         if (!(groupid in groups))
                             groups[groupid] = { 'name': data[i].groupName || data[i].group, 'data': [] };
 
@@ -63,8 +63,8 @@
 
                 var groups = createGroupedDetail(data);
                 for (var group in groups) {
-                    if (groups[group].data.length == 0) continue;
-                    if (group != '_none') element.append('<div class="' + classes.detailInnerGroup + '">' + groups[group].name + '</div>');
+                    if (groups[group].data.length === 0) continue;
+                    if (group !== '_none') element.append('<div class="' + classes.detailInnerGroup + '">' + groups[group].name + '</div>');
 
                     for (var j = 0; j < groups[group].data.length; j++) {
                         var separator = (groups[group].data[j].name) ? separatorChar : '';
@@ -97,9 +97,9 @@
             parse: function (str) {
                 version = /(\d+)\.?(\d+)?\.?(\d+)?/.exec(str);
                 return {
-                    major: parseInt(version[1]) || 0,
-                    minor: parseInt(version[2]) || 0,
-                    patch: parseInt(version[3]) || 0
+                    major: parseInt(version[1], 10) || 0,
+                    minor: parseInt(version[2], 10) || 0,
+                    patch: parseInt(version[3], 10) || 0
                 };
             }
         },
@@ -110,14 +110,14 @@
                 ///<param name="plugin">The object defining the plugin, this should implement a string property called "name" and a function called "init".</param>
 
                 if (typeof plugin['name'] !== 'string') {
-                    if (w.footable.options.debug == true) console.error('Validation failed, plugin does not implement a string property called "name".', plugin);
+                    if (w.footable.options.debug === true) console.error('Validation failed, plugin does not implement a string property called "name".', plugin);
                     return false;
                 }
                 if (!$.isFunction(plugin['init'])) {
-                    if (w.footable.options.debug == true) console.error('Validation failed, plugin "' + plugin['name'] + '" does not implement a function called "init".', plugin);
+                    if (w.footable.options.debug === true) console.error('Validation failed, plugin "' + plugin['name'] + '" does not implement a function called "init".', plugin);
                     return false;
                 }
-                if (w.footable.options.debug == true) console.log('Validation succeeded for plugin "' + plugin['name'] + '".', plugin);
+                if (w.footable.options.debug === true) console.log('Validation succeeded for plugin "' + plugin['name'] + '".', plugin);
                 return true;
             },
             registered: [], // An array containing all registered plugins.
@@ -128,8 +128,8 @@
 
                 if (w.footable.plugins._validate(plugin)) {
                     w.footable.plugins.registered.push(plugin);
-                    if (options != undefined && typeof options === 'object') $.extend(true, w.footable.options, options);
-                    if (w.footable.options.debug == true) console.log('Plugin "' + plugin['name'] + '" has been registered with the Foobox.', plugin);
+                    if (options !== undefined && typeof options === 'object') $.extend(true, w.footable.options, options);
+                    if (w.footable.options.debug === true) console.log('Plugin "' + plugin['name'] + '" has been registered with the Foobox.', plugin);
                 }
             },
             init: function (instance) {
@@ -140,7 +140,7 @@
                     try {
                         w.footable.plugins.registered[i]['init'](instance);
                     } catch (err) {
-                        if (w.footable.options.debug == true) console.error(err);
+                        if (w.footable.options.debug === true) console.error(err);
                     }
                 }
             }
@@ -189,13 +189,13 @@
         t.stop = function () {
             ///<summary>Stops the timer if its runnning and resets it back to its starting state.</summary>
 
-            if (t.id != null) {
+            if (t.id !== null) {
                 clearTimeout(t.id);
                 t.id = null;
                 t.busy = false;
             }
         };
-    };
+    }
 
     function Footable(t, o, id) {
         ///<summary>Inits a new instance of the plugin.</summary>
@@ -301,7 +301,7 @@
                 var col = ft.columns[c];
                 if (col.toggle) {
                     hasToggleColumn = true;
-                    var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index) + 1) + ')';
+                    var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
                     $table.find(selector).not('.footable-cell-detail').prepend($('<span />').addClass(cls.toggle));
                 }
             }
@@ -318,11 +318,11 @@
             $table = $(ft.table);
             for (var c in ft.columns) {
                 var col = ft.columns[c];
-                if (col.className != null) {
+                if (col.className !== null) {
                     var selector = '', first = true;
                     $.each(col.matches, function (m, match) { //support for colspans
                         if (!first) selector += ', ';
-                        selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match) + 1) + ')';
+                        selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match, 10) + 1) + ')';
                         first = false;
                     });
                     //add the className to the cells specified by data-class="blah"
@@ -365,14 +365,14 @@
                 'groupName': null
             };
 
-            if (data.group != null) {
+            if (data.group !== null) {
                 var $group = $(ft.table).find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]').first();
                 data.groupName = ft.parse($group, { 'type': 'alpha' });
             }
 
-            var pcolspan = parseInt($th.prev().attr('colspan') || 0);
+            var pcolspan = parseInt($th.prev().attr('colspan') || 0, 10);
             indexOffset += pcolspan > 1 ? pcolspan - 1 : 0;
-            var colspan = parseInt($th.attr('colspan') || 0), curindex = data.index + indexOffset;
+            var colspan = parseInt($th.attr('colspan') || 0, 10), curindex = data.index + indexOffset;
             if (colspan > 1) {
                 var names = $th.data('names');
                 names = names || '';
@@ -439,7 +439,7 @@
             ft.raise('footable_resizing', { 'old': pinfo, 'info': info });
 
             // This (if) statement is here purely to make sure events aren't raised twice as mobile safari seems to do
-            if (!pinfo || ((pinfo && pinfo.width && pinfo.width != info.width) || (pinfo && pinfo.height && pinfo.height != info.height))) {
+            if (!pinfo || ((pinfo && pinfo.width && pinfo.width !== info.width) || (pinfo && pinfo.height && pinfo.height !== info.height))) {
                 var current = null, breakpoint;
                 for (var i = 0; i < ft.breakpoints.length; i++) {
                     breakpoint = ft.breakpoints[i];
@@ -449,7 +449,7 @@
                     }
                 }
 
-                var breakpointName = (current == null ? 'default' : current['name']);
+                var breakpointName = (current === null ? 'default' : current['name']);
 
                 var hasBreakpointFired = ft.hasBreakpointColumn(breakpointName);
 
@@ -472,16 +472,16 @@
 
                         selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
                         var $column = $table.find(selector).add(this);
-                        if (data.hide[breakpointName] == false) $column.show();
+                        if (data.hide[breakpointName] === false) $column.show();
                         else $column.hide();
 
-                        if ($table.find('> thead > tr.footable-group-row').length == 1) {
+                        if ($table.find('> thead > tr.footable-group-row').length === 1) {
                             var $groupcols = $table.find('> thead > tr:last-child > th[data-group="' + data.group + '"]:visible, > thead > tr:last-child > th[data-group="' + data.group + '"]:visible'),
                                 $group = $table.find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]'),
                                 groupspan = 0;
 
                             $.each($groupcols, function () {
-                                groupspan += parseInt($(this).attr('colspan') || 1);
+                                groupspan += parseInt($(this).attr('colspan') || 1, 10);
                             });
 
                             if (groupspan > 0) $group.attr('colspan', groupspan).show();
@@ -496,7 +496,7 @@
                 $table.find('> tbody > tr.footable-detail-show:visible').each(function () {
                     var $next = $(this).next();
                     if ($next.hasClass('footable-row-detail')) {
-                        if (breakpointName == 'default' && !hasBreakpointFired) $next.hide();
+                        if (breakpointName === 'default' && !hasBreakpointFired) $next.hide();
                         else $next.show();
                     }
                 });
@@ -553,13 +553,13 @@
             ft.raise('footable_rowdetailupdated', { 'row': $row, 'detail': $next });
             $row.find('> td:hidden').each(function () {
                 var index = $(this).index(), column = ft.getColumnFromTdIndex(index), name = column.name;
-                if (column.ignore == true) return true;
+                if (column.ignore === true) return true;
 
                 if (index in column.names) name = column.names[index];
                 values.push({ 'name': name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()), 'group': column.group, 'groupName': column.groupName });
                 return true;
             });
-            if (values.length == 0) return false; //return if we don't have any data to show
+            if (values.length === 0) return false; //return if we don't have any data to show
             var colspan = $row.find('> td:visible').length;
             var exists = $next.hasClass('footable-row-detail');
             if (!exists) { // Create
@@ -586,5 +586,5 @@
 
         ft.init();
         return ft;
-    };
+    }
 })(jQuery, window);
