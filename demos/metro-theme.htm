@@ -32,6 +32,12 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="demo">
+            <p class="colour-switch">
+                <a href="#" data-class="metro-red">Red</a> |
+                <a href="#" data-class="metro-purple">purple</a> |
+                <a href="#" data-class="metro-green">green</a> |
+                <a href="#" data-class="metro-blue">blue</a>
+            </p>
             <table class="footable metro-blue" data-page-size="5">
                 <thead>
                 <tr>
@@ -139,8 +145,8 @@
         </div>
         <div class="tab-pane" id="setup">
             <ol class="foo-setup">
-                <li><h4>Include FooTable Base CSS</h4>
-                    <pre>&lt;link href=&quot;path_to_your_css/footable.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
+                <li><h4>Include FooTable Core CSS</h4>
+                    <pre>&lt;link href=&quot;path_to_your_css/footable.core.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
                 </li>
                 <li><h4>Include FooTable Theme CSS</h4>
                     <pre>&lt;link href=&quot;path_to_your_css/themes/footable-metro.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
@@ -168,9 +174,9 @@
 
             <p>We decided to take this approach to allow for better CSS styling, as the FooTable styling would sometimes
                 conflict with your website look and feel.</p>
-            <h4>Base Stylesheet</h4>
+            <h4>Core Stylesheet</h4>
 
-            <p>There is now a base stylesheet that you should always include when using FooTable. This is the <code>footable.css</code>
+            <p>There is now a core stylesheet that you should always include when using FooTable. This is the <code>footable.core.css</code>
                 CSS file</p>
             <h4>Bootstrap</h4>
 
@@ -188,6 +194,14 @@
 </div>
 <script type="text/javascript">
     $(function () {
+        $('.colour-switch a').click(function(e) {
+            e.preventDefault();
+            $('.colour-switch a').each(function() {
+                $('table').removeClass($(this).data('class'));
+            });
+            $('table').addClass($(this).data('class'));
+        });
+
         $('table').footable();
 
         $('.nav-tabs a').click(function (e) {

@@ -7,8 +7,8 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
 
-    <link href="../css/footable.css" rel="stylesheet" type="text/css"/>
-    <link href="../css/footable.metro.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/footable.core.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/footable.standalone.css" rel="stylesheet" type="text/css"/>
 
     <link href="css/footable-demos.css" rel="stylesheet" type="text/css"/>
 
@@ -24,7 +24,7 @@
 <div class="demo-container">
     <img src="img/footable.png"/>
 
-    <p>FooTable demo using a Metro theme</p>
+    <p>FooTable demo showing off how the different events can be intercepted.</p>
     <ul class="nav nav-tabs">
         <li class="active"><a href="#demo">Demo</a></li>
         <li><a href="#setup">Setup</a></li>
@@ -140,8 +140,8 @@
         </div>
         <div class="tab-pane" id="setup">
             <ol class="foo-setup">
-                <li><h4>Include FooTable Base CSS</h4>
-                    <pre>&lt;link href=&quot;path_to_your_css/footable.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
+                <li><h4>Include FooTable Core CSS</h4>
+                    <pre>&lt;link href=&quot;path_to_your_css/footable.core.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
                 </li>
                 <li><h4>Include FooTable Theme CSS</h4>
                     <pre>&lt;link href=&quot;path_to_your_css/themes/footable-metro.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
@@ -162,28 +162,7 @@
             </ol>
         </div>
         <div class="tab-pane" id="docs">
-            <h4>FooTable Themes</h4>
-
-            <p>FooTable now works with Twitter Bootstrap out of the box! And if you do not include the Bootstrap CSS,
-                FooTable will look really plain and ugly.</p>
-
-            <p>We decided to take this approach to allow for better CSS styling, as the FooTable styling would sometimes
-                conflict with your website look and feel.</p>
-            <h4>Base Stylesheet</h4>
-
-            <p>There is now a base stylesheet that you should always include when using FooTable. This is the <code>footable.css</code>
-                CSS file</p>
-            <h4>Bootstrap</h4>
-
-            <p>We recommend using Bootstrap together with FooTable for an awesome default table style. Just include
-                <code>bootstrap.css</code></p>
-            <h4>Metro Style</h4>
-
-            <p>If you like the metro look and feel, then also include the <code>footable-metro.css</code> CSS file.</p>
-            <h4>Old FooTable Style</h4>
-
-            <p>If you liked the old default FooTable style, then also include the <code>footable-standalone.css</code>
-                CSS file.</p>
+            <h4>FooTable Events</h4>
         </div>
     </div>
 </div>
