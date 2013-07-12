@@ -20,15 +20,18 @@
   /** PAGINATION **/
 
 }
-.footable.breakpoint.table-bordered > tbody > tr > td.footable-expand,
-.footable.breakpoint.table-bordered > tbody > tr.footable-detail-show > td.footable-expand {
-  background-position: 5px center;
+.footable.breakpoint > tbody > tr.footable-detail-show > td {
+  border-bottom: none;
 }
 .footable.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
   content: "\e001";
 }
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
   cursor: pointer;
+}
+.footable.breakpoint > tbody > tr > td.footable-cell-detail {
+  background: #eee;
+  border-top: none;
 }
 .footable.breakpoint > tbody > tr > td > span.footable-toggle {
   display: inline-block;
@@ -57,6 +60,12 @@
 }
 .footable.breakpoint.toggle-circle > tbody > tr > td > span.footable-toggle:before {
   content: "\e004";
+}
+.footable.breakpoint.toggle-medium > tbody > tr > td > span.footable-toggle {
+  font-size: 18px;
+}
+.footable.breakpoint.toggle-large > tbody > tr > td > span.footable-toggle {
+  font-size: 24px;
 }
 .footable > thead > tr > th.footable-sortable:hover {
   cursor: pointer;
@@ -119,6 +128,9 @@
 }
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
   cursor: pointer;
+}
+.footable.breakpoint > tbody > tr > td.footable-cell-detail {
+  background: #fff;
 }
 .footable > tbody img {
   vertical-align: middle;
