@@ -40,20 +40,22 @@
   width: 100%;
 
   &.breakpoint {
-    &.table-bordered > tbody > tr {
-      > td.footable-expand,
-      &.footable-detail-show > td.footable-expand {
-        background-position: 5px center;
-      }
-    }
-
     > tbody > tr {
-      &.footable-detail-show > td > span.footable-toggle:before {
-        content: @charMinus;
+      &.footable-detail-show > td {
+        border-bottom:none;
+
+        & > span.footable-toggle:before {
+          content: @charMinus;
+        }
       }
 
       &:hover:not(.footable-row-detail) {
         cursor: pointer;
+      }
+
+      > td.footable-cell-detail {
+        background: #eee;
+        border-top:none;
       }
 
       > td > span.footable-toggle {
@@ -92,6 +94,18 @@
 
       > td > span.footable-toggle:before {
         content: @charCirclePlus;
+      }
+    }
+
+    &.toggle-medium > tbody > tr {
+      > td > span.footable-toggle {
+        font-size:18px;
+      }
+    }
+
+    &.toggle-large > tbody > tr {
+      > td > span.footable-toggle {
+        font-size:24px;
       }
     }
   }
