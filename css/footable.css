@@ -326,7 +326,6 @@
   border-radius: 0 0 6px 6px;
 }
 .footable > tbody > tr > td {
-  border-left: 1px solid #cccccc;
   border-top: 1px solid #cccccc;
   padding: 10px;
   text-align: left;
