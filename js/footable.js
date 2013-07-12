@@ -303,6 +303,7 @@
                     hasToggleColumn = true;
                     var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
                     $table.find(selector).not('.footable-cell-detail').prepend($('<span />').addClass(cls.toggle));
+                    return;
                 }
             }
             //check if we have an toggle column. If not then add it to the first column just to be safe
@@ -415,6 +416,7 @@
         ft.hasBreakpointColumn = function (breakpoint) {
             for (var c in ft.columns) {
                 if (ft.columns[c].hide[breakpoint]) {
+                    if (ft.columns[c].ignore) continue;
                     return true;
                 }
             }
