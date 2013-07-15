@@ -83,6 +83,17 @@
                 detailInnerName: 'footable-row-detail-name',
                 detailInnerValue: 'footable-row-detail-value'
             },
+            events: {
+                alreadyInitialized: 'footable.already_initialized',     //fires when the FooTable has already been initialized
+                initializing: 'footable.initializing',                  //fires before FooTable starts initializing
+                initialized: 'footable.initialized',                    //fires after FooTable has finished initializing
+                resizing: 'footable.resizing',                          //fires before FooTable resizes
+                resized: 'footable.resized',                            //fires after FooTable has resized
+                breakpoint: 'footable.breakpoint',                      //fires inside the resize function, when a FooTable breakpoint is hit
+                columnData: 'footable.column_data',                     //fires when setting up column data. Plugins should use this event to capture their own info about a column
+                rowDetailUpdating: 'footable.row_detail_updating',      //fires before a detail row is updated
+                rowDetailUpdated: 'footable.row_detail_updated'         //fires when a detail row is being updated
+            },
             debug: false // Whether or not to log information to the console.
         },
 
@@ -208,11 +219,12 @@
         ft.breakpointNames = '';
         ft.columns = {};
 
-        var opt = ft.options;
-        var cls = opt.classes;
-        var indexOffset = 0;
+        var opt = ft.options,
+            cls = opt.classes,
+            evt = opt.events,
+            indexOffset = 0;
 
-        // This object simply houses all the timers used in the footable.
+        // This object simply houses all the timers used in the FooTable.
         ft.timers = {
             resize: new Timer(),
             register: function (name) {
@@ -228,7 +240,7 @@
 
             if ($table.hasClass(cls.loaded)) {
                 //already loaded FooTable for the table, so don't init again
-                ft.raise('footable_already_initialized');
+                ft.raise(evt.alreadyInitialized);
                 return;
             }
 
@@ -251,7 +263,7 @@
                 return a['width'] - b['width'];
             });
 
-            ft.raise('footable_initializing');
+            ft.raise(evt.initializing);
 
             $table.bind('footable_initialized', function () {
                 //remove previously capture table info (to "force" a resize)
@@ -288,7 +300,7 @@
                     }, opt.delay);
                 });
 
-            ft.raise('footable_initialized');
+            ft.raise(evt.initialized);
         };
 
         ft.addRowToggle = function () {
@@ -388,7 +400,7 @@
             for (var name in opt.breakpoints) {
                 data.hide[name] = ($th.data('hide') === "all") || ($.inArray(name, hide) >= 0);
             }
-            var e = ft.raise('footable_column_data', { 'column': { 'data': data, 'th': th } });
+            var e = ft.raise(evt.columnData, { 'column': { 'data': data, 'th': th } });
             return e.column.data;
         };
 
@@ -435,7 +447,7 @@
 
             var pinfo = $table.data('footable_info');
             $table.data('footable_info', info);
-            ft.raise('footable_resizing', { 'old': pinfo, 'info': info });
+            ft.raise(evt.resizing, { 'old': pinfo, 'info': info });
 
             // This (if) statement is here purely to make sure events aren't raised twice as mobile safari seems to do
             if (!pinfo || ((pinfo && pinfo.width && pinfo.width !== info.width) || (pinfo && pinfo.height && pinfo.height !== info.height))) {
@@ -511,10 +523,10 @@
                     .find('> th:visible:first, > td:visible:first')
                     .addClass('footable-first-column');
 
-                ft.raise('footable_breakpoint_' + breakpointName, { 'info': info });
+                ft.raise(evt.breakpoint, { 'breakpoint': breakpointName, 'info': info });
             }
 
-            ft.raise('footable_resized', { 'old': pinfo, 'info': info });
+            ft.raise(evt.resized, { 'old': pinfo, 'info': info });
         };
 
         ft.toggleDetail = function (actualRow) {
@@ -548,8 +560,8 @@
 
         ft.createOrUpdateDetailRow = function (actualRow) {
             var $row = $(actualRow), $next = $row.next(), $detail, values = [];
-            if ($row.is(':hidden')) return false; //if the row is hidden for some readon (perhaps filtered) then get out of here
-            ft.raise('footable_rowdetailupdated', { 'row': $row, 'detail': $next });
+            if ($row.is(':hidden')) return false; //if the row is hidden for some reason (perhaps filtered) then get out of here
+            ft.raise(evt.rowDetailUpdating, { 'row': $row, 'detail': $next });
             $row.find('> td:hidden').each(function () {
                 var index = $(this).index(), column = ft.getColumnFromTdIndex(index), name = column.name;
                 if (column.ignore === true) return true;
@@ -568,6 +580,7 @@
             $next.find('> td:first').attr('colspan', colspan);
             $detail = $next.find('.' + cls.detailInner).empty();
             opt.createDetail($detail, values, opt.createGroupedDetail, opt.detailSeparator, cls);
+            ft.raise(evt.rowDetailUpdated, { 'row': $row, 'detail': $next });
             return !exists;
         };
 
