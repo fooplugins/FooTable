@@ -4,14 +4,15 @@
     <title>FooTable - jQuery plugin for responsive HTML tables</title>
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
 	<link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
-	
 	<link href="../css/footable.core.css" rel="stylesheet" type="text/css"/>
     <link href="css/footable-demos.css" rel="stylesheet" type="text/css"/>
-    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+    <script>
+        if (!window.jQuery) { document.write('<script src="js/jquery-1.9.1.min.js"><\/script>'); }
+    </script>
     <script src="../js/footable.js" type="text/javascript"></script>
-
 	<script src="js/bootstrap-tab.js" type="text/javascript"></script>
+    <script src="js/demos.js" type="text/javascript"></script>
     <style type="text/css">
         .docs-toggle {
             display: inline-block;
@@ -66,8 +67,14 @@
 </head>
 <body>
 	<div class="demo-container">
-		<img src="img/footable.png" />
-		<p>A demo showing off the different toggle icons styles and sizes. The toggle icons are now displayed using icon-fonts, which makes for easier styling to fit in with your existing theme. Simply add the specific class name to your table.</p>
+        <ul class="breadcrumb">
+            <li><a href="http://fooplugins.com/plugins/footable">FooTable</a> <span class="divider">&raquo;</span></li>
+            <li><a href="index.htm">Demos</a> <span class="divider">&raquo;</span></li>
+            <li class="active">Icon Styles</li>
+        </ul>
+        <div class="alert">
+            A demo showing off the different toggle icons styles and sizes. The toggle icons are now displayed using icon-fonts, which makes for easier styling to fit in with your existing theme. Simply add the specific class name to your table.
+        </div>
         <p class="change-toggle-style">
             style : [ <a class="active" href="#">default</a> |
             <a href="#">toggle-circle</a> |
@@ -80,7 +87,6 @@
         </p>
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#demo">Demo</a></li>
-			<li><a href="#setup">Setup</a></li>
 			<li><a href="#docs">Docs</a></li>
 		</ul>
 		<div class="tab-content">
@@ -186,9 +192,6 @@
 					</tfoot>
 				</table>
 			</div>
-			<div class="tab-pane" id="setup">
-				Check out the <a href="getting-started.htm">getting started</a> demo to see how to setup a basic FooTable.
-			</div>
 			<div class="tab-pane" id="docs">
 				<h4>Toggle Icon Styles</h4>
 				<p>Add a class name to the table to change the default toggle icon stlye:</p>
@@ -243,13 +246,6 @@
                     $('.demo').addClass($(this).text());
                 });
             });
-
-			$('.nav-tabs a').click(function (e) {
-				e.preventDefault();
-				$(this).tab('show');
-			}).on('shown', function (e) {	
-				$('.tab-pane.active table').trigger('footable_resize');
-			});
         });
     </script>	
 </body>
