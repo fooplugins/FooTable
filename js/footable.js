@@ -83,16 +83,22 @@
                 detailInnerName: 'footable-row-detail-name',
                 detailInnerValue: 'footable-row-detail-value'
             },
+            triggers: {
+                initialize: 'footable_initialize',                      //trigger this event to force FooTable to reinitialize
+                resize: 'footable_resize',                              //trigger this event to force FooTable to resize
+                toggleRow: 'footable_toggle_row',                       //trigger this event to force FooTable to toggle a row
+                expandFirstRow: 'footable_expand_first_row'             //trigger this event to force FooTable to expand the first row
+            },
             events: {
-                alreadyInitialized: 'footable.already_initialized',     //fires when the FooTable has already been initialized
-                initializing: 'footable.initializing',                  //fires before FooTable starts initializing
-                initialized: 'footable.initialized',                    //fires after FooTable has finished initializing
-                resizing: 'footable.resizing',                          //fires before FooTable resizes
-                resized: 'footable.resized',                            //fires after FooTable has resized
-                breakpoint: 'footable.breakpoint',                      //fires inside the resize function, when a FooTable breakpoint is hit
-                columnData: 'footable.column_data',                     //fires when setting up column data. Plugins should use this event to capture their own info about a column
-                rowDetailUpdating: 'footable.row_detail_updating',      //fires before a detail row is updated
-                rowDetailUpdated: 'footable.row_detail_updated'         //fires when a detail row is being updated
+                alreadyInitialized: 'footable_already_initialized',     //fires when the FooTable has already been initialized
+                initializing: 'footable_initializing',                  //fires before FooTable starts initializing
+                initialized: 'footable_initialized',                    //fires after FooTable has finished initializing
+                resizing: 'footable_resizing',                          //fires before FooTable resizes
+                resized: 'footable_resized',                            //fires after FooTable has resized
+                breakpoint: 'footable_breakpoint',                      //fires inside the resize function, when a FooTable breakpoint is hit
+                columnData: 'footable_column_data',                     //fires when setting up column data. Plugins should use this event to capture their own info about a column
+                rowDetailUpdating: 'footable_row_detail_updating',      //fires before a detail row is updated
+                rowDetailUpdated: 'footable_row_detail_updated'         //fires when a detail row is being updated
             },
             debug: false // Whether or not to log information to the console.
         },
@@ -222,6 +228,7 @@
         var opt = ft.options,
             cls = opt.classes,
             evt = opt.events,
+            trg = opt.triggers,
             indexOffset = 0;
 
         // This object simply houses all the timers used in the FooTable.
@@ -265,38 +272,48 @@
 
             ft.raise(evt.initializing);
 
-            $table.bind('footable_initialized', function () {
-                //remove previously capture table info (to "force" a resize)
-                $table.removeData('footable_info');
+            $table
+                //bind to FooTable initialize trigger
+                .bind(trg.initialize, function () {
+                    //remove previously capture table info (to "force" a resize)
+                    $table.removeData('footable_info');
 
-                //add the toggler to each row
-                ft.addRowToggle();
+                    //add the toggler to each row
+                    ft.addRowToggle();
 
-                //bind the toggle selector click events
-                ft.bindToggleSelectors();
+                    //bind the toggle selector click events
+                    ft.bindToggleSelectors();
 
-                //set any cell classes defined for the columns
-                ft.setColumnClasses();
+                    //set any cell classes defined for the columns
+                    ft.setColumnClasses();
 
-                //resize the footable onload
-                ft.resize();
+                    //trigger a FooTable resize
+                    $table.trigger(trg.resize);
 
-                //remove the loading class
-                $table.removeClass(cls.loading);
+                    //remove the loading class
+                    $table.removeClass(cls.loading);
 
-                //add the footable and loaded class
-                $table.addClass(cls.loaded).addClass(cls.main);
-            });
+                    //add the FooTable and loaded class
+                    $table.addClass(cls.loaded).addClass(cls.main);
+                })
+                //bind to FooTable resize trigger
+                .bind(trg.resize, function () {
+                    ft.resize();
+                })
+                //bind to FooTable expandFirstRow trigger
+                .bind(trg.expandFirstRow, function() {
+                    $table.find(opt.toggleSelector).first().not('.footable-detail-show').trigger(trg.toggleRow);
+                });
 
-            $table.bind('footable_resize', function () {
-                ft.resize();
-            });
+            //trigger a FooTable initialize
+            $table.trigger(trg.initialize);
 
+            //bind to window resize
             $window
                 .bind('resize.footable', function () {
                     ft.timers.resize.stop();
                     ft.timers.resize.start(function () {
-                        ft.resize();
+                        ft.raise(trg.resize);
                     }, opt.delay);
                 });
 
@@ -344,10 +361,14 @@
         //moved this out into it's own function so that it can be called from other add-ons
         ft.bindToggleSelectors = function () {
             var $table = $(ft.table);
+            $table.find(opt.toggleSelector).unbind(trg.toggleRow).bind(trg.toggleRow, function (e) {
+                var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
+                ft.toggleDetail($row.get(0));
+            });
+
             $table.find(opt.toggleSelector).unbind('click.footable').bind('click.footable', function (e) {
                 if ($table.is('.breakpoint') && $(e.target).is('td,.footable-toggle')) {
-                    var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
-                    ft.toggleDetail($row.get(0));
+                    $(this).trigger(trg.toggleRow);
                 }
             });
         };

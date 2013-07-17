@@ -165,7 +165,10 @@
 	</div>
     <script type="text/javascript">
         $(function () {
-			$('table').footable();
+			$('table').bind('footable_breakpoint', function() {
+                $('table').trigger('footable_expand_first_row');
+                //alert('footable_breakpoint');
+            }).footable();
 			
             $('.clear-filter').click(function (e) {
                 e.preventDefault();
