@@ -77,11 +77,14 @@
                 loading: 'footable-loading',
                 loaded: 'footable-loaded',
                 toggle: 'footable-toggle',
+                detail: 'footable-row-detail',
+                detailCell: 'footable-row-detail-cell',
                 detailInner: 'footable-row-detail-inner',
                 detailInnerRow: 'footable-row-detail-row',
                 detailInnerGroup: 'footable-row-detail-group',
                 detailInnerName: 'footable-row-detail-name',
-                detailInnerValue: 'footable-row-detail-value'
+                detailInnerValue: 'footable-row-detail-value',
+                detailShow: 'footable-detail-show'
             },
             triggers: {
                 initialize: 'footable_initialize',                      //trigger this event to force FooTable to reinitialize
@@ -302,7 +305,7 @@
                 })
                 //bind to FooTable expandFirstRow trigger
                 .bind(trg.expandFirstRow, function() {
-                    $table.find(opt.toggleSelector).first().not('.footable-detail-show').trigger(trg.toggleRow);
+                    $table.find(opt.toggleSelector).first().not('.' + cls.detailShow).trigger(trg.toggleRow);
                 });
 
             //trigger a FooTable initialize
@@ -327,16 +330,16 @@
                 var col = ft.columns[c];
                 if (col.toggle) {
                     hasToggleColumn = true;
-                    var selector = '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
-                    $table.find(selector).not('.footable-cell-detail').prepend($('<span />').addClass(cls.toggle));
+                    var selector = '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
+                    $table.find(selector).not('.' + cls.detailCell).prepend($('<span />').addClass(cls.toggle));
                     return;
                 }
             }
             //check if we have an toggle column. If not then add it to the first column just to be safe
             if (!hasToggleColumn) {
                 $table
-                    .find('> tbody > tr:not(.footable-row-detail) > td:first-child')
-                    .not('.footable-cell-detail')
+                    .find('> tbody > tr:not(.' + cls.detail + ') > td:first-child')
+                    .not('.' + cls.detailCell)
                     .prepend($('<span />').addClass(cls.toggle));
             }
         };
@@ -349,11 +352,11 @@
                     var selector = '', first = true;
                     $.each(col.matches, function (m, match) { //support for colspans
                         if (!first) selector += ', ';
-                        selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + (parseInt(match, 10) + 1) + ')';
+                        selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + (parseInt(match, 10) + 1) + ')';
                         first = false;
                     });
                     //add the className to the cells specified by data-class="blah"
-                    $table.find(selector).not('.footable-cell-detail').addClass(col.className);
+                    $table.find(selector).not('.' + cls.detailCell).addClass(col.className);
                 }
             }
         };
@@ -496,8 +499,8 @@
                                 selector += ', ';
                             }
                             var count = match + 1;
-                            selector += '> tbody > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
-                            selector += ', > tfoot > tr:not(.footable-row-detail) > td:nth-child(' + count + ')';
+                            selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
+                            selector += ', > tfoot > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
                             selector += ', > colgroup > col:nth-child(' + count + ')';
                             first = false;
                         });
@@ -521,13 +524,13 @@
                         }
                     })
                     .end()
-                    .find('> tbody > tr.footable-detail-show').each(function () {
+                    .find('> tbody > tr.' + cls.detailShow).each(function () {
                         ft.createOrUpdateDetailRow(this);
                     });
 
-                $table.find('> tbody > tr.footable-detail-show:visible').each(function () {
+                $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
                     var $next = $(this).next();
-                    if ($next.hasClass('footable-row-detail')) {
+                    if ($next.hasClass(cls.detail)) {
                         if (breakpointName === 'default' && !hasBreakpointFired) $next.hide();
                         else $next.show();
                     }
@@ -556,11 +559,11 @@
                 $next = $row.next();
 
             if (!created && $next.is(':visible')) {
-                $row.removeClass('footable-detail-show');
+                $row.removeClass(cls.detailShow);
                 //only hide the next row if it's a detail row
-                if ($next.hasClass('footable-row-detail')) $next.hide();
+                if ($next.hasClass(cls.detail)) $next.hide();
             } else {
-                $row.addClass('footable-detail-show');
+                $row.addClass(cls.detailShow);
                 $next.show();
             }
         };
@@ -593,9 +596,9 @@
             });
             if (values.length === 0) return false; //return if we don't have any data to show
             var colspan = $row.find('> td:visible').length;
-            var exists = $next.hasClass('footable-row-detail');
+            var exists = $next.hasClass(cls.detail);
             if (!exists) { // Create
-                $next = $('<tr class="footable-row-detail"><td class="footable-cell-detail"><div class="' + cls.detailInner + '"></div></td></tr>');
+                $next = $('<tr class="' + cls.detail + '"><td class="' + cls.detailCell + '"><div class="' + cls.detailInner + '"></div></td></tr>');
                 $row.after($next);
             }
             $next.find('> td:first').attr('colspan', colspan);
