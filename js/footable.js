@@ -98,12 +98,15 @@
                 initialized: 'footable_initialized',                    //fires after FooTable has finished initializing
                 resizing: 'footable_resizing',                          //fires before FooTable resizes
                 resized: 'footable_resized',                            //fires after FooTable has resized
-                breakpoint: 'footable_breakpoint',                      //fires inside the resize function, when a FooTable breakpoint is hit
+                breakpoint: 'footable_breakpoint',                      //fires inside the resize function, when a breakpoint is hit
                 columnData: 'footable_column_data',                     //fires when setting up column data. Plugins should use this event to capture their own info about a column
                 rowDetailUpdating: 'footable_row_detail_updating',      //fires before a detail row is updated
-                rowDetailUpdated: 'footable_row_detail_updated'         //fires when a detail row is being updated
+                rowDetailUpdated: 'footable_row_detail_updated',        //fires when a detail row is being updated
+                rowCollapsed: 'footable_row_collapsed',                 //fires when a row is collapsed
+                rowExpanded: 'footable_row_expanded'                    //fires when a row is expanded
             },
-            debug: false // Whether or not to log information to the console.
+            debug: false, // Whether or not to log information to the console.
+            log : null
         },
 
         version: {
@@ -254,6 +257,8 @@
                 return;
             }
 
+            ft.raise(evt.initializing);
+
             $table.addClass(cls.loading);
 
             // Get the column data once for the life time of the plugin
@@ -272,8 +277,6 @@
             ft.breakpoints.sort(function (a, b) {
                 return a['width'] - b['width'];
             });
-
-            ft.raise(evt.initializing);
 
             $table
                 //bind to FooTable initialize trigger
@@ -458,6 +461,9 @@
 
         ft.resize = function () {
             var $table = $(ft.table);
+
+            if (!$table.is(':visible')) { return; } //we only care about FooTables that are visible
+
             var info = {
                 'width': $table.width(),                  //the table width
                 'height': $table.height(),                //the table height
@@ -465,6 +471,7 @@
                 'viewportHeight': ft.getViewportHeight(), //the width of the viewport
                 'orientation': null
             };
+
             info.orientation = info.viewportWidth > info.viewportHeight ? 'landscape' : 'portrait';
 
             info = ft.calculateWidthAndHeight($table, info);
@@ -484,70 +491,76 @@
                     }
                 }
 
-                var breakpointName = (current === null ? 'default' : current['name']);
+                var breakpointName = (current === null ? 'default' : current['name']),
+                    hasBreakpointFired = ft.hasBreakpointColumn(breakpointName),
+                    previousBreakpoint = $table.data('breakpoint');
 
-                var hasBreakpointFired = ft.hasBreakpointColumn(breakpointName);
+                $table.data('breakpoint', breakpointName);
 
-                $table
-                    .removeClass('default breakpoint').removeClass(ft.breakpointNames)
-                    .addClass(breakpointName + (hasBreakpointFired ? ' breakpoint' : ''))
-                    .find('> thead > tr:last-child > th')
-                    .each(function () {
-                        var data = ft.columns[$(this).index()], selector = '', first = true;
-                        $.each(data.matches, function (m, match) {
-                            if (!first) {
-                                selector += ', ';
-                            }
-                            var count = match + 1;
-                            selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
-                            selector += ', > tfoot > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
-                            selector += ', > colgroup > col:nth-child(' + count + ')';
-                            first = false;
-                        });
-
-                        selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
-                        var $column = $table.find(selector).add(this);
-                        if (data.hide[breakpointName] === false) $column.show();
-                        else $column.hide();
-
-                        if ($table.find('> thead > tr.footable-group-row').length === 1) {
-                            var $groupcols = $table.find('> thead > tr:last-child > th[data-group="' + data.group + '"]:visible, > thead > tr:last-child > th[data-group="' + data.group + '"]:visible'),
-                                $group = $table.find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]'),
-                                groupspan = 0;
-
-                            $.each($groupcols, function () {
-                                groupspan += parseInt($(this).attr('colspan') || 1, 10);
+                //only do something if the breakpoint has changed
+                if ( breakpointName !== previousBreakpoint ) {
+                    $table
+                        .find('> tbody > tr:not(.' + cls.detail + ')').data('detail_created', false).end()
+                        .removeClass('default breakpoint').removeClass(ft.breakpointNames)
+                        .addClass(breakpointName + (hasBreakpointFired ? ' breakpoint' : ''))
+                        .find('> thead > tr:last-child > th')
+                        .each(function () {
+                            var data = ft.columns[$(this).index()], selector = '', first = true;
+                            $.each(data.matches, function (m, match) {
+                                if (!first) {
+                                    selector += ', ';
+                                }
+                                var count = match + 1;
+                                selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
+                                selector += ', > tfoot > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
+                                selector += ', > colgroup > col:nth-child(' + count + ')';
+                                first = false;
                             });
 
-                            if (groupspan > 0) $group.attr('colspan', groupspan).show();
-                            else $group.hide();
+                            selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
+                            var $column = $table.find(selector).add(this);
+                            if (data.hide[breakpointName] === false) $column.show();
+                            else $column.hide();
+
+                            if ($table.find('> thead > tr.footable-group-row').length === 1) {
+                                var $groupcols = $table.find('> thead > tr:last-child > th[data-group="' + data.group + '"]:visible, > thead > tr:last-child > th[data-group="' + data.group + '"]:visible'),
+                                    $group = $table.find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]'),
+                                    groupspan = 0;
+
+                                $.each($groupcols, function () {
+                                    groupspan += parseInt($(this).attr('colspan') || 1, 10);
+                                });
+
+                                if (groupspan > 0) $group.attr('colspan', groupspan).show();
+                                else $group.hide();
+                            }
+                        })
+                        .end()
+                        .find('> tbody > tr.' + cls.detailShow).each(function () {
+                            ft.createOrUpdateDetailRow(this);
+                        });
+
+                    $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
+                        var $next = $(this).next();
+                        if ($next.hasClass(cls.detail)) {
+                            if (breakpointName === 'default' && !hasBreakpointFired) $next.hide();
+                            else $next.show();
                         }
-                    })
-                    .end()
-                    .find('> tbody > tr.' + cls.detailShow).each(function () {
-                        ft.createOrUpdateDetailRow(this);
                     });
 
-                $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
-                    var $next = $(this).next();
-                    if ($next.hasClass(cls.detail)) {
-                        if (breakpointName === 'default' && !hasBreakpointFired) $next.hide();
-                        else $next.show();
-                    }
-                });
+                    // adding .footable-first-column and .footable-last-column to the first and last th and td of each row in order to allow
+                    // for styling if the first or last column is hidden (which won't work using :first-child or :last-child)
+                    $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column').removeClass('footable-last-column');
+                    $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column').removeClass('footable-first-column');
+                    $table.find('> thead > tr, > tbody > tr')
+                        .find('> th:visible:last, > td:visible:last')
+                        .addClass('footable-last-column')
+                        .end()
+                        .find('> th:visible:first, > td:visible:first')
+                        .addClass('footable-first-column');
 
-                // adding .footable-first-column and .footable-last-column to the first and last th and td of each row in order to allow
-                // for styling if the first or last column is hidden (which won't work using :first-child or :last-child)
-                $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column').removeClass('footable-last-column');
-                $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column').removeClass('footable-first-column');
-                $table.find('> thead > tr, > tbody > tr')
-                    .find('> th:visible:last, > td:visible:last')
-                    .addClass('footable-last-column')
-                    .end()
-                    .find('> th:visible:first, > td:visible:first')
-                    .addClass('footable-first-column');
-
-                ft.raise(evt.breakpoint, { 'breakpoint': breakpointName, 'info': info });
+                    ft.raise(evt.breakpoint, { 'breakpoint': breakpointName, 'info': info });
+                }
             }
 
             ft.raise(evt.resized, { 'old': pinfo, 'info': info });
@@ -555,16 +568,23 @@
 
         ft.toggleDetail = function (actualRow) {
             var $row = $(actualRow),
-                created = ft.createOrUpdateDetailRow($row.get(0)),
                 $next = $row.next();
 
-            if (!created && $next.is(':visible')) {
+            //check if the row is already expanded
+            if ($row.hasClass(cls.detailShow)) {
                 $row.removeClass(cls.detailShow);
+
                 //only hide the next row if it's a detail row
                 if ($next.hasClass(cls.detail)) $next.hide();
+
+                ft.raise(evt.rowCollapsed, { 'row': actualRow });
+
             } else {
+                var created = ft.createOrUpdateDetailRow(actualRow);
                 $row.addClass(cls.detailShow);
                 $next.show();
+
+                ft.raise(evt.rowExpanded, { 'row': actualRow });
             }
         };
 
@@ -584,6 +604,8 @@
 
         ft.createOrUpdateDetailRow = function (actualRow) {
             var $row = $(actualRow), $next = $row.next(), $detail, values = [];
+            if ($row.data('detail_created') === true) return true;
+
             if ($row.is(':hidden')) return false; //if the row is hidden for some reason (perhaps filtered) then get out of here
             ft.raise(evt.rowDetailUpdating, { 'row': $row, 'detail': $next });
             $row.find('> td:hidden').each(function () {
@@ -604,11 +626,15 @@
             $next.find('> td:first').attr('colspan', colspan);
             $detail = $next.find('.' + cls.detailInner).empty();
             opt.createDetail($detail, values, opt.createGroupedDetail, opt.detailSeparator, cls);
+            $row.data('detail_created', true);
             ft.raise(evt.rowDetailUpdated, { 'row': $row, 'detail': $next });
             return !exists;
         };
 
         ft.raise = function (eventName, args) {
+
+            if (ft.options.debug === true && $.isFunction(ft.options.log)) ft.options.log(eventName, 'event');
+
             args = args || { };
             var def = { 'ft': ft };
             $.extend(true, def, args);
