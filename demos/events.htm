@@ -13,6 +13,16 @@
     <script src="../js/footable.js" type="text/javascript"></script>
 	<script src="js/bootstrap-tab.js" type="text/javascript"></script>
     <script src="js/demos.js" type="text/javascript"></script>
+    <style type="text/css">
+        #console {
+            margin-top: 5px;
+            padding: 0;
+            width: 95%;
+            height: 100px;
+            font-size: 10px;
+            font-family: courier new;
+        }
+    </style>
 </head>
 <body>
 	<div class="demo-container">
@@ -22,15 +32,15 @@
             <li class="active">Events</li>
         </ul>
         <div class="alert">
-            Hook into the FooTable events
+            Hook into the FooTable events. Resize the page to see the FooTable events firing in the console text box above the table.
         </div>
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#demo">Demo</a></li>
-			<li><a href="#setup">Setup</a></li>
 			<li><a href="#docs">Docs</a></li>
-		</ul>		
+		</ul>
 		<div class="tab-content">
 			<div class="tab-pane active" id="demo">
+                <textarea id="console"></textarea>
                 <table class="table demo table-bordered" data-filter="#filter" data-page-size="5" data-page-previous-text="prev" data-page-next-text="next">
                     <thead>
                     <tr>
@@ -125,15 +135,35 @@
                     </tbody>
                 </table>
 			</div>
-			<div class="tab-pane" id="setup">
-			</div>
 			<div class="tab-pane" id="docs">
-			</div>
+                <h3>FooTable Events</h3>
+                <p>There are a number of events that you can hook into:</p>
+                <p><code>footable_already_initialized</code> - fires when the FooTable has already been initialized</p>
+                <p><code>footable_initializing</code> - fires before FooTable starts initializing</p>
+                <p><code>footable_initialized</code> - fires after FooTable has finished initializing</p>
+                <p><code>footable_resizing</code> - fires before FooTable resizes</p>
+                <p><code>footable_resized</code> - fires after FooTable has resized</p>
+                <p><code>footable_breakpoint</code> - fires inside the resize function, when a breakpoint is hit</p>
+                <p><code>footable_column_data</code> - fires when setting up column data. Plugins should use this event to capture their own info about a column</p>
+                <p><code>footable_row_detail_updating</code> - fires before a detail row is updated</p>
+                <p><code>footable_row_detail_updated</code> - fires after a detail row has been updated</p>
+                <p><code>footable_row_collapsed</code> - fires when a row is collapsed</p>
+                <p><code>footable_row_expanded</code> - fires when a row is expanded</p>
 		</div>
 	</div>
     <script type="text/javascript">
         $(function () {
-            $('table').footable();
+            var counter = 0;
+            $('table').footable({
+                debug: true,
+                log: function(message, type) {
+                    counter++;
+                    var console = $("#console");
+                    if (counter > 1) console.append('\n');
+                    console.append(counter + ': ' + message);
+                    console[0].scrollTop = console[0].scrollHeight;
+                }
+            });
         });
     </script>	
 </body>
