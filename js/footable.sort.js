@@ -29,24 +29,30 @@
                 descending: 'footable-sorted-desc',
                 indicator: 'footable-sort-indicator'
             }
+        },
+        events: {
+            sort: {
+                sorting: 'footable_sorting',
+                sorted: 'footable_sorted'
+            }
         }
     };
 
-    function Sortable() {
+    function Sort() {
         var p = this;
         p.name = 'Footable Sortable';
         p.init = function (ft) {
             if (ft.options.sort === true) {
                 $(ft.table).bind({
                     'footable_initialized': function (e) {
-                        var cls = ft.options.classes.sort, column;
+                        var cls = ft.options.classes.sort, evt = ft.options.events.sort, column;
 
-                        var $table = $(e.ft.table), $tbody = $table.find('> tbody'), $th;
+                        var $table = $(ft.table), $tbody = $table.find('> tbody'), $th;
 
                         if ($table.data('sort') === false) return;
 
                         $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function (ec) {
-                            $th = $(this), column = e.ft.columns[$th.index()];
+                            $th = $(this), column = ft.columns[$th.index()];
                             if (column.sort.ignore !== true) {
                                 $th.addClass(cls.sortable);
                                 $('<span />').addClass(cls.indicator).appendTo($th);
@@ -54,7 +60,7 @@
                         });
 
                         $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).click(function (ec) {
-                            $th = $(this), column = e.ft.columns[$th.index()];
+                            $th = $(this), column = ft.columns[$th.index()];
                             if (column.sort.ignore === true) return true;
                             ec.preventDefault();
 
@@ -77,30 +83,30 @@
                             }
 
                             //raise a pre-sorting event so that we can cancel the sorting if needed
-                            var event = e.ft.raise('footable_sorting', { column: column, direction: ascending ? 'ASC' : 'DESC' });
+                            var event = ft.raise(evt.sorting, { column: column, direction: ascending ? 'ASC' : 'DESC' });
                             if (event && event.result === false) return;
 
                             if (sort) {
-                                p.sort(e.ft, $tbody, column);
+                                p.sort(ft, $tbody, column);
                             } else {
-                                p.reverse(e.ft, $tbody);
+                                p.reverse(ft, $tbody);
                             }
 
-                            e.ft.bindToggleSelectors();
-                            e.ft.raise('footable_sorted', { column: column, ascending: ascending });
+                            ft.bindToggleSelectors();
+                            ft.raise(evt.sorted, { column: column, ascending: ascending });
                             return false;
                         });
 
                         var didSomeSorting = false;
-                        for (var c in e.ft.columns) {
-                            column = e.ft.columns[c];
+                        for (var c in ft.columns) {
+                            column = ft.columns[c];
                             if (column.sort.initial) {
-                                p.sort(e.ft, $tbody, column);
+                                p.sort(ft, $tbody, column);
                                 didSomeSorting = true;
                                 $th = $table.find('> thead > tr:last-child > th:eq(' + c + '), > thead > tr:last-child > td:eq(' + c + ')');
 
                                 if (column.sort.initial === 'descending') {
-                                    p.reverse(e.ft, $tbody);
+                                    p.reverse(ft, $tbody);
                                     $th.addClass(cls.descending);
                                 } else {
                                     $th.addClass(cls.sorted);
@@ -112,7 +118,7 @@
                             }
                         }
                         if (didSomeSorting) {
-                            e.ft.bindToggleSelectors();
+                            ft.bindToggleSelectors();
                         }
                     },
                     'footable_column_data': function (e) {
@@ -134,8 +140,8 @@
             var rows = [];
             tbody.find('> tr').each(function () {
                 var $row = $(this), $next = null;
-                if ($row.hasClass('footable-row-detail')) return true;
-                if ($row.next().hasClass('footable-row-detail')) {
+                if ($row.hasClass(ft.options.classes.detail)) return true;
+                if ($row.next().hasClass(ft.options.classes.detail)) {
                     $next = $row.next().get(0);
                 }
                 var row = { 'row': $row, 'detail': $next };
@@ -173,6 +179,6 @@
         };
     }
 
-    w.footable.plugins.register(new Sortable(), defaults);
+    w.footable.plugins.register(new Sort(), defaults);
 
 })(jQuery, window);
