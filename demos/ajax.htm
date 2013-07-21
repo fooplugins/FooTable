@@ -24,14 +24,13 @@
         <ul class="breadcrumb">
             <li><a href="http://fooplugins.com/plugins/footable">FooTable</a> <span class="divider">&raquo;</span></li>
             <li><a href="index.htm">Demos</a> <span class="divider">&raquo;</span></li>
-            <li class="active">Showcase</li>
+            <li class="active">Ajax</li>
         </ul>
         <div class="alert">
-            A showcase of what FooTable can do, including sorting, filtering and pagination!
+            Change your table data using AJAX and then reinitialize your FooTable.
         </div>
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#demo">Demo</a></li>
-			<li><a href="#setup">Setup</a></li>
 			<li><a href="#docs">Docs</a></li>
 		</ul>
 		<div class="tab-content">
@@ -81,21 +80,18 @@
 					</tfoot>
 				</table>
 			</div>
-			<div class="tab-pane" id="setup">
-                <p>
-                    Check out the <a href="getting-started.htm#setup">getting started</a> demo to see how to setup FooTable.
-                </p>
-                <h4>Include FooTable Add-Ons</h4>
-                <p>You simply need to include the add-on's javascript file to include the add-on's functionality:</p>
-                <pre>&lt;script src=&quot;path_to_your_js/footable.your-add-on.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
-			</div>
 			<div class="tab-pane" id="docs">
-                <h4>Sorting</h4>
-                <p>Check out the <a href="sorting.htm">sorting demo</a> to see more documentation.</p>
-                <h4>Filtering</h4>
-                <p>Check out the <a href="filtering.htm">filtering demo</a> to see more documentation.</p>
-                <h4>Paging</h4>
-                <p>Check out the <a href="pagination.htm">pagination demo</a> to see more documentation.</p>
+                <h4>Refresh After Populating By Ajax</h4>
+                <p>You can easily reinitialize your Footable by triggering the <code>footable_initialize</code> event on the table:
+                    <pre>$(&#39;.get_data&#39;).click(function() {
+	$.ajax({
+		url : &#39;/some/api&#39;,
+		success : function(data) {
+			$(&#39;table tbody&#39;).append(data).trigger(&#39;footable_initialize&#39;);
+		}
+	});
+});</pre>
+                </p>
 			</div>
 		</div>
 	</div>
@@ -129,7 +125,7 @@
                 $.ajax({
                     url : '/some/api',
                     success : function(data) {
-                        $('table tbody').append(data).trigger('footable_initialized');
+                        $('table tbody').append(data).trigger('footable_initialize');
                     }
                 });
             });
