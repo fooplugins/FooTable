@@ -13,7 +13,7 @@
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
   cursor: pointer;
 }
-.footable.breakpoint > tbody > tr > td.footable-cell-detail {
+.footable.breakpoint > tbody > tr > td.footable-row-detail-cell {
   background: #fff;
 }
 .footable > tbody img {
@@ -33,7 +33,7 @@
   padding: 10px;
   text-align: left;
 }
-.footable > tbody > tr > td.footable-cell-detail,
+.footable > tbody > tr > td.footable-row-detail-cell,
 .footable > tbody > tr > td.footable-first-column {
   border-left: none;
 }
