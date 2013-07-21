@@ -45,15 +45,18 @@
 
                         $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function (ec) {
                             $th = $(this), column = ft.columns[$th.index()];
-                            if (column.sort.ignore !== true) {
+                            if (column.sort.ignore !== true && !$th.hasClass(cls.sortable)) {
                                 $th.addClass(cls.sortable);
                                 $('<span />').addClass(cls.indicator).appendTo($th);
                             }
                         });
 
-                        $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).click(function (ec) {
+                        $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).unbind('click.footable').bind('click.footable', function (ec) {
                             $th = $(this), column = ft.columns[$th.index()];
                             if (column.sort.ignore === true) return true;
+
+                            $table.data('sorted', column.index);
+
                             ec.preventDefault();
 
                             $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
@@ -105,8 +108,6 @@
                                 }
 
                                 break;
-                            } else if (column.sort.ignore !== true) {
-
                             }
                         }
                         if (didSomeSorting) {
