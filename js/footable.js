@@ -307,6 +307,8 @@
 
                     //add the FooTable and loaded class
                     $table.addClass(cls.loaded).addClass(cls.main);
+
+                    ft.raise(evt.initialized);
                 })
                 //bind to FooTable resize trigger
                 .bind(trg.resize, function () {
@@ -328,8 +330,6 @@
                         ft.raise(trg.resize);
                     }, opt.delay);
                 });
-
-            ft.raise(evt.initialized);
         };
 
         ft.addRowToggle = function () {
