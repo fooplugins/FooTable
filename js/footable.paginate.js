@@ -32,9 +32,9 @@
         p.init = function (ft) {
             if (ft.options.paginate === true) {
                 $(ft.table).bind({
-                    'footable_initialized': function (e) {
-                        e.ft.pageInfo = new pageInfo(e.ft);
-						e.ft.raise('footable_setup_paging');
+                    'footable_initialized': function () {
+                        ft.pageInfo = new pageInfo(ft);
+						ft.raise('footable_setup_paging');
                     },
                     'footable_sorted footable_filtered footable_setup_paging': function () {
                         p.setupPaging(ft);
