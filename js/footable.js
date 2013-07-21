@@ -263,6 +263,7 @@
                 return;
             }
 
+            //raise the initializing event
             ft.raise(evt.initializing);
 
             $table.addClass(cls.loading);
@@ -287,8 +288,9 @@
             $table
                 //bind to FooTable initialize trigger
                 .bind(trg.initialize, function () {
-                    //remove previously capture table info (to "force" a resize)
+                    //remove previous "state" (to "force" a resize)
                     $table.removeData('footable_info');
+                    $table.data('breakpoint', '');
 
                     //add the toggler to each row
                     ft.addRowToggle();
@@ -299,15 +301,16 @@
                     //set any cell classes defined for the columns
                     ft.setColumnClasses();
 
-                    //trigger a FooTable resize
-                    $table.trigger(trg.resize);
-
                     //remove the loading class
                     $table.removeClass(cls.loading);
 
                     //add the FooTable and loaded class
                     $table.addClass(cls.loaded).addClass(cls.main);
 
+                    //trigger the FooTable resize
+                    $table.trigger(trg.resize);
+
+                    //raise the initialized event
                     ft.raise(evt.initialized);
                 })
                 //bind to FooTable resize trigger
@@ -333,8 +336,12 @@
         };
 
         ft.addRowToggle = function () {
-            var hasToggleColumn = false;
-            $table = $(ft.table);
+            var $table = $(ft.table),
+                hasToggleColumn = false;
+
+            //first remove all toggle spans
+            $table.find('span.' + cls.toggle).remove();
+
             for (var c in ft.columns) {
                 var col = ft.columns[c];
                 if (col.toggle) {
