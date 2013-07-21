@@ -34,11 +34,11 @@
         row += '<td>' + (i+1) + '.' + (j+1) + '</td>';
       }
       row += '</tr>';
-	  if (return_rows) document.writeln(row);
+	  if (!return_rows) document.writeln(row);
 	  else
 		output += row;
     }
 	
-	if (!return_rows) return output;
+	if (return_rows) return output;
   };
 })(window);
