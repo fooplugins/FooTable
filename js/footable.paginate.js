@@ -6,10 +6,10 @@
         paginate: true,
         pageSize: 10,
         pageNavigation: '.pagination',
-        firstText: '&lsaquo;',
-		previousText: '&laquo;',
-		nextText: '&raquo;',
-        lastText: '&rsaquo;'
+        firstText: '&laquo;',
+		previousText: '&lsaquo;',
+		nextText: '&rsaquo;',
+        lastText: '&raquo;'
     };
 
     function pageInfo(ft) {
