@@ -22,6 +22,12 @@
             parsers: {  // The default parser to parse the value out of a cell (values are used in building up row detail)
                 alpha: function (cell) {
                     return $(cell).data('value') || $.trim($(cell).text());
+                },
+                numeric: function (cell) {
+                    var val = $(cell).data('value') || $(cell).text().replace(/[^0-9.\-]/g, '');
+                    val = parseFloat(val);
+                    if (isNaN(val)) val = 0;
+                    return val;
                 }
             },
             calculateWidthAndHeightOverride: null,
