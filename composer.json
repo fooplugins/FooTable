@@ -24,7 +24,7 @@
     ],
     "require": {
         "robloach/component-installer": "*",
-        "component/jquery": ">=1.4.4"
+        "components/jquery": ">=1.4.4"
     },
     "extra": {
         "component": {
