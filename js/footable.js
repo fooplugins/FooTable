@@ -556,7 +556,7 @@
                     $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
                         var $next = $(this).next();
                         if ($next.hasClass(cls.detail)) {
-                            if (breakpointName === 'default' && !hasBreakpointFired) $next.hide();
+                            if (!hasBreakpointFired) $next.hide();
                             else $next.show();
                         }
                     });
