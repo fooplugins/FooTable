@@ -25,7 +25,17 @@
             input: '.footable-filter',
             timeout: 300,
             minimum: 2,
-            disableEnter: false
+            disableEnter: false,
+            filterFunction: function(index) {
+                var $t = $(this),
+                    $table = $t.parents('table:first'),
+                    filter = $table.data('current-filter').toUpperCase(),
+                    text = $t.find('td').text(),
+                    data = $t.find('td[data-value]').each(function () {
+                        text += $(this).data('value');
+                    });
+                return text.toUpperCase().indexOf(filter) >= 0;
+            }
         }
     };
 
@@ -91,14 +101,16 @@
                 $table.find('> tbody > tr').hide().addClass('footable-filtered');
                 var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
                 $.each(filters, function (i, f) {
-                    if (f && f.length)
-                        rows = rows.filter('*:ftcontains("' + f + '")');
+                    if (f && f.length) {
+                        $table.data('current-filter', f);
+                        rows = rows.filter(ft.options.filter.filterFunction);
+                    }
                 });
                 rows.each(function () {
                     p.showRow(this, ft);
                     $(this).removeClass('footable-filtered');
                 });
-                ft.raise('footable_filtered', { filter: filterString });
+                ft.raise('footable_filtered', { filter: filterString, clear: false });
             }
         };
 
@@ -106,7 +118,7 @@
             $(ft.table).find('> tbody > tr:not(.footable-row-detail)').removeClass('footable-filtered').each(function () {
                 p.showRow(this, ft);
             });
-            ft.raise('footable_filtered', { cleared: true });
+            ft.raise('footable_filtered', { clear: true });
         };
 
         p.showRow = function (row, ft) {
