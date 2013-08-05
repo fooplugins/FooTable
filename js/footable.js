@@ -593,9 +593,9 @@
                 ft.raise(evt.rowCollapsed, { 'row': actualRow });
 
             } else {
-                var created = ft.createOrUpdateDetailRow(actualRow);
+                ft.createOrUpdateDetailRow(actualRow);
                 $row.addClass(cls.detailShow);
-                $next.show();
+                $row.next().show();
 
                 ft.raise(evt.rowExpanded, { 'row': actualRow });
             }
