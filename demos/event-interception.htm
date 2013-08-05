@@ -6,34 +6,39 @@
           content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
-
     <link href="../css/footable.core.css" rel="stylesheet" type="text/css"/>
-    <link href="../css/footable.standalone.css" rel="stylesheet" type="text/css"/>
-
     <link href="css/footable-demos.css" rel="stylesheet" type="text/css"/>
-
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+    <script>
+        if (!window.jQuery) {
+            document.write('<script src="js/jquery-1.9.1.min.js"><\/script>');
+        }
+    </script>
     <script src="../js/footable.js" type="text/javascript"></script>
     <script src="../js/footable.sort.js" type="text/javascript"></script>
     <script src="../js/footable.filter.js" type="text/javascript"></script>
     <script src="../js/footable.paginate.js" type="text/javascript"></script>
-
     <script src="js/bootstrap-tab.js" type="text/javascript"></script>
+    <script src="js/demos.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="demo-container">
-    <img src="img/footable.png"/>
-
-    <p>FooTable demo showing off how the different events can be intercepted.</p>
+    <ul class="breadcrumb">
+        <li><a href="http://fooplugins.com/plugins/footable">FooTable</a> <span class="divider">&raquo;</span></li>
+        <li><a href="index.htm">Demos</a> <span class="divider">&raquo;</span></li>
+        <li class="active">Event Interception</li>
+    </ul>
+    <div class="alert">
+        FooTable demo showing how the add-on events can be intercepted.
+    </div>
     <ul class="nav nav-tabs">
         <li class="active"><a href="#demo">Demo</a></li>
-        <li><a href="#setup">Setup</a></li>
         <li><a href="#docs">Docs</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="demo">
             Search: <input id="filter" type="text"/>
-            <table class="footable metro-blue" data-page-size="5" data-filter="#filter">
+            <table class="footable table intercept" data-page-size="5" data-filter="#filter">
                 <thead>
                 <tr>
                     <th>
@@ -138,58 +143,105 @@
                 </tfoot>
             </table>
         </div>
-        <div class="tab-pane" id="setup">
-            <ol class="foo-setup">
-                <li><h4>Include FooTable Core CSS</h4>
-                    <pre>&lt;link href=&quot;path_to_your_css/footable.core.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
-                </li>
-                <li><h4>Include FooTable Theme CSS</h4>
-                    <pre>&lt;link href=&quot;path_to_your_css/themes/footable-metro.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
-                </li>
-                <li><h4>Include jQuery</h4>
-                    <pre>&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
-                </li>
-                <li><h4>Include FooTable jQuery Plugin</h4>
-                    <pre>&lt;script src=&quot;path_to_your_js/footable.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
-                </li>
-                <li><h4>Initialize FooTable!</h4>
-						<pre>&lt;script type=&quot;text/javascript&quot;&gt;
-	$(function () {
-		$(&#39;.footable&#39;).footable();
-	});
-&lt;/script&gt;</pre>
-                </li>
-            </ol>
-        </div>
         <div class="tab-pane" id="docs">
-            <h4>FooTable Events</h4>
+            <h4>Events</h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Add-On</th>
+                    <th>Event</th>
+                    <th>Description</th>
+                    <th data-hide="tablet,phone">Parameters</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Sort</td>
+                    <td><code>footable_sorting</code></td>
+                    <td>Fired just before a column is sorted</td>
+                    <td>
+                        <code>column</code> column data for the column being sorted<br/>
+                        <code>direction</code> the direction of the sort ('ASC' or 'DESC')
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sort</td>
+                    <td><code>footable_sorted</code></td>
+                    <td>Fired just after a column is sorted</td>
+                    <td>
+                        <code>column</code> column data for the column that was sorted<br/>
+                        <code>direction</code> the direction of the sort ('ASC' or 'DESC')
+                    </td>
+                </tr>
+                <tr>
+                    <td>Filter</td>
+                    <td><code>footable_filtering</code></td>
+                    <td>Fired just before the table is filtered</td>
+                    <td>
+                        <code>filter</code> the filter string that will be used<br/>
+                        <code>clear</code> if the filter has been cleared (boolean)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Filter</td>
+                    <td><code>footable_filtered</code></td>
+                    <td>Fired after the table has been filtered</td>
+                    <td>
+                        <code>filter</code> the filter string used<br/>
+                        <code>clear</code> if the filter was cleared (boolean)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Paginate</td>
+                    <td><code>footable_paging</code></td>
+                    <td>Fired before the page is changed</td>
+                    <td>
+                        <code>page</code> the new page index<br/>
+                        <code>size</code> the number of rows per page
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <h4>Intercepting Events</h4>
+
+            <p>You can intercept certain FooTable add-on events. If you want to stop the action from happening, then
+                simply return false.</p>
+				<pre>$(&#39;table&#39;).footable().bind({
+		&#39;footable_sorting&#39; : function(e) {
+			return confirm(&#39;Do you want to sort by column: &#39; + e.column.name + &#39;, direction: &#39; + e.direction);
+		},
+		&#39;footable_filtering&#39; : function(e) {
+			if (e.clear) {
+				return confirm(&#39;Do you want to clear the filter?&#39;);
+			} else {
+				return confirm(&#39;Do you want to filter by &#39; + e.filter);
+			}
+		},
+		&#39;footable_paging&#39; : function(e) {
+			return confirm(&#39;Do you want to goto page: &#39; + e.page);
+		}
+	});</pre>
         </div>
     </div>
 </div>
 <script type="text/javascript">
     $(function () {
-        $('table').footable().bind({
-            'footable_sorting' : function(e) {
+        $('table').footable()
+        $('table.intercept').bind({
+            'footable_sorting': function (e) {
                 return confirm('Do you want to sort by column: ' + e.column.name + ', direction: ' + e.direction);
             },
-            'footable_filtering' : function(e) {
+            'footable_filtering': function (e) {
                 if (e.clear) {
                     return confirm('Do you want to clear the filter?');
                 } else {
                     return confirm('Do you want to filter by ' + e.filter);
                 }
             },
-            'footable_paging' : function(e) {
+            'footable_paging': function (e) {
                 return confirm('Do you want to goto page: ' + e.page);
             }
         });
-
-        $('.nav-tabs a').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        }).on('shown', function (e) {
-                    $('.tab-pane.active table').trigger('footable_resize');
-                });
     });
 </script>
 </body>
