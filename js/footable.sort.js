@@ -52,15 +52,11 @@
                         });
 
                         $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).unbind('click.footable').bind('click.footable', function (ec) {
-                            $th = $(this), column = ft.columns[$th.index()];
-                            if (column.sort.ignore === true) return true;
-
-                            $table.data('sorted', column.index);
-
                             ec.preventDefault();
-
-                            $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
-
+							
+							$th = $(this), column = ft.columns[$th.index()];
+                            if (column.sort.ignore === true) return true;
+							
                             var sort = true;
                             var ascending = true;
 
@@ -69,17 +65,21 @@
                                 ascending = false;
                             } else if ($th.hasClass(cls.descending)) {
                                 sort = false;
-                            }
+                            }							
+
+                            //raise a pre-sorting event so that we can cancel the sorting if needed
+                            var event = ft.raise(evt.sorting, { column: column, direction: ascending ? 'ASC' : 'DESC' });
+                            if (event && event.result === false) return;							
+							
+                            $table.data('sorted', column.index);
+
+                            $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
 
                             if (ascending) {
                                 $th.removeClass(cls.descending).addClass(cls.sorted);
                             } else {
                                 $th.removeClass(cls.sorted).addClass(cls.descending);
                             }
-
-                            //raise a pre-sorting event so that we can cancel the sorting if needed
-                            var event = ft.raise(evt.sorting, { column: column, direction: ascending ? 'ASC' : 'DESC' });
-                            if (event && event.result === false) return;
 
                             if (sort) {
                                 p.sort(ft, $tbody, column);
@@ -88,7 +88,7 @@
                             }
 
                             ft.bindToggleSelectors();
-                            ft.raise(evt.sorted, { column: column, ascending: ascending });
+                            ft.raise(evt.sorted, { column: column, direction: ascending ? 'ASC' : 'DESC' });
                             return false;
                         });
 
