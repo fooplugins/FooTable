@@ -85,6 +85,7 @@
   font-variant: normal;
   text-transform: none;
   -webkit-font-smoothing: antialiased;
+  padding-left: 5px;
 }
 .footable > thead > tr > th > span.footable-sort-indicator:before {
   content: "\e006";
