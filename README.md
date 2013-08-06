@@ -110,7 +110,7 @@ All available "data-" attributes are listed below with their descriptions. The "
 
 <h2 id="breakpoints">Breakpoints</h2>
 
-We work with the concepts of "breakpoints", which are different device widths we care about. The default breakpoints are:
+We work with the concepts of "breakpoints", which are different table widths we care about. The default breakpoints are:
 
 ```javascript
 breakpoints: {
@@ -119,13 +119,13 @@ breakpoints: {
 }
 ```
 
-So looking at the markup in the *Data Attribute Configuration* section, you can now tell that the *Job Title*, *DOB* and *Status* columns will be hidden when the screen width is below 480 (phone).
+So looking at the markup in the *Data Attribute Configuration* section, you can now tell that the *Job Title*, *DOB* and *Status* columns will be hidden when the table width is below 480 (phone).
 
 There are also two built-in breakpoints called "default" and "all".
 
-The "default" breakpoint is the fallback breakpoint for when the current screen width is larger than any defined breakpoint. Looking at the above JS snippet the "default" breakpoint would be applied once the screen width is larger than 1024 (tablet).
+The "default" breakpoint is the fallback breakpoint for when the current table width is larger than any defined breakpoint. Looking at the above JS snippet the "default" breakpoint would be applied once the table width is larger than 1024 (tablet).
 
-The last breakpoint "all" is pretty straight forward in it's use. You can always hide a column on any screen width by applying the *data-hide="all"* attribute to the header.
+The last breakpoint "all" is pretty straight forward in it's use. You can always hide a column on any table width by applying the *data-hide="all"* attribute to the header.
 
 <h2 id="usage">Usage</h2>
 
