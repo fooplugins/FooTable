@@ -472,7 +472,10 @@
             return false;
         };
 
-        ft.resize = function () {
+        ft.resize = function (forceResize) {
+            if(typeof forceResize == "undefined") { 
+                forceResize = false; 
+            }
             var $table = $(ft.table);
 
             if (!$table.is(':visible')) { return; } //we only care about FooTables that are visible
@@ -494,7 +497,7 @@
             ft.raise(evt.resizing, { 'old': pinfo, 'info': info });
 
             // This (if) statement is here purely to make sure events aren't raised twice as mobile safari seems to do
-            if (!pinfo || ((pinfo && pinfo.width && pinfo.width !== info.width) || (pinfo && pinfo.height && pinfo.height !== info.height))) {
+            if ((!pinfo || ((pinfo && pinfo.width && pinfo.width !== info.width) || (pinfo && pinfo.height && pinfo.height !== info.height))) || forceResize == true) {
                 var current = null, breakpoint;
                 for (var i = 0; i < ft.breakpoints.length; i++) {
                     breakpoint = ft.breakpoints[i];
