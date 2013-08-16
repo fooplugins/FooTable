@@ -514,7 +514,7 @@
                 $table.data('breakpoint', breakpointName);
 
                 //only do something if the breakpoint has changed
-                if ( breakpointName !== previousBreakpoint ) {
+                if ( breakpointName !== previousBreakpoint || forceResize == true) {
                     $table
                         .find('> tbody > tr:not(.' + cls.detail + ')').data('detail_created', false).end()
                         .removeClass('default breakpoint').removeClass(ft.breakpointNames)
