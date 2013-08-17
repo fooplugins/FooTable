@@ -55,6 +55,9 @@
 .footable.breakpoint > tbody > tr.footable-row-detail {
   background: #eeeeee;
 }
+.footable.breakpoint > tbody > tr.footable-row-detail > .footable-row-detail-cell {
+  border-left: none;
+}
 .footable > tbody img {
   vertical-align: middle;
 }
