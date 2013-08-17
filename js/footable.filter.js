@@ -87,7 +87,11 @@
         p.filter = function (ft, filterString) {
             var $table = $(ft.table);
             var minimum = $table.data('filter-minimum') || ft.options.filter.minimum;
-            var clear = !filterString || filterString.length < minimum;
+            var clear = !filterString;
+
+            if (filterString && filterString.length < minimum) {
+                return; //if we do not have the minimum chars then do nothing
+            }
 
             //raise a pre-filter event so that we can cancel the filtering if needed
             var event = ft.raise('footable_filtering', { filter: filterString, clear: clear });
