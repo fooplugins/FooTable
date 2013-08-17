@@ -95,6 +95,7 @@
             triggers: {
                 initialize: 'footable_initialize',                      //trigger this event to force FooTable to reinitialize
                 resize: 'footable_resize',                              //trigger this event to force FooTable to resize
+                redraw: 'footable_redraw',								//trigger this event to force FooTable to redraw
                 toggleRow: 'footable_toggle_row',                       //trigger this event to force FooTable to toggle a row
                 expandFirstRow: 'footable_expand_first_row'             //trigger this event to force FooTable to expand the first row
             },
@@ -112,7 +113,7 @@
                 rowExpanded: 'footable_row_expanded'                    //fires when a row is expanded
             },
             debug: false, // Whether or not to log information to the console.
-            log : null
+            log: null
         },
 
         version: {
@@ -313,12 +314,17 @@
                     //raise the initialized event
                     ft.raise(evt.initialized);
                 })
+                //bind to FooTable redraw trigger
+                .bind(trg.redraw, function () {
+                    ft.redraw();
+                })
+
                 //bind to FooTable resize trigger
                 .bind(trg.resize, function () {
                     ft.resize();
                 })
                 //bind to FooTable expandFirstRow trigger
-                .bind(trg.expandFirstRow, function() {
+                .bind(trg.expandFirstRow, function () {
                     $table.find(opt.toggleSelector).first().not('.' + cls.detailShow).trigger(trg.toggleRow);
                 });
 
@@ -380,6 +386,9 @@
         //moved this out into it's own function so that it can be called from other add-ons
         ft.bindToggleSelectors = function () {
             var $table = $(ft.table);
+
+            if (!ft.hasAnyBreakpointColumn()) return;
+
             $table.find(opt.toggleSelector).unbind(trg.toggleRow).bind(trg.toggleRow, function (e) {
                 var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
                 ft.toggleDetail($row.get(0));
@@ -437,9 +446,12 @@
 
             data.hide['default'] = ($th.data('hide') === "all") || ($.inArray('default', hide) >= 0);
 
+            var hasBreakpoint = false;
             for (var name in opt.breakpoints) {
                 data.hide[name] = ($th.data('hide') === "all") || ($.inArray(name, hide) >= 0);
+                hasBreakpoint = hasBreakpoint || data.hide[name];
             }
+            data.hasBreakpoint = hasBreakpoint;
             var e = ft.raise(evt.columnData, { 'column': { 'data': data, 'th': th } });
             return e.column.data;
         };
@@ -465,7 +477,18 @@
         ft.hasBreakpointColumn = function (breakpoint) {
             for (var c in ft.columns) {
                 if (ft.columns[c].hide[breakpoint]) {
-                    if (ft.columns[c].ignore) continue;
+                    if (ft.columns[c].ignore) {
+                        continue;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        ft.hasAnyBreakpointColumn = function () {
+            for (var c in ft.columns) {
+                if (ft.columns[c].hasBreakpoint && !ft.columns[c].ignore) {
                     return true;
                 }
             }
@@ -475,7 +498,13 @@
         ft.resize = function () {
             var $table = $(ft.table);
 
-            if (!$table.is(':visible')) { return; } //we only care about FooTables that are visible
+            if (!$table.is(':visible')) {
+                return;
+            } //we only care about FooTables that are visible
+
+            if (!ft.hasAnyBreakpointColumn()) {
+                return;
+            } //we only care about FooTables that have breakpoints
 
             var info = {
                 'width': $table.width(),                  //the table width
@@ -495,6 +524,7 @@
 
             // This (if) statement is here purely to make sure events aren't raised twice as mobile safari seems to do
             if (!pinfo || ((pinfo && pinfo.width && pinfo.width !== info.width) || (pinfo && pinfo.height && pinfo.height !== info.height))) {
+
                 var current = null, breakpoint;
                 for (var i = 0; i < ft.breakpoints.length; i++) {
                     breakpoint = ft.breakpoints[i];
@@ -508,75 +538,85 @@
                     hasBreakpointFired = ft.hasBreakpointColumn(breakpointName),
                     previousBreakpoint = $table.data('breakpoint');
 
-                $table.data('breakpoint', breakpointName);
+                $table
+                    .data('breakpoint', breakpointName)
+                    .removeClass('default breakpoint').removeClass(ft.breakpointNames)
+                    .addClass(breakpointName + (hasBreakpointFired ? ' breakpoint' : ''));
 
                 //only do something if the breakpoint has changed
-                if ( breakpointName !== previousBreakpoint ) {
-                    $table
-                        .find('> tbody > tr:not(.' + cls.detail + ')').data('detail_created', false).end()
-                        .removeClass('default breakpoint').removeClass(ft.breakpointNames)
-                        .addClass(breakpointName + (hasBreakpointFired ? ' breakpoint' : ''))
-                        .find('> thead > tr:last-child > th')
-                        .each(function () {
-                            var data = ft.columns[$(this).index()], selector = '', first = true;
-                            $.each(data.matches, function (m, match) {
-                                if (!first) {
-                                    selector += ', ';
-                                }
-                                var count = match + 1;
-                                selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
-                                selector += ', > tfoot > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
-                                selector += ', > colgroup > col:nth-child(' + count + ')';
-                                first = false;
-                            });
-
-                            selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
-                            var $column = $table.find(selector).add(this);
-                            if (data.hide[breakpointName] === false) $column.show();
-                            else $column.hide();
-
-                            if ($table.find('> thead > tr.footable-group-row').length === 1) {
-                                var $groupcols = $table.find('> thead > tr:last-child > th[data-group="' + data.group + '"]:visible, > thead > tr:last-child > th[data-group="' + data.group + '"]:visible'),
-                                    $group = $table.find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]'),
-                                    groupspan = 0;
-
-                                $.each($groupcols, function () {
-                                    groupspan += parseInt($(this).attr('colspan') || 1, 10);
-                                });
-
-                                if (groupspan > 0) $group.attr('colspan', groupspan).show();
-                                else $group.hide();
-                            }
-                        })
-                        .end()
-                        .find('> tbody > tr.' + cls.detailShow).each(function () {
-                            ft.createOrUpdateDetailRow(this);
-                        });
-
-                    $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
-                        var $next = $(this).next();
-                        if ($next.hasClass(cls.detail)) {
-                            if (!hasBreakpointFired) $next.hide();
-                            else $next.show();
-                        }
-                    });
-
-                    // adding .footable-first-column and .footable-last-column to the first and last th and td of each row in order to allow
-                    // for styling if the first or last column is hidden (which won't work using :first-child or :last-child)
-                    $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column').removeClass('footable-last-column');
-                    $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column').removeClass('footable-first-column');
-                    $table.find('> thead > tr, > tbody > tr')
-                        .find('> th:visible:last, > td:visible:last')
-                        .addClass('footable-last-column')
-                        .end()
-                        .find('> th:visible:first, > td:visible:first')
-                        .addClass('footable-first-column');
-
+                if (breakpointName !== previousBreakpoint) {
+                    //trigger a redraw
+                    $table.trigger(trg.redraw);
+                    //raise a breakpoint event
                     ft.raise(evt.breakpoint, { 'breakpoint': breakpointName, 'info': info });
                 }
             }
 
             ft.raise(evt.resized, { 'old': pinfo, 'info': info });
+        };
+
+        ft.redraw = function () {
+            var $table = $(ft.table),
+                breakpointName = $table.data('breakpoint'),
+                hasBreakpointFired = ft.hasBreakpointColumn(breakpointName);
+
+            $table
+                .find('> tbody > tr:not(.' + cls.detail + ')').data('detail_created', false).end()
+                .find('> thead > tr:last-child > th')
+                .each(function () {
+                    var data = ft.columns[$(this).index()], selector = '', first = true;
+                    $.each(data.matches, function (m, match) {
+                        if (!first) {
+                            selector += ', ';
+                        }
+                        var count = match + 1;
+                        selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
+                        selector += ', > tfoot > tr:not(.' + cls.detail + ') > td:nth-child(' + count + ')';
+                        selector += ', > colgroup > col:nth-child(' + count + ')';
+                        first = false;
+                    });
+
+                    selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
+                    var $column = $table.find(selector).add(this);
+                    if (data.hide[breakpointName] === false) $column.show();
+                    else $column.hide();
+
+                    if ($table.find('> thead > tr.footable-group-row').length === 1) {
+                        var $groupcols = $table.find('> thead > tr:last-child > th[data-group="' + data.group + '"]:visible, > thead > tr:last-child > th[data-group="' + data.group + '"]:visible'),
+                            $group = $table.find('> thead > tr.footable-group-row > th[data-group="' + data.group + '"], > thead > tr.footable-group-row > td[data-group="' + data.group + '"]'),
+                            groupspan = 0;
+
+                        $.each($groupcols, function () {
+                            groupspan += parseInt($(this).attr('colspan') || 1, 10);
+                        });
+
+                        if (groupspan > 0) $group.attr('colspan', groupspan).show();
+                        else $group.hide();
+                    }
+                })
+                .end()
+                .find('> tbody > tr.' + cls.detailShow).each(function () {
+                    ft.createOrUpdateDetailRow(this);
+                });
+
+            $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
+                var $next = $(this).next();
+                if ($next.hasClass(cls.detail)) {
+                    if (!hasBreakpointFired) $next.hide();
+                    else $next.show();
+                }
+            });
+
+            // adding .footable-first-column and .footable-last-column to the first and last th and td of each row in order to allow
+            // for styling if the first or last column is hidden (which won't work using :first-child or :last-child)
+            $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column').removeClass('footable-last-column');
+            $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column').removeClass('footable-first-column');
+            $table.find('> thead > tr, > tbody > tr')
+                .find('> th:visible:last, > td:visible:last')
+                .addClass('footable-last-column')
+                .end()
+                .find('> th:visible:first, > td:visible:first')
+                .addClass('footable-first-column');
         };
 
         ft.toggleDetail = function (actualRow) {
