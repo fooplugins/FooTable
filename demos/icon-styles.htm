@@ -78,7 +78,15 @@
         <p class="change-toggle-style">
             style : [ <a class="active" href="#">default</a> |
             <a href="#">toggle-circle</a> |
-            <a href="#">toggle-circle-arrow</a> ]
+            <a href="#">toggle-circle-filled</a> |
+            <a href="#">toggle-square</a> |
+            <a href="#">toggle-square-filled</a> |
+            <a href="#">toggle-arrow</a> |
+            <a href="#">toggle-arrow-small</a> |
+            <a href="#">toggle-arrow-circle</a> |
+            <a href="#">toggle-arrow-circle-filled</a> |
+            <a href="#">toggle-arrow-tiny</a> |
+            <a href="#">toggle-arrow-alt</a> ]
         </p>
         <p class="change-toggle-style">
             size : [ <a class="active" href="#">default</a> |
@@ -90,7 +98,7 @@
 			<li><a href="#docs">Docs</a></li>
 		</ul>
 		<div class="tab-content">
-			<div class="tab-pane active" id="demo">  
+			<div class="tab-pane active" id="demo">
 				<table class="table demo" data-filter="#filter" data-page-size="5" data-page-previous-text="prev" data-page-next-text="next">
 					<thead>
 						<tr>
@@ -229,7 +237,7 @@
     <script type="text/javascript">
         $(function () {
 			$('table').footable();
-			
+
             $('.change-toggle-style a').click(function (e) {
                 e.preventDefault();
 
@@ -247,6 +255,6 @@
                 });
             });
         });
-    </script>	
+    </script>
 </body>
 </html>
