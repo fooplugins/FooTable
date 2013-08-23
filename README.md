@@ -7,7 +7,7 @@ FooTable is a jQuery plugin that aims to make HTML tables on smaller devices loo
 [WordPress Plugin (free)](http://fooplugins.com/plugins/footable-lite/) |
 [Demos](http://fooplugins.com/footable-demos/)
 
-![FooTable](https://raw.github.com/bradvin/FooTable/master/screenshot.jpg "FooTable")
+![FooTable](https://raw.github.com/bradvin/FooTable/V2/screenshot.jpg "FooTable")
 
 Features
 --------
