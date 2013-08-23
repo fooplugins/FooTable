@@ -30,6 +30,7 @@
                     return val;
                 }
             },
+            addRowToggle: true,
             calculateWidthAndHeightOverride: null,
             toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
             columnDataSelector: '> thead > tr:last-child > th, > thead > tr:last-child > td', //the selector used to find the column data in the thead
@@ -336,6 +337,8 @@
         };
 
         ft.addRowToggle = function () {
+            if (!opt.addRowToggle) return;
+
             var $table = $(ft.table),
                 hasToggleColumn = false;
 
