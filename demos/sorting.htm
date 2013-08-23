@@ -31,7 +31,12 @@
 			<li><a href="#docs">Docs</a></li>
 		</ul>
 		<div class="tab-content">
-			<div class="tab-pane active" id="demo">  
+			<div class="tab-pane active" id="demo">
+                Sort by
+                <a href="#sort" class="sort-column" data-index="0">ID</a> |
+                <a href="#sort" class="sort-column" data-index="1">First</a> |
+                <a href="#sort" class="sort-column" data-index="4">DOB</a> |
+                <a href="#sort" class="sort-column" data-index="5">Status</a>
 				<table class="table demo">
 					<thead>
 						<tr>
@@ -154,14 +159,15 @@
                 <p>To sort numeric data, you must specify that the column is <code>data-type="numeric"</code></p>
                 <h4>Sorting Dates</h4>
                 <p>To sort dates, you must specify that the column is <code>data-type="numeric"</code> and also specify a <code>data-value</code> value for each cell, which can be either the date value in ticks or the unix timestamp value, e.g. <code>&lt;td data-value=&quot;500874333932&quot;&gt;15 Nov 1985&lt;/td&gt;</code></p>
-                <h4>Disable Sorting</h4>
+                <h4>Disable Sorting On Entire Table</h4>
                 <p>You can disable sorting for a table by adding the data attribute <code>data-sort="false"</code> to the table.</p>
-                <h4>Sorting Data Attributes</h4>
-                <p><code>data-sort-ignore="true"</code> will disable sorting for the column.</p>
-                <p><code>data-sort-initial="true"</code> will automatically sort this column when the FooTable is initialized.</p>
-                <p><code>data-sort-initial="descending"</code> will automatically sort this column in descending order when the FooTable is initialized.</p>
-                <p>
-                    <pre>&lt;table class=&quot;table demo&quot;&gt;
+                <h4>Disable Sorting For Certain Columns</h4>
+                <p>You can disable sorting for specific columns by adding the data attribute <code>data-sort-ignore="true"</code> to the column header definition.</p>
+                <h4>Initial Sorting</h4>
+                <p>You can sort a table automatically when the FooTable is initialized by adding some data attributes to your columns:</p>
+                <p><code>data-sort-initial="true"</code> will automatically sort the column when the FooTable is initialized.</p>
+                <p><code>data-sort-initial="descending"</code> will automatically sort the column in descending order when the FooTable is initialized.</p>
+                <pre>&lt;table class=&quot;table demo&quot;&gt;
 	&lt;thead&gt;
 		&lt;tr&gt;
 			&lt;th data-type=&quot;numeric&quot; data-sort-initial=&quot;true&quot;&gt;
@@ -173,38 +179,45 @@
 			&lt;th data-sort-ignore=&quot;true&quot;&gt;
 				Last Name
 			&lt;/th&gt;
-			&lt;th data-hide=&quot;phone,tablet&quot;&gt;
-				Job Title
-			&lt;/th&gt;
-			&lt;th data-type=&quot;numeric&quot; data-hide=&quot;phone,tablet&quot;&gt;
-				DOB
-			&lt;/th&gt;
-			&lt;th data-hide=&quot;phone&quot;&gt;
-				Status
-			&lt;/th&gt;
 		&lt;/tr&gt;
 	&lt;/thead&gt;</pre>
-                </p>
+                <h4>Sorting API</h4>
+                <p>You can also programmatically sort your table:</p>
+                <pre>
+$(&#39;.sort-column&#39;).click(function (e) {
+    e.preventDefault();
+
+    //get the footable sort object
+    var footableSort = $(&#39;table&#39;).data(&#39;footable-sort&#39;);
+
+    //get the index we are wanting to sort by
+    var index = $(this).data(&#39;index&#39;);
+
+    //get the sort order
+    var ascending = $(this).data('ascending');
+
+    footableSort.doSort(index, ascending);
+});</pre>
+                <p>If you do not pass a sort order, it will toggle whatever the current sort order is.</p>
 			</div>
 		</div>
 	</div>
     <script type="text/javascript">
         $(function () {
 			$('table').footable();
-			
-            $('.clear-filter').click(function (e) {
-                e.preventDefault();
-                $('table.demo').trigger('footable_clear_filter');
-				$('.filter-status').val('');
-            });
 
-            $('.filter-status').change(function (e) {
+            $('.sort-column').click(function (e) {
                 e.preventDefault();
-				var filter = $(this).val();
-                $('#filter').val($(this).text());
-                $('table.demo').trigger('footable_filter', {filter: filter});
-            });			
+
+                //get the footable sort object
+                var footableSort = $('table').data('footable-sort');
+
+                //get the index we are wanting to sort by
+                var index = $(this).data('index');
+
+                footableSort.doSort(index);
+            });
         });
-    </script>	
+    </script>
 </body>
 </html>

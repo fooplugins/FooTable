@@ -34,6 +34,7 @@
         var p = this;
         p.name = 'Footable Sortable';
         p.init = function (ft) {
+            p.footable = ft;
             if (ft.options.sort === true) {
                 $(ft.table).bind({
                     'footable_initialized': function (e) {
@@ -56,7 +57,7 @@
                             ec.preventDefault();
                             $th = $(this);
                             var ascending = !$th.hasClass(cls.sorted);
-                            p.doSort(ft, $th.index(), ascending);
+                            p.doSort($th.index(), ascending);
                             return false;
                         });
 
@@ -64,16 +65,8 @@
                         for (var c in ft.columns) {
                             column = ft.columns[c];
                             if (column.sort.initial) {
-                                p.sort(ft, $tbody, column);
-                                didSomeSorting = true;
-                                $th = $table.find('> thead > tr:last-child > th:eq(' + c + '), > thead > tr:last-child > td:eq(' + c + ')');
-
-                                if (column.sort.initial === 'descending') {
-                                    p.reverse(ft, $tbody);
-                                    $th.addClass(cls.descending);
-                                } else {
-                                    $th.addClass(cls.sorted);
-                                }
+                                var ascending = (column.sort.initial !== 'descending');
+                                p.doSort(column.index, ascending);
                                 break;
                             }
                         }
@@ -88,7 +81,7 @@
                             $table.find('> thead > tr:last-child > th').each(function(i){
                                 var $th = $(this);
                                 if ($th.hasClass(cls.sorted) || $th.hasClass(cls.descending)) {
-                                    p.doSort(ft, i);
+                                    p.doSort(i);
                                     return;
                                 }
                             });
@@ -105,11 +98,14 @@
                         if (match >= e.column.data.matches.length) match = 0;
                         e.column.data.sort.match = e.column.data.matches[match];
                     }
-                });
+                })
+                //save the sort object onto the table so we can access it later
+                .data('footable-sort', p);;
             }
         };
 
-        p.doSort = function(ft, columnIndex, ascending) {
+        p.doSort = function(columnIndex, ascending) {
+            var ft = p.footable;
             if ($(ft.table).data('sort') === false) return;
 
             var $table = $(ft.table),
@@ -118,6 +114,8 @@
                 $th = $table.find('> thead > tr:last-child > th:eq(' + columnIndex + ')'),
                 cls = ft.options.classes.sort,
                 evt = ft.options.events.sort;
+
+            ascending = (ascending === undefined) ? !$th.hasClass(cls.sorted) : ascending;
 
             if (column.sort.ignore === true) return true;
 
