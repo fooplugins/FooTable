@@ -105,12 +105,14 @@
                 initialized: 'footable_initialized',                    //fires after FooTable has finished initializing
                 resizing: 'footable_resizing',                          //fires before FooTable resizes
                 resized: 'footable_resized',                            //fires after FooTable has resized
+                redrawn: 'footable_redrawn',                            //fires after FooTable has redrawn
                 breakpoint: 'footable_breakpoint',                      //fires inside the resize function, when a breakpoint is hit
                 columnData: 'footable_column_data',                     //fires when setting up column data. Plugins should use this event to capture their own info about a column
                 rowDetailUpdating: 'footable_row_detail_updating',      //fires before a detail row is updated
                 rowDetailUpdated: 'footable_row_detail_updated',        //fires when a detail row is being updated
                 rowCollapsed: 'footable_row_collapsed',                 //fires when a row is collapsed
-                rowExpanded: 'footable_row_expanded'                    //fires when a row is expanded
+                rowExpanded: 'footable_row_expanded',                   //fires when a row is expanded
+                rowRemoved: 'footable_row_removed'                      //fires when a row is removed
             },
             debug: false, // Whether or not to log information to the console.
             log: null
@@ -187,7 +189,8 @@
         var o = $.extend(true, {}, w.footable.options, options); //merge user and default options
         return this.each(function () {
             instanceCount++;
-            this.footable = new Footable(this, o, instanceCount);
+            var footable = new Footable(this, o, instanceCount);
+			$(this).data('footable', footable);
         });
     };
 
@@ -293,23 +296,14 @@
                     $table.removeData('footable_info');
                     $table.data('breakpoint', '');
 
-                    //add the toggler to each row
-                    ft.addRowToggle();
-
-                    //bind the toggle selector click events
-                    ft.bindToggleSelectors();
-
-                    //set any cell classes defined for the columns
-                    ft.setColumnClasses();
+                    //trigger the FooTable resize
+                    $table.trigger(trg.resize);
 
                     //remove the loading class
                     $table.removeClass(cls.loading);
 
                     //add the FooTable and loaded class
                     $table.addClass(cls.loaded).addClass(cls.main);
-
-                    //trigger the FooTable resize
-                    $table.trigger(trg.resize);
 
                     //raise the initialized event
                     ft.raise(evt.initialized);
@@ -488,7 +482,7 @@
 
         ft.hasAnyBreakpointColumn = function () {
             for (var c in ft.columns) {
-                if (ft.columns[c].hasBreakpoint && !ft.columns[c].ignore) {
+                if (ft.columns[c].hasBreakpoint) {
                     return true;
                 }
             }
@@ -556,6 +550,15 @@
         };
 
         ft.redraw = function () {
+            //add the toggler to each row
+            ft.addRowToggle();
+
+            //bind the toggle selector click events
+            ft.bindToggleSelectors();
+
+            //set any cell classes defined for the columns
+            ft.setColumnClasses();
+
             var $table = $(ft.table),
                 breakpointName = $table.data('breakpoint'),
                 hasBreakpointFired = ft.hasBreakpointColumn(breakpointName);
@@ -617,6 +620,8 @@
                 .end()
                 .find('> th:visible:first, > td:visible:first')
                 .addClass('footable-first-column');
+
+            ft.raise(evt.redrawn);
         };
 
         ft.toggleDetail = function (actualRow) {
@@ -639,6 +644,30 @@
 
                 ft.raise(evt.rowExpanded, { 'row': actualRow });
             }
+        };
+
+        ft.removeRow = function (row) {
+            var $row = (row.jquery) ? row : $(row);
+            if ($row.hasClass(cls.detail)) {
+                $row = $row.prev();
+            }
+            var $next = $row.next();
+            if ($row.data('detail_created') === true) {
+                //remove the detail row
+                $next.remove();
+            }
+            $row.remove();
+
+            //raise event
+            ft.raise(evt.rowRemoved);
+        };
+
+        ft.appendRow = function (row) {
+            var $row = (row.jquery) ? row : $(row);
+            $(ft.table).find('tbody').append($row);
+
+            //redraw the table
+            ft.redraw();
         };
 
         ft.getColumnFromTdIndex = function (index) {
