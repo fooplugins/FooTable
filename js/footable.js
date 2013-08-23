@@ -624,8 +624,8 @@
             ft.raise(evt.redrawn);
         };
 
-        ft.toggleDetail = function (actualRow) {
-            var $row = $(actualRow),
+        ft.toggleDetail = function (row) {
+            var $row = (row.jquery) ? row : $(row),
                 $next = $row.next();
 
             //check if the row is already expanded
@@ -635,14 +635,14 @@
                 //only hide the next row if it's a detail row
                 if ($next.hasClass(cls.detail)) $next.hide();
 
-                ft.raise(evt.rowCollapsed, { 'row': actualRow });
+                ft.raise(evt.rowCollapsed, { 'row': $row[0] });
 
             } else {
-                ft.createOrUpdateDetailRow(actualRow);
+                ft.createOrUpdateDetailRow($row[0]);
                 $row.addClass(cls.detailShow);
                 $row.next().show();
 
-                ft.raise(evt.rowExpanded, { 'row': actualRow });
+                ft.raise(evt.rowExpanded, { 'row': $row[0] });
             }
         };
 
