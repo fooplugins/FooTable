@@ -79,6 +79,13 @@
                                 p.filter(ft, val);
                             }, data.timeout);
                         });
+                    },
+                    'footable_redrawn': function (e) {
+                        var $table = $(ft.table),
+                            filter = $table.data('filter-string');
+                        if (filter) {
+                            p.filter(ft, filter);
+                        }
                     }
                 });
             }
@@ -114,6 +121,7 @@
                     p.showRow(this, ft);
                     $(this).removeClass('footable-filtered');
                 });
+                $table.data('filter-string', filterString);
                 ft.raise('footable_filtered', { filter: filterString, clear: false });
             }
         };
@@ -122,6 +130,7 @@
             $(ft.table).find('> tbody > tr:not(.footable-row-detail)').removeClass('footable-filtered').each(function () {
                 p.showRow(this, ft);
             });
+            $(ft.table).removeData('filter-string');
             ft.raise('footable_filtered', { clear: true });
         };
 
