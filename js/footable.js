@@ -407,7 +407,9 @@
         ft.getColumnData = function (th) {
             var $th = $(th), hide = $th.data('hide'), index = $th.index();
             hide = hide || '';
-            hide = hide.split(',');
+            hide = jQuery.map(hide.split(','), function (a) {
+                return jQuery.trim(a);
+            });
             var data = {
                 'index': index,
                 'hide': { },
