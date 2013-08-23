@@ -31,7 +31,7 @@
 			<li><a href="#docs">Docs</a></li>
 		</ul>
 		<div class="tab-content">
-			<div class="tab-pane active" id="demo">  
+			<div class="tab-pane active" id="demo">
 			<p>
 				Search: <input id="filter" type="text"/>
 				Status: <select class="filter-status">
@@ -41,6 +41,7 @@
 					<option value="suspended">Suspended</option>
 				</select>
 				<a href="#clear" class="clear-filter" title="clear filter">[clear]</a>
+                <a href="#api" class="filter-api" title="Filter using the Filter API">[filter API]</a>
 			</p>
 				<table class="table demo" data-filter="#filter" data-page-size="5" data-page-previous-text="prev" data-page-next-text="next">
 					<thead>
@@ -157,13 +158,31 @@
                 <p>You can also clear the filter with a "trigger":
                     <pre>$(&#39;table&#39;).trigger(&#39;footable_clear_filter&#39;);</pre>
                 </p>
+                <h4>Filtering API</h4>
+                <p>You can also programmatically filter your table:</p>
+                <pre>
+$(&#39;.filter-api&#39;).click(function (e) {
+    e.preventDefault();
+
+    //get the footable filter object
+    var footableFilter = $(&#39;table&#39;).data(&#39;footable-filter&#39;);
+
+    alert(&#39;about to filter table by &quot;tech&quot;&#39;);
+    //filter by &#39;tech&#39;
+    footableFilter.filter(&#39;tech&#39;);
+
+    //clear the filter
+    if (confirm(&#39;clear filter now?&#39;)) {
+        footableFilter.clearFilter();
+    }
+});</pre>
 			</div>
 		</div>
 	</div>
     <script type="text/javascript">
         $(function () {
 			$('table').footable();
-			
+
             $('.clear-filter').click(function (e) {
                 e.preventDefault();
                 $('table.demo').trigger('footable_clear_filter');
@@ -173,10 +192,25 @@
             $('.filter-status').change(function (e) {
                 e.preventDefault();
 				var filter = $(this).val();
-                $('#filter').val($(this).text());
                 $('table.demo').trigger('footable_filter', {filter: filter});
-            });			
+            });
+
+            $('.filter-api').click(function (e) {
+                e.preventDefault();
+
+                //get the footable filter object
+                var footableFilter = $('table').data('footable-filter');
+
+                alert('about to filter table by "tech"');
+                //filter by 'tech'
+                footableFilter.filter('tech');
+
+                //clear the filter
+                if (confirm('clear filter now?')) {
+                    footableFilter.clearFilter();
+                }
+            });
         });
-    </script>	
+    </script>
 </body>
 </html>

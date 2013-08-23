@@ -43,6 +43,7 @@
         var p = this;
         p.name = 'Footable Filter';
         p.init = function (ft) {
+            p.footable = ft;
             if (ft.options.filter.enabled === true) {
                 ft.timers.register('filter');
                 $(ft.table).bind({
@@ -64,10 +65,10 @@
                         }
                         $table.bind('footable_clear_filter', function () {
                             $(data.input).val('');
-                            p.clearFilter(ft);
+                            p.clearFilter();
                         });
                         $table.bind('footable_filter', function (event, args) {
-                            p.filter(ft, args.filter);
+                            p.filter(args.filter);
                         });
                         $(data.input).keyup(function (eve) {
                             ft.timers.filter.stop();
@@ -76,7 +77,7 @@
                             }
                             ft.timers.filter.start(function () {
                                 var val = $(data.input).val() || '';
-                                p.filter(ft, val);
+                                p.filter(val);
                             }, data.timeout);
                         });
                     },
@@ -84,17 +85,20 @@
                         var $table = $(ft.table),
                             filter = $table.data('filter-string');
                         if (filter) {
-                            p.filter(ft, filter);
+                            p.filter(filter);
                         }
                     }
-                });
+                })
+                //save the filter object onto the table so we can access it later
+                .data('footable-filter', p);
             }
         };
 
-        p.filter = function (ft, filterString) {
-            var $table = $(ft.table);
-            var minimum = $table.data('filter-minimum') || ft.options.filter.minimum;
-            var clear = !filterString;
+        p.filter = function (filterString) {
+            var ft = p.footable,
+                $table = $(ft.table),
+                minimum = $table.data('filter-minimum') || ft.options.filter.minimum,
+                clear = !filterString;
 
             if (filterString && filterString.length < minimum) {
                 return; //if we do not have the minimum chars then do nothing
@@ -105,7 +109,7 @@
             if (event && event.result === false) return;
 
             if (clear) {
-                p.clearFilter(ft);
+                p.clearFilter();
             } else {
                 var filters = filterString.split(' ');
 
@@ -126,11 +130,14 @@
             }
         };
 
-        p.clearFilter = function (ft) {
-            $(ft.table).find('> tbody > tr:not(.footable-row-detail)').removeClass('footable-filtered').each(function () {
+        p.clearFilter = function () {
+            var ft = p.footable,
+                $table = $(ft.table);
+
+            $table.find('> tbody > tr:not(.footable-row-detail)').removeClass('footable-filtered').each(function () {
                 p.showRow(this, ft);
             });
-            $(ft.table).removeData('filter-string');
+            $table.removeData('filter-string');
             ft.raise('footable_filtered', { clear: true });
         };
 
