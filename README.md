@@ -3,53 +3,58 @@ FooTable
 
 FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome - No matter how many columns of data you may have in them.
 
+[Home Page](http://fooplugins.com/plugins/footable-jquery "Visit the FooTable Homepage") |
+[WordPress Plugin (free)](http://fooplugins.com/plugins/footable-lite/) |
+[Demos](http://fooplugins.com/footable-demos/)
+
 ![FooTable](https://raw.github.com/bradvin/FooTable/master/screenshot.jpg "FooTable")
 
-FooTable also now has a sorting and filtering add-on. Footable also works with jQuery 1.4.4 and above!
+Features
+--------
 
-Index
------
+* Hide certain columns at different sizes
+* Configuration via data attributes
+* Built to work with Bootstrap
+* Easy to theme
+* Sorting
+* Filtering
+* Pagination
+* Easy to extend with add-ons
 
-* [What does it do?](#whatdoesitdo)
-* [Demo](#demo)
-* [Data Attribute Configuration](#dataattributeconfig)
-* [Breakpoints](#breakpoints)
-* [Usage](#usage)
-* [Extensible](#extensible)
-  * [Parsers](#parsers)
-* [Thanks](#thanks)
-
-<h2 id="whatdoesitdo">What does it do?</h2>
+What Is FooTable?
+-----------------
 
 FooTable transforms your HTML tables into expandable responsive tables. This is how it works:
 
 1. It hides certain columns of data at different resolutions (we call these breakpoints).
-2. Rows become expandable to show the data that was hidden.
+2. Rows become expandable to reveal any hidden data.
 
-So simple! So all the data that is hidden can always be seen just by clicking the row.
+So simple! Any hidden data can always be seen just by clicking the row.
 
-<h2 id="demo">Demo</h2>
+Demos
+-----
 
-Check out the [FooTable homepage](http://themergency.com/footable/) where we will be adding more demos, including the responsive demo!
+Check out the growing number of [FooTable demos](http://fooplugins.com/footable-demos/) (with built-in documentation!)
 
-<h2 id="dataattributeconfig">Data Attribute Configuration</h2>
+Data Attribute Configuration
+----------------------------
 
-One of the main goals of FooTable was to make it completely configurable via data attributes inside the table. We wanted you to be able to look at the HTML markup and see exactly how the FooTable was going to function. Take a look at this markup for example:
+One of the main goals of FooTable was to make it completely configurable via data attributes. We wanted you to be able to look at the HTML markup and see exactly how the FooTable was going to function. Take a look at this markup for example:
 
 ```html
-<table class="footable">
+<table class="footable" data-filter="#filter" data-page-size="5">
   <thead>
     <tr>
-      <th data-class="expand">
+      <th data-toggle="true">
         First Name
       </th>
-      <th>
+      <th data-sort-ignore="true">
         Last Name
       </th>
       <th data-hide="phone,tablet">
         Job Title
       </th>
-      <th data-hide="phone,tablet">
+      <th data-hide="phone,tablet" data-name="Date Of Birth">
         DOB
       </th>
       <th data-hide="phone">
@@ -59,58 +64,12 @@ One of the main goals of FooTable was to make it completely configurable via dat
   </thead>
 ```
 
-So you can immediately see that certain columns will be hidden on phones and tablets. We are also going to assign all cells in the first column with a class of "expand" - this is used to style the cool plus/minus icons in the demo.
+All available data attributes are listed in the [data attributes demo](http://fooplugins.com/footable-demos/?url=http://fooplugins.com/footable/demos/data-attributes.htm)
 
-All available "data-" attributes are listed below with their descriptions. The "Applied To" column specifies whether the attribute should be added to the table header cells or body cells.
+Breakpoints
+-----------
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Values</th>
-    <th>Applied To</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td style="white-space:nowrap;">data-class</td>
-    <td style="white-space:nowrap;">CSS Class</td>
-    <td>header</td>
-    <td>This specifies a CSS class to be applied to all cells in a column.</td>
-  </tr>
-  <tr>
-    <td style="white-space:nowrap;">data-hide</td>
-    <td style="white-space:nowrap;"><a href="#breakpoints">breakpoint</a> | default</td>
-    <td>header</td>
-    <td>This specifies at which breakpoints to hide a column. Seperate multiple using a comma.</td>
-  </tr>
-  <tr>
-    <td style="white-space:nowrap;">data-ignore</td>
-    <td style="white-space:nowrap;">true | false</td>
-    <td>header</td>
-    <td>This will stop the column being included in the detail row creation.</td>
-  </tr>
-  <tr>
-    <td style="white-space:nowrap;">data-name</td>
-    <td style="white-space:nowrap;">String</td>
-    <td>header</td>
-    <td>This will override the name of the column in the detail row.</td>
-  </tr>
-  <tr>
-    <td style="white-space:nowrap;">data-type</td>
-    <td style="white-space:nowrap;"><a href="#parsers">parser</a> | alpha</td>
-    <td>header</td>
-    <td>This specifies the parser to use to retrieve a cell's value.</td>
-  </tr>
-  <tr>
-    <td style="white-space:nowrap;">data-value</td>
-    <td style="white-space:nowrap;">Any</td>
-    <td>body</td>
-    <td>This specifies a value to use other than the text of the cell.</td>
-  </tr>
-</table>
-
-<h2 id="breakpoints">Breakpoints</h2>
-
-We work with the concepts of "breakpoints", which are different table widths we care about. The default breakpoints are:
+FooTable works with the concepts of "breakpoints", which are different table widths we care about. The default breakpoints are:
 
 ```javascript
 breakpoints: {
@@ -125,11 +84,12 @@ There are also two built-in breakpoints called "default" and "all".
 
 The "default" breakpoint is the fallback breakpoint for when the current table width is larger than any defined breakpoint. Looking at the above JS snippet the "default" breakpoint would be applied once the table width is larger than 1024 (tablet).
 
-The last breakpoint "all" is pretty straight forward in it's use. You can always hide a column on any table width by applying the *data-hide="all"* attribute to the header.
+The "all" breakpoint is pretty straight forward in it's use. You can always hide a column on any table width by applying the *data-hide="all"* attribute to the header.
 
-<h2 id="usage">Usage</h2>
+Usage
+-----
 
-Create a simple table (don't forget to set the data attributes for each column!):
+Create a simple table (don't forget to set the data attributes for each column in your thead!):
 
 ```html
 <table class="footable">
@@ -160,112 +120,69 @@ Create a simple table (don't forget to set the data attributes for each column!)
 </table>
 ```
 
-Then include the FooTable CSS and JS in your page head:
+1. **Include FooTable Core CSS**
 
-```html
-<link href="css/footable-0.1.css" rel="stylesheet" type="text/css" />
-<!-- obviously you have jQuery already included -->
-<script src="js/footable.js" type="text/javascript"></script>
+   ```html
+<link href="path_to_your_css/footable.core.css" rel="stylesheet" type="text/css" />
 ```
 
-And finally, call the FooTable plugin:
+2. **[optional] Include FooTable Theme CSS**
 
-```html
+   > FooTable is now built to work with [Twitter Bootstrap](http://twitter.github.io/bootstrap) out of the box - WOOT!
+
+   You can use one of our built-in themes if you want:
+
+   ```html
+<link href="path_to_your_css/footable.metro.css" rel="stylesheet" type="text/css" />
+```
+
+   Check out the [metro theme demo](http://fooplugins.com/footable-demos/?url=http://fooplugins.com/footable/demos/metro-theme.htm) or the [original theme demo](http://fooplugins.com/footable-demos/?url=http://fooplugins.com/footable/demos/old-theme.htm).
+
+3. **Include jQuery**
+
+    ```html
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+```
+
+4. **Include FooTable jQuery Plugin**
+
+    ```html
+<script src="path_to_your_js/footable.js" type="text/javascript"></script>
+```
+
+5. **Initialize FooTable!**
+
+   ```html
 <script type="text/javascript">
-  $(function() {
-    $('.footable').footable();
-  });
+    $(function () {
+
+        $('.footable').footable();
+
+    });
 </script>
 ```
 
-<h2 id="extensible">Extensible</h2>
+Extensible
+----------
 
-Another goal of FooTable was to make it super extensible. If you look at the code you will see that there is a plugin framework within the plugin, so extra mods can be attached just by including another javascript file. We also didn't want to bloat FooTable, so you can only use what you need and leave out everything else. 
+Another goal of FooTable was to make it easily extensible. If you look at the code you will see that there is a plugin framework within the plugin, so extra mods can be attached just by including another javascript file.
+
+We also didn't want to bloat FooTable, so you can only use what you need and leave out everything else.
 
 Working add-ons:
 
 * sorting
 * filtering
+* pagination
 
-Othere add-on ideas so far are:
+Other add-on ideas so far are:
 
 * conditional formatting
 * json loading
+* column picker
 
-<h3 id="parsers">Parsers</h3>
-
-Parsers are the heart of FooTable as data is what we are displaying and working with and due to this they are highly extensible. They are used to retrieve values from cells or alternatively from a "data-value" attribute.
-By default there is only an "alpha" parser and this will be used unless a custom parser is implemented and a column is set to use it via the "data-type" attribute.
-
-The below is the very simple "alpha" parser used by default to retrieve a cell's value:
-
-```javascript
-alpha: function (cell) {
-  return $(cell).data('value') || $.trim($(cell).text());
-}
-```
-
-The below is an example of a numeric parser and how to apply it (these can be wrapped up in a plugin; see the sortable plugin):
-
-```html
-<script type="text/javascript">
-  $(function() {
-    $('.footable').footable({
-      parsers: {
-        numeric: function (cell) {
-          var val = $(cell).data('value') || $(cell).text().replace(/[^0-9.-]/g, '');
-          val = parseFloat(val);
-          if (isNaN(val)) val = 0;
-          return val;
-        }
-      }
-    });
-  });
-</script>
-```
-
-```html
-<table class="footable">
-  <thead>
-    <tr>
-      <th data-type="numeric">
-        Count
-      </th>
-      ...
-    </tr>
-  </thead>
-  ...
-```
-
-As you can see in the snippet for the "numeric" parser, like the "alpha" parser, they both check for a "data-value" attribute and will use this value before using a cell's text.
-
-An example of this could look like the below, where you want to display the name of a number instead of the actual value:
-
-```html
-<table class="footable">
-  <thead>
-    <tr>
-      <th data-type="numeric">
-        Count
-      </th>
-      ...
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td data-value="0">Zero</td>
-      ...
-    </tr>
-    <tr>
-      <td data-value="1">One</td>
-      ...
-    </tr>
-    ...
-  </tbody>
-  ...
-```
-
-<h2 id="thanks">Thanks</h2>
+Thanks
+------
 
 We would not have created FooTable without inspiration from others. Thanks must be given to:
 
