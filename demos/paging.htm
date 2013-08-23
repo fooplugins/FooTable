@@ -31,7 +31,7 @@
 			<li><a href="#docs">Docs</a></li>
 		</ul>
 		<div class="tab-content">
-			<div class="tab-pane active" id="demo">  
+			<div class="tab-pane active" id="demo">
 				<table class="table demo" data-page-size="5">
 					<thead>
 						<tr>
@@ -148,7 +148,7 @@
 	&lt;tfoot&gt;
 		&lt;tr&gt;
 			&lt;td colspan=&quot;5&quot;&gt;
-				&lt;div class=&quot;pagination pagination-centered&quot;&gt;&lt;/div&gt;
+				&lt;div class=&quot;pagination pagination-centered hide-if-no-paging&quot;&gt;&lt;/div&gt;
 			&lt;/td&gt;
 		&lt;/tr&gt;
 	&lt;/tfoot&gt;
@@ -162,13 +162,27 @@
                     <li><code>data-page-next-text="next"</code> (default is &rsaquo;)</li>
                     <li><code>data-page-last-text="last"</code> (default is &raquo;)</li>
                 </ul>
+                <h4>Hide Pagination When There Is Only 1 Page</h4>
+                <p>You can easily hide the pagination control by adding <code>class="hide-if-no-paging"</code> (see above code sample).</p>
+                <p>To see this in action, check out the <a href="add-delete-row.htm">Add / Delete row demo</a> and delete a few rows to see the pagination control disappear.</p>
+                <p>If you want to hide the entire table footer, then add the class to the tfoot element instead:</p>
+                <p><pre>	&lt;/tbody&gt;
+	&lt;tfoot class=&quot;hide-if-no-paging&quot;&gt;
+		&lt;tr&gt;
+			&lt;td colspan=&quot;5&quot;&gt;
+				&lt;div class=&quot;pagination pagination-centered&quot;&gt;&lt;/div&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tfoot&gt;
+&lt;/table&gt;</pre></p>
+                <p>Add the class to anything you want to hide within the table when no paging is needed.</p>
 			</div>
 		</div>
 	</div>
     <script type="text/javascript">
         $(function () {
 			$('table').footable();
-			
+
             $('.clear-filter').click(function (e) {
                 e.preventDefault();
                 $('table.demo').trigger('footable_clear_filter');
@@ -180,8 +194,8 @@
 				var filter = $(this).val();
                 $('#filter').val($(this).text());
                 $('table.demo').trigger('footable_filter', {filter: filter});
-            });			
+            });
         });
-    </script>	
+    </script>
 </body>
 </html>
