@@ -100,7 +100,7 @@
                     }
                 })
                 //save the sort object onto the table so we can access it later
-                .data('footable-sort', p);;
+                .data('footable-sort', p);
             }
         };
 
