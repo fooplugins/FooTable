@@ -1,7 +1,7 @@
 ﻿/*!
  * FooTable - Awesome Responsive Tables
- * Version : 0.5
- * http://themergency.com/footable
+ * Version : 2.0
+ * http://fooplugins.com/plugins/footable-jquery/
  *
  * Requires jQuery - http://jquery.com/
  *
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * You are free to use FooTable in commercial projects as long as this copyright header is left intact.
  *
- * Date: 22 Apr 2013
+ * Date: 23 Aug 2013
  */
 (function ($, w, undefined) {
     w.footable = {
