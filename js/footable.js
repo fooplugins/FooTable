@@ -84,6 +84,7 @@
                 loading: 'footable-loading',
                 loaded: 'footable-loaded',
                 toggle: 'footable-toggle',
+                disabled: 'footable-disabled',
                 detail: 'footable-row-detail',
                 detailCell: 'footable-row-detail-cell',
                 detailInner: 'footable-row-detail-inner',
@@ -349,7 +350,7 @@
                 var col = ft.columns[c];
                 if (col.toggle) {
                     hasToggleColumn = true;
-                    var selector = '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
+                    var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
                     $table.find(selector).not('.' + cls.detailCell).prepend($('<span />').addClass(cls.toggle));
                     return;
                 }
@@ -357,7 +358,7 @@
             //check if we have an toggle column. If not then add it to the first column just to be safe
             if (!hasToggleColumn) {
                 $table
-                    .find('> tbody > tr:not(.' + cls.detail + ') > td:first-child')
+                    .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
                     .not('.' + cls.detailCell)
                     .prepend($('<span />').addClass(cls.toggle));
             }
