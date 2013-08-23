@@ -71,7 +71,7 @@
                             window.generateRows(5);
                         </script>
 					</tbody>
-					<tfoot>
+					<tfoot class="hide-if-no-paging">
 						<tr>
 							<td colspan="5">
 								<div class="pagination pagination-centered"></div>
@@ -82,12 +82,12 @@
 			</div>
 			<div class="tab-pane" id="docs">
                 <h4>Refresh After Populating By Ajax</h4>
-                <p>You can easily reinitialize your Footable by triggering the <code>footable_initialize</code> event on the table:
+                <p>You can easily tell Footable to redraw by triggering the <code>footable_redraw</code> event on the table:
                     <pre>$(&#39;.get_data&#39;).click(function() {
 	$.ajax({
 		url : &#39;/some/api&#39;,
 		success : function(data) {
-			$(&#39;table tbody&#39;).append(data).trigger(&#39;footable_initialize&#39;);
+			$(&#39;table tbody&#39;).append(data).trigger(&#39;footable_redraw&#39;);
 		}
 	});
 });</pre>
@@ -107,7 +107,7 @@
         $(function () {
 
 			$('table').footable();
-			
+
             $('.clear-filter').click(function (e) {
                 e.preventDefault();
                 $('table.demo').trigger('footable_clear_filter');
@@ -117,7 +117,7 @@
             $('.filter-status').change(function (e) {
                 e.preventDefault();
 				var filter = $(this).val();
-                $('#filter').val($(this).text());
+                $('#filter').val('');
                 $('table.demo').trigger('footable_filter', {filter: filter});
             });
 
@@ -125,12 +125,13 @@
                 $.ajax({
                     url : '/some/api',
                     success : function(data) {
-                        $('table tbody').append(data).trigger('footable_initialize');
+                        $('table tbody').append(data);
+                        $('table').trigger('footable_redraw');
                     }
                 });
             });
 
         });
-    </script>	
+    </script>
 </body>
 </html>
