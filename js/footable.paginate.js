@@ -36,13 +36,15 @@
                         ft.pageInfo = new pageInfo(ft);
 						ft.raise('footable_setup_paging');
                     },
-                    'footable_sorted footable_filtered footable_setup_paging': function () {
-                        p.setupPaging(ft);
+                    'footable_row_removed footable_redrawn footable_sorted footable_filtered footable_setup_paging': function () {
+                        if (ft.pageInfo) {
+                            p.setupPaging(ft);
+                        }
                     }
                 });
             }
         };
-		
+
 		p.setupPaging = function(ft) {
 			var $tbody = $(ft.table).find('> tbody');
 			p.createPages(ft, $tbody);
@@ -72,6 +74,12 @@
             if (lastPage.length > 0) info.pages.push(lastPage);
             if (info.currentPage >= info.pages.length) info.currentPage = info.pages.length - 1;
             if (info.currentPage < 0) info.currentPage = 0;
+            if (info.pages.length === 1) {
+                //we only have a single page
+                $(ft.table).addClass('no-paging');
+            } else {
+                $(ft.table).removeClass('no-paging');
+            }
         };
 
         p.createNavigation = function (ft, tbody) {
@@ -87,7 +95,7 @@
 			//if we still cannot find the control, then don't do anything
             if ($nav.length === 0) return;
 			//if the nav is not a UL, then find or create a UL
-			if (!$nav.is('ul')) { 
+			if (!$nav.is('ul')) {
 				if ($nav.find('ul:first').length === 0) { $nav.append('<ul />'); }
 				$nav = $nav.find('ul');
 			}
@@ -139,7 +147,7 @@
                 p.setPagingClasses(info.control, info.currentPage, info.pages.length);
             }
         };
-		
+
 		p.setPagingClasses = function(nav, currentPage, pageCount) {
             nav.find('li.footable-page > a[data-page=' + currentPage + ']').parent().addClass('active');
 			if (currentPage >= pageCount - 1) {
