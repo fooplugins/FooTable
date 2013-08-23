@@ -119,10 +119,10 @@
   cursor: pointer;
 }
 .footable > thead > tr > th.footable-sorted > span.footable-sort-indicator:before {
-  content: "\e012";
+  content: "\e013";
 }
 .footable > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator:before {
-  content: "\e013";
+  content: "\e012";
 }
 .footable > thead > tr > th > span.footable-sort-indicator {
   display: inline-block;
@@ -140,6 +140,9 @@
 }
 .footable > tfoot .pagination {
   margin: 0;
+}
+.footable.no-paging .hide-if-no-paging {
+  display: none;
 }
 .footable-row-detail-inner {
   display: table;
