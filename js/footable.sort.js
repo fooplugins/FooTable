@@ -37,9 +37,10 @@
             if (ft.options.sort === true) {
                 $(ft.table).bind({
                     'footable_initialized': function (e) {
-                        var cls = ft.options.classes.sort, evt = ft.options.events.sort, column;
-
-                        var $table = $(ft.table), $tbody = $table.find('> tbody'), $th;
+                        var $table = $(ft.table),
+                            $tbody = $table.find('> tbody'),
+                            cls = ft.options.classes.sort,
+                            column, $th;
 
                         if ($table.data('sort') === false) return;
 
@@ -53,42 +54,9 @@
 
                         $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).unbind('click.footable').bind('click.footable', function (ec) {
                             ec.preventDefault();
-							
-							$th = $(this), column = ft.columns[$th.index()];
-                            if (column.sort.ignore === true) return true;
-							
-                            var sort = true;
-                            var ascending = true;
-
-                            if ($th.hasClass(cls.sorted)) {
-                                sort = false;
-                                ascending = false;
-                            } else if ($th.hasClass(cls.descending)) {
-                                sort = false;
-                            }							
-
-                            //raise a pre-sorting event so that we can cancel the sorting if needed
-                            var event = ft.raise(evt.sorting, { column: column, direction: ascending ? 'ASC' : 'DESC' });
-                            if (event && event.result === false) return;							
-							
-                            $table.data('sorted', column.index);
-
-                            $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
-
-                            if (ascending) {
-                                $th.removeClass(cls.descending).addClass(cls.sorted);
-                            } else {
-                                $th.removeClass(cls.sorted).addClass(cls.descending);
-                            }
-
-                            if (sort) {
-                                p.sort(ft, $tbody, column);
-                            } else {
-                                p.reverse(ft, $tbody);
-                            }
-
-                            ft.bindToggleSelectors();
-                            ft.raise(evt.sorted, { column: column, direction: ascending ? 'ASC' : 'DESC' });
+                            $th = $(this);
+                            var ascending = !$th.hasClass(cls.sorted);
+                            p.doSort(ft, $th.index(), ascending);
                             return false;
                         });
 
@@ -106,12 +74,24 @@
                                 } else {
                                     $th.addClass(cls.sorted);
                                 }
-
                                 break;
                             }
                         }
                         if (didSomeSorting) {
                             ft.bindToggleSelectors();
+                        }
+                    },
+                    'footable_redrawn': function(e) {
+                        var $table = $(ft.table),
+                            cls = ft.options.classes.sort;
+                        if ($table.data('sorted') >= 0) {
+                            $table.find('> thead > tr:last-child > th').each(function(i){
+                                var $th = $(this);
+                                if ($th.hasClass(cls.sorted) || $th.hasClass(cls.descending)) {
+                                    p.doSort(ft, i);
+                                    return;
+                                }
+                            });
                         }
                     },
                     'footable_column_data': function (e) {
@@ -127,6 +107,42 @@
                     }
                 });
             }
+        };
+
+        p.doSort = function(ft, columnIndex, ascending) {
+            if ($(ft.table).data('sort') === false) return;
+
+            var $table = $(ft.table),
+                $tbody = $table.find('> tbody'),
+                column = ft.columns[columnIndex],
+                $th = $table.find('> thead > tr:last-child > th:eq(' + columnIndex + ')'),
+                cls = ft.options.classes.sort,
+                evt = ft.options.events.sort;
+
+            if (column.sort.ignore === true) return true;
+
+            //raise a pre-sorting event so that we can cancel the sorting if needed
+            var event = ft.raise(evt.sorting, { column: column, direction: ascending ? 'ASC' : 'DESC' });
+            if (event && event.result === false) return;
+
+            $table.data('sorted', column.index);
+
+            $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').not($th).removeClass(cls.sorted + ' ' + cls.descending);
+
+            if (ascending === undefined) {
+                ascending = $th.hasClass(cls.sorted);
+            }
+
+            if (ascending) {
+                $th.removeClass(cls.descending).addClass(cls.sorted);
+            } else {
+                $th.removeClass(cls.sorted).addClass(cls.descending);
+            }
+
+            p.sort(ft, $tbody, column, ascending);
+
+            ft.bindToggleSelectors();
+            ft.raise(evt.sorted, { column: column, direction: ascending ? 'ASC' : 'DESC' });
         };
 
         p.rows = function (ft, tbody, column) {
@@ -147,26 +163,20 @@
             return rows;
         };
 
-        p.sort = function (ft, tbody, column) {
+        p.sort = function (ft, tbody, column, ascending) {
             var rows = p.rows(ft, tbody, column);
             var sorter = ft.options.sorters[column.type] || ft.options.sorters.alpha;
             rows.sort(function (a, b) {
-                return sorter(a.value, b.value);
+                if (ascending) {
+                    return sorter(a.value, b.value);
+                } else {
+                    return sorter(b.value, a.value);
+                }
             });
             for (var j = 0; j < rows.length; j++) {
                 tbody.append(rows[j].row);
                 if (rows[j].detail !== null) {
                     tbody.append(rows[j].detail);
-                }
-            }
-        };
-
-        p.reverse = function (ft, tbody) {
-            var rows = p.rows(ft, tbody);
-            for (var i = rows.length - 1; i >= 0; i--) {
-                tbody.append(rows[i].row);
-                if (rows[i].detail !== null) {
-                    tbody.append(rows[i].detail);
                 }
             }
         };
