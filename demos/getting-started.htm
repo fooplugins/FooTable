@@ -160,12 +160,20 @@
 			</div>
 			<div class="tab-pane" id="docs">
 				<h4>Breakpoints</h4>
-				<p>FooTable works off the concept of breakpoints. These can be customized, but the default breakpoints are
-					<pre>breakpoints: {
+				<p>FooTable works off the concept of breakpoints. These can be customized, but the default breakpoints are</p>
+                <pre>breakpoints: {
 	phone: 480,
 	tablet: 1024
 }</pre>
-				</p>
+				<p>To change the breakpoints simply pass in a breakpoints option when initializing FooTable:</p>
+                <pre>
+$(&#39;.footable&#39;).footable({
+    breakpoints: {
+        tiny: 100,
+        medium: 555,
+        big: 2048
+    }
+});</pre>
 				<h4>Column Setup (using data attributes)</h4>
 				<p>You then need to tell FooTable which columns to hide on which breakpoints, by specifying <code>data-hide</code> attributes on the table head columns:</p>
 				<pre>&lt;table class=&quot;footable table&quot;&gt;
