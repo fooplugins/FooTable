@@ -24,7 +24,7 @@ Features
 What Is FooTable?
 -----------------
 
-FooTable transforms your HTML tables into expandable responsive tables. This is how it works:
+FooTable is a jQuery plugin that transforms your HTML tables into expandable responsive tables. This is how it works:
 
 1. It hides certain columns of data at different resolutions (we call these breakpoints).
 2. Rows become expandable to reveal any hidden data.
@@ -35,6 +35,11 @@ Demos
 -----
 
 Check out the growing number of [FooTable demos](http://fooplugins.com/footable-demos/) (with built-in documentation!)
+
+Documentation
+-------------
+
+The docs are built into the [demos](http://fooplugins.com/footable-demos/)! On every demo page, there is a docs tab that outlines how to use the specific feature.
 
 Data Attribute Configuration
 ----------------------------
