@@ -2,23 +2,6 @@
     if (w.footable === undefined || w.footable === null)
         throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
-    var jQversion = w.footable.version.parse($.fn.jquery);
-    if (jQversion.major === 1 && jQversion.minor < 8) { // For older versions of jQuery, anything below 1.8
-        $.expr[':'].ftcontains = function (a, i, m) {
-            return $(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-        };
-    } else { // For jQuery 1.8 and above
-        $.expr[':'].ftcontains = $.expr.createPseudo(function (arg) {
-            return function (elem) {
-                var text = $(elem).find('td').text();
-                var data = $(elem).find('td[data-value]').each(function () {
-                    text += $(this).data('value');
-                });
-                return text.toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-            };
-        });
-    }
-
     var defaults = {
         filter: {
             enabled: true,
@@ -30,10 +13,10 @@
                 var $t = $(this),
                     $table = $t.parents('table:first'),
                     filter = $table.data('current-filter').toUpperCase(),
-                    text = $t.find('td').text(),
-                    data = $t.find('td[data-value]').each(function () {
-                        text += $(this).data('value');
-                    });
+                    text = $t.find('td').text();
+                $t.find('td[data-value]').each(function () {
+                    text += $(this).data('value');
+                });
                 return text.toUpperCase().indexOf(filter) >= 0;
             }
         }
