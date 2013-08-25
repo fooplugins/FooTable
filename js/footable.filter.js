@@ -14,9 +14,11 @@
                     $table = $t.parents('table:first'),
                     filter = $table.data('current-filter').toUpperCase(),
                     text = $t.find('td').text();
-                $t.find('td[data-value]').each(function () {
-                    text += $(this).data('value');
-                });
+                if (!$table.data('filter-text-only')) {
+                    $t.find('td[data-value]').each(function () {
+                        text += $(this).data('value');
+                    });
+                }
                 return text.toUpperCase().indexOf(filter) >= 0;
             }
         }
