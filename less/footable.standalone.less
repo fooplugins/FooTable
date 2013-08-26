@@ -8,6 +8,7 @@
 @colorTransparentWhite: rgba(255,255,255,.8);
 @colorLucidWhite: rgba(255,255,255,.5);
 @colorLightest: #eee;
+@colorWhite: #fff;
 @fontFamily: 'trebuchet MS' , 'Lucida sans' , Arial;
 
 
@@ -31,6 +32,12 @@
   box-shadow: @x @y @z @color inset;
 }
 
+.noBoxShadow() {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
 .linearGradient(@colorFrom, @colorTo) {
   background-color: @colorTo;
   background-image: -webkit-gradient(linear, left top, left bottom, from(@colorFrom), to(@colorTo));
@@ -45,13 +52,14 @@
 // Classes
 
 .footable {
-	border-collapse: separate;
-	border-spacing: 0;
-	border: 1px solid @colorSoftGrey;
-    .borderRadius(6px);
-	font-family: @fontFamily;
-	font-size: 14px;
-	color: @colorGrey;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid @colorSoftGrey;
+  .borderRadius(6px);
+  font-family: @fontFamily;
+  font-size: 14px;
+  color: @colorGrey;
+  background: @colorWhite;
 
   > thead > tr {
     &:first-child {
@@ -146,4 +154,73 @@
       padding: 10px;
     }
   }
+
+  .pagination {
+    margin: 20px 0;
+    > ul {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      .borderRadius(6px);
+      .noBoxShadow();
+      background-color: @colorWhite;
+      > li {
+        display: inline;
+        > a,
+        > span {
+          float: left;
+          padding: 4px 12px;
+          line-height: 20px;
+          text-decoration: none;
+          border: 1px solid @colorSoftGrey;
+          border-left-width: 0;
+        }
+      }
+      > li:first-child > a,
+      > li:first-child > span {
+        -webkit-border-bottom-left-radius: 4px;
+        -moz-border-radius-bottomleft: 4px;
+        border-bottom-left-radius: 4px;
+        -webkit-border-top-left-radius: 4px;
+        -moz-border-radius-topleft: 4px;
+        border-top-left-radius: 4px;
+        border-left-width: 1px;
+      }
+      > li:last-child > a,
+      > li:last-child > span {
+        -webkit-border-top-right-radius: 4px;
+        -moz-border-radius-topright: 4px;
+        border-top-right-radius: 4px;
+        -webkit-border-bottom-right-radius: 4px;
+        -moz-border-radius-bottomright: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      > li > a:hover,
+      > li > a:focus,
+      > .active > a,
+      > .active > span {
+        background-color: @colorLightest;
+      }
+      > .active > a,
+      > .active > span {
+        color: @colorGrey;
+        cursor: default;
+      }
+      > .disabled > span,
+      > .disabled > a,
+      > .disabled > a:hover,
+      > .disabled > a:focus {
+        color: @colorSoftGrey;
+        cursor: default;
+        background-color: @colorLighterGrey;
+      }
+    }
+    &.pagination-centered {
+      text-align: center;
+    }
+    &.pagination-right {
+      text-align: center;
+    }
+  }
 }
+

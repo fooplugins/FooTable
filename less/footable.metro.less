@@ -46,6 +46,7 @@
   font-family: @fontDefault;
   color: @colorGrey;
   background: @colorLightest;
+  .borderRadius(0);
 
   &.breakpoint > tbody > tr {
     &.footable-row-detail {
@@ -80,7 +81,7 @@
       }
 
       > td {
-        border-bottom: 1px solid @colorLightGrey;
+        border-top: 1px solid @colorLightGrey;
         padding: 10px;
         text-align: left;
 
@@ -127,42 +128,50 @@
   }
 
   // PAGINATION
-  tfoot .pagination ul {
-    -webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-	vertical-align: middle;
-	
-    > li {
-		> a,
-		> span{
-		  border: 2px solid transparent;
-		  margin: 0 3px;
-		  color: @colorWhite;
-		  background: transparent;
-		  padding:1px 5px;
-		}
+  > tfoot .pagination {
+    text-align: center;
+    ul {
+      display: inline-block;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      vertical-align: middle;
+      margin: 0;
+      padding: 0;
+      > li {
+        display: inline;
+        > a,
+        > span{
+          float: left;
+          border: 2px solid transparent;
+          margin: 0 3px;
+          color: @colorWhite;
+          background: transparent;
+          padding:1px 5px;
+          text-decoration: none;
+        }
 
-		&.disable > a {
-		  color:#888;
-		}
+        &.disabled > a {
+          color:#888;
+        }
 
-		&.active > a {
-		  border-color: @colorWhite;
-		}
+        &.active > a {
+          border-color: @colorWhite;
+        }
 
-		&:first-child,
-		&:last-child {
-		  > a,
-		  > span {
-			.borderRadius(0);
-		  }
-		}
-	}
+        &:first-child,
+        &:last-child {
+          > a,
+          > span {
+            .borderRadius(0);
+          }
+        }
+      }
+    }
   }
 
   //Metro Themes
-  
+
   &.metro-red {
     .metroTheme(@colorRed);
   }
