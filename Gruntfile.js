@@ -25,7 +25,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'dist/footable.min.js': [ 'js/footable.js' ],
-                    'dist/footable.filter.min.js': [ 'js/footable.js' ],
+                    'dist/footable.filter.min.js': [ 'js/footable.filter.js' ],
                     'dist/footable.paginate.min.js': [ 'js/footable.paginate.js' ],
                     'dist/footable.sort.min.js': [ 'js/footable.sort.js' ]
                 }
@@ -50,8 +50,7 @@ module.exports = function (grunt) {
                 files: {
                     "css/footable.core.css": "less/footable.core.less",
                     "css/footable.metro.css": "less/footable.metro.less",
-                    "css/footable.standalone.css": "less/footable.standalone.less",
-                    "css/footable.css": "less/*.less"
+                    "css/footable.standalone.css": "less/footable.standalone.less"
                 }
             },
             production: {
@@ -61,8 +60,7 @@ module.exports = function (grunt) {
                 files: {
                     "css/footable.core.min.css": "less/footable.core.less",
                     "css/footable.metro.min.css": "less/footable.metro.less",
-                    "css/footable.standalone.min.css": "less/footable.standalone.less",
-                    "css/footable.min.css": "less/*.less"
+                    "css/footable.standalone.min.css": "less/footable.standalone.less"
                 }
             }
         },
