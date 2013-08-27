@@ -87,6 +87,7 @@
 .footable {
   width: 100%;
 
+
   &.breakpoint {
     > tbody > tr {
       &.footable-detail-show > td {
@@ -180,6 +181,13 @@
 
   /** SORTING **/
   > thead > tr > th {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    user-select: none;
+
     &.footable-sortable:hover {
       cursor:pointer;
     }
