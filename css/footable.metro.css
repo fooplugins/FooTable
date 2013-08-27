@@ -1,5 +1,5 @@
 .footable {
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
   border: 3px solid #52b9e9;
@@ -35,6 +35,7 @@
   border-top: 1px solid #dddddd;
   padding: 10px;
   text-align: left;
+  border-left: none;
 }
 .footable > tbody > tr > td.footable-row-detail-cell,
 .footable > tbody > tr > td.footable-first-column {
@@ -51,6 +52,7 @@
   border: 1px solid #52b9e9;
   color: #ffffff;
   border-top: none;
+  border-left: none;
   font-weight: normal;
 }
 .footable > thead > tr > th.footable-first-column,
@@ -63,6 +65,7 @@
   border: 1px solid #52b9e9;
   color: #ffffff;
   border-top: none;
+  border-left: none;
   padding: 5px;
 }
 .footable > tfoot .pagination {

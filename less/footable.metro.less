@@ -39,7 +39,7 @@
 // Classes
 
 .footable {
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
   border: 3px solid @colorLightBlue;
@@ -84,6 +84,7 @@
         border-top: 1px solid @colorLightGrey;
         padding: 10px;
         text-align: left;
+        border-left: none;
 
         &.footable-row-detail-cell,
         &.footable-first-column {
@@ -106,6 +107,7 @@
       border: 1px solid @colorLightBlue;
       color: @colorWhite;
       border-top: none;
+      border-left: none;
       font-weight: normal;
 
       &.footable-first-column {
@@ -122,6 +124,7 @@
         border: 1px solid @colorLightBlue;
         color: @colorWhite;
         border-top: none;
+        border-left: none;
         padding: 5px;
       }
     }
