@@ -31,7 +31,7 @@
                 }
             },
             addRowToggle: true,
-            calculateWidthAndHeightOverride: null,
+            calculateWidthOverride: null,
             toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
             columnDataSelector: '> thead > tr:last-child > th, > thead > tr:last-child > td', //the selector used to find the column data in the thead
             detailSeparator: ':', //the seperator character used when building up the detail row
@@ -460,17 +460,12 @@
             return window.innerWidth || (document.body ? document.body.offsetWidth : 0);
         };
 
-        ft.getViewportHeight = function () {
-            return window.innerHeight || (document.body ? document.body.offsetHeight : 0);
-        };
-
-        ft.calculateWidthAndHeight = function ($table, info) {
-            if (jQuery.isFunction(opt.calculateWidthAndHeightOverride)) {
-                return opt.calculateWidthAndHeightOverride($table, info);
+        ft.calculateWidth = function ($table, info) {
+            if (jQuery.isFunction(opt.calculateWidthOverride)) {
+                return opt.calculateWidthOverride($table, info);
             }
             if (info.viewportWidth < info.width) info.width = info.viewportWidth;
-            if (info.viewportHeight < info.height) info.height = info.viewportHeight;
-
+            if (info.parentWidth < info.width) info.width = info.parentWidth;
             return info;
         };
 
@@ -508,22 +503,18 @@
 
             var info = {
                 'width': $table.width(),                  //the table width
-                'height': $table.height(),                //the table height
                 'viewportWidth': ft.getViewportWidth(),   //the width of the viewport
-                'viewportHeight': ft.getViewportHeight(), //the width of the viewport
-                'orientation': null
+                'parentWidth': $table.parent().width()    //the width of the parent
             };
 
-            info.orientation = info.viewportWidth > info.viewportHeight ? 'landscape' : 'portrait';
-
-            info = ft.calculateWidthAndHeight($table, info);
+            info = ft.calculateWidth($table, info);
 
             var pinfo = $table.data('footable_info');
             $table.data('footable_info', info);
             ft.raise(evt.resizing, { 'old': pinfo, 'info': info });
 
             // This (if) statement is here purely to make sure events aren't raised twice as mobile safari seems to do
-            if (!pinfo || ((pinfo && pinfo.width && pinfo.width !== info.width) || (pinfo && pinfo.height && pinfo.height !== info.height))) {
+            if (!pinfo || (pinfo && pinfo.width && pinfo.width !== info.width)) {
 
                 var current = null, breakpoint;
                 for (var i = 0; i < ft.breakpoints.length; i++) {
