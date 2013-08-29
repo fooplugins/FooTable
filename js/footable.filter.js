@@ -30,6 +30,7 @@
         p.init = function (ft) {
             p.footable = ft;
             if (ft.options.filter.enabled === true) {
+                if ($(ft.table).data('filter') === false) return;
                 ft.timers.register('filter');
                 $(ft.table).bind({
                     'footable_initialized': function (e) {
