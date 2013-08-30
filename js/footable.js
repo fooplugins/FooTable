@@ -169,7 +169,7 @@
             },
             load: function(instance){
               var loaded = [], registered, i;
-              for(var i = 0; i < w.footable.plugins.registered.length; i++){
+              for(i = 0; i < w.footable.plugins.registered.length; i++){
                 try {
                   registered = w.footable.plugins.registered[i];
                   loaded.push(new registered(instance));
