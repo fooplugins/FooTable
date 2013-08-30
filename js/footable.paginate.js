@@ -179,6 +179,6 @@
         };
     }
 
-    w.footable.plugins.register(new Paginate(), defaults);
+    w.footable.plugins.register(Paginate, defaults);
 
 })(jQuery, window);
