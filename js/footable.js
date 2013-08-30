@@ -141,15 +141,20 @@
                 ///<summary>Simple validation of the <paramref name="plugin"/> to make sure any members called by FooTable actually exist.</summary>
                 ///<param name="plugin">The object defining the plugin, this should implement a string property called "name" and a function called "init".</param>
 
-                if (typeof plugin['name'] !== 'string') {
-                    if (w.footable.options.debug === true) console.error('Validation failed, plugin does not implement a string property called "name".', plugin);
+                if (!$.isFunction(plugin)) {
+                  if (w.footable.options.debug === true) console.error('Validation failed, expected type "function", received type "{0}".', typeof plugin);
+                  return false;
+                }
+                var p = new plugin();
+                if (typeof p['name'] !== 'string') {
+                    if (w.footable.options.debug === true) console.error('Validation failed, plugin does not implement a string property called "name".', p);
                     return false;
                 }
-                if (!$.isFunction(plugin['init'])) {
-                    if (w.footable.options.debug === true) console.error('Validation failed, plugin "' + plugin['name'] + '" does not implement a function called "init".', plugin);
+                if (!$.isFunction(p['init'])) {
+                    if (w.footable.options.debug === true) console.error('Validation failed, plugin "' + p['name'] + '" does not implement a function called "init".', p);
                     return false;
                 }
-                if (w.footable.options.debug === true) console.log('Validation succeeded for plugin "' + plugin['name'] + '".', plugin);
+                if (w.footable.options.debug === true) console.log('Validation succeeded for plugin "' + p['name'] + '".', p);
                 return true;
             },
             registered: [], // An array containing all registered plugins.
@@ -160,17 +165,28 @@
 
                 if (w.footable.plugins._validate(plugin)) {
                     w.footable.plugins.registered.push(plugin);
-                    if (options !== undefined && typeof options === 'object') $.extend(true, w.footable.options, options);
-                    if (w.footable.options.debug === true) console.log('Plugin "' + plugin['name'] + '" has been registered with the FooTable.', plugin);
+                    if (typeof options === 'object') $.extend(true, w.footable.options, options);
                 }
+            },
+            load: function(instance){
+              var loaded = [], registered, i;
+              for(i = 0; i < w.footable.plugins.registered.length; i++){
+                try {
+                  registered = w.footable.plugins.registered[i];
+                  loaded.push(new registered(instance));
+                } catch (err) {
+                  if (w.footable.options.debug === true) console.error(err);
+                }
+              }
+              return loaded;
             },
             init: function (instance) {
                 ///<summary>Loops through all registered plugins and calls the "init" method supplying the current <paramref name="instance"/> of the FooTable as the first parameter.</summary>
                 ///<param name="instance">The current instance of the FooTable that the plugin is being initialized for.</param>
 
-                for (var i = 0; i < w.footable.plugins.registered.length; i++) {
+                for (var i = 0; i < instance.plugins.length; i++) {
                     try {
-                        w.footable.plugins.registered[i]['init'](instance);
+                      instance.plugins[i]['init'](instance);
                     } catch (err) {
                         if (w.footable.options.debug === true) console.error(err);
                     }
@@ -243,6 +259,7 @@
         ft.breakpoints = [];
         ft.breakpointNames = '';
         ft.columns = {};
+        ft.plugins = w.footable.plugins.load(ft);
 
         var opt = ft.options,
             cls = opt.classes,
@@ -259,10 +276,10 @@
             }
         };
 
-        w.footable.plugins.init(ft);
-
         ft.init = function () {
             var $window = $(w), $table = $(ft.table);
+
+            w.footable.plugins.init(ft);
 
             if ($table.hasClass(cls.loaded)) {
                 //already loaded FooTable for the table, so don't init again

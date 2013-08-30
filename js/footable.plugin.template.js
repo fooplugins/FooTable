@@ -39,6 +39,6 @@
     };
   }
   
-  w.footable.plugins.register(new MyPlugin(), defaults);
+  w.footable.plugins.register(MyPlugin, defaults);
   
 })(jQuery, window);

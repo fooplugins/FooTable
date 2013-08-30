@@ -181,6 +181,6 @@
         };
     }
 
-    w.footable.plugins.register(new Sort(), defaults);
+    w.footable.plugins.register(Sort, defaults);
 
 })(jQuery, window);

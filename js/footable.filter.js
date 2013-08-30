@@ -86,23 +86,22 @@
                 minimum = $table.data('filter-minimum') || ft.options.filter.minimum,
                 clear = !filterString;
 
-            if (filterString && filterString.length < minimum) {
-                return; //if we do not have the minimum chars then do nothing
-            }
-
             //raise a pre-filter event so that we can cancel the filtering if needed
             var event = ft.raise('footable_filtering', { filter: filterString, clear: clear });
             if (event && event.result === false) return;
+            if (event.filter && event.filter.length < minimum) {
+              return; //if we do not have the minimum chars then do nothing
+            }
 
-            if (clear) {
+          if (event.clear) {
                 p.clearFilter();
             } else {
-                var filters = filterString.split(' ');
+                var filters = event.filter.split(' ');
 
                 $table.find('> tbody > tr').hide().addClass('footable-filtered');
                 var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
                 $.each(filters, function (i, f) {
-                    if (f && f.length) {
+                    if (f && f.length > 0) {
                         $table.data('current-filter', f);
                         rows = rows.filter(ft.options.filter.filterFunction);
                     }
@@ -111,8 +110,8 @@
                     p.showRow(this, ft);
                     $(this).removeClass('footable-filtered');
                 });
-                $table.data('filter-string', filterString);
-                ft.raise('footable_filtered', { filter: filterString, clear: false });
+                $table.data('filter-string', event.filter);
+                ft.raise('footable_filtered', { filter: event.filter, clear: false });
             }
         };
 
@@ -138,6 +137,6 @@
         };
     }
 
-    w.footable.plugins.register(new Filter(), defaults);
+    w.footable.plugins.register(Filter, defaults);
 
 })(jQuery, window);
