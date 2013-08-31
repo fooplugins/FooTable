@@ -2,7 +2,7 @@
     "name": "footable",
     "repo": "fooplugins/footable",
     "description": "jQuery plugin to make HTML tables responsive",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "keywords": [
         "table",
         "responsive"
