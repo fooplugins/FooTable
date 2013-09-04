@@ -34,7 +34,8 @@
             calculateWidthOverride: null,
             toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
             columnDataSelector: '> thead > tr:last-child > th, > thead > tr:last-child > td', //the selector used to find the column data in the thead
-            detailSeparator: ':', //the seperator character used when building up the detail row
+            detailSeparator: ':', //the separator character used when building up the detail row
+            toggleHTMLElement: '<span />', // override this if you want to insert a click target rather than use a background image.
             createGroupedDetail: function (data) {
                 var groups = { '_none': { 'name': null, 'data': [] } };
                 for (var i = 0; i < data.length; i++) {
@@ -368,7 +369,7 @@
                 if (col.toggle) {
                     hasToggleColumn = true;
                     var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
-                    $table.find(selector).not('.' + cls.detailCell).prepend($('<span />').addClass(cls.toggle));
+                    $table.find(selector).not('.' + cls.detailCell).prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
                     return;
                 }
             }
@@ -377,7 +378,7 @@
                 $table
                     .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
                     .not('.' + cls.detailCell)
-                    .prepend($('<span />').addClass(cls.toggle));
+                    .prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
             }
         };
 

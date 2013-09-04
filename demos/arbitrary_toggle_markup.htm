@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>FooTable - jQuery plugin for responsive HTML tables</title>
+    <meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/footable.core.css" rel="stylesheet" type="text/css"/>
+    <link href="css/footable-demos.css" rel="stylesheet" type="text/css"/>
+    <link href="css/arbitrary_toggle_markup.css" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+    <script>
+        if (!window.jQuery) { document.write('<script src="js/jquery-1.9.1.min.js"><\/script>'); }
+    </script>
+    <script src="../js/footable.js" type="text/javascript"></script>
+        <script src="js/bootstrap-tab.js" type="text/javascript"></script>
+    <script src="js/demos.js" type="text/javascript"></script>
+</head>
+<body>
+        <div class="demo-container">
+        <ul class="breadcrumb">
+            <li><a href="http://fooplugins.com/plugins/footable-jquery/">FooTable</a> <span class="divider">&raquo;</span></li>
+            <li><a href="index.htm">Demos</a> <span class="divider">&raquo;</span></li>
+            <li class="active">Arbitrary Markup for the Toggler</li>
+        </ul>
+        <div class="alert">
+        A demo showing how to replace the expand/collapse icons with markup of your choosing. Do this if you want to have your toggler inline (not as a background) or you need to insert some markup you can't include via CSS. 
+        </div>
+                <ul class="nav nav-tabs">
+                        <li class="active"><a href="#demo">Demo</a></li>
+                        <li><a href="#setup">Setup</a></li>
+                        <li><a href="#docs">Docs</a></li>
+                </ul>
+                <div class="tab-content">
+                        <div class="tab-pane active" id="demo">
+                                <table class="table demo table-bordered" data-filter="#filter" data-page-size="5" data-page-previous-text="prev" data-page-next-text="next">
+                                        <thead>
+                                                <tr>
+                                                        <th data-toggle="true">
+                                                                First Name
+                                                        </th>
+                                                        <th>
+                                                                Last Name
+                                                        </th>
+                                                        <th data-hide="phone,tablet">
+                                                                Job Title
+                                                        </th>
+                                                        <th data-hide="phone,tablet">
+                                                                DOB
+                                                        </th>
+                                                        <th data-hide="phone">
+                                                                Status
+                                                        </th>
+                                                </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>Isidra</td>
+                                                        <td><a href="#">Boudreaux</a></td>
+                                                        <td>Traffic Court Referee</td>
+                                                        <td data-value="78025368997">22 Jun 1972</td>
+                                                        <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Shona</td>
+                                                        <td>Woldt</td>
+                                                        <td><a href="#">Airline Transport Pilot</a></td>
+                                                        <td data-value="370961043292">3 Oct 1981</td>
+                                                        <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Granville</td>
+                                                        <td>Leonardo</td>
+                                                        <td>Business Services Sales Representative</td>
+                                                        <td data-value="-22133780420">19 Apr 1969</td>
+                                                        <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Easer</td>
+                                                        <td>Dragoo</td>
+                                                        <td>Drywall Stripper</td>
+                                                        <td data-value="250833505574">13 Dec 1977</td>
+                                                        <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Maple</td>
+                                                        <td>Halladay</td>
+                                                        <td>Aviation Tactical Readiness Officer</td>
+                                                        <td data-value="694116650726">30 Dec 1991</td>
+                                                        <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Maxine</td>
+                                                        <td><a href="#">Woldt</a></td>
+                                                        <td><a href="#">Business Services Sales Representative</a></td>
+                                                        <td data-value="561440464855">17 Oct 1987</td>
+                                                        <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Lorraine</td>
+                                                        <td>Mcgaughy</td>
+                                                        <td>Hemodialysis Technician</td>
+                                                        <td data-value="437400551390">11 Nov 1983</td>
+                                                        <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Lizzee</td>
+                                                        <td><a href="#">Goodlow</a></td>
+                                                        <td>Technical Services Librarian</td>
+                                                        <td data-value="-257733999319">1 Nov 1961</td>
+                                                        <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Judi</td>
+                                                        <td>Badgett</td>
+                                                        <td>Electrical Lineworker</td>
+                                                        <td data-value="362134712000">23 Jun 1981</td>
+                                                        <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Lauri</td>
+                                                        <td>Hyland</td>
+                                                        <td>Blackjack Supervisor</td>
+                                                        <td data-value="500874333932">15 Nov 1985</td>
+                                                        <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+                                                </tr>
+                                        </tbody>
+                                </table>
+                        </div>
+                        <div class="tab-pane" id="setup">
+                          <p>Note that only the second and last steps differ from the default setup.</p>
+                                <ol class="foo-setup">
+                                        <li>
+                        <h4>Include FooTable Core CSS</h4>
+                        <p>(Same as in <a href="getting-started.htm">Getting Started</a>).</p>
+                                                <pre>&lt;link href=&quot;path_to_your_css/footable.core.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
+                                        </li>
+                    <li>
+                        <h4>Add CSS for Your Custom Toggler</h4>
+
+                        <pre>&lt;link href=&quot;path_to_your_css/your_additional_footable.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</pre>
+                    </li>
+                    <p>In this demo, we add classes "footable-expand" and "footable-contract" on elements that should appear for the expand and contract controls, respectively, and add display rules for those in <a href="css/arbitrary_toggle_markup.css">css/arbitrary_toggle_markup.css</a>:
+                      <pre>
+.footable &gt; tbody &gt; tr &gt; td &gt; .footable-toggle &gt; .footable-contract {
+  display: none;
+}
+.footable &gt; tbody &gt; tr &gt; td &gt; .footable-toggle &gt; .footable-expand {
+  display: none;
+}
+.footable.breakpoint &gt; tbody &gt; tr &gt; td &gt; .footable-toggle &gt; .footable-expand {
+  display: inline;
+}
+.footable.breakpoint &gt; tbody &gt; tr.footable-detail-show &gt; td &gt; .footable-toggle &gt; .footable-expand {
+  display: none;
+}
+.footable.breakpoint &gt; tbody &gt; tr.footable-detail-show &gt; td &gt; .footable-toggle &gt; .footable-contract {
+  display: inline;
+}
+
+/** Override icons from footable.core.css:  **/
+.footable.breakpoint &gt; tbody &gt; tr.footable-detail-show &gt; td &gt; span.footable-toggle:before {
+  content: "";
+}
+.footable.breakpoint &gt; tbody &gt; tr &gt;  td &gt; span.footable-toggle:before {
+  content: "";
+}
+</pre>
+                        <div class="alert alert-success">
+                        <p>Note that the last two rules override rules from footable.core.css that would add icons to a span with the footable-toggle.class. In practice, you might more likely replace footable.core.css with your own version. </p>
+                        </div>
+                        </pre>
+                                        <li>
+                        <h4>Include jQuery</h4>
+                        <p>(Same as in <a href="getting-started.htm">Getting Started</a>).</p>
+                                                <pre>&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
+                                        </li>
+                                        <li>
+                        <h4>Include FooTable jQuery Plugin</h4>
+                        <p>(Same as in <a href="getting-started.htm">Getting Started</a>).</p>
+                                                <pre>&lt;script src=&quot;path_to_your_js/footable.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</pre>
+                                        </li>
+                                        <li>
+                        <h4>Initialize FooTable, Overriding toggleHTMLElement</h4>
+			<div class="alert alert-success">
+			  Your markup <em>must</em> include an enclosing <b>span</b>. FooTable keys off this element, adding and removing the span as needed based on the width of the viewport and the defined breakpoints. If other elements are nested within the span and are to be clickable controls, they should have the <b>footable-toggle</b> class as shown here. 
+			</div>
+                        <pre>&lt;script type=&quot;text/javascript&quot;&gt;
+        $(function () {
+                $(&#39;.footable&#39;).footable({
+                                          toggleHTMLElement: '&lt;span&gt;&lt;img src="img/plus.png" class="footable-toggle footable-expand" border="0" alt="Expand"&gt;&lt;img src="img/minus.png" class="footable-toggle footable-contract" border="0" alt="Contract"&gt;&lt;/span&gt;'
+                                          });
+        });
+&lt;/script&gt;</pre>
+                                        </li>
+                                </ol>
+                        </div>
+                        <div class="tab-pane" id="docs">
+                                <h4>Using Arbitrary Markup for the Toggler</h4>
+                                <p>By default, FooTable adds an empty &lt;span&gt; with the class "footable-toggle" to the cell that will show the expand/contract toggler, and adds the visual elements (usually icons) with CSS styles. You can override this by telling FooTable to insert some other HTML markup. </p>
+                                <p>This approach was inspired by an accessibility review on one site that recommended using an inline image (not a background element) with appropriate ALT text so that the ALT text would be available to screen readers.</p>
+                                <p>See the Setup tab for details.</p>
+                        </div>
+                </div>
+        </div>
+    <script type="text/javascript">
+        $(function () {
+                       $('table').footable({
+                            toggleHTMLElement: '<span><img src="img/plus.png" class="footable-toggle footable-expand" border="0" alt="Expand">'
+                            + '<img src="img/minus.png" class="footable-toggle footable-contract" border="0" alt="Contract"></span>'
+                       });
+        });
+    </script>
+</body>
+</html>
