@@ -1,0 +1,23 @@
+.footable > tbody > tr > td > .footable-toggle > .footable-contract {
+  display: none;
+}
+.footable > tbody > tr > td > .footable-toggle > .footable-expand {
+  display: none;
+}
+.footable.breakpoint > tbody > tr > td > .footable-toggle > .footable-expand {
+  display: inline;
+}
+.footable.breakpoint > tbody > tr.footable-detail-show > td > .footable-toggle > .footable-expand {
+  display: none;
+}
+.footable.breakpoint > tbody > tr.footable-detail-show > td > .footable-toggle > .footable-contract {
+  display: inline;
+}
+
+/** Override icons from footable.core.css:  **/
+.footable.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
+  content: "";
+}
+.footable.breakpoint > tbody > tr >  td > span.footable-toggle:before {
+  content: "";
+}
