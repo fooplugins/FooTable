@@ -32,6 +32,12 @@
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane active" id="demo">
+                Page Size:
+                <select id="change-page-size">
+                    <option value="5">5</option>
+                    <option value="2">2</option>
+                    <option value="10">10</option>
+                </select>
 				<table class="table demo" data-page-size="5">
 					<thead>
 						<tr>
@@ -183,17 +189,11 @@
         $(function () {
 			$('table').footable();
 
-            $('.clear-filter').click(function (e) {
+            $('#change-page-size').change(function (e) {
                 e.preventDefault();
-                $('table.demo').trigger('footable_clear_filter');
-				$('.filter-status').val('');
-            });
-
-            $('.filter-status').change(function (e) {
-                e.preventDefault();
-				var filter = $(this).val();
-                $('#filter').val($(this).text());
-                $('table.demo').trigger('footable_filter', {filter: filter});
+                var pageSize = $(this).val();
+                $('.footable').data('page-size', pageSize);
+                $('.footable').trigger('footable_initialized');
             });
         });
     </script>
