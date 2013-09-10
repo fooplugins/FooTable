@@ -756,7 +756,7 @@
                 .removeClass(cls.loaded)
                 .removeClass(cls.main);
 
-            $table.find(opt.toggleSelector).unbind(trg.toggleRow).unbind('click.footable')
+            $table.find(opt.toggleSelector).unbind(trg.toggleRow).unbind('click.footable');
 
             $table.find('> tbody > tr').removeClass(cls.detailShow);
 
