@@ -115,7 +115,8 @@
                 rowDetailUpdated: 'footable_row_detail_updated',        //fires when a detail row is being updated
                 rowCollapsed: 'footable_row_collapsed',                 //fires when a row is collapsed
                 rowExpanded: 'footable_row_expanded',                   //fires when a row is expanded
-                rowRemoved: 'footable_row_removed'                      //fires when a row is removed
+                rowRemoved: 'footable_row_removed',                     //fires when a row is removed
+                reset: 'footable_reset'                                 //fires when FooTable is reset
             },
             debug: false, // Whether or not to log information to the console.
             log: null
@@ -310,6 +311,7 @@
             });
 
             $table
+                .unbind(trg.initialize)
                 //bind to FooTable initialize trigger
                 .bind(trg.initialize, function () {
                     //remove previous "state" (to "force" a resize)
@@ -328,15 +330,17 @@
                     //raise the initialized event
                     ft.raise(evt.initialized);
                 })
+                .unbind(trg.redraw)
                 //bind to FooTable redraw trigger
                 .bind(trg.redraw, function () {
                     ft.redraw();
                 })
-
+                .unbind(trg.resize)
                 //bind to FooTable resize trigger
                 .bind(trg.resize, function () {
                     ft.resize();
                 })
+                .unbind(trg.expandFirstRow)
                 //bind to FooTable expandFirstRow trigger
                 .bind(trg.expandFirstRow, function () {
                     $table.find(opt.toggleSelector).first().not('.' + cls.detailShow).trigger(trg.toggleRow);
@@ -741,6 +745,24 @@
             } //pre jQuery 1.6 which did not allow data to be passed to event object constructor
             $(ft.table).trigger(e);
             return e;
+        };
+
+        //reset the state of FooTable
+        ft.reset = function() {
+            var $table = $(ft.table);
+            $table.removeData('footable_info')
+                .data('breakpoint', '')
+                .removeClass(cls.loading)
+                .removeClass(cls.loaded)
+                .removeClass(cls.main);
+
+            $table.find(opt.toggleSelector).unbind(trg.toggleRow).unbind('click.footable')
+
+            $table.find('> tbody > tr').removeClass(cls.detailShow);
+
+            $table.find('> tbody > tr.' + cls.detail).remove();
+
+            ft.raise(evt.reset);
         };
 
         ft.init();
