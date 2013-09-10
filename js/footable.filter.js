@@ -32,48 +32,50 @@
             if (ft.options.filter.enabled === true) {
                 if ($(ft.table).data('filter') === false) return;
                 ft.timers.register('filter');
-                $(ft.table).bind({
-                    'footable_initialized': function (e) {
-                        var $table = $(ft.table);
-                        var data = {
-                            'input': $table.data('filter') || ft.options.filter.input,
-                            'timeout': $table.data('filter-timeout') || ft.options.filter.timeout,
-                            'minimum': $table.data('filter-minimum') || ft.options.filter.minimum,
-                            'disableEnter': $table.data('filter-disable-enter') || ft.options.filter.disableEnter
-                        };
-                        if (data.disableEnter) {
-                            $(data.input).keypress(function (event) {
-                                if (window.event)
-                                    return (window.event.keyCode !== 13);
-                                else
-                                    return (event.which !== 13);
-                            });
-                        }
-                        $table.bind('footable_clear_filter', function () {
-                            $(data.input).val('');
-                            p.clearFilter();
-                        });
-                        $table.bind('footable_filter', function (event, args) {
-                            p.filter(args.filter);
-                        });
-                        $(data.input).keyup(function (eve) {
-                            ft.timers.filter.stop();
-                            if (eve.which === 27) {
-                                $(data.input).val('');
+                $(ft.table)
+                    .unbind('.filtering')
+                    .bind({
+                        'footable_initialized.filtering': function (e) {
+                            var $table = $(ft.table);
+                            var data = {
+                                'input': $table.data('filter') || ft.options.filter.input,
+                                'timeout': $table.data('filter-timeout') || ft.options.filter.timeout,
+                                'minimum': $table.data('filter-minimum') || ft.options.filter.minimum,
+                                'disableEnter': $table.data('filter-disable-enter') || ft.options.filter.disableEnter
+                            };
+                            if (data.disableEnter) {
+                                $(data.input).keypress(function (event) {
+                                    if (window.event)
+                                        return (window.event.keyCode !== 13);
+                                    else
+                                        return (event.which !== 13);
+                                });
                             }
-                            ft.timers.filter.start(function () {
-                                var val = $(data.input).val() || '';
-                                p.filter(val);
-                            }, data.timeout);
-                        });
-                    },
-                    'footable_redrawn': function (e) {
-                        var $table = $(ft.table),
-                            filter = $table.data('filter-string');
-                        if (filter) {
-                            p.filter(filter);
+                            $table.bind('footable_clear_filter', function () {
+                                $(data.input).val('');
+                                p.clearFilter();
+                            });
+                            $table.bind('footable_filter', function (event, args) {
+                                p.filter(args.filter);
+                            });
+                            $(data.input).keyup(function (eve) {
+                                ft.timers.filter.stop();
+                                if (eve.which === 27) {
+                                    $(data.input).val('');
+                                }
+                                ft.timers.filter.start(function () {
+                                    var val = $(data.input).val() || '';
+                                    p.filter(val);
+                                }, data.timeout);
+                            });
+                        },
+                        'footable_redrawn.filtering': function (e) {
+                            var $table = $(ft.table),
+                                filter = $table.data('filter-string');
+                            if (filter) {
+                                p.filter(filter);
+                            }
                         }
-                    }
                 })
                 //save the filter object onto the table so we can access it later
                 .data('footable-filter', p);

@@ -33,17 +33,13 @@
             if (ft.options.paginate === true) {
                 if ($(ft.table).data('page') === false) return;
                 p.footable = ft;
-                $(ft.table).bind({
-                    'footable_initialized': function () {
-                        ft.pageInfo = new pageInfo(ft);
-                        ft.raise('footable_setup_paging');
-                    },
-                    'footable_row_removed footable_redrawn footable_sorted footable_filtered footable_setup_paging': function () {
-                        if (ft.pageInfo) {
+                $(ft.table)
+                    .unbind('.paging')
+                    .bind({
+                        'footable_initialized.paging footable_row_removed.paging footable_redrawn.paging footable_sorted.paging footable_filtered.paging': function () {
                             p.setupPaging();
                         }
-                    }
-                })
+                    })
                     //save the filter object onto the table so we can access it later
                     .data('footable-paging', p);
             }
@@ -52,6 +48,11 @@
         p.setupPaging = function () {
             var ft = p.footable,
                 $tbody = $(ft.table).find('> tbody');
+
+            if (!ft.pageInfo) {
+                ft.pageInfo = new pageInfo(ft);
+            }
+
             p.createPages(ft, $tbody);
             p.createNavigation(ft, $tbody);
             p.fillPage(ft, $tbody, ft.pageInfo.currentPage);
