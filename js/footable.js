@@ -753,8 +753,7 @@
             $table.removeData('footable_info')
                 .data('breakpoint', '')
                 .removeClass(cls.loading)
-                .removeClass(cls.loaded)
-                .removeClass(cls.main);
+                .removeClass(cls.loaded);
 
             $table.find(opt.toggleSelector).unbind(trg.toggleRow).unbind('click.footable');
 
