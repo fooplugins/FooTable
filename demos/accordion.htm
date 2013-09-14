@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>FooTable - jQuery plugin for responsive HTML tables</title>
+    <meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
+	<link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<link href="../css/footable.core.css?v=2-0-1" rel="stylesheet" type="text/css"/>
+    <link href="css/footable-demos.css" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+    <script>
+        if (!window.jQuery) { document.write('<script src="js/jquery-1.9.1.min.js"><\/script>'); }
+    </script>
+    <script src="../js/footable.js?v=2-0-1" type="text/javascript"></script>
+	<script src="js/bootstrap-tab.js" type="text/javascript"></script>
+    <script src="js/demos.js" type="text/javascript"></script>
+    <style type="text/css">
+        .footable h4 {
+            display: inline-block;
+            margin: 0;
+        }
+        .footable-row-detail-cell {
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+	<div class="demo-container">
+        <ul class="breadcrumb">
+            <li><a href="http://fooplugins.com/plugins/footable-jquery/">FooTable</a> <span class="divider">&raquo;</span></li>
+            <li><a href="index.htm">Demos</a> <span class="divider">&raquo;</span></li>
+            <li class="active">Accordion</li>
+        </ul>
+        <div class="alert">
+            Turn your FooTable into an accordion
+		</div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#demo">Demo</a></li>
+            <li><a href="#docs">Docs</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="demo">
+                <table class="footable table table-bordered toggle-arrow">
+            <thead style="display: none">
+                <tr>
+                    <th>Name</th>
+                    <th data-hide="all">Description</th>
+                    <th data-hide="all">Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border-top:none"><h4>Section 1</h4></td>
+                    <td><p>Ac habitasse senectus officia autem veniam do adipisci, nihil do. Natus elementum, recusandae blandit massa, aliquet officia porttitor diamlorem. Inceptos.</p></td>
+                    <td><p>Curae convallis fugiat senectus occaecat at nibh adipiscing? Optio nisi, quidem euismod dignissimos vestibulum diam, nibh massa viverra? Porro luctus.</p></td>
+                </tr>
+                <tr>
+                    <td><h4>Section 2</h4></td>
+                    <td><p>Cumque penatibus eveniet augue feugiat odio sint praesent, nec quibusdam iaculis commodi, curabitur, est voluptates dui nullam cursus magni convallis.</p></td>
+                    <td><p>Viverra cupiditate aut, hic doloremque quasi? Parturient nonummy? Imperdiet lacus quia nunc. Minima harum hymenaeos facilisi quidem eligendi anim. Donec.</p></td>
+                </tr>
+                <tr>
+                    <td><h4>Section 3</h4></td>
+                    <td><p>Purus bibendum morbi tenetur! Sapiente dictum ornare gravida tincidunt feugiat habitasse molestias accusantium fringilla, necessitatibus inventore, congue felis, itaque ornare.</p></td>
+                    <td><p>Facilisi cillum ex sagittis maiores tempore aspernatur augue ducimus, hic? Blanditiis, facilisi, expedita officia per? Magnam, magnam corrupti corrupti, cursus.</p></td>
+                </tr>
+                <tr>
+                    <td><h4>Section 4</h4></td>
+                    <td><p>Donec hymenaeos fringilla exercitationem ultricies! Praesentium litora omnis, sodales magni ullamco hic, iure, aut ridiculus quos, autem cupidatat, quas quis.</p></td>
+                    <td><p>Autem sit platea rem tenetur neque torquent mollit. Eius elementum iste, eros consequatur error, cubilia tellus, parturient fugiat? Excepturi aspernatur.</p></td>
+                </tr>
+            </tbody>
+        </table>
+            </div>
+            <div class="tab-pane" id="docs">
+                <h4>FooTable Accordion</h4>
+                <p>1. You first need to bind to the <code>footable_row_expanded</code> event</p>
+                <p>2. Then inside the event, find all rows that are already expanded (other than the row you clicked on)</p>
+                <p>3. For each row found, call the FooTable function <code>toggleDetail</code></p>
+                <pre>$(&#39;.footable&#39;).footable().bind(&#39;footable_row_expanded&#39;, function(e) {
+	$(&#39;.footable tbody tr.footable-detail-show&#39;).not(e.row).each(function() {
+		$(&#39;.footable&#39;).data(&#39;footable&#39;).toggleDetail(this);
+	});
+});</pre>
+            </div>
+        </div>
+	</div>
+    <script type="text/javascript">
+        $(function () {
+            $('.footable').footable().bind('footable_row_expanded', function(e) {
+                $('.footable tbody tr.footable-detail-show').not(e.row).each(function() {
+                    $('.footable').data('footable').toggleDetail(this);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
