@@ -9,65 +9,9 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
-    <style>
-body {
-  padding-top: 70px;
-  padding-bottom: 30px;
-}
-.paginator {
-  text-align: right;
-}
-
-
-.table > tbody > tr > td.footable-expanded:before,
-.table > tbody > tr > td.footable-collapsed:before,
-.table > thead > tr > th > span.footable-sort-indicator:after {
-  font-family: FontAwesome;
-  color: #666;
-  font-weight: normal;
-}
-.table > thead > tr > th > span.footable-sort-indicator {
-  float: right;
-  margin-right: 4px;
-  cursor: pointer;
-  outline: 0;
-}
-
-.table > tbody > tr:hover {
-  background: #EFEFEF;
-}
-
-.table > thead > tr > th > span.footable-sort-indicator:after {
-  content: "\f0dc";
-  color: #ccc;
-}
-
-.table > thead > tr > th.footable-sorted > span.footable-sort-indicator:after {
-  content: "\f0de";
-  color: #666;
-}
-
-.table > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator:after {
-  content: "\f0dd";
-  color: #666;
-}
-
-.table > tbody > tr > td.footable-collapsed:before {
-  content: "\f0da";
-  color: #666;
-  padding-right: 6px;
-}
-
-.table > tbody > tr > td.footable-expanded:before {
-  content: "\f0d7";
-  color: #666;
-  padding-right: 6px;
-}
-
-    </style>
+    <link rel="stylesheet" href="lib/css/footable.demo.css">
   </head>
   <body>
-    <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -76,198 +20,132 @@ body {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/footable/bs3/">FooTable</a>
+          <a class="navbar-brand" href="/footable/bs3"><i class="icon-fixed-width icon-home"></i> FooTable</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="https://github.com/markc/FooTable/tree/bs3">Github</a></li>
+            <li class="active"><a href="https://github.com/markc/FooTable/tree/bs3/bs3">Github</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
+                <li><a href="#clear" class="clear-filter" title="clear filter">Clear Filter</a></li>
                 <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
+                <li class="dropdown-header">Status</li>
+                <li><a href="#" class="filter-status-active" title="active filter">Active</a></li>
+                <li><a href="#" class="filter-status-disabled" title="disabled filter">Disabled</a></li>
+                <li><a href="#" class="filter-status-suspended" title="suspended filter">Suspended</a></li>
               </ul>
             </li>
           </ul>
-
           <div class="col-sm-3 col-md-3 pull-right">
             <form class="navbar-form" role="search">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" id="filter" name="srch-term" id="srch-term">
+                <input type="text" class="form-control" placeholder="Filter" id="filter" name="srch-term" id="srch-term">
                 <div class="input-group-btn">
-                  <button class="btn btn-default" type="submit"><i class="icon-search"></i></button>
+                  <button class="btn btn-default" type="submit"><i class="icon-filter"></i></button>
                 </div>
               </div>
             </form>
           </div>
-
-
-
-        </div><!--/.nav-collapse -->
+        </div><!-- .nav-collapse -->
       </div>
-    </div>
+    </div><!-- navbar -->
 
     <div class="container" id="demo">
-
-
-      <p>
-            <!-- Search: <input id="filter" type="text"/> -->
-            Status:
-            <select class="filter-status">
-                <option></option>
-                <option value="active">Active</option>
-                <option value="disabled">Disabled</option>
-                <option value="suspended">Suspended</option>
-            </select>
-            <a href="#clear" class="clear-filter" title="clear filter">[clear]</a>
-            <span class="row-count"></span>
-        </p>
-
-
-        <table class="table demo" data-filter="#filter" data-page-size="5">
-            <thead>
-            <tr>
-                <th data-toggle="true">
-                    First Name
-                </th>
-                <th>
-                    Last Name
-                </th>
-                <th data-hide="phone,tablet">
-                    Job Title
-                </th>
-                <th data-hide="phone,tablet" data-name="Date Of Birth">
-                    DOB
-                </th>
-                <th data-hide="phone">
-                    Status
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Isidra</td>
-                <td><a href="#">Boudreaux</a></td>
-                <td>Traffic Court Referee</td>
-                <td data-value="78025368997">22 Jun 1972</td>
-                <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
-            </tr>
-            <tr>
-                <td>Shona</td>
-                <td>Woldt</td>
-                <td><a href="#">Airline Transport Pilot</a></td>
-                <td data-value="370961043292">3 Oct 1981</td>
-                <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
-            </tr>
-            <tr>
-                <td>Granville</td>
-                <td>Leonardo</td>
-                <td>Business Services Sales Representative</td>
-                <td data-value="-22133780420">19 Apr 1969</td>
-                <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span>
-                </td>
-            </tr>
-            <tr>
-                <td>Easer</td>
-                <td>Dragoo</td>
-                <td>Drywall Stripper</td>
-                <td data-value="250833505574">13 Dec 1977</td>
-                <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
-            </tr>
-            <tr>
-                <td>Maple</td>
-                <td>Halladay</td>
-                <td>Aviation Tactical Readiness Officer</td>
-                <td data-value="694116650726">30 Dec 1991</td>
-                <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span>
-                </td>
-            </tr>
-            <tr>
-                <td>Maxine</td>
-                <td><a href="#">Woldt</a></td>
-                <td><a href="#">Business Services Sales Representative</a></td>
-                <td data-value="561440464855">17 Oct 1987</td>
-                <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
-            </tr>
-            <tr>
-                <td>Lorraine</td>
-                <td>Mcgaughy</td>
-                <td>Hemodialysis Technician</td>
-                <td data-value="437400551390">11 Nov 1983</td>
-                <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
-            </tr>
-            <tr>
-                <td>Lizzee</td>
-                <td><a href="#">Goodlow</a></td>
-                <td>Technical Services Librarian</td>
-                <td data-value="-257733999319">1 Nov 1961</td>
-                <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span>
-                </td>
-            </tr>
-            <tr>
-                <td>Judi</td>
-                <td>Badgett</td>
-                <td>Electrical Lineworker</td>
-                <td data-value="362134712000">23 Jun 1981</td>
-                <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
-            </tr>
-            <tr>
-                <td>Lauri</td>
-                <td>Hyland</td>
-                <td>Blackjack Supervisor</td>
-                <td data-value="500874333932">15 Nov 1985</td>
-                <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span>
-                </td>
-            </tr>
-            </tbody>
-            <tfoot class="hide-if-no-paging">
-            <tr>
-                <td colspan="5">
-                    <div class="paginator"></div>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
+      <table class="table table-bordered table-hover demo" data-filter="#filter" data-page-size="5">
+        <thead>
+          <tr>
+            <th data-toggle="true">First Name</th>
+            <th>Last Name</th>
+            <th data-hide="phone,tablet">Job Title</th>
+            <th data-hide="phone,tablet" data-name="Date Of Birth">DOB</th>
+            <th data-hide="phone">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Isidra</td>
+            <td><a href="#">Boudreaux</a></td>
+            <td>Traffic Court Referee</td>
+            <td data-value="78025368997">22 Jun 1972</td>
+            <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
+          </tr>
+          <tr>
+            <td>Shona</td>
+            <td>Woldt</td>
+            <td><a href="#">Airline Transport Pilot</a></td>
+            <td data-value="370961043292">3 Oct 1981</td>
+            <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
+          </tr>
+          <tr>
+            <td>Granville</td>
+            <td>Leonardo</td>
+            <td>Business Services Sales Representative</td>
+            <td data-value="-22133780420">19 Apr 1969</td>
+            <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+          </tr>
+          <tr>
+            <td>Easer</td>
+            <td>Dragoo</td>
+            <td>Drywall Stripper</td>
+            <td data-value="250833505574">13 Dec 1977</td>
+            <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
+          </tr>
+          <tr>
+            <td>Maple</td>
+            <td>Halladay</td>
+            <td>Aviation Tactical Readiness Officer</td>
+            <td data-value="694116650726">30 Dec 1991</td>
+            <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+          </tr>
+          <tr>
+            <td>Maxine</td>
+            <td><a href="#">Woldt</a></td>
+            <td><a href="#">Business Services Sales Representative</a></td>
+            <td data-value="561440464855">17 Oct 1987</td>
+            <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
+          </tr>
+          <tr>
+            <td>Lorraine</td>
+            <td>Mcgaughy</td>
+            <td>Hemodialysis Technician</td>
+            <td data-value="437400551390">11 Nov 1983</td>
+            <td data-value="2"><span class="status-metro status-disabled" title="Disabled">Disabled</span></td>
+          </tr>
+          <tr>
+            <td>Lizzee</td>
+            <td><a href="#">Goodlow</a></td>
+            <td>Technical Services Librarian</td>
+            <td data-value="-257733999319">1 Nov 1961</td>
+            <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+          </tr>
+          <tr>
+            <td>Judi</td>
+            <td>Badgett</td>
+            <td>Electrical Lineworker</td>
+            <td data-value="362134712000">23 Jun 1981</td>
+            <td data-value="1"><span class="status-metro status-active" title="Active">Active</span></td>
+          </tr>
+          <tr>
+            <td>Lauri</td>
+            <td>Hyland</td>
+            <td>Blackjack Supervisor</td>
+            <td data-value="500874333932">15 Nov 1985</td>
+            <td data-value="3"><span class="status-metro status-suspended" title="Suspended">Suspended</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <span class="row-count"></span>
+        <div class="paginator"></div>
+      </div>
+    </div><!-- container -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="lib/js/footable.js"></script>
     <script src="lib/js/footable.sort.js"></script>
     <script src="lib/js/footable.filter.js"></script>
     <script src="lib/js/footable.paginate.js"></script>
-    <script>
-$(function () {
-    $('table').footable().bind({
-        'footable_filtering': function (e) {
-            var selected = $('.filter-status').find(':selected').text();
-            if (selected && selected.length > 0) {
-                e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
-                e.clear = !e.filter;
-            }
-        },
-        'footable_filtered': function() {
-            var count = $('table.demo tbody tr:not(.footable-filtered)').length;
-            $('.row-count').html(count + ' rows found');
-        }
-    });
-
-    $('.clear-filter').click(function (e) {
-        e.preventDefault();
-        $('.filter-status').val('');
-        $('table.demo').trigger('footable_clear_filter');
-        $('.row-count').html('');
-    });
-
-    $('.filter-status').change(function (e) {
-        e.preventDefault();
-        $('table.demo').data('footable-filter').filter($('#filter').val());
-    });
-});
-    </script>
+    <script src="lib/js/footable.demo.js"></script>
   </body>
 </html>
