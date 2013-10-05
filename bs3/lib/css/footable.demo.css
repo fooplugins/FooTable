@@ -1,0 +1,97 @@
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.paginator {
+  float: right;
+}
+
+ul.pagination {
+  margin: 0;
+  padding: 0;
+}
+
+.table {
+  margin-bottom: 10px;
+}
+
+.table > tbody > tr > td.footable-expanded:before,
+.table > tbody > tr > td.footable-collapsed:before,
+.table > thead > tr > th > span.footable-sort-indicator:after {
+  font-family: FontAwesome;
+  color: #666;
+  font-weight: normal;
+}
+
+.table > thead > tr > th > span.footable-sort-indicator {
+  float: right;
+  margin-right: 4px;
+  cursor: pointer;
+  outline: 0;
+}
+/*
+.table > tbody > tr:hover {
+  background: #EFEFEF;
+}
+*/
+.table > thead > tr > th > span.footable-sort-indicator:after {
+  content: "\f0dc";
+  color: #ccc;
+}
+
+.table > thead > tr > th.footable-sorted > span.footable-sort-indicator:after {
+  content: "\f0de";
+  color: #666;
+}
+
+.table > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator:after {
+  content: "\f0dd";
+  color: #666;
+}
+
+.table > tbody > tr > td.footable-collapsed:before {
+  content: "\f0da";
+  color: #666;
+  padding-right: 6px;
+}
+
+.table > tbody > tr > td.footable-expanded:before {
+  content: "\f0d7";
+  color: #666;
+  padding-right: 6px;
+}
+
+.table-bordered {
+  border-collapse: separate;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.table-bordered>thead>tr>th,
+.table-bordered>tbody>tr>td,
+.table-bordered>tfoot>tr>td {
+  border: 0;
+  border-left: 1px solid #eee;
+}
+
+.table-bordered>thead>tr>th:first-child,
+.table-bordered>tbody>tr>td:first-child,
+.table-bordered>tfoot>tr>td:first-child {
+  border-left: 0;
+}
+
+.table-bordered>thead>tr>th {
+  cursor: pointer;
+}
+
+.table-bordered>tbody>tr>td,
+.table-bordered>tfoot>tr>td {
+  border-top: 1px solid #eee;
+}
+
+.table-bordered>tbody>tr>th:first-child,
+.table-bordered>tbody>tr>td:first-child {
+  border-left: 0;
+}
