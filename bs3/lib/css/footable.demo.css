@@ -16,9 +16,8 @@ ul.pagination {
   margin-bottom: 10px;
 }
 
-.table > tbody > tr > td.footable-expanded:before,
-.table > tbody > tr > td.footable-collapsed:before,
-.table > thead > tr > th > span.footable-sort-indicator:after {
+span.footable-toggle,
+span.footable-sort-indicator {
   font-family: FontAwesome;
   color: #666;
   font-weight: normal;
@@ -30,11 +29,7 @@ ul.pagination {
   cursor: pointer;
   outline: 0;
 }
-/*
-.table > tbody > tr:hover {
-  background: #EFEFEF;
-}
-*/
+
 .table > thead > tr > th > span.footable-sort-indicator:after {
   content: "\f0dc";
   color: #ccc;
@@ -50,16 +45,16 @@ ul.pagination {
   color: #666;
 }
 
-.table > tbody > tr > td.footable-collapsed:before {
-  content: "\f0da";
-  color: #666;
-  padding-right: 6px;
+.footable.breakpoint > tbody > tr > td > span.footable-toggle:before {
+    content: "\f0da";
+    color: #666;
+    padding-right: 6px;
 }
 
-.table > tbody > tr > td.footable-expanded:before {
-  content: "\f0d7";
-  color: #666;
-  padding-right: 6px;
+.footable.breakpoint > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
+    content: "\f0d7";
+    color: #666;
+    padding-right: 6px;
 }
 
 .table-bordered {
@@ -120,4 +115,8 @@ span.status-metro {
 #content > h1 {
   margin-top: 0;
   padding-top: 0;
+}
+
+.footable-row-detail-name {
+  font-weight: bold;
 }

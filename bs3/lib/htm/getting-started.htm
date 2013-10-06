@@ -1,6 +1,6 @@
 <h1>Getting Started Demo</h1>
 
-<table class="table demo table-bordered default footable-loaded footable" data-filter="#filter" data-page-size="5" data-page-previous-text="prev" data-page-next-text="next">
+<table class="table table-bordered table-hover demo" data-filter="#filter" data-page-size="5" data-page-previous-text="prev" data-page-next-text="next">
   <thead>
     <tr>
       <th data-toggle="true" class="footable-first-column"> First Name</th>
@@ -83,3 +83,19 @@
     </tr>
   </tbody>
 </table>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="paginator"></div>
+  </div>
+</div>
+
+<script>
+
+$(function () {
+
+    $('table.demo').footable();
+
+});
+
+</script>
