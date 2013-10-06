@@ -1,0 +1,117 @@
+<h1>AJAX Demo</h1>
+
+<script rel="stylesheet" src="lib/js/data-generator.js"></script>
+<script rel="stylesheet" src="lib/js/jquery.mockjax.js"></script>
+
+<p>
+  <div class="row">
+    <form>
+    <div class="col-lg-3">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Filter" id="filter">
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit"><i class="icon-filter"></i></button>
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-2">
+      <select class="form-control filter-status">
+        <option value="">Select Status</option>
+        <option value="active">Active</option>
+        <option value="disabled">Disabled</option>
+        <option value="suspended">Suspended</option>
+      </select>
+    </div>
+    <div class="col-lg-2">
+      <a class="btn btn-default clear-filter" href="#clear">Clear Filter</a></li>
+    </div>
+    <div class="col-lg-5">
+      <a class="btn btn-default get_data pull-right" href="#">Load More Data Via AJAX</a></p>
+    </div>
+    </form>
+  </div>
+</p>
+
+<table class="table table-bordered table-hover demo" data-filter="#filter" data-page-size="7">
+  <thead>
+    <tr>
+        <th data-toggle="true" class="footable-sortable footable-first-column">
+          first name <span class="footable-sort-indicator"></span>
+        </th>
+        <th class="footable-sortable">
+          last name <span class="footable-sort-indicator"></span>
+        </th>
+        <th data-hide="phone,tablet" class="footable-sortable">
+          job title <span class="footable-sort-indicator"></span>
+        </th>
+        <th data-type="numeric" data-hide="phone,tablet" class="footable-sortable">
+          dob <span class="footable-sort-indicator"></span>
+        </th>
+        <th data-hide="phone" class="footable-sortable footable-last-column">
+          status <span class="footable-sort-indicator"></span>
+        </th>
+    </tr>
+  </thead>
+  <tbody>
+<!--
+    <script type="text/javascript">
+        window.generaterows(5);
+    </script>
+-->
+    <tr style="display: table-row;"><td class="footable-first-column"><span class="footable-toggle"></span>karon</td><td>polo</td><td>weight training instructor</td><td data-value="-11074068973">26 aug 1969</td><td data-value="1" class="footable-last-column">active</td></tr>
+    <tr style="display: table-row;"><td class="footable-first-column"><span class="footable-toggle"></span>venice</td><td>lafromboise</td><td>technical writer</td><td data-value="-285032231649">20 dec 1960</td><td data-value="3" class="footable-last-column">suspended</td></tr>
+    <tr style="display: table-row;"><td class="footable-first-column"><span class="footable-toggle"></span>dennise</td><td>leonardo</td><td>financial accountant</td><td data-value="-152826198687">27 feb 1965</td><td data-value="2" class="footable-last-column">disabled</td></tr>
+    <tr style="display: table-row;"><td class="footable-first-column"><span class="footable-toggle"></span>annea</td><td>vanatta</td><td>serials librarian</td><td data-value="19661728040">16 aug 1970</td><td data-value="3" class="footable-last-column">suspended</td></tr>
+    <tr style="display: table-row;"><td class="footable-first-column"><span class="footable-toggle"></span>lilian</td><td>goyette</td><td>potato sorter</td><td data-value="613145206554">7 jun 1989</td><td data-value="3" class="footable-last-column">suspended</td></tr>
+    <tr style="display: table-row;"><td class="footable-first-column"><span class="footable-toggle"></span>humbero</td><td>nicley</td><td>obstetrician/gynecologist</td><td data-value="709367803653">24 jun 1992</td><td data-value="2" class="footable-last-column">disabled</td></tr><tr style="display: table-row;"><td class="footable-first-column"><span class="footable-toggle"></span>rigobero</td><td>leak</td><td>parachute officer</td><td data-value="-57221592259">10 mar 1968</td><td data-value="3" class="footable-last-column">suspended</td></tr><tr style="display: none;"><td class="footable-first-column"><span class="footable-toggle"></span>jesusa</td><td>cerrone</td><td>biology laboratory assistant</td><td data-value="-112780984145">6 jun 1966</td><td data-value="3" class="footable-last-column">suspended</td></tr><tr style="display: none;"><td class="footable-first-column"><span class="footable-toggle"></span>beariz</td><td>dauenhauer</td><td>gaming cage cashier</td><td data-value="297833575851">10 jun 1979</td><td data-value="2" class="footable-last-column">disabled</td></tr><tr style="display: none;"><td class="footable-first-column"><span class="footable-toggle"></span>bernie</td><td>matsumura</td><td>wallpaperer helper</td><td data-value="118761583725">6 oct 1973</td><td data-value="3" class="footable-last-column">suspended</td></tr></tbody>
+</table>
+
+<div class="row">
+  <div class="col-lg-3">
+    <span class="row-count"></span>
+  </div>
+  <div class="col-lg-9">
+    <div class="paginator"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+$.mockjax({
+    url: '/some/api',
+    dataType: 'html',
+    response: function() {
+        this.responseText = window.generateRows(5,0,true);
+    }
+});
+
+$(function () {
+
+    $('table').footable();
+
+    $('.clear-filter').click(function (e) {
+        e.preventDefault();
+        $('table.demo').trigger('footable_clear_filter');
+        $('.filter-status').val('');
+    });
+
+    $('.filter-status').change(function (e) {
+        e.preventDefault();
+        var filter = $(this).val();
+        $('#filter').val('');
+        $('table.demo').trigger('footable_filter', {filter: filter});
+    });
+
+    $('.get_data').click(function() {
+        $.ajax({
+            url : '/some/api',
+            success : function(data) {
+                $('table tbody').append(data);
+                $('table').trigger('footable_redraw');
+            }
+        });
+    });
+
+});
+
+</script>
