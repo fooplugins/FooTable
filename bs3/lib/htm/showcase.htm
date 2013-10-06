@@ -2,22 +2,27 @@
 
 <p>
   <div class="row">
-    <div class="col-lg-3">
-      <form>
+    <form>
+      <div class="col-lg-3">
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Filter" id="filter">
           <div class="input-group-btn">
             <button class="btn btn-default" type="submit"><i class="icon-filter"></i></button>
           </div>
         </div>
-      </form>
-    </div>
-    <div class="col-lg-9">
-      <a class="btn btn-default filter-status-active" href="#">Active</a></li>
-      <a class="btn btn-default filter-status-disabled" href="#">Disabled</a></li>
-      <a class="btn btn-default filter-status-suspended" href="#">Suspended</a></li>
-      <a class="btn btn-default clear-filter" href="#clear">Clear Filter</a></li>
-    </div>
+      </div>
+      <div class="col-lg-2">
+        <select class="form-control filter-status">
+          <option value="">Select Status</option>
+          <option value="active">Active</option>
+          <option value="disabled">Disabled</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <div class="col-lg-2">
+        <a class="btn btn-default clear-filter" href="#clear">Clear Filter</a></li>
+      </div>
+    </form>
   </div>
 </p>
 
@@ -117,6 +122,7 @@
 <script type="text/javascript">
 
 $(function () {
+
     $('table').footable().bind({
         'footable_filtering': function (e) {
             var selected = $('.filter-status').find(':selected').text();
@@ -138,19 +144,11 @@ $(function () {
         $('.row-count').html('');
     });
 
-    $('.filter-status-active').click(function (e) {
+    $('.filter-status').change(function (e) {
         e.preventDefault();
-        $('table.demo').data('footable-filter').filter('active');
-    });
-
-    $('.filter-status-disabled').click(function (e) {
-        e.preventDefault();
-        $('table.demo').data('footable-filter').filter('disabled');
-    });
-
-    $('.filter-status-suspended').click(function (e) {
-        e.preventDefault();
-        $('table.demo').data('footable-filter').filter('suspended');
+        var filter = $(this).val();
+        $('#filter').val('');
+        $('table.demo').trigger('footable_filter', {filter: filter});
     });
 });
 
