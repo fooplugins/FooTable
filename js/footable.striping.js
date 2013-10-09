@@ -23,13 +23,29 @@
         .unbind('striping')
         .bind({
           'footable_initialized.striping footable_row_removed.striping footable_redrawn.striping footable_sorted.striping footable_filtered.striping': function () {
-            p.setupStriping();
+            p.setupStriping(ft);
           }
         });
     };
 
-    p.setupStriping = function () {
-      alert('Strip');
+    p.setupStriping = function (ft) {
+
+      var rowIndex = 0;
+      $(ft.table).find('> tbody > tr:visible:not(.footable-row-detail)').each(function () {
+
+        var $row = $(this);
+
+        //Clean off old classes
+        $row.removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
+
+        if (rowIndex % 2 == 0) {
+          $row.addClass(ft.options.classes.striping.even);
+        } else {
+          $row.addClass(ft.options.classes.striping.odd);
+        }
+
+        rowIndex++;
+      });
     };
   }
 
