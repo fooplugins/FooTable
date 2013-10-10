@@ -179,6 +179,7 @@ Working add-ons:
 * sorting
 * filtering
 * pagination (thanks @awc737)
+* striping (thanks @OliverRC)
 
 Other add-on ideas so far are:
 
@@ -193,6 +194,7 @@ We would not have created FooTable without inspiration from others. Thanks must 
 
 * Catalin for his [original table CSS](http://www.red-team-design.com/practical-css3-tables-with-rounded-corners)
 * [@awc737](https://github.com/awc737) for creating the pagination add-on
+* [@OliverRC](https://github.com/OliverRC) for creating the striping add-on
 * [Chris Coyier](http://css-tricks.com/responsive-data-tables/) (also check out Chris' [responsive table roundup post](http://css-tricks.com/responsive-data-table-roundup/))
 * [Zurb](http://www.zurb.com/playground/responsive-tables)
 * [Dave Bushell](http://dbushell.com/2012/01/05/responsive-tables-2/)
