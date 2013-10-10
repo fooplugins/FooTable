@@ -11,7 +11,7 @@
         odd: 'footable-odd',
         even: 'footable-even'
       }
-    },
+    }
   };
 
   function Striping() {
@@ -41,7 +41,7 @@
         //Clean off old classes
         $row.removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
 
-        if (rowIndex % 2 == 0) {
+        if (rowIndex % 2 === 0) {
           $row.addClass(ft.options.classes.striping.even);
         } else {
           $row.addClass(ft.options.classes.striping.odd);
