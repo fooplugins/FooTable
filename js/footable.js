@@ -670,8 +670,8 @@
 
             } else {
                 ft.createOrUpdateDetailRow($row[0]);
-                $row.addClass(cls.detailShow);
-                $next.show();
+                $row.addClass(cls.detailShow)
+					.next().show();
 
                 ft.raise(evt.rowExpanded, { 'row': $row[0] });
             }
