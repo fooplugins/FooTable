@@ -176,3 +176,6 @@
 .footable .pagination.pagination-right {
   text-align: center;
 }
+.footable-odd {
+  background-color: #f7f7f7;
+}
