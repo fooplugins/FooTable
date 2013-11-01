@@ -176,3 +176,6 @@
 .footable-odd {
   background-color: #f7f7f7;
 }
+.footable > tfoot .pagination ul > li.hidden {
+    display:none;
+}

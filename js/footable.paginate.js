@@ -9,7 +9,8 @@
         firstText: '&laquo;',
         previousText: '&lsaquo;',
         nextText: '&rsaquo;',
-        lastText: '&raquo;'
+        lastText: '&raquo;',
+        navSize: 2//nav items lesser than and greater than active page
     };
 
     function pageInfo(ft) {
@@ -20,6 +21,7 @@
         this.previousText = $table.data('page-previous-text') || ft.options.previousText;
         this.nextText = $table.data('page-next-text') || ft.options.nextText;
         this.lastText = $table.data('page-last-text') || ft.options.lastText;
+        this.navSize = $table.data('nav-size') || ft.options.navSize;
         this.currentPage = 0;
         this.pages = [];
         this.control = false;
@@ -138,7 +140,7 @@
                 }
                 p.paginate(ft, newPage);
             });
-            p.setPagingClasses($nav, info.currentPage, info.pages.length);
+            p.setPagingClasses($nav, info.currentPage, info.pages.length, ft);
         };
 
         p.paginate = function (ft, newPage) {
@@ -152,11 +154,21 @@
 
                 p.fillPage(ft, $tbody, newPage);
                 info.control.find('li').removeClass('active disabled');
-                p.setPagingClasses(info.control, info.currentPage, info.pages.length);
+                p.setPagingClasses(info.control, info.currentPage, info.pages.length, ft);
             }
         };
 
-        p.setPagingClasses = function (nav, currentPage, pageCount) {
+        p.setPagingClasses = function (nav, currentPage, pageCount, ft) {
+            if (pageCount > (2 * ft.pageInfo.navSize + 1)){//if navSize is large enough to hide nav items
+                for (var i = 0; i < pageCount; i++) {
+                    if (i < (currentPage - ft.pageInfo.navSize) || i > (currentPage + ft.pageInfo.navSize)) {
+                        nav.find('li.footable-page > a[data-page=' + i + ']').parent().addClass('hidden');
+                    }
+                    else {
+                        nav.find('li.footable-page > a[data-page=' + i + ']').parent().removeClass('hidden');
+                    }
+                }
+            }
             nav.find('li.footable-page > a[data-page=' + currentPage + ']').parent().addClass('active');
             if (currentPage >= pageCount - 1) {
                 nav.find('li.footable-page-arrow > a[data-page="next"]').parent().addClass('disabled');
