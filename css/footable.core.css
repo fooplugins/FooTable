@@ -152,6 +152,10 @@
 .footable.no-paging .hide-if-no-paging {
   display: none;
 }
+.footable > tfoot .page-index {
+float:right;
+padding-top:3px;
+}
 .footable-row-detail-inner {
   display: table;
 }

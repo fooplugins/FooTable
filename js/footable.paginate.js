@@ -4,6 +4,7 @@
 
     var defaults = {
         paginate: true,
+        pageIndex: false,//add a page index to the navigation bar
         pageSize: 10,
         pageNavigation: '.pagination',
         firstText: '&laquo;',
@@ -15,6 +16,7 @@
 
     function pageInfo(ft) {
         var $table = $(ft.table), $tbody = $table.find('> tbody');
+        this.pageIndex = $table.data('page-index') || ft.options.pageIndex;
         this.pageNavigation = $table.data('page-navigation') || ft.options.pageNavigation;
         this.pageSize = $table.data('page-size') || ft.options.pageSize;
         this.firstText = $table.data('page-first-text') || ft.options.firstText;
@@ -139,8 +141,14 @@
                     newPage = page;
                 }
                 p.paginate(ft, newPage);
+                if (ft.pageInfo.pageIndex) {
+                    p.addPageIndex(info.currentPage, info.pages.length, ft)
+                }
             });
             p.setPagingClasses($nav, info.currentPage, info.pages.length, ft);
+            if (ft.pageInfo.pageIndex) {
+                p.addPageIndex(info.currentPage, info.pages.length, ft)
+            }
         };
 
         p.paginate = function (ft, newPage) {
@@ -157,6 +165,18 @@
                 p.setPagingClasses(info.control, info.currentPage, info.pages.length, ft);
             }
         };
+
+        p.addPageIndex = function (currentPage, pageCount, ft) {
+            $tnav = $(ft.table).find('> tfoot > tr > td .page-index ');
+            if ($tnav.length == 0) {
+                $tnav = $(ft.table).find('> tfoot > tr > td ');
+                $tnav.append('<div class="page-index">Page ' + (currentPage + 1) + ' of ' + pageCount + '</div>');
+            }
+            else {
+                $tnav.empty();
+                $tnav.append('Page ' + (currentPage + 1) + ' of ' + pageCount);
+            }
+        }
 
         p.setPagingClasses = function (nav, currentPage, pageCount, ft) {
             if (pageCount > (2 * ft.pageInfo.navSize + 1)){//if navSize is large enough to hide nav items
