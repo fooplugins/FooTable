@@ -152,6 +152,10 @@
 .footable.no-paging .hide-if-no-paging {
   display: none;
 }
+.footable > tfoot .page-index {
+float:right;
+padding-top:3px;
+}
 .footable-row-detail-inner {
   display: table;
 }
@@ -175,4 +179,7 @@
 }
 .footable-odd {
   background-color: #f7f7f7;
+}
+.footable > tfoot .pagination ul > li.hidden {
+    display:none;
 }
