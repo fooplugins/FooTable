@@ -92,22 +92,56 @@
             var event = ft.raise('footable_filtering', { filter: filterString, clear: clear });
             if (event && event.result === false) return;
             if (event.filter && event.filter.length < minimum) {
-              return; //if we do not have the minimum chars then do nothing
+                return; //if we do not have the minimum chars then do nothing
             }
 
-          if (event.clear) {
+            if (event.clear) {
                 p.clearFilter();
-            } else {
-                var filters = event.filter.split(' ');
-
+            }
+            else {
+                if (event.filter.indexOf('|') >= 0) {//if filter contains the OR operator "|"
+                    var filters = event.filter.split('|');
+                    var orFilter = true;
+                }
+                else {
+                    var filters = event.filter.split(' ');
+                    var orFilter = false;
+                }
                 $table.find('> tbody > tr').hide().addClass('footable-filtered');
                 var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
-                $.each(filters, function (i, f) {
-                    if (f && f.length > 0) {
-                        $table.data('current-filter', f);
-                        rows = rows.filter(ft.options.filter.filterFunction);
-                    }
-                });
+                if (orFilter) {
+                    rows = rows.filter(function (element) {
+                        var $t = $(this),
+                            $table = $t.parents('table:first'),
+                            result = false;
+                            tElements = $t.find('td').add();//adds the value of each row to an object
+                        $.each(filters, function (k, v) {
+                            for (var i = 0; i < tElements.length; i++) {
+                                if (tElements[i].innerText.indexOf(v) > -1) {
+                                    result = true;
+                                    break
+                                }
+                            }
+                            if (result) {
+                                return false; //breaks the each loop
+                            }
+                        });
+                        if (result) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    });
+                }
+                else {
+                    $.each(filters, function (i, f) {
+                        if (f && f.length > 0) {
+                            $table.data('current-filter', f);
+                            rows = rows.filter(ft.options.filter.filterFunction);
+                        }
+                    });
+                }
                 rows.each(function () {
                     p.showRow(this, ft);
                     $(this).removeClass('footable-filtered');
