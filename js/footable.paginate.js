@@ -23,7 +23,7 @@
 		this.previousText = data.previousText || ft.options.previousText;
 		this.nextText = data.nextText || ft.options.nextText;
 		this.lastText = data.lastText || ft.options.lastText;
-		this.limitNavigation = parseInt(data.limitNavigation || ft.options.limitNavigation || defaults.limitNavigation);
+		this.limitNavigation = parseInt(data.limitNavigation || ft.options.limitNavigation || defaults.limitNavigation, 10);
 		this.limitPreviousText = data.limitPreviousText || ft.options.limitPreviousText;
 		this.limitNextText = data.limitNextText || ft.options.limitNextText;
 		this.limit = this.limitNavigation > 0;
@@ -163,7 +163,7 @@
 				if (newPage >= 0){
 					if (info.limit && info.currentPage != newPage){
 						var start = newPage;
-						while (start % info.limitNavigation != 0){ start -= 1; }
+						while (start % info.limitNavigation !== 0){ start -= 1; }
 						p.createLimited($nav, info, start);
 					}
 					p.paginate(ft, newPage);
@@ -184,7 +184,7 @@
 					$prev.after('<li class="footable-page"><a data-page="' + i + '" href="#">' + (i + 1) + '</a></li>');
 				}
 			}
-			if (start == 0){ $prev.hide(); }
+			if (start === 0){ $prev.hide(); }
 			else { $prev.show(); }
 			if (start + info.limitNavigation >= info.pages.length){ $next.hide(); }
 			else { $next.show(); }
