@@ -34,11 +34,19 @@
 			<div class="tab-pane active" id="demo">
                 Page Size:
                 <select id="change-page-size">
+									<option value="2">2</option>
+									<option value="3">3</option>
                     <option value="5">5</option>
-                    <option value="2">2</option>
                     <option value="10">10</option>
                 </select>
-				<table class="table demo" data-page-size="5">
+				Navigation Size:
+				<select id="change-nav-size">
+					<option value="0">None</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+				</select>
+				<table class="table demo" data-page-size="2">
 					<thead>
 						<tr>
 							<th data-toggle="true">
@@ -161,12 +169,15 @@
 &lt;/table&gt;</pre></p>
                 <h4>Pagination Options</h4>
                 <p>Set the page size by adding <code>data-page-size="20"</code> to your table element. (default is 10)</p>
+				<p>Set the navigation page size by adding <code>data-limit-navigation="5"</code> to your table element. (default is 0 | disabled)</p>
                 <p>Set the different paging characters by adding data attributes to the table</p>
                 <ul>
                     <li><code>data-page-first-text="first"</code> (default is &laquo;)</li>
                     <li><code>data-page-previous-text="prev"</code> (default is &lsaquo;)</li>
                     <li><code>data-page-next-text="next"</code> (default is &rsaquo;)</li>
-                    <li><code>data-page-last-text="last"</code> (default is &raquo;)</li>
+									<li><code>data-page-last-text="last"</code> (default is &raquo;)</li>
+									<li><code>data-limit-previous-text="more"</code> (default is ...)</li>
+									<li><code>data-limit-next-text="more"</code> (default is ...)</li>
                 </ul>
                 <h4>Hide Pagination When There Is Only 1 Page</h4>
                 <p>You can easily hide the pagination control by adding <code>class="hide-if-no-paging"</code> (see above code sample).</p>
@@ -189,12 +200,19 @@
         $(function () {
 			$('table').footable();
 
-            $('#change-page-size').change(function (e) {
-                e.preventDefault();
-                var pageSize = $(this).val();
-                $('.footable').data('page-size', pageSize);
-                $('.footable').trigger('footable_initialized');
-            });
+					$('#change-page-size').change(function (e) {
+						e.preventDefault();
+						var pageSize = $(this).val();
+						$('.footable').data('page-size', pageSize);
+						$('.footable').trigger('footable_initialized');
+					});
+
+					$('#change-nav-size').change(function (e) {
+						e.preventDefault();
+						var navSize = $(this).val();
+						$('.footable').data('limit-navigation', navSize);
+						$('.footable').trigger('footable_initialized');
+					});
         });
     </script>
 </body>
