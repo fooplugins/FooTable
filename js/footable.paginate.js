@@ -99,7 +99,7 @@
 			if ($nav.length === 0) {
 				$nav = $(ft.pageInfo.pageNavigation);
 				//if the navigation control is inside another table, then get out
-				if ($nav.parents('table:first') !== $(ft.table)) return;
+				if ($nav.parents('table:first').length > 0 && $nav.parents('table:first') !== $(ft.table)) return;
 				//if we found more than one navigation control, write error to console
 				if ($nav.length > 1 && ft.options.debug === true) console.error('More than one pagination control was found!');
 			}
