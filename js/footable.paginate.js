@@ -13,13 +13,13 @@
     };
 
     function pageInfo(ft) {
-        var $table = $(ft.table), $tbody = $table.find('> tbody');
-        this.pageNavigation = $table.data('page-navigation') || ft.options.pageNavigation;
-        this.pageSize = $table.data('page-size') || ft.options.pageSize;
-        this.firstText = $table.data('page-first-text') || ft.options.firstText;
-        this.previousText = $table.data('page-previous-text') || ft.options.previousText;
-        this.nextText = $table.data('page-next-text') || ft.options.nextText;
-        this.lastText = $table.data('page-last-text') || ft.options.lastText;
+        var $table = $(ft.table), data = $table.data();
+        this.pageNavigation = data.pageNavigation || ft.options.pageNavigation;
+        this.pageSize = data.pageSize || ft.options.pageSize;
+        this.firstText = data.firstText || ft.options.firstText;
+        this.previousText = data.previousText || ft.options.previousText;
+        this.nextText = data.nextText || ft.options.nextText;
+        this.lastText = data.lastText || ft.options.lastText;
         this.currentPage = 0;
         this.pages = [];
         this.control = false;
@@ -48,10 +48,8 @@
         p.setupPaging = function () {
             var ft = p.footable,
                 $tbody = $(ft.table).find('> tbody');
-
-            if (!ft.pageInfo) {
-                ft.pageInfo = new pageInfo(ft);
-            }
+					
+					ft.pageInfo = new pageInfo(ft);
 
             p.createPages(ft, $tbody);
             p.createNavigation(ft, $tbody);
