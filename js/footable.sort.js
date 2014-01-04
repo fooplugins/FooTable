@@ -6,11 +6,11 @@
         sort: true,
         sorters: {
             alpha: function (a, b) {
-							var al = a.toLowerCase();
-							var bl = b.toLowerCase();
-							if (al === bl) return 0;
-							if (al < bl) return -1;
-							return 1;
+				var al = a.toLowerCase();
+				var bl = b.toLowerCase();
+				if (al === bl) return 0;
+				if (al < bl) return -1;
+				return 1;
             },
             numeric: function (a, b) {
                 return a - b;
