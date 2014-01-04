@@ -6,10 +6,10 @@
         sort: true,
         sorters: {
             alpha: function (a, b) {
-				var al = a.toLowerCase();
-				var bl = b.toLowerCase();
-				if (al === bl) return 0;
-				if (al < bl) return -1;
+				if (typeof(a) === 'string') { a = a.toLowerCase(); }
+				if (typeof(b) === 'string') { b = b.toLowerCase(); }
+				if (a === b) return 0;
+				if (a < b) return -1;
 				return 1;
             },
             numeric: function (a, b) {
