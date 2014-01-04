@@ -612,8 +612,10 @@
 
                     selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
                     var $column = $table.find(selector).add(this);
-                    if (data.hide[breakpointName] === false) $column.show();
-                    else $column.hide();
+                    if (breakpointName !== '') {
+                      if (data.hide[breakpointName] === false) $column.show();
+                      else $column.hide();
+                    }
 
                     if ($table.find('> thead > tr.footable-group-row').length === 1) {
                         var $groupcols = $table.find('> thead > tr:last-child > th[data-group="' + data.group + '"]:visible, > thead > tr:last-child > th[data-group="' + data.group + '"]:visible'),
