@@ -34,7 +34,7 @@
     p.setupStriping = function (ft) {
 
       var rowIndex = 0;
-      $(ft.table).find('> tbody > tr:visible:not(.footable-row-detail)').each(function () {
+      $(ft.table).find('> tbody > tr:not(.footable-row-detail)').each(function () {
 
         var $row = $(this);
 
