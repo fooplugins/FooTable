@@ -6,14 +6,14 @@
         sort: true,
         sorters: {
             alpha: function (a, b) {
-				if (typeof(a) === 'string') { a = a.toLowerCase(); }
-				if (typeof(b) === 'string') { b = b.toLowerCase(); }
-				if (a === b) return 0;
-				if (a < b) return -1;
-				return 1;
+              if (typeof(a) === 'string') { a = a.toLowerCase(); }
+              if (typeof(b) === 'string') { b = b.toLowerCase(); }
+              if (a === b) return 0;
+              if (a < b) return -1;
+              return 1;
             },
             numeric: function (a, b) {
-                return a - b;
+              return a - b;
             }
         },
         classes: {
