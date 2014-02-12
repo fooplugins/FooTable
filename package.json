@@ -43,7 +43,8 @@
     "grunt-contrib-clean": "~0.4.0",
     "grunt": "~0.4.1",
     "grunt-contrib-less": "~0.5.2",
-    "grunt-contrib-csslint": "~0.1.2"
+    "grunt-contrib-csslint": "~0.1.2",
+    "grunt-contrib-concat": "~0.3.0"
   },
   "scripts": {
     "test": "grunt test"
