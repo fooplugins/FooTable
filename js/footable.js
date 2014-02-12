@@ -613,8 +613,8 @@
                     selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
                     var $column = $table.find(selector).add(this);
                     if (breakpointName !== '') {
-                      if (data.hide[breakpointName] === false) $column.show();
-                      else $column.hide();
+                      if (data.hide[breakpointName] === false) $column.addClass('footable-visible').show();
+                      else $column.removeClass('footable-visible').hide();
                     }
 
                     if ($table.find('> thead > tr.footable-group-row').length === 1) {
@@ -635,7 +635,7 @@
                     ft.createOrUpdateDetailRow(this);
                 });
 
-            $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
+            $table.find('> tbody > tr.' + cls.detailShow + '.footable-visible').each(function () {
                 var $next = $(this).next();
                 if ($next.hasClass(cls.detail)) {
                     if (!hasBreakpointFired) $next.hide();
@@ -648,10 +648,10 @@
             $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column').removeClass('footable-last-column');
             $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column').removeClass('footable-first-column');
             $table.find('> thead > tr, > tbody > tr')
-                .find('> th:visible:last, > td:visible:last')
+                .find('> th.footable-visible:last, > td.footable-visible:last')
                 .addClass('footable-last-column')
                 .end()
-                .find('> th:visible:first, > td:visible:first')
+                .find('> th.footable-visible:first, > td.footable-visible:first')
                 .addClass('footable-first-column');
 
             ft.raise(evt.redrawn);
