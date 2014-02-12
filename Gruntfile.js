@@ -31,6 +31,15 @@ module.exports = function (grunt) {
                 }
             }
         },
+		concat: {
+			options: {
+				separator: ';'
+			},
+			dist: {
+				src: [ 'dist/footable.min.js', 'dist/footable.filter.min.js', 'dist/footable.paginate.min.js', 'dist/footable.sort.min.js' ],
+				dest: 'dist/footable.all.min.js'
+			}
+		},		
         jshint: {
             gruntfile: {
                 options: {
@@ -87,13 +96,16 @@ module.exports = function (grunt) {
     // Load grunt tasks
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-csslint');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	
+	
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'less', 'csslint']);
+    grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'concat', 'less', 'csslint']);
 
     // Test task
     grunt.registerTask('test', ['jshint']);
