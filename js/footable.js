@@ -1,15 +1,15 @@
 ﻿/*!
  * FooTable - Awesome Responsive Tables
- * Version : 2.0.1.3
+ * Version : 2.0.1.4
  * http://fooplugins.com/plugins/footable-jquery/
  *
  * Requires jQuery - http://jquery.com/
  *
- * Copyright 2013 Steven Usher & Brad Vincent
+ * Copyright 2014 Steven Usher & Brad Vincent
  * Released under the MIT license
  * You are free to use FooTable in commercial projects as long as this copyright header is left intact.
  *
- * Date: 21 Sep 2013
+ * Date: 16 Feb 2014
  */
 (function ($, w, undefined) {
     w.footable = {
