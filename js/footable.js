@@ -635,7 +635,7 @@
                     ft.createOrUpdateDetailRow(this);
                 });
 
-            $table.find('> tbody > tr.' + cls.detailShow + '.footable-visible').each(function () {
+            $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
                 var $next = $(this).next();
                 if ($next.hasClass(cls.detail)) {
                     if (!hasBreakpointFired) $next.hide();
