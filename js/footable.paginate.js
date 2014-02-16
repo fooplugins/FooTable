@@ -27,7 +27,7 @@
 		this.limitPreviousText = data.limitPreviousText || ft.options.limitPreviousText;
 		this.limitNextText = data.limitNextText || ft.options.limitNextText;
 		this.limit = this.limitNavigation > 0;
-		this.currentPage = 0;
+		this.currentPage = data.currentPage || 0;
 		this.pages = [];
 		this.control = false;
 	}
@@ -219,6 +219,7 @@
 
 		p.fillPage = function (ft, tbody, pageNumber) {
 			ft.pageInfo.currentPage = pageNumber;
+			$(ft.table).data('currentPage', pageNumber);
 			tbody.find('> tr').hide();
 			$(ft.pageInfo.pages[pageNumber]).each(function () {
 				p.showRow(this, ft);
