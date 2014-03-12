@@ -434,8 +434,12 @@
         };
 
         ft.parse = function (cell, column) {
-            var parser = opt.parsers[column.type] || opt.parsers.alpha;
-            return parser(cell);
+            if(ft.options.textExtractor) {
+                return ft.options.textExtractor(cell);
+            } else {
+                var parser = opt.parsers[column.type] || opt.parsers.alpha;
+                return parser(cell);
+            }
         };
 
         ft.getColumnData = function (th) {

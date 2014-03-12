@@ -169,6 +169,9 @@
         p.sort = function (ft, tbody, column, ascending) {
             var rows = p.rows(ft, tbody, column);
             var sorter = ft.options.sorters[column.type] || ft.options.sorters.alpha;
+            if(ft.options.textExtractor) {
+                sorter = ft.options.sorters.alpha;
+            }
             rows.sort(function (a, b) {
                 if (ascending) {
                     return sorter(a.value, b.value);
