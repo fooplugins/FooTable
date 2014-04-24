@@ -224,6 +224,7 @@
 			$(ft.pageInfo.pages[pageNumber]).each(function () {
 				p.showRow(this, ft);
 			});
+			ft.raise('footable_page_filled');
 		};
 
 		p.showRow = function (row, ft) {
