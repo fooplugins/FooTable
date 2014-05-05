@@ -200,3 +200,4 @@ We would not have created FooTable without inspiration from others. Thanks must 
 * [Dave Bushell](http://dbushell.com/2012/01/05/responsive-tables-2/)
 * [Filament Group](http://filamentgroup.com/examples/rwd-table-patterns/)
 * [Stewart Curry](http://www.irishstu.com/stublog/2011/12/13/tables-responsive-design-part-2-nchilds/)
+* [@akf](https://github.com/akf) and [Lucid Meetings](https://github.com/lucidmeetings) for creating the bookmarkable add-on
