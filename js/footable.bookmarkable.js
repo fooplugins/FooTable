@@ -40,12 +40,13 @@
 
         $(ft.table).data("status_filter_val", filter_val);
 
-        // manage expanded or collapsed rows: 
+        // manage expanded or collapsed rows:
+	var row, rowlist, expanded_rows;
         if (event.type == 'footable_row_expanded') {
-            var row = event.row;
+            row = event.row;
             if (row) {
-                var rowlist = $(ft.table).data('expanded_rows');
-                var expanded_rows = [];
+                rowlist = $(ft.table).data('expanded_rows');
+                expanded_rows = [];
                 if (rowlist) {
                     expanded_rows = rowlist.split(',');
                 }
@@ -54,15 +55,15 @@
             }
         }
         if (event.type == 'footable_row_collapsed') {
-            var row = event.row;
+            row = event.row;
             if (row) {
-                var rowlist = $(ft.table).data('expanded_rows');
-                var expanded_rows = [];
+                rowlist = $(ft.table).data('expanded_rows');
+                expanded_rows = [];
                 if (rowlist) {
                     expanded_rows = rowlist.split(',');
                 }
                 new_expanded_rows = [];
-                for (i in expanded_rows) {
+                for (var i in expanded_rows) {
                     if (expanded_rows[i] == row.rowIndex) {
                         new_expanded_rows = expanded_rows.splice(i, 1);
                         break;
@@ -111,7 +112,7 @@
                      }
                      if (q_expanded) {
                          var expanded_rows = q_expanded.split(',');
-                         for (i in expanded_rows) {
+                         for (var i in expanded_rows) {
                              row = $(ft.table.rows[expanded_rows[i]]);
                              row.find('> td:first').trigger('footable_toggle_row');
                          }
@@ -135,7 +136,7 @@
                          var hash = location.hash.replace(/^\#/, '&');
                          var hashkeys = [filter, page_num, sorted, descending, expanded];
                          // trim existing elements out of the hash.
-                         for (i in hashkeys) {
+                         for (var i in hashkeys) {
                              var re = new RegExp('&' + hashkeys[i]+'=([^&]*)', 'g');
                              hash = hash.replace(re, '');
                          }
@@ -148,7 +149,7 @@
                          foostate[expanded]   = $(ft.table).data('expanded_rows');
 
                          var pairs = [];
-                         for (elt in foostate) {
+                         for (var elt in foostate) {
                              if (foostate[elt] !== undefined) {
                                  pairs.push(elt + '=' + encodeURIComponent(foostate[elt]));
                              }
