@@ -27,7 +27,9 @@ module.exports = function (grunt) {
                     'dist/footable.min.js': [ 'js/footable.js' ],
                     'dist/footable.filter.min.js': [ 'js/footable.filter.js' ],
                     'dist/footable.paginate.min.js': [ 'js/footable.paginate.js' ],
-                    'dist/footable.sort.min.js': [ 'js/footable.sort.js' ]
+                    'dist/footable.sort.min.js': [ 'js/footable.sort.js' ],
+                    'dist/footable.striping.min.js': [ 'js/footable.striping.js' ],
+                    'dist/footable.bookmarkable.min.js': [ 'js/footable.bookmarkable.js' ]
                 }
             }
         },
@@ -36,7 +38,7 @@ module.exports = function (grunt) {
 				separator: ';'
 			},
 			dist: {
-				src: [ 'dist/footable.min.js', 'dist/footable.filter.min.js', 'dist/footable.paginate.min.js', 'dist/footable.sort.min.js' ],
+				src: [ 'dist/footable.min.js', 'dist/footable.filter.min.js', 'dist/footable.paginate.min.js', 'dist/footable.sort.min.js', 'dist/footable.striping.min.js', 'dist/footable.bookmarkable.min.js' ],
 				dest: 'dist/footable.all.min.js'
 			}
 		},		
