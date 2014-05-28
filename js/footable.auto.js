@@ -1,3 +1,17 @@
+/*!
+ * FooTable - Fully responsive tables addon?
+ * Version : 1.0
+ * https://github.com/Shinrai/FooTable/blob/V2/js/footable.auto.js
+ *
+ * Requires jQuery - http://jquery.com/
+ * Requires FooTable - http://fooplugins.com/plugins/footable-jquery/
+ *
+ * Copyright 2014 Nate Hyson
+ * Released under the MIT license
+ * You are free to use FooTable in commercial projects as long as this copyright header is left intact.
+ *
+ * Date: 28 May 2014
+ */
 function autoadjustfootableforthwidth3(element) {
     var r = false;
     
