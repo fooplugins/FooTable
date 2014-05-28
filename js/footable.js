@@ -97,8 +97,9 @@
             },
             triggers: {
                 initialize: 'footable_initialize',                      //trigger this event to force FooTable to reinitialize
+                readdata: 'footable_readdata',                          //trigger this event to force FooTable to re-read data-hide
                 resize: 'footable_resize',                              //trigger this event to force FooTable to resize
-                redraw: 'footable_redraw',								//trigger this event to force FooTable to redraw
+                redraw: 'footable_redraw',				//trigger this event to force FooTable to redraw
                 toggleRow: 'footable_toggle_row',                       //trigger this event to force FooTable to toggle a row
                 expandFirstRow: 'footable_expand_first_row',            //trigger this event to force FooTable to expand the first row
                 expandAll: 'footable_expand_all',                       //trigger this event to force FooTable to expand all rows
@@ -336,6 +337,11 @@
                 //bind to FooTable redraw trigger
                 .bind(trg.redraw, function () {
                     ft.redraw();
+                })
+                .unbind(trg.readdata)
+                //bind to FooTable readdata trigger
+                .bind(trg.readdata, function () {
+                    ft.readdata();
                 })
                 .unbind(trg.resize)
                 //bind to FooTable resize trigger
@@ -777,6 +783,15 @@
 
             ft.raise(evt.reset);
         };
+		
+	//re-read the column data
+	ft.readdata = function () {
+            $table = $(ft.table);
+			$table.find(opt.columnDataSelector).each(function () {
+                var data = ft.getColumnData(this);
+                ft.columns[data.index] = data;
+            });
+	};
 
         ft.init();
         return ft;
