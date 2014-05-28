@@ -50,8 +50,6 @@ function autoadjustfootables() {
         autoadjustfootableforthwidth3(this);
         var visible = jQuery(this).find('thead tr th:visible').length;
         var total = jQuery(this).find('thead tr th').length;
-        console.log('visible: '+visible);
-        console.log('total: '+total);
         if (visible == total && jQuery(this).find('tbody tr.footable-row-detail')){
             jQuery(this).removeClass('breakpoint');
         } else {
