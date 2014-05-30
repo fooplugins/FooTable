@@ -1,8 +1,21 @@
 (function ($, w, undefined) {
+    var jversion = $.fn.jquery.split('.'), jmajor = parseFloat(jversion[0]), jminor = parseFloat(jversion[1]);
+    if (jmajor<2 && jminor<8) { // build the pseudo selector for jQuery < 1.8
+        $.expr[':'].filterTableFind = function(a, i, m) { // build the case insensitive filtering functionality as a pseudo-selector expression
+            return $(a).text().toUpperCase().indexOf(m[3].toUpperCase())>=0;
+        };
+    } else { // build the pseudo selector for jQuery >= 1.8
+        $.expr[':'].filterTableFind = jQuery.expr.createPseudo(function(arg) {
+            return function(el) {
+                return $(el).text().toUpperCase().indexOf(arg.toUpperCase())>=0;
+            };
+        });
+    }
     if (w.footable === undefined || w.footable === null)
         throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
     var defaults = {
+        highlightClass: "highlight",
         filter: {
             enabled: true,
             input: '.footable-filter',
@@ -110,6 +123,14 @@
                 });
                 rows.each(function () {
                     p.showRow(this, ft);
+                    q = filters.join();
+                    console.log(q);
+
+                    if (q.length > 0) {
+                        $(this).find('td').filter(':filterTableFind("'+q.replace(/(['"])/g,'\\$1')+'")').addClass(defaults.highlightClass);
+                    };
+
+
                     $(this).removeClass('footable-filtered');
                 });
                 $table.data('filter-string', event.filter);
@@ -124,6 +145,12 @@
             $table.find('> tbody > tr:not(.footable-row-detail)').removeClass('footable-filtered').each(function () {
                 p.showRow(this, ft);
             });
+
+            var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
+            rows.each(function () {
+                $(this).find('td').removeClass(defaults.highlightClass);
+            });
+
             $table.removeData('filter-string');
             ft.raise('footable_filtered', { clear: true });
         };
