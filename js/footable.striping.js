@@ -22,8 +22,8 @@
       $(ft.table)
         .unbind('striping')
         .bind({
-          'footable_initialized.striping footable_row_removed.striping footable_redrawn.striping footable_sorted.striping footable_filtered.striping': function () {
-            
+          'footable_initialized.striping footable_row_removed.striping footable_redrawn.striping footable_sorted.striping footable_filtered.striping footable_paged.striping': function () {
+
             if ($(this).data('striping') === false) return;
 
             p.setupStriping(ft);
@@ -34,7 +34,7 @@
     p.setupStriping = function (ft) {
 
       var rowIndex = 0;
-      $(ft.table).find('> tbody > tr:not(.footable-row-detail)').each(function () {
+      $(ft.table).find('> tbody > tr:visible:not(.footable-row-detail)').each(function () {
 
         var $row = $(this);
 
@@ -55,3 +55,4 @@
   w.footable.plugins.register(Striping, defaults);
 
 })(jQuery, window);
+

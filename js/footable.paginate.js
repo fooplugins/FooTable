@@ -202,6 +202,8 @@
 				p.fillPage(ft, $tbody, newPage);
 				info.control.find('li').removeClass('active disabled');
 				p.setPagingClasses(info.control, info.currentPage, info.pages.length);
+
+                                $(ft.table).trigger("footable_paged");
 			}
 		};
 
@@ -240,3 +242,4 @@
 	w.footable.plugins.register(Paginate, defaults);
 
 })(jQuery, window);
+
