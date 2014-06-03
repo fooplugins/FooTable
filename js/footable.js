@@ -32,7 +32,7 @@
             },
             addRowToggle: true,
             calculateWidthOverride: null,
-            toggleSelector: ' > tbody > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
+            toggleSelector: ' > tbody > tr:not(.footable-row-detail),  > tfoot > tr:not(.footable-row-detail)', //the selector to show/hide the detail row
             columnDataSelector: '> thead > tr:last-child > th, > thead > tr:last-child > td', //the selector used to find the column data in the thead
             detailSeparator: ':', //the separator character used when building up the detail row
             toggleHTMLElement: '<span />', // override this if you want to insert a click target rather than use a background image.
@@ -384,7 +384,7 @@
                 var col = ft.columns[c];
                 if (col.toggle) {
                     hasToggleColumn = true;
-                    var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
+                    var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + '), > tfoot > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
                     $table.find(selector).not('.' + cls.detailCell).prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
                     return;
                 }
@@ -392,7 +392,7 @@
             //check if we have an toggle column. If not then add it to the first column just to be safe
             if (!hasToggleColumn) {
                 $table
-                    .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
+                    .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child, > tfoot > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
                     .not('.' + cls.detailCell)
                     .prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
             }
@@ -406,7 +406,7 @@
                     var selector = '', first = true;
                     $.each(col.matches, function (m, match) { //support for colspans
                         if (!first) selector += ', ';
-                        selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + (parseInt(match, 10) + 1) + ')';
+                        selector += '> tbody > tr:not(.' + cls.detail + ') > td:nth-child(' + (parseInt(match, 10) + 1) + '), > tfoot > tr:not(.' + cls.detail + ') > td:nth-child(' + (parseInt(match, 10) + 1) + ')';
                         first = false;
                     });
                     //add the className to the cells specified by data-class="blah"
@@ -595,7 +595,7 @@
                 hasBreakpointFired = ft.hasBreakpointColumn(breakpointName);
 
             $table
-                .find('> tbody > tr:not(.' + cls.detail + ')').data('detail_created', false).end()
+                .find('> tbody > tr:not(.' + cls.detail + '), > tfoot > tr:not(.' + cls.detail + ')').data('detail_created', false).end()
                 .find('> thead > tr:last-child > th')
                 .each(function () {
                     var data = ft.columns[$(this).index()], selector = '', first = true;
@@ -631,11 +631,11 @@
                     }
                 })
                 .end()
-                .find('> tbody > tr.' + cls.detailShow).each(function () {
+                .find('> tbody > tr.' + cls.detailShow + ', > tfoot > tr.' + cls.detailShow).each(function () {
                     ft.createOrUpdateDetailRow(this);
                 });
 
-            $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
+            $table.find('> tbody > tr.' + cls.detailShow + ':visible' + ', > tfoot > tr.' + cls.detailShow + ':visible').each(function () {
                 var $next = $(this).next();
                 if ($next.hasClass(cls.detail)) {
                     if (!hasBreakpointFired) $next.hide();
@@ -645,9 +645,9 @@
 
             // adding .footable-first-column and .footable-last-column to the first and last th and td of each row in order to allow
             // for styling if the first or last column is hidden (which won't work using :first-child or :last-child)
-            $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column').removeClass('footable-last-column');
-            $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column').removeClass('footable-first-column');
-            $table.find('> thead > tr, > tbody > tr')
+            $table.find('> thead > tr > th.footable-last-column, > tbody > tr > td.footable-last-column, > tfoot > tr > td.footable-last-column').removeClass('footable-last-column');
+            $table.find('> thead > tr > th.footable-first-column, > tbody > tr > td.footable-first-column, > tfoot > tr > td.footable-first-column').removeClass('footable-first-column');
+            $table.find('> thead > tr, > tbody > tr, > tfoot > tr')
                 .find('> th.footable-visible:last, > td.footable-visible:last')
                 .addClass('footable-last-column')
                 .end()
@@ -697,7 +697,7 @@
 
         ft.appendRow = function (row) {
             var $row = (row.jquery) ? row : $(row);
-            $(ft.table).find('tbody').append($row);
+            $(ft.table).find('tbody, tfoot').append($row);
 
             //redraw the table
             ft.redraw();
@@ -771,9 +771,9 @@
 
             $table.find(opt.toggleSelector).unbind(trg.toggleRow).unbind('click.footable');
 
-            $table.find('> tbody > tr').removeClass(cls.detailShow);
+            $table.find('> tbody > tr, > tfoot > tr').removeClass(cls.detailShow);
 
-            $table.find('> tbody > tr.' + cls.detail).remove();
+            $table.find('> tbody > tr., > tfoot > tr.' + cls.detail).remove();
 
             ft.raise(evt.reset);
         };
