@@ -1,5 +1,7 @@
-FooTable
-========
+FooTable-Edge
+=============
+
+This is a fork of FooTable that attempts to incorporate bugfixes and commits from other FooTable forks as quickly as possible.
 
 FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome - No matter how many columns of data you may have in them.
 
