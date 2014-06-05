@@ -203,7 +203,7 @@
 				info.control.find('li').removeClass('active disabled');
 				p.setPagingClasses(info.control, info.currentPage, info.pages.length);
 
-                                $(ft.table).trigger("footable_paged");
+                                ft.raise('footable_paged', { page: ft.pageInfo.currentPage });
 			}
 		};
 
