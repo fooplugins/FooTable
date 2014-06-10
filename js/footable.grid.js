@@ -96,6 +96,19 @@
     $table.find('tbody').append('<tr class="emptyInfo"><td colspan="' + cols.length + '">' + emptyInfo + '</td></tr>');
   }
 
+  function updateRowIndex($tbody, $newRow, detailClass, offset) {
+    //update rows index
+    $tbody.find('tr:not(.' + detailClass + ')').each(function() {
+      var $row = $(this),
+        index = $newRow.data('index'),
+        oldIndex = parseInt($row.data('index'), 0),
+        newIndex = oldIndex + offset;
+      if (oldIndex >= index && this !== $newRow.get(0)) {
+        $row.attr('data-index', newIndex).data('index', newIndex);
+      }
+    });
+  }
+
   function Grid() {
     var grid = this;
     grid.name = 'Footable Grid';
@@ -254,6 +267,7 @@
      */
     grid.newItem = function(item, index, wait) {
       var $tbody = $(grid.footable.table).find('tbody');
+      var detailClass = grid.footable.options.classes.detail;
       $tbody.find('tr.emptyInfo').remove();
       if ($.isArray(item)) {
         for (var atom;
@@ -271,29 +285,24 @@
         return;
       }
       var $tr, len = grid._items.length;
-      if (index === undefined || index < 0) {
+      if (index === undefined || index < 0 || index > len) {
         $tr = grid._makeRow(item, len++);
         grid._items.push(item);
         $tbody.append($tr);
       } else {
-        $tr = grid._makeRow(item, len++);
+        $tr = grid._makeRow(item, index);
         if (index === 0) {
           grid._items.unshift(item);
           $tbody.prepend($tr);
         } else {
-          var $before = $tbody.find('tr[data-index=' + index + ']');
-          //not found, insert to last
-          if ($before.size() === 0) {
-            grid._items.push(item);
-            $tbody.append($tr);
-          } else {
-            grid._items.splice(index, 0, item);
-            if ($before.data('detail_created') === true) {
-	            $before = $before.next();
-            }
-            $before.after($tr);
+          var $before = $tbody.find('tr[data-index=' + (index - 1) + ']');
+          grid._items.splice(index, 0, item);
+          if ($before.data('detail_created') === true) {
+            $before = $before.next();
           }
+          $before.after($tr);
         }
+        updateRowIndex($tbody, $tr, detailClass, 1);
       }
       if (!wait) {
         grid.footable.redraw();
@@ -349,13 +358,7 @@
         result = grid._items.splice(index, 1)[0];
         grid.footable.removeRow($tr);
         //update rows index
-        $tbody.find('tr:not(.' + detailClass + ')').each(function() {
-          var $row = $(this),
-            oldIndex = $row.data("index");
-          if (parseInt(oldIndex, 0) > index) {
-            $row.attr('data-index', oldIndex - 1).data('index', oldIndex - 1);
-          }
-        });
+        updateRowIndex($tbody, $tr, detailClass, -1);
       }
       grid.footable.raise(grid.footable.options.grid.events.removed, {
         item: result,
