@@ -93,7 +93,9 @@
   }
 
   function makeEmptyInfo($table, cols, emptyInfo) {
-    $table.find('tbody').append('<tr class="emptyInfo"><td colspan="' + cols.length + '">' + emptyInfo + '</td></tr>');
+    if ($table.find("tr.emptyInfo").size() === 0) {
+       $table.find('tbody').append('<tr class="emptyInfo"><td colspan="' + cols.length + '">' + emptyInfo + '</td></tr>');
+    }
   }
 
   function updateRowIndex($tbody, $newRow, detailClass, offset) {
@@ -167,7 +169,7 @@
         },
         'footable_sorted.grid footable_grid_created.grid footable_grid_removed.grid': function(event) {
           if (options.showIndex && grid.getItem().length > 0) {
-            $table.find('tbody tr').each(function(index) {
+            $table.find('tbody tr:not(.' + detailClass + ')').each(function(index) {
               var $td = $(this).find('td:first');
               $td.html(options.indexFormatter(null, $td, index));
             });
