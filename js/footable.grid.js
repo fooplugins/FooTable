@@ -281,13 +281,16 @@
           grid._items.unshift(item);
           $tbody.prepend($tr);
         } else {
-          var $before = $tbody.find('tr').eq(index - 1);
+          var $before = $tbody.find('tr[data-index=' + index + ']');
           //not found, insert to last
           if ($before.size() === 0) {
             grid._items.push(item);
             $tbody.append($tr);
           } else {
             grid._items.splice(index, 0, item);
+            if ($before.data('detail_created') === true) {
+	            $before = $before.next();
+            }
             $before.after($tr);
           }
         }
