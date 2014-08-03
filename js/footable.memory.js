@@ -1,3 +1,35 @@
+/**
+ * Footable Memory 
+ *
+ * Version 1.0.3
+ *
+ * Requires jQuery Cookie (https://github.com/carhartl/jquery-cookie)
+ *
+ * Stores table state in a cookie and reloads state when page is refreshed.
+ *
+ * Supports common Footable features:
+ * - Pagination
+ * - Sorting
+ * - Filtering
+ * - Expansion
+ *
+ * Written to be compatible with multiple Footables per page and with
+ * JavaScript libraries like AngularJS and Ember that use hash based URLs.
+ *
+ * Disabled by default, to enable add the following section to the footable
+ * options:
+ *
+ *   $('#table').footable({
+ *     memory: {
+ *       enabled: true
+ *     }
+ *   });
+ *
+ * Based on Footable Plugin Bookmarkable by Amy Farrell (https://github.com/akf)
+ *
+ * Created by Chris Laskey (https://github.com/chrislaskey)
+ */
+
 (function ($, w, undefined) {
 
     if (w.footable === undefined || w.foobox === null) {
