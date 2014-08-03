@@ -124,14 +124,174 @@
 
     })($);
 
-    var state = {
-        get: function(ft){
+    var state = (function($){
 
-        },
-        set: function(ft, data){
+        'use strict';
 
-        }
-    };
+        /**
+         * Gets and sets current table state
+         */
+
+        var vars = {};
+
+        var get = {};
+
+        var set = {};
+
+        set.vars = function(ft){
+            vars.ft = ft;
+            vars.table = $(ft.table);
+        };
+
+        get.descending = function(){
+            var descending = false;
+            $.each(vars.table.find('th'), function(index){
+                if( $(this).hasClass('footable-sorted-desc') ){
+                    descending = true;
+                }
+            });
+            return descending;
+        };
+
+        get.expanded = function(){
+            var indexes = [];
+            $.each(vars.ft.table.rows, function(index, value){
+                if( $(this).hasClass('footable-detail-show') ){
+                    indexes.push(index);
+                }
+            });
+            return indexes;
+        };
+
+        set.expanded = function(data){
+            if( data.expanded ){
+                $.each(data.expanded, function(index, value){
+                    // var row = $(vars.ft.table.rows[value]);
+                    // row.find('> td:first').trigger('footable_toggle_row');
+
+                    // Trying to execute the lines above, but the expanded row
+                    // shows raw AngularJS template (with {{ values }}) instead
+                    // of the fully rendered result.
+                    //
+                    // Best guess is some things happen after
+                    // 'footable_initialized' event and row expanding can not
+                    // occur until after those fire.
+                    //
+                    // A hack to get around this is to wait an interval before
+                    // executing the intended commands. Wrapped in an
+                    // immediately executing function to ensure ft is the
+                    // current value.
+
+                    (function(ft){
+                        setTimeout(function(){
+                            var row = $(ft.table.rows[value]);
+                            row.find('> td:first').trigger('footable_toggle_row');
+                        }, 150);
+                    })(vars.ft);
+                });
+            }
+        };
+
+        get.filter = function(){
+            return vars.table.data('filter') ? $(vars.table.data('filter')).val() : '';
+        };
+
+        set.filter = function(data){
+            if( data.filter ){
+                $(vars.table.data('filter'))
+                    .val(data.filter)
+                    .trigger('keyup');
+            }
+        };
+
+        get.page = function(){
+            return vars.ft.pageInfo && vars.ft.pageInfo.currentPage !== undefined ? vars.ft.pageInfo.currentPage : 0;
+        };
+
+        set.page = function(data){
+            if( data.page ){
+                vars.table.data('currentPage', data.page);
+                // Delay triggering table until sort is updated, since both effect
+                // pagination.
+            }
+        };
+
+        get.shown = function(){
+            return vars.table
+                .find('tbody')
+                .find('tr:not(.footable-row-detail)')
+                .filter(':visible').length;
+        };
+
+        get.sorted = function(){
+            if( vars.table.data('sorted') !== undefined ){
+                return vars.table.data('sorted');
+            } else {
+                return -1;
+            }
+        };
+
+        set.sorted = function(data){
+            if( data.sorted >= 0 ) {
+                // vars.table.data('footable-sort').doSort(data.sorted, !data.descending);
+                
+                // Trying to execute the line above, but only sort icon on the
+                // <th> element gets set. The rows themselves do not get sorted.
+                //
+                // Best guess is some things happen after 'footable_initialized' event
+                // and sorting can not occur until after those fire.
+                //
+                // A hack to get around this is to wait an interval before executing
+                // the intended commands. Wrapped in an immediately executing
+                // function to ensure ft is the current value.
+
+                (function(ft){
+                    setTimeout(function(){
+                        $(ft.table).data('footable-sort').doSort(data.sorted, !data.descending);
+                    }, 150);
+                })(vars.ft);
+            } else {
+                vars.table.trigger('footable_setup_paging');
+            }
+        };
+
+        get.total = function(){
+            return vars.table
+                .find('tbody')
+                .find('tr:not(.footable-row-detail, .footable-filtered)').length;
+        };
+
+        var get_state = function(){
+            return {
+                descending: get.descending(),
+                expanded: get.expanded(),
+                filter: get.filter(),
+                page: get.page(),
+                shown: get.shown(),
+                sorted: get.sorted(),
+                total: get.total()
+            };
+        };
+
+        var set_state = function(data){
+            set.filter(data);
+            set.page(data);
+            set.sorted(data);
+            set.expanded(data);
+        };
+
+        return {
+            get: function(ft){
+                set.vars(ft);
+                return get_state();
+            },
+            set: function(ft, data){
+                set.vars(ft);
+                return set_state(data);
+            }
+        };
+
+    })($);
 
     var is_enabled = function(ft){
         return ft.options.memory.enabled
