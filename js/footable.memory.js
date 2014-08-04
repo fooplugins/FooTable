@@ -61,7 +61,7 @@
 
         var storage_key = function(index){
             return path_page() + '/' + path_subpage() + '/index-' + index;
-        }
+        };
 
         var get = function(index){
             var key = storage_key(index),
