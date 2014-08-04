@@ -1,7 +1,7 @@
 /**
  * Footable Memory 
  *
- * Version 1.0.3
+ * Version 1.0.5
  *
  * Requires jQuery Cookie (https://github.com/carhartl/jquery-cookie)
  *
@@ -34,10 +34,6 @@
 
     if (w.footable === undefined || w.foobox === null) {
         throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
-    }
-
-    if ($.cookie === undefined ) {
-        throw new Error('Footable Memory requires jQuery $.cookie, https://github.com/carhartl/jquery-cookie');
     }
 
     var defaults = {
@@ -349,6 +345,10 @@
         p.name = 'Footable Memory';
         p.init = function(ft) {
             if (is_enabled(ft)) {
+                if ($.cookie === undefined ) {
+                    throw new Error('Footable Memory requires jQuery $.cookie, https://github.com/carhartl/jquery-cookie');
+                }
+
                 $(ft.table).bind({
                     'footable_initialized': function(){
                         load(ft);
