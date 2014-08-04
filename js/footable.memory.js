@@ -140,7 +140,7 @@
             options = {
                 path: page,
                 expires: days_to_keep_data
-            }
+            };
 
             $.cookie(page, data, options);
         };
@@ -326,7 +326,7 @@
     })($);
 
     var is_enabled = function(ft){
-        return ft.options.memory.enabled
+        return ft.options.memory.enabled;
     };
 
     var update = function(ft, event) {
