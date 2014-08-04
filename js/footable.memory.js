@@ -1,19 +1,20 @@
 /**
  * Footable Memory 
  *
- * Version 1.0.5
+ * Version 1.1.0
  *
- * Requires jQuery Cookie (https://github.com/carhartl/jquery-cookie)
+ * Requires browser support for localStorage. Fallback to cookies using
+ * jQuery Cookie (https://github.com/carhartl/jquery-cookie)
  *
  * Stores table state in a cookie and reloads state when page is refreshed.
  *
- * Supports common Footable features:
+ * Supports common FooTable features:
  * - Pagination
  * - Sorting
  * - Filtering
  * - Expansion
  *
- * Written to be compatible with multiple Footables per page and with
+ * Written to be compatible with multiple FooTables per page and with
  * JavaScript libraries like AngularJS and Ember that use hash based URLs.
  *
  * Disabled by default, to enable add the following section to the footable
@@ -25,7 +26,7 @@
  *     }
  *   });
  *
- * Based on Footable Plugin Bookmarkable by Amy Farrell (https://github.com/akf)
+ * Based on FooTable Plugin Bookmarkable by Amy Farrell (https://github.com/akf)
  *
  * Created by Chris Laskey (https://github.com/chrislaskey)
  */
@@ -42,7 +43,52 @@
         }
     };
 
-    var storage = (function($){
+    var storage;
+
+    var storage_engines = {};
+
+    storage_engines.local_storage = (function($){
+
+        'use strict';
+
+        var path_page = function(){
+            return location.pathname;
+        };
+
+        var path_subpage = function(){
+            return location.hash || 'root';
+        };
+
+        var storage_key = function(index){
+            return path_page() + '/' + path_subpage() + '/index-' + index;
+        };
+
+        var get = function(index){
+            var key = storage_key(index),
+                as_string = localStorage.getItem(key);
+
+            return as_string ? JSON.parse(as_string) : {};
+        };
+
+        var set = function(index, item){
+            var key = storage_key(index),
+                as_string = JSON.stringify(item);
+
+            localStorage.setItem(key, as_string);
+        };
+
+        return {
+            get: function(index){
+                return get(index);
+            },
+            set: function(index, item){
+                set(index, item);
+            }
+        };
+
+    })($);
+
+    storage_engines.cookie = (function($){
 
         'use strict';
 
@@ -91,7 +137,9 @@
          *
          */
 
-        $.cookie.json = true;
+        if( $.cookie ){
+            $.cookie.json = true;
+        }
 
         var days_to_keep_data = 7;
 
@@ -150,6 +198,23 @@
             }
         };
 
+    })($);
+
+    var set_storage_engine = (function(){
+        var test = 'footable-memory-plugin-storage-test';
+
+        try {
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            storage = storage_engines.local_storage;
+        } catch(e) {
+            try {
+                $.cookie(test, test);
+                storage = storage_engines.cookie;
+            } catch(e) {
+                throw new Error('FooTable Memory requires either localStorage or cookie support via jQuery $.cookie plugin (https://github.com/carhartl/jquery-cookie)');
+            }
+        }
     })($);
 
     var state = (function($){
@@ -345,10 +410,6 @@
         p.name = 'Footable Memory';
         p.init = function(ft) {
             if (is_enabled(ft)) {
-                if ($.cookie === undefined ) {
-                    throw new Error('Footable Memory requires jQuery $.cookie, https://github.com/carhartl/jquery-cookie');
-                }
-
                 $(ft.table).bind({
                     'footable_initialized': function(){
                         load(ft);
