@@ -384,7 +384,8 @@
                 var col = ft.columns[c];
                 if (col.toggle) {
                     hasToggleColumn = true;
-                    var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
+                    var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + '),' +
+											'> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
                     $table.find(selector).not('.' + cls.detailCell).prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
                     return;
                 }
@@ -393,6 +394,7 @@
             if (!hasToggleColumn) {
                 $table
                     .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
+										.add('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:first-child')
                     .not('.' + cls.detailCell)
                     .prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
             }
@@ -427,7 +429,7 @@
             });
 
             $table.find(opt.toggleSelector).unbind('click.footable').bind('click.footable', function (e) {
-                if ($table.is('.breakpoint') && $(e.target).is('td,.'+ cls.toggle)) {
+                if ($table.is('.breakpoint') && $(e.target).is('td,th,.'+ cls.toggle)) {
                     $(this).trigger(trg.toggleRow);
                 }
             });
