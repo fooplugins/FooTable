@@ -1,6 +1,6 @@
 ﻿/*!
  * FooTable - Awesome Responsive Tables
- * Version : 2.0.1.4
+ * Version : 2.0.1.5
  * http://fooplugins.com/plugins/footable-jquery/
  *
  * Requires jQuery - http://jquery.com/
