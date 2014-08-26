@@ -9,7 +9,7 @@
  * Released under the MIT license
  * You are free to use FooTable in commercial projects as long as this copyright header is left intact.
  *
- * Date: 16 Feb 2014
+ * Date: 26 Aug 2014
  */
 (function ($, w, undefined) {
     w.footable = {
