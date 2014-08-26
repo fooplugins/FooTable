@@ -25,6 +25,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'dist/footable.min.js': [ 'js/footable.js' ],
+                    'dist/footable.grid.min.js': [ 'js/footable.grid.js' ],
                     'dist/footable.filter.min.js': [ 'js/footable.filter.js' ],
                     'dist/footable.paginate.min.js': [ 'js/footable.paginate.js' ],
                     'dist/footable.sort.min.js': [ 'js/footable.sort.js' ],
@@ -38,7 +39,7 @@ module.exports = function (grunt) {
 				separator: ';'
 			},
 			dist: {
-				src: [ 'dist/footable.min.js', 'dist/footable.filter.min.js', 'dist/footable.paginate.min.js', 'dist/footable.sort.min.js', 'dist/footable.striping.min.js', 'dist/footable.bookmarkable.min.js' ],
+				src: [ 'dist/footable.min.js', 'dist/footable.grid.min.js', 'dist/footable.filter.min.js', 'dist/footable.paginate.min.js', 'dist/footable.sort.min.js', 'dist/footable.striping.min.js', 'dist/footable.bookmarkable.min.js' ],
 				dest: 'dist/footable.all.min.js'
 			}
 		},		
