@@ -1,6 +1,6 @@
 ﻿/*!
  * FooTable - Awesome Responsive Tables
- * Version : 2.0.1.4
+ * Version : 2.0.1.5
  * http://fooplugins.com/plugins/footable-jquery/
  *
  * Requires jQuery - http://jquery.com/
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * You are free to use FooTable in commercial projects as long as this copyright header is left intact.
  *
- * Date: 16 Feb 2014
+ * Date: 26 Aug 2014
  */
 (function ($, w, undefined) {
     w.footable = {
@@ -390,7 +390,12 @@
                 var col = ft.columns[c];
                 if (col.toggle) {
                     hasToggleColumn = true;
+<<<<<<< HEAD
                     var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + '), > tfoot > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
+=======
+                    var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + '),' +
+											'> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
+>>>>>>> upstream/V2
                     $table.find(selector).not('.' + cls.detailCell).prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
                     return;
                 }
@@ -398,7 +403,12 @@
             //check if we have an toggle column. If not then add it to the first column just to be safe
             if (!hasToggleColumn) {
                 $table
+<<<<<<< HEAD
                     .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child, > tfoot > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
+=======
+                    .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
+										.add('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:first-child')
+>>>>>>> upstream/V2
                     .not('.' + cls.detailCell)
                     .prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
             }
@@ -433,7 +443,7 @@
             });
 
             $table.find(opt.toggleSelector).unbind('click.footable').bind('click.footable', function (e) {
-                if ($table.is('.breakpoint') && $(e.target).is('td,.'+ cls.toggle)) {
+                if ($table.is('.breakpoint') && $(e.target).is('td,th,.'+ cls.toggle)) {
                     $(this).trigger(trg.toggleRow);
                 }
             });
