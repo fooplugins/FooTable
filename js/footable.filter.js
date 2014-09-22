@@ -13,9 +13,9 @@
                 var $t = $(this),
                     $table = $t.parents('table:first'),
                     filter = $table.data('current-filter').toUpperCase(),
-                    text = $t.find('td').text();
+                    text = $t.find('td').not($t.find('td[data-filter-ignore="true"]')).text();
                 if (!$table.data('filter-text-only')) {
-                    $t.find('td[data-value]').each(function () {
+                    $t.find('td[data-value]').not($t.find('td[data-filter-ignore="true"]')).each(function () {
                         text += $(this).data('value');
                     });
                 }
