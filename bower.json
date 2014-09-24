@@ -6,7 +6,15 @@
         "table",
         "responsive"
     ],
-    "main": "js/footable.js",
+    "main": [
+        "js/footable.js",
+        "css/footable.core.css",
+        "css/fonts/footable.eot",
+        "css/fonts/footable.svg",
+        "css/fonts/footable.ttf",
+        "css/fonts/footable.woff"
+    ],
+    
     "dependencies": {
         "jquery": ">=1.4.4"
     },
