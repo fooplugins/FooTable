@@ -50,7 +50,7 @@
                             if ($table.data('sort') === false) return;
 
                             $table.find('> thead > tr:last-child > th, > thead > tr:last-child > td').each(function (ec) {
-                                $th = $(this), column = ft.columns[$th.index()];
+                                var $th = $(this), column = ft.columns[$th.index()];
                                 if (column.sort.ignore !== true && !$th.hasClass(cls.sortable)) {
                                     $th.addClass(cls.sortable);
                                     $('<span />').addClass(cls.indicator).appendTo($th);

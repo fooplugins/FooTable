@@ -62,7 +62,7 @@
                 if (rowlist) {
                     expanded_rows = rowlist.split(',');
                 }
-                new_expanded_rows = [];
+                var new_expanded_rows = [];
                 for (var i in expanded_rows) {
                     if (expanded_rows[i] == row.rowIndex) {
                         new_expanded_rows = expanded_rows.splice(i, 1);
@@ -113,7 +113,7 @@
                      if (q_expanded) {
                          var expanded_rows = q_expanded.split(',');
                          for (var i in expanded_rows) {
-                             row = $(ft.table.rows[expanded_rows[i]]);
+                             var row = $(ft.table.rows[expanded_rows[i]]);
                              row.find('> td:first').trigger('footable_toggle_row');
                          }
                      }
