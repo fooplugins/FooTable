@@ -130,7 +130,7 @@
                 return w.footable.version.major + '.' + w.footable.version.minor;
             },
             parse: function (str) {
-                version = /(\d+)\.?(\d+)?\.?(\d+)?/.exec(str);
+                var version = /(\d+)\.?(\d+)?\.?(\d+)?/.exec(str);
                 return {
                     major: parseInt(version[1], 10) || 0,
                     minor: parseInt(version[2], 10) || 0,
@@ -401,7 +401,7 @@
         };
 
         ft.setColumnClasses = function () {
-            $table = $(ft.table);
+            var $table = $(ft.table);
             for (var c in ft.columns) {
                 var col = ft.columns[c];
                 if (col.className !== null) {
