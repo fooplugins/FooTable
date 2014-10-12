@@ -100,7 +100,7 @@
             triggers: {
                 initialize: 'footable_initialize',                      //trigger this event to force FooTable to reinitialize
                 resize: 'footable_resize',                              //trigger this event to force FooTable to resize
-                redraw: 'footable_redraw',                            	//trigger this event to force FooTable to redraw
+                redraw: 'footable_redraw',                              //trigger this event to force FooTable to redraw
                 toggleRow: 'footable_toggle_row',                       //trigger this event to force FooTable to toggle a row
                 expandFirstRow: 'footable_expand_first_row',            //trigger this event to force FooTable to expand the first row
                 expandAll: 'footable_expand_all',                       //trigger this event to force FooTable to expand all rows
@@ -739,7 +739,7 @@
                 if (index in column.names) name = column.names[index];
 
                 var bindName = $(this).attr("data-bind-name");
-                if (bindName != null && $(this).contents().length == 0) {
+                if (bindName != null && $(this).is(':empty')) {
                     var bindValue = $('.' + cls.detailInnerValue + '[' + 'data-bind-value="' + bindName + '"]');
                     $(this).html($(bindValue).contents().detach());
                 }
