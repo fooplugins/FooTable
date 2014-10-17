@@ -534,7 +534,8 @@
             } //we only care about FooTables that are visible
 
             if (!ft.hasAnyBreakpointColumn()) {
-                return;
+				$table.trigger(trg.redraw);
+				return;
             } //we only care about FooTables that have breakpoints
 
             var info = {
