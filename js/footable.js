@@ -809,7 +809,7 @@
                 var bindValue = $('.' + cls.detailInnerValue + '[' + 'data-bind-value="' + bindName + '"]');
                 if(bindValue != null) {
                     if($(column).is(":visible")) {
-	        			if(!$(bindValue).is(':empty')) $(column).html($(bindValue).contents().detach());
+                        if(!$(bindValue).is(':empty')) $(column).html($(bindValue).contents().detach());
                     } else if(!$(column).is(':empty')) {
                         $(bindValue).html($(column).contents().detach());
                     }
