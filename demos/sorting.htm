@@ -191,10 +191,10 @@ $(&#39;.sort-column&#39;).click(function (e) {
     var footableSort = $(&#39;table&#39;).data(&#39;footable-sort&#39;);
 
     //get the index we are wanting to sort by
-    var index = $(this).data(&#39;index&#39;);
+    var index = $(this).index();
 
     //get the sort order
-    var ascending = $(this).data('ascending');
+    var ascending = $(this).hasClass('footable-sorted');
 
     footableSort.doSort(index, ascending);
 });</pre>
