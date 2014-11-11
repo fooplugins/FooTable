@@ -1,5 +1,5 @@
 ﻿(function ($, w, undefined) {
-  if (w.footable == undefined || w.foobox == null)
+  if (w.footable == undefined || w.footable == null)
     throw new Error('Please check and make sure footable.js is included in the page and is loaded prior to this script.');
 
   var defaults = {
