@@ -76,7 +76,9 @@
 
                     for (var j = 0; j < groups[group].data.length; j++) {
                         var separator = (groups[group].data[j].name) ? separatorChar : '';
-                        element.append('<div class="' + classes.detailInnerRow + '"><div class="' + classes.detailInnerName + '">' + groups[group].data[j].name + separator + '</div><div class="' + classes.detailInnerValue + '">' + groups[group].data[j].display + '</div></div>');
+                        element.append($('<div></div>').addClass(classes.detailInnerRow).append($('<div></div>').addClass(classes.detailInnerName)
+                                .append(groups[group].data[j].name + separator)).append($('<div></div>').addClass(classes.detailInnerValue)
+                                .attr('data-bind-value', groups[group].data[j].bindName).append(groups[group].data[j].display)));
                     }
                 }
             },
@@ -98,7 +100,7 @@
             triggers: {
                 initialize: 'footable_initialize',                      //trigger this event to force FooTable to reinitialize
                 resize: 'footable_resize',                              //trigger this event to force FooTable to resize
-                redraw: 'footable_redraw',								//trigger this event to force FooTable to redraw
+                redraw: 'footable_redraw',                              //trigger this event to force FooTable to redraw
                 toggleRow: 'footable_toggle_row',                       //trigger this event to force FooTable to toggle a row
                 expandFirstRow: 'footable_expand_first_row',            //trigger this event to force FooTable to expand the first row
                 expandAll: 'footable_expand_all',                       //trigger this event to force FooTable to expand all rows
@@ -212,7 +214,7 @@
         return this.each(function () {
             instanceCount++;
             var footable = new Footable(this, o, instanceCount);
-			$(this).data('footable', footable);
+            $(this).data('footable', footable);
         });
     };
 
@@ -385,7 +387,7 @@
                 if (col.toggle) {
                     hasToggleColumn = true;
                     var selector = '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:nth-child(' + (parseInt(col.index, 10) + 1) + '),' +
-											'> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
+                                            '> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:nth-child(' + (parseInt(col.index, 10) + 1) + ')';
                     $table.find(selector).not('.' + cls.detailCell).prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
                     return;
                 }
@@ -394,7 +396,7 @@
             if (!hasToggleColumn) {
                 $table
                     .find('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > td:first-child')
-										.add('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:first-child')
+                                        .add('> tbody > tr:not(.' + cls.detail + ',.' + cls.disabled + ') > th:first-child')
                     .not('.' + cls.detailCell)
                     .prepend($(opt.toggleHTMLElement).addClass(cls.toggle));
             }
@@ -457,7 +459,8 @@
                 'matches': [],
                 'names': { },
                 'group': $th.data('group') || null,
-                'groupName': null
+                'groupName': null,
+                'isEditable': $th.data('editable')
             };
 
             if (data.group !== null) {
@@ -638,6 +641,10 @@
                     ft.createOrUpdateDetailRow(this);
                 });
 
+            $table.find("[data-bind-name]").each(function () {
+                ft.toggleInput(this);
+            });
+
             $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
                 var $next = $(this).next();
                 if ($next.hasClass(cls.detail)) {
@@ -676,7 +683,7 @@
             } else {
                 ft.createOrUpdateDetailRow($row[0]);
                 $row.addClass(cls.detailShow)
-					.next().show();
+                    .next().show();
 
                 ft.raise(evt.rowExpanded, { 'row': $row[0] });
             }
@@ -731,7 +738,22 @@
                 if (column.ignore === true) return true;
 
                 if (index in column.names) name = column.names[index];
-                values.push({ 'name': name, 'value': ft.parse(this, column), 'display': $.trim($(this).html()), 'group': column.group, 'groupName': column.groupName });
+
+                var bindName = $(this).attr("data-bind-name");
+                if (bindName != null && $(this).is(':empty')) {
+                    var bindValue = $('.' + cls.detailInnerValue + '[' + 'data-bind-value="' + bindName + '"]');
+                    $(this).html($(bindValue).contents().detach());
+                }
+                var display;
+                if (column.isEditable !== false && (column.isEditable || $(this).find(":input").length > 0)) {
+                    if(bindName == null) {
+                        bindName = "bind-" + $.now() + "-" + index;
+                        $(this).attr("data-bind-name", bindName);
+                    }
+                    display = $(this).contents().detach();
+                }
+                if (!display) display = $(this).contents().clone(true, true);
+                values.push({ 'name': name, 'value': ft.parse(this, column), 'display': display, 'group': column.group, 'groupName': column.groupName, 'bindName': bindName });
                 return true;
             });
             if (values.length === 0) return false; //return if we don't have any data to show
@@ -779,6 +801,21 @@
             $table.find('> tbody > tr.' + cls.detail).remove();
 
             ft.raise(evt.reset);
+        };
+
+        //Switch between row-detail and detail-show.
+        ft.toggleInput = function (column) {
+            var bindName = $(column).attr("data-bind-name");
+            if(bindName != null) {
+                var bindValue = $('.' + cls.detailInnerValue + '[' + 'data-bind-value="' + bindName + '"]');
+                if(bindValue != null) {
+                    if($(column).is(":visible")) {
+                        if(!$(bindValue).is(':empty')) $(column).html($(bindValue).contents().detach());
+                    } else if(!$(column).is(':empty')) {
+                        $(bindValue).html($(column).contents().detach());
+                    }
+                }
+            }
         };
 
         ft.init();
