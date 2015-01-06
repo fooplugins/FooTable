@@ -1,0 +1,28 @@
+table.footable > thead > tr.footable-filtering > th {
+	border-bottom-width: 1px;
+	font-weight: normal;
+}
+table.footable > thead > tr.footable-filtering > th div.input-group  {
+	float: right;
+	min-width: 200px;
+	max-width: 480px;
+}
+table.footable > thead > tr.footable-filtering > th ul.dropdown-menu > li > label {
+	display: block;
+	margin: 0;
+	padding: 3px 20px;
+	clear: both;
+	font-weight: 400;
+	line-height: 1.42857143;
+	color: #333;
+	white-space: nowrap;
+	cursor: pointer;
+}
+table.footable > thead > tr.footable-filtering > th ul.dropdown-menu > li > label:hover {
+	text-decoration: none;
+	color: #262626;
+	background-color: #f5f5f5;
+}
+table.footable > thead > tr.footable-filtering > th ul.dropdown-menu > li > label > input[type="checkbox"]{
+	margin: 0 5px 0 0;
+}

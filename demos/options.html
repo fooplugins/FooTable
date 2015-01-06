@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
+	<title></title>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="fajax.js"></script>
+
+	<link href="../dist/footable.bootstrap.css" rel="stylesheet" />
+	<script src="../dist/footable.js"></script>
+
+	<script>
+		jQuery(function($){
+			$('#table_1').footable({
+				sorting: {
+					enabled: true
+				},
+				paging: {
+					enabled: true,
+					size: 10,
+					current: parseInt(FooTable.utils.getURLParameter('page')) || 1
+				},
+				filtering: {
+					enabled: true
+				},
+				columns: FAjax.defaults.columns,
+				rows: FAjax.defaults.rows
+			});
+		});
+	</script>
+	<style>
+		body {
+			padding: 50px;
+		}
+	</style>
+</head>
+<body>
+<table id="table_1" class="footable table table-bordered table-striped table-hover table-condensed">
+</table>
+</body>
+</html>

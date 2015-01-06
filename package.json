@@ -1,0 +1,42 @@
+{
+  "name": "footable",
+  "title": "FooTable v3",
+  "description": "FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.",
+  "version": "3.0.0",
+  "homepage": "http://fooplugins.com",
+  "author": {
+    "name": "FooPlugins",
+    "url": "http://fooplugins.com"
+  },
+  "contributors": [
+    {
+      "name": "Steven Usher",
+      "email": "steveush@gmail.com",
+      "url": "https://github.com/steveush"
+    },
+    {
+      "name": "Brad Vincent",
+      "email": "bradvin@gmail.com",
+      "url": "http://themergency.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fooplugins/footable.git"
+  },
+  "devDependencies": {
+    "grunt-contrib-uglify": "~0.1.1",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt": "~0.4.1",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-contrib-concat": "~0.3.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "keywords": [
+    "jquery",
+    "table",
+    "responsive"
+  ]
+}

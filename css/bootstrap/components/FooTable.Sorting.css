@@ -1,0 +1,25 @@
+td.footable-sortable,
+th.footable-sortable {
+	position: relative;
+	padding-right: 30px;
+	cursor: pointer;
+}
+td.footable-sortable > span.glyphicon,
+th.footable-sortable > span.glyphicon {
+	position: absolute;
+	right: 6px;
+	top: 50%;
+	margin-top: -7px;
+	opacity: 0;
+	transition: opacity 0.3s ease-in;
+}
+td.footable-sortable:hover > span.glyphicon,
+th.footable-sortable:hover > span.glyphicon {
+	opacity: 1;
+}
+td.footable-sortable.footable-asc > span.glyphicon,
+th.footable-sortable.footable-asc > span.glyphicon,
+td.footable-sortable.footable-desc > span.glyphicon,
+th.footable-sortable.footable-desc > span.glyphicon {
+	opacity: 1;
+}
