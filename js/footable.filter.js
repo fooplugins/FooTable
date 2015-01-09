@@ -98,17 +98,29 @@
           if (event.clear) {
                 p.clearFilter();
             } else {
-                var filters = event.filter.split(' ');
+                var filters_arr = event.filter.split(','),
+                    rows_result = [];
 
                 $table.find('> tbody > tr').hide().addClass('footable-filtered');
-                var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
-                $.each(filters, function (i, f) {
-                    if (f && f.length > 0) {
-                        $table.data('current-filter', f);
-                        rows = rows.filter(ft.options.filter.filterFunction);
-                    }
-                });
-                rows.each(function () {
+                var all_rows = $table.find('> tbody > tr:not(.footable-row-detail)');
+
+                for(var q in filters_arr) {
+                    var filters = filters_arr[q].trim().split(' '),
+                        rows = all_rows;
+
+                    $.each(filters, function (i, f) {
+                        if (f && f.length > 0) {
+                            $table.data('current-filter', f);
+                            rows = rows.filter(ft.options.filter.filterFunction);
+                        } else {
+                            rows = $();
+                        }
+                    });
+
+                    rows_result = rows_result.concat(rows.get());
+                };
+
+                $.each($.unique(rows_result), function () {
                     p.showRow(this, ft);
                     $(this).removeClass('footable-filtered');
                 });
