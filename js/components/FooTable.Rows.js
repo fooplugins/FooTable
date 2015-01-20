@@ -273,7 +273,7 @@
 		 */
 		_onToggleClicked: function (e) {
 			var self = e.data.self;
-			if (self.instance.columns.hasHidden() && $(e.target).is('tr,td')){ // only execute the toggle code if the event.target matches our check selector
+			if (self.instance.columns.hasHidden() && $(e.target).is('tr,td,span.footable-toggle')){ // only execute the toggle code if the event.target matches our check selector
 				var row = $(this), hasDetail = row.hasClass('footable-detail-show');
 				if (!self.instance.raise('rows_toggle_clicked', [ row, hasDetail ]).isDefaultPrevented()){
 					if (hasDetail) self.removeDetail(row.get(0));
