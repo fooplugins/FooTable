@@ -713,7 +713,7 @@
 
 	FooTable.Column = FooTable.Class.extend(/** @lends FooTable.Column */{
 		/**
-		 * The column class containing all the properties for columns.
+		 * The column class containing all the properties for columns. All members marked as "set by the plugin" should not be used when defining {@link FooTable.Defaults#columns}.
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {FooTable.Instance} instance -  The parent {@link FooTable.Instance} this component belongs to.
@@ -723,23 +723,23 @@
 		 */
 		ctor: function(instance, cell, definition){
 			/**
-			 * The {@link FooTable.Instance} for the column.
+			 * The {@link FooTable.Instance} for the column. This is set by the plugin during initialization.
 			 * @type {FooTable.Instance}
 			 */
 			this.instance = instance;
 			/**
-			 * The jQuery cell object for the column header.
+			 * The jQuery cell object for the column header. This is set by the plugin during initialization.
 			 * @type {jQuery}
 			 */
 			this.$headerCell = $(cell);
 			/**
-			 * The index of the column in the table. This is set by the plugin.
+			 * The index of the column in the table. This is set by the plugin during initialization.
 			 * @type {number}
 			 * @default -1
 			 */
 			this.index = typeof definition.index === 'number' ? definition.index : -1;
 			/**
-			 * Whether or not this column is hidden from view and appears in the details row. This is set by the plugin.
+			 * Whether or not this column is hidden from view and appears in the details row. This is set by the plugin during initialization.
 			 * @type {boolean}
 			 * @default false
 			 */
@@ -747,11 +747,11 @@
 			/**
 			 * Whether or not this column is completely hidden from view and will not appear in the details row.
 			 * @type {boolean}
-			 * @default false
+			 * @default true
 			 */
 			this.visible = typeof definition.visible === 'boolean' ? definition.visible : true;
 			/**
-			 * The parse function for this column. This is set by the plugin.
+			 * The parse function for this column. This is set by the plugin during initialization.
 			 * @type {function}
 			 * @default jQuery.noop
 			 */
@@ -1379,9 +1379,15 @@
 (function($, FooTable){
 
 	/**
-	 * An object containing the column definitions for the table.
+	 * An object containing the column definitions for the table. The name of each of the properties on this object must match the zero based index of each column in the table.
 	 * @type {object.<number, object>}
 	 * @default {}
+	 * @example <caption>The below shows the column definitions for a simple row defined as <code>{ id: Number, name: String, age: Number }</code>. The ID column has a fixed width, the table is initially sorted on the Name column and the Age column will be hidden on phones.</caption>
+	 * columns: {
+	 * 	0: { name: 'id', title: 'ID', width: 80, type: 'number' },
+	 *	1: { name: 'name', title: 'Name', sorted: true, direction: 'ASC' }
+	 *	2: { name: 'age', title: 'Age', type: 'number', hide: 'phone' }
+	 * }
 	 */
 	FooTable.Defaults.prototype.columns = {};
 
@@ -1997,9 +2003,11 @@
 (function($, FooTable){
 
 	/**
-	 * A comma separated string of breakpoint names that specify when the column will be hidden.
+	 * A comma separated string of breakpoint names that specify when the column will be hidden. You can also specify "all" to make a column permanently display in an expandable detail row.
 	 * @type {string}
 	 * @default null
+	 * @example
+	 * hide: "phone tablet"
 	 */
 	FooTable.Column.prototype.hide = null;
 
@@ -2201,7 +2209,7 @@
 	 * @type {object}
 	 * @prop {boolean} enabled=false - Whether or not to allow filtering on the table.
 	 * @prop {string} query=null - The query to filter the rows by. Rows that match this query are included in the result.
-	 * @prop {(Array.<FooTable.Column>|Array.<string>|Array.<number>)} columns=[] - The columns to apply the query to.
+	 * @prop {(Array.<FooTable.Column>|Array.<string>|Array.<number>)} columns - The columns to apply the query to.
 	 * @prop {string} delay=500 - The delay in milliseconds before the query is auto applied after a change.
 	 */
 	FooTable.Defaults.prototype.filtering = {
@@ -2212,15 +2220,18 @@
 	};
 
 	/**
-	 * An object containing the filtering options for the request. Added by the {@link FooTable.Filtering} component.
-	 * @type {object}
-	 * @prop {string} query=null - The query to filter the rows by. Rows that match this query are included in the result.
-	 * @prop {(Array.<string>|Array.<FooTable.Column>)} columns=[\] - The columns to apply the query to.
+	 * The query to filter the rows by. Rows that match this query are included in the result.
+	 * @type {string}
+	 * @default NULL
 	 */
-	FooTable.RequestData.prototype.filtering = {
-		query: null,
-		columns: []
-	};
+	FooTable.RequestData.prototype.filterQuery = null;
+
+	/**
+	 * The columns to apply the {@link FooTable.RequestData#filterQuery} to.
+	 * @type {Array.<string>}
+	 * @default []
+	 */
+	FooTable.RequestData.prototype.filterColumns = [];
 
 	FooTable.Filtering = FooTable.Component.extend(/** @lends FooTable.Filtering */{
 		/**
@@ -2328,8 +2339,10 @@
 		 */
 		preajax: function(data){
 			if (this.instance.options.filtering.enabled == false) return;
-			data.filtering.query = this.instance.options.filtering.query;
-			data.filtering.columns = this.instance.options.filtering.columns;
+			data.filterQuery = this.instance.options.filtering.query;
+			data.filterColumns = $.map(this.instance.options.filtering.columns, function(col){
+				return col.name;
+			});
 		},
 		/**
 		 * Performs the filtering of rows before they are appended to the page.
@@ -2568,25 +2581,25 @@
 	};
 
 	/**
-	 * An object containing the paging options for the request. Added by the {@link FooTable.Paging} component.
-	 * @type {object}
-	 * @prop {number} current=1 - The page number to display.
-	 * @prop {number} size=10 - The number of rows displayed per page.
+	 * The page number to display.
+	 * @type {number}
+	 * @default 1
 	 */
-	FooTable.RequestData.prototype.paging = {
-		current: 1,
-		size: 10
-	};
+	FooTable.RequestData.prototype.currentPage = 1;
 
 	/**
-	 * An object containing updated paging information for the plugin to use. If rows have been added to the underlying data you can supply the new total row count so the plugin can adjust accordingly.
-	 * Added by the {@link FooTable.Paging} component.
-	 * @type {object}
-	 * @prop {number} total=-1 - The total number of rows available.
+	 * The number of rows to display per page.
+	 * @type {number}
+	 * @default 10
 	 */
-	FooTable.ResponseData.prototype.paging = {
-		total: -1
-	};
+	FooTable.RequestData.prototype.pageSize = 10;
+
+	/**
+	 * The total number of rows available.
+	 * @type {number}
+	 * @default NULL
+	 */
+	FooTable.ResponseData.prototype.totalRows = null;
 
 	FooTable.Paging = FooTable.Component.extend(/** @lends FooTable.Paging */{
 		/**
@@ -2675,8 +2688,8 @@
 		 */
 		preajax: function(data){
 			if (this.instance.options.paging.enabled == false) return;
-			data.paging.current = this.instance.options.paging.current;
-			data.paging.size = this.instance.options.paging.size;
+			data.currentPage = this.instance.options.paging.current;
+			data.pageSize = this.instance.options.paging.size;
 		},
 		/**
 		 * Parses the ajax response object and sets the current page, size and total if they exists.
@@ -2684,10 +2697,8 @@
 		 * @param {object} response - The response object that contains the paging options.
 		 */
 		postajax: function(response){
-			if (!response.paging) return;
-			this.instance.options.paging.total = typeof response.paging.total == 'number' ? response.paging.total : this.instance.options.paging.total;
-			this.instance.options.paging.current = typeof response.paging.current == 'number' ? response.paging.current : this.instance.options.paging.current;
-			this.instance.options.paging.size = typeof response.paging.size == 'number' ? response.paging.size : this.instance.options.paging.size;
+			if (this.instance.options.paging.enabled == false) return;
+			this.instance.options.paging.total = typeof response.totalRows == 'number' ? response.totalRows : this.instance.options.paging.total;
 		},
 		/**
 		 * Performs the actual paging against the {@link FooTable.Rows#array} removing all rows that are not on the current visible page.
@@ -3011,15 +3022,18 @@
 	};
 
 	/**
-	 * An object containing the sorting options for the request.
-	 * @type {object}
-	 * @prop {FooTable.Column} column=null - The column to sort on.
-	 * @prop {string} direction=null - The direction to sort the column by. Can be "ASC", "DESC" or NULL.
+	 * The name of the column to sort on.
+	 * @type {string}
+	 * @default NULL
 	 */
-	FooTable.RequestData.prototype.sorting = {
-		column: null,
-		direction: null
-	};
+	FooTable.RequestData.prototype.sortColumn = null;
+
+	/**
+	 * The direction to sort the column by. Can be "ASC", "DESC" or NULL.
+	 * @type {string}
+	 * @default NULL
+	 */
+	FooTable.RequestData.prototype.sortDirection = null;
 
 	FooTable.Sorting = FooTable.Component.extend(/** @lends FooTable.Sorting */{
 		/**
@@ -3100,8 +3114,8 @@
 		 */
 		preajax: function (data) {
 			if (this.instance.options.sorting.enabled == false) return;
-			data.sorting.column = this.instance.options.sorting.column;
-			data.sorting.direction = this.instance.options.sorting.direction;
+			data.sortColumn = this.instance.options.sorting.column.name;
+			data.sortDirection = this.instance.options.sorting.direction;
 		},
 		/**
 		 * Performs the actual sorting against the {@link FooTable.Rows#array}.
