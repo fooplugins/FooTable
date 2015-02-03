@@ -1182,13 +1182,22 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filtering" title="FooTable.RequestData#filtering">filtering</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#currentPage" title="FooTable.RequestData#currentPage">currentPage</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#paging" title="FooTable.RequestData#paging">paging</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterColumns" title="FooTable.RequestData#filterColumns">filterColumns</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sorting" title="FooTable.RequestData#sorting">sorting</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterQuery" title="FooTable.RequestData#filterQuery">filterQuery</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#pageSize" title="FooTable.RequestData#pageSize">pageSize</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortColumn" title="FooTable.RequestData#sortColumn">sortColumn</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortDirection" title="FooTable.RequestData#sortDirection">sortDirection</a></li>
 							
 						</ul>
 						
@@ -1209,10 +1218,10 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#paging" title="FooTable.ResponseData#paging">paging</a></li>
-							
-							
 							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#rows" title="FooTable.ResponseData#rows">rows</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#totalRows" title="FooTable.ResponseData#totalRows">totalRows</a></li>
 							
 						</ul>
 						
@@ -1567,95 +1576,19 @@
 		
 		
 <dt class="fp-member-header">
-	<h4 class="fp-monospace" id="filtering">
+	<h4 class="fp-monospace" id="currentPage">
 		
 		
-		filtering
-		<span class="fp-type-signature"> :object</span>
-		
+		currentPage
+		<span class="fp-type-signature"> :number</span>
+		 = <span>1</span>
 	</h4>
 	
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">An object containing the filtering options for the request. Added by the <a href="FooTable.Filtering.html"><code>FooTable.Filtering</code></a> component.</div>
+	<div class="fp-description">The page number to display.</div>
 	
-	
-	<h5>Properties</h5>
-	
-<table class="fp-props table table-bordered table-condensed">
-	<thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		<th>Type</th>
-		
-		
-		<th>Default</th>
-		
-		<th>Description</th>
-	</tr>
-	</thead>
-	<tbody>
-	
-	<tr>
-		
-		<td class="name"><code>query</code></td>
-		
-		<td>
-			
-			
-<span class="fp-type">string</span>
-
-
-			
-		</td>
-		
-		
-		<td>
-			
-			null
-			
-		</td>
-		
-		<td>
-			The query to filter the rows by. Rows that match this query are included in the result.
-			
-		</td>
-	</tr>
-	
-	<tr>
-		
-		<td class="name"><code>columns</code></td>
-		
-		<td>
-			
-			
-<span class="fp-type">Array.&lt;string></span>
-|
-
-<span class="fp-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
-
-
-			
-		</td>
-		
-		
-		<td>
-			
-			[\
-			
-		</td>
-		
-		<td>
-			The columns to apply the query to.
-			
-		</td>
-	</tr>
-	
-	</tbody>
-</table>
 	
 	
 
@@ -1665,92 +1598,19 @@
 		
 		
 <dt class="fp-member-header">
-	<h4 class="fp-monospace" id="paging">
+	<h4 class="fp-monospace" id="filterColumns">
 		
 		
-		paging
-		<span class="fp-type-signature"> :object</span>
-		
+		filterColumns
+		<span class="fp-type-signature"> :Array.&lt;string></span>
+		 = <span>[]</span>
 	</h4>
 	
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">An object containing the paging options for the request. Added by the <a href="FooTable.Paging.html"><code>FooTable.Paging</code></a> component.</div>
+	<div class="fp-description">The columns to apply the <a href="FooTable.RequestData.html#filterQuery"><code>FooTable.RequestData#filterQuery</code></a> to.</div>
 	
-	
-	<h5>Properties</h5>
-	
-<table class="fp-props table table-bordered table-condensed">
-	<thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		<th>Type</th>
-		
-		
-		<th>Default</th>
-		
-		<th>Description</th>
-	</tr>
-	</thead>
-	<tbody>
-	
-	<tr>
-		
-		<td class="name"><code>current</code></td>
-		
-		<td>
-			
-			
-<span class="fp-type">number</span>
-
-
-			
-		</td>
-		
-		
-		<td>
-			
-			1
-			
-		</td>
-		
-		<td>
-			The page number to display.
-			
-		</td>
-	</tr>
-	
-	<tr>
-		
-		<td class="name"><code>size</code></td>
-		
-		<td>
-			
-			
-<span class="fp-type">number</span>
-
-
-			
-		</td>
-		
-		
-		<td>
-			
-			10
-			
-		</td>
-		
-		<td>
-			The number of rows displayed per page.
-			
-		</td>
-	</tr>
-	
-	</tbody>
-</table>
 	
 	
 
@@ -1760,92 +1620,85 @@
 		
 		
 <dt class="fp-member-header">
-	<h4 class="fp-monospace" id="sorting">
+	<h4 class="fp-monospace" id="filterQuery">
 		
 		
-		sorting
-		<span class="fp-type-signature"> :object</span>
-		
+		filterQuery
+		<span class="fp-type-signature"> :string</span>
+		 = <span>NULL</span>
 	</h4>
 	
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">An object containing the sorting options for the request.</div>
+	<div class="fp-description">The query to filter the rows by. Rows that match this query are included in the result.</div>
 	
 	
-	<h5>Properties</h5>
 	
-<table class="fp-props table table-bordered table-condensed">
-	<thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		<th>Type</th>
-		
-		
-		<th>Default</th>
-		
-		<th>Description</th>
-	</tr>
-	</thead>
-	<tbody>
-	
-	<tr>
-		
-		<td class="name"><code>column</code></td>
-		
-		<td>
-			
-			
-<span class="fp-type"><a href="FooTable.Column.html">FooTable.Column</a></span>
 
-
-			
-		</td>
-		
-		
-		<td>
-			
-			null
-			
-		</td>
-		
-		<td>
-			The column to sort on.
-			
-		</td>
-	</tr>
 	
-	<tr>
-		
-		<td class="name"><code>direction</code></td>
-		
-		<td>
-			
-			
-<span class="fp-type">string</span>
+</dd>
 
-
-			
-		</td>
 		
 		
-		<td>
-			
-			null
-			
-		</td>
+<dt class="fp-member-header">
+	<h4 class="fp-monospace" id="pageSize">
 		
-		<td>
-			The direction to sort the column by. Can be "ASC", "DESC" or NULL.
-			
-		</td>
-	</tr>
+		
+		pageSize
+		<span class="fp-type-signature"> :number</span>
+		 = <span>10</span>
+	</h4>
 	
-	</tbody>
-</table>
+</dt>
+<dd class="fp-member">
+	
+	<div class="fp-description">The number of rows to display per page.</div>
+	
+	
+	
+
+	
+</dd>
+
+		
+		
+<dt class="fp-member-header">
+	<h4 class="fp-monospace" id="sortColumn">
+		
+		
+		sortColumn
+		<span class="fp-type-signature"> :string</span>
+		 = <span>NULL</span>
+	</h4>
+	
+</dt>
+<dd class="fp-member">
+	
+	<div class="fp-description">The name of the column to sort on.</div>
+	
+	
+	
+
+	
+</dd>
+
+		
+		
+<dt class="fp-member-header">
+	<h4 class="fp-monospace" id="sortDirection">
+		
+		
+		sortDirection
+		<span class="fp-type-signature"> :string</span>
+		 = <span>NULL</span>
+	</h4>
+	
+</dt>
+<dd class="fp-member">
+	
+	<div class="fp-description">The direction to sort the column by. Can be "ASC", "DESC" or NULL.</div>
+	
 	
 	
 

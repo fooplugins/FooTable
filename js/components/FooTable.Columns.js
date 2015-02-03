@@ -1,9 +1,15 @@
 (function($, FooTable){
 
 	/**
-	 * An object containing the column definitions for the table.
+	 * An object containing the column definitions for the table. The name of each of the properties on this object must match the zero based index of each column in the table.
 	 * @type {object.<number, object>}
 	 * @default {}
+	 * @example <caption>The below shows the column definitions for a simple row defined as <code>{ id: Number, name: String, age: Number }</code>. The ID column has a fixed width, the table is initially sorted on the Name column and the Age column will be hidden on phones.</caption>
+	 * columns: {
+	 * 	0: { name: 'id', title: 'ID', width: 80, type: 'number' },
+	 *	1: { name: 'name', title: 'Name', sorted: true, direction: 'ASC' }
+	 *	2: { name: 'age', title: 'Age', type: 'number', hide: 'phone' }
+	 * }
 	 */
 	FooTable.Defaults.prototype.columns = {};
 

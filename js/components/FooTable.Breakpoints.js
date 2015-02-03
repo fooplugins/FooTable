@@ -1,9 +1,11 @@
 (function($, FooTable){
 
 	/**
-	 * A comma separated string of breakpoint names that specify when the column will be hidden.
+	 * A comma separated string of breakpoint names that specify when the column will be hidden. You can also specify "all" to make a column permanently display in an expandable detail row.
 	 * @type {string}
 	 * @default null
+	 * @example
+	 * hide: "phone tablet"
 	 */
 	FooTable.Column.prototype.hide = null;
 

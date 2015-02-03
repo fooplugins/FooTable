@@ -2,7 +2,7 @@
 
 	FooTable.Column = FooTable.Class.extend(/** @lends FooTable.Column */{
 		/**
-		 * The column class containing all the properties for columns.
+		 * The column class containing all the properties for columns. All members marked as "set by the plugin" should not be used when defining {@link FooTable.Defaults#columns}.
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {FooTable.Instance} instance -  The parent {@link FooTable.Instance} this component belongs to.
@@ -12,23 +12,23 @@
 		 */
 		ctor: function(instance, cell, definition){
 			/**
-			 * The {@link FooTable.Instance} for the column.
+			 * The {@link FooTable.Instance} for the column. This is set by the plugin during initialization.
 			 * @type {FooTable.Instance}
 			 */
 			this.instance = instance;
 			/**
-			 * The jQuery cell object for the column header.
+			 * The jQuery cell object for the column header. This is set by the plugin during initialization.
 			 * @type {jQuery}
 			 */
 			this.$headerCell = $(cell);
 			/**
-			 * The index of the column in the table. This is set by the plugin.
+			 * The index of the column in the table. This is set by the plugin during initialization.
 			 * @type {number}
 			 * @default -1
 			 */
 			this.index = typeof definition.index === 'number' ? definition.index : -1;
 			/**
-			 * Whether or not this column is hidden from view and appears in the details row. This is set by the plugin.
+			 * Whether or not this column is hidden from view and appears in the details row. This is set by the plugin during initialization.
 			 * @type {boolean}
 			 * @default false
 			 */
@@ -36,11 +36,11 @@
 			/**
 			 * Whether or not this column is completely hidden from view and will not appear in the details row.
 			 * @type {boolean}
-			 * @default false
+			 * @default true
 			 */
 			this.visible = typeof definition.visible === 'boolean' ? definition.visible : true;
 			/**
-			 * The parse function for this column. This is set by the plugin.
+			 * The parse function for this column. This is set by the plugin during initialization.
 			 * @type {function}
 			 * @default jQuery.noop
 			 */

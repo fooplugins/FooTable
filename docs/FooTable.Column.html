@@ -1182,13 +1182,22 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filtering" title="FooTable.RequestData#filtering">filtering</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#currentPage" title="FooTable.RequestData#currentPage">currentPage</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#paging" title="FooTable.RequestData#paging">paging</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterColumns" title="FooTable.RequestData#filterColumns">filterColumns</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sorting" title="FooTable.RequestData#sorting">sorting</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterQuery" title="FooTable.RequestData#filterQuery">filterQuery</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#pageSize" title="FooTable.RequestData#pageSize">pageSize</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortColumn" title="FooTable.RequestData#sortColumn">sortColumn</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortDirection" title="FooTable.RequestData#sortDirection">sortDirection</a></li>
 							
 						</ul>
 						
@@ -1209,10 +1218,10 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#paging" title="FooTable.ResponseData#paging">paging</a></li>
-							
-							
 							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#rows" title="FooTable.ResponseData#rows">rows</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#totalRows" title="FooTable.ResponseData#totalRows">totalRows</a></li>
 							
 						</ul>
 						
@@ -1516,7 +1525,7 @@
 </dt>
 <dd class="fp-method">
 	
-	<div class="fp-description">The column class containing all the properties for columns.</div>
+	<div class="fp-description">The column class containing all the properties for columns. All members marked as "set by the plugin" should not be used when defining <a href="FooTable.Defaults.html#columns"><code>FooTable.Defaults#columns</code></a>.</div>
 	
 
 	
@@ -1656,7 +1665,7 @@
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">The jQuery cell object for the column header.</div>
+	<div class="fp-description">The jQuery cell object for the column header. This is set by the plugin during initialization.</div>
 	
 	
 	
@@ -1777,7 +1786,7 @@
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">Whether or not this column is hidden from view and appears in the details row. This is set by the plugin.</div>
+	<div class="fp-description">Whether or not this column is hidden from view and appears in the details row. This is set by the plugin during initialization.</div>
 	
 	
 	
@@ -1799,10 +1808,19 @@
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">A comma separated string of breakpoint names that specify when the column will be hidden.</div>
+	<div class="fp-description">A comma separated string of breakpoint names that specify when the column will be hidden. You can also specify "all" to make a column permanently display in an expandable detail row.</div>
 	
 	
 	
+
+	
+	<h5>Example</h5>
+	
+
+
+
+<pre class="fp-example prettyprint"><code>hide: "phone tablet"</code></pre>
+
 
 	
 </dd>
@@ -1821,7 +1839,7 @@
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">The index of the column in the table. This is set by the plugin.</div>
+	<div class="fp-description">The index of the column in the table. This is set by the plugin during initialization.</div>
 	
 	
 	
@@ -1843,7 +1861,7 @@
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">The <a href="FooTable.Instance.html"><code>FooTable.Instance</code></a> for the column.</div>
+	<div class="fp-description">The <a href="FooTable.Instance.html"><code>FooTable.Instance</code></a> for the column. This is set by the plugin during initialization.</div>
 	
 	
 	
@@ -1931,7 +1949,7 @@
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">The parse function for this column. This is set by the plugin.</div>
+	<div class="fp-description">The parse function for this column. This is set by the plugin during initialization.</div>
 	
 	
 	
@@ -2079,7 +2097,7 @@
 		
 		visible
 		<span class="fp-type-signature"> :boolean</span>
-		 = <span>false</span>
+		 = <span>true</span>
 	</h4>
 	
 </dt>

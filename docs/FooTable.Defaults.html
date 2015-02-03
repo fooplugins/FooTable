@@ -1182,13 +1182,22 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filtering" title="FooTable.RequestData#filtering">filtering</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#currentPage" title="FooTable.RequestData#currentPage">currentPage</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#paging" title="FooTable.RequestData#paging">paging</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterColumns" title="FooTable.RequestData#filterColumns">filterColumns</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sorting" title="FooTable.RequestData#sorting">sorting</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterQuery" title="FooTable.RequestData#filterQuery">filterQuery</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#pageSize" title="FooTable.RequestData#pageSize">pageSize</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortColumn" title="FooTable.RequestData#sortColumn">sortColumn</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortDirection" title="FooTable.RequestData#sortDirection">sortDirection</a></li>
 							
 						</ul>
 						
@@ -1209,10 +1218,10 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#paging" title="FooTable.ResponseData#paging">paging</a></li>
-							
-							
 							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#rows" title="FooTable.ResponseData#rows">rows</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#totalRows" title="FooTable.ResponseData#totalRows">totalRows</a></li>
 							
 						</ul>
 						
@@ -1658,10 +1667,21 @@
 </dt>
 <dd class="fp-member">
 	
-	<div class="fp-description">An object containing the column definitions for the table.</div>
+	<div class="fp-description">An object containing the column definitions for the table. The name of each of the properties on this object must match the zero based index of each column in the table.</div>
 	
 	
 	
+
+	
+	<h5>Example</h5>
+	
+
+
+<p class="fp-example-description">The below shows the column definitions for a simple row defined as <code>{ id: Number, name: String, age: Number }</code>. The ID column has a fixed width, the table is initially sorted on the Name column and the Age column will be hidden on phones.</p>
+
+
+<pre class="fp-example prettyprint"><code>columns: {	0: { name: 'id', title: 'ID', width: 80, type: 'number' },	1: { name: 'name', title: 'Name', sorted: true, direction: 'ASC' }	2: { name: 'age', title: 'Age', type: 'number', hide: 'phone' }}</code></pre>
+
 
 	
 </dd>
@@ -1774,8 +1794,6 @@
 		
 		
 		<td>
-			
-			[
 			
 		</td>
 		

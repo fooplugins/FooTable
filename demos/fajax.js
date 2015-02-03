@@ -58,6 +58,13 @@
 		}
 	};
 
+	FAjax.getColumn = function(name){
+		for (var i in FAjax.defaults.columns){
+			if (FAjax.defaults.columns.hasOwnProperty(i) && FAjax.defaults.columns[i].name == name) return FAjax.defaults.columns[i];
+		}
+		return {};
+	};
+
 	FAjax.writeColumns = function(){
 		var row = '<tr>';
 		for (var i in FAjax.defaults.columns){
@@ -102,15 +109,15 @@
 		return $.Deferred(function(d){
 			setTimeout(function(){
 				var rows = JSON.parse(JSON.stringify(FAjax.defaults.rows));
-				if (data.filtering && data.filtering.query){
+				if (data.filterQuery && data.filterColumns){
 					var i, text, len = rows.length, remove = [];
 					for (i = 0; i < len; i++){
 						text = '';
-						for (var j = 0, column; j < data.filtering.columns.length; j++){
-							column = data.filtering.columns[j];
+						for (var j = 0, column; j < data.filterColumns.length; j++){
+							column = data.filterColumns[j];
 							text += ' ' + ($.isFunction(column.formatter) ? column.formatter(rows[i][column.name]) + '' : rows[i][column.name] + '');
 						}
-						if (FAjax.isFiltered(data.filtering.query, text)){
+						if (FAjax.isFiltered(data.filterQuery, text)){
 							remove.push(i);
 						}
 					}
@@ -120,21 +127,22 @@
 						rows.splice(remove[i],1);
 					}
 				}
-				if (data.sorting && data.sorting.column && data.sorting.direction){
-					var sorter = $.isFunction(FAjax.defaults.sorters[data.sorting.column.type]) ? FAjax.defaults.sorters[data.sorting.column.type] : FAjax.defaults.sorters.text;
+				if (data.sortColumn && data.sortDirection){
+					var col = FAjax.getColumn(data.sortColumn),
+						sorter = $.isFunction(FAjax.defaults.sorters[col.type]) ? FAjax.defaults.sorters[col.type] : FAjax.defaults.sorters.text;
 					rows.sort(function(a, b){
-						return data.sorting.direction == 'ASC'
-							? sorter(a[data.sorting.column.name], b[data.sorting.column.name])
-							: sorter(b[data.sorting.column.name], a[data.sorting.column.name]);
+						return data.sortDirection == 'ASC'
+							? sorter(a[data.sortColumn], b[data.sortColumn])
+							: sorter(b[data.sortColumn], a[data.sortColumn]);
 					});
 				}
 				var total = rows.length, result = {};
-				if (data.paging){
-					var start = (data.paging.current - 1) * data.paging.size,
-						end = data.paging.current * data.paging.size > rows.length ? rows.length - 1 : data.paging.current * data.paging.size;
+				if (data.currentPage && data.pageSize){
+					var start = (data.currentPage - 1) * data.pageSize,
+						end = data.currentPage * data.pageSize > rows.length ? rows.length - 1 : data.currentPage * data.pageSize;
 
-					if (total > data.paging.size) rows = rows.slice(start, end);
-					result.paging = { total: total };
+					if (total > data.pageSize) rows = rows.slice(start, end);
+					result.totalRows = total;
 				}
 				result.rows = rows;
 				d.resolve(result);

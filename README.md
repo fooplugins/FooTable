@@ -1,3 +1,5 @@
 # FooTable V3 #
 
-To be updated!!!
+Still needs a lot of updating, just adding in a quick ajax setup tutorial.
+
+{@tutorial setup-ajax}

@@ -1182,13 +1182,22 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filtering" title="FooTable.RequestData#filtering">filtering</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#currentPage" title="FooTable.RequestData#currentPage">currentPage</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#paging" title="FooTable.RequestData#paging">paging</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterColumns" title="FooTable.RequestData#filterColumns">filterColumns</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sorting" title="FooTable.RequestData#sorting">sorting</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterQuery" title="FooTable.RequestData#filterQuery">filterQuery</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#pageSize" title="FooTable.RequestData#pageSize">pageSize</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortColumn" title="FooTable.RequestData#sortColumn">sortColumn</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortDirection" title="FooTable.RequestData#sortDirection">sortDirection</a></li>
 							
 						</ul>
 						
@@ -1209,10 +1218,10 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#paging" title="FooTable.ResponseData#paging">paging</a></li>
-							
-							
 							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#rows" title="FooTable.ResponseData#rows">rows</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#totalRows" title="FooTable.ResponseData#totalRows">totalRows</a></li>
 							
 						</ul>
 						
@@ -1567,75 +1576,6 @@
 		
 		
 <dt class="fp-member-header">
-	<h4 class="fp-monospace" id="paging">
-		
-		
-		paging
-		<span class="fp-type-signature"> :object</span>
-		
-	</h4>
-	
-</dt>
-<dd class="fp-member">
-	
-	<div class="fp-description">An object containing updated paging information for the plugin to use. If rows have been added to the underlying data you can supply the new total row count so the plugin can adjust accordingly.Added by the <a href="FooTable.Paging.html"><code>FooTable.Paging</code></a> component.</div>
-	
-	
-	<h5>Properties</h5>
-	
-<table class="fp-props table table-bordered table-condensed">
-	<thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		<th>Type</th>
-		
-		
-		<th>Default</th>
-		
-		<th>Description</th>
-	</tr>
-	</thead>
-	<tbody>
-	
-	<tr>
-		
-		<td class="name"><code>total</code></td>
-		
-		<td>
-			
-			
-<span class="fp-type">number</span>
-
-
-			
-		</td>
-		
-		
-		<td>
-			
-			-1
-			
-		</td>
-		
-		<td>
-			The total number of rows available.
-			
-		</td>
-	</tr>
-	
-	</tbody>
-</table>
-	
-	
-
-	
-</dd>
-
-		
-		
-<dt class="fp-member-header">
 	<h4 class="fp-monospace" id="rows">
 		
 		
@@ -1648,6 +1588,28 @@
 <dd class="fp-member">
 	
 	<div class="fp-description">An array of JSON objects containing the row data.</div>
+	
+	
+	
+
+	
+</dd>
+
+		
+		
+<dt class="fp-member-header">
+	<h4 class="fp-monospace" id="totalRows">
+		
+		
+		totalRows
+		<span class="fp-type-signature"> :number</span>
+		 = <span>NULL</span>
+	</h4>
+	
+</dt>
+<dd class="fp-member">
+	
+	<div class="fp-description">The total number of rows available.</div>
 	
 	
 	

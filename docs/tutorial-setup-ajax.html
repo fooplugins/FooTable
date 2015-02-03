@@ -1182,13 +1182,22 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filtering" title="FooTable.RequestData#filtering">filtering</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#currentPage" title="FooTable.RequestData#currentPage">currentPage</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#paging" title="FooTable.RequestData#paging">paging</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterColumns" title="FooTable.RequestData#filterColumns">filterColumns</a></li>
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sorting" title="FooTable.RequestData#sorting">sorting</a></li>
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#filterQuery" title="FooTable.RequestData#filterQuery">filterQuery</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#pageSize" title="FooTable.RequestData#pageSize">pageSize</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortColumn" title="FooTable.RequestData#sortColumn">sortColumn</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.RequestData.html#sortDirection" title="FooTable.RequestData#sortDirection">sortDirection</a></li>
 							
 						</ul>
 						
@@ -1209,10 +1218,10 @@
 						<ul class="fp-nav-children">
 							
 							
-							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#paging" title="FooTable.ResponseData#paging">paging</a></li>
-							
-							
 							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#rows" title="FooTable.ResponseData#rows">rows</a></li>
+							
+							
+							<li ><a class="fp-monospace" href="FooTable.ResponseData.html#totalRows" title="FooTable.ResponseData#totalRows">totalRows</a></li>
 							
 						</ul>
 						
@@ -1468,7 +1477,97 @@
 	<h1 class="fp-title"><span>Tutorial: Configuring an Ajax FooTable</span></h1>
 </header>
 <article>
-	<p>To get FooTable to use an ajax request to handle data there are a few steps that must be followed.</p>
+	<p>To allow FooTable to use an ajax request to handle there are a few steps you should do.</p>
+<ol>
+<li><p>Create an endpoint using what ever language you are comfortable with that can handle the <a href="FooTable.RequestData.html"><code>FooTable.RequestData</code></a> object and return a JSON object containing the properties of a <a href="FooTable.ResponseData.html"><code>FooTable.ResponseData</code></a> object. This endpoint will need to inspect the <a href="FooTable.RequestData.html"><code>FooTable.RequestData</code></a> values and perform the required sorting, filtering or paging operations. The <a href="FooTable.ResponseData.html#rows"><code>FooTable.ResponseData#rows</code></a> array should only contain the rows for the current page, so if your page size is set to 10, then you should return 10 rows. The <a href="FooTable.ResponseData.html#totalRows"><code>FooTable.ResponseData#totalRows</code></a> should contain the count of the total number of rows available, not just the 10 returned due to the page size.</p>
+</li>
+<li><p>Include the required files in your page.</p>
+<pre class="prettyprint source lang-html"><code>&lt;link href=&quot;footable.min.css&quot; rel=&quot;stylesheet&quot;/>
+&lt;script src=&quot;footable.min.js&quot;>&lt;/script></code></pre></li>
+<li><p>Configure the plugin to use the <a href="FooTable.Defaults.html#ajax"><code>FooTable.Defaults#ajax</code></a> callback and the components you require.</p>
+<pre class="prettyprint source lang-javascript"><code>&lt;script>
+ jQuery(function($){
+     $('table').footable({
+         ...
+         ajaxEnabled: true,
+         sorting: {
+             enabled: true
+         },
+         filtering: {
+             enabled: true
+         },
+         paging: {
+             enabled: true,
+             size: 15
+         }
+         ...
+     });
+ });
+&lt;/script></code></pre></li>
+<li><p>Create a function to handle the <a href="FooTable.Defaults.html#ajax"><code>FooTable.Defaults#ajax</code></a> callback. This function will be passed an instance of <a href="FooTable.RequestData.html"><code>FooTable.RequestData</code></a> which you can use to query the server and let it perform the heavy lifting of the sorting, filtering, etc.</p>
+<pre class="prettyprint source lang-javascript"><code>&lt;script>
+ jQuery(function($){
+     $('table').footable({
+         ...
+         ajax: function(requestData){
+             return $.ajax({
+                 url: 'http://example.com/my-endpoint',
+                 data: requestData
+             });
+         }
+         ...
+     });
+ });
+&lt;/script></code></pre></li>
+<li><p>Define the columns that will be created using the <a href="FooTable.ResponseData.html#rows"><code>FooTable.ResponseData#rows</code></a> array. Take a look at the <a href="FooTable.Column.html"><code>FooTable.Column</code></a> object to see what properties are supported. In the below example each row is defined as an object like: <code>{ id: Number, name: String, age: Number }</code>.</p>
+<pre class="prettyprint source lang-javascript"><code>&lt;script>
+ jQuery(function($){
+     $('table').footable({
+         ...
+         columns: {
+             0: { name: 'id', title: 'ID', width: 80, type: 'number' },
+             1: { name: 'name', title: 'Name', sorted: true, direction: 'ASC' }
+             2: { name: 'age', title: 'Age', type: 'number', hide: 'phone' }
+         }
+         ...
+     });
+ });
+&lt;/script></code></pre></li>
+</ol>
+<hr>
+<h2>Summary</h2><p>So in the end to have an ajax enabled FooTable the initialize code would look something like the below:</p>
+<pre class="prettyprint source lang-javascript"><code>&lt;script>
+    jQuery(function($){
+        $('table').footable({
+            ajaxEnabled: true,
+            sorting: {
+                enabled: true
+            },
+            filtering: {
+                enabled: true
+            },
+            paging: {
+                enabled: true,
+                size: 15
+            },
+            ajax: function(requestData){
+                return $.ajax({
+                    url: 'http://example.com/my-endpoint',
+                    data: requestData
+                });
+            },
+            columns: {
+                0: { name: 'id', title: 'ID', width: 80, type: 'number' },
+                1: { name: 'name', title: 'Name', sorted: true, direction: 'ASC' }
+                2: { name: 'age', title: 'Age', type: 'number', hide: 'phone' }
+            }
+        });
+    });
+&lt;/script></code></pre><p>And the endpoint at http://example.com/my-endpoint would need to return a JSON object with the below <a href="FooTable.ResponseData.html"><code>FooTable.ResponseData</code></a> properties:</p>
+<pre class="prettyprint source lang-javascript"><code>{
+    &quot;totalRows&quot;: Number, // The total number of rows in the database.
+    &quot;rows&quot;: Array // An array of JSON objects as defined in the columns option.
+}</code></pre>
 	
 </article>
 	
