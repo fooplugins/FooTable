@@ -80,15 +80,18 @@
 	};
 
 	/**
-	 * An object containing the sorting options for the request.
-	 * @type {object}
-	 * @prop {FooTable.Column} column=null - The column to sort on.
-	 * @prop {string} direction=null - The direction to sort the column by. Can be "ASC", "DESC" or NULL.
+	 * The name of the column to sort on.
+	 * @type {string}
+	 * @default NULL
 	 */
-	FooTable.RequestData.prototype.sorting = {
-		column: null,
-		direction: null
-	};
+	FooTable.RequestData.prototype.sortColumn = null;
+
+	/**
+	 * The direction to sort the column by. Can be "ASC", "DESC" or NULL.
+	 * @type {string}
+	 * @default NULL
+	 */
+	FooTable.RequestData.prototype.sortDirection = null;
 
 	FooTable.Sorting = FooTable.Component.extend(/** @lends FooTable.Sorting */{
 		/**
@@ -169,8 +172,8 @@
 		 */
 		preajax: function (data) {
 			if (this.instance.options.sorting.enabled == false) return;
-			data.sorting.column = this.instance.options.sorting.column;
-			data.sorting.direction = this.instance.options.sorting.direction;
+			data.sortColumn = this.instance.options.sorting.column.name;
+			data.sortDirection = this.instance.options.sorting.direction;
 		},
 		/**
 		 * Performs the actual sorting against the {@link FooTable.Rows#array}.

@@ -12,7 +12,7 @@
 	 * @type {object}
 	 * @prop {boolean} enabled=false - Whether or not to allow filtering on the table.
 	 * @prop {string} query=null - The query to filter the rows by. Rows that match this query are included in the result.
-	 * @prop {(Array.<FooTable.Column>|Array.<string>|Array.<number>)} columns=[] - The columns to apply the query to.
+	 * @prop {(Array.<FooTable.Column>|Array.<string>|Array.<number>)} columns - The columns to apply the query to.
 	 * @prop {string} delay=500 - The delay in milliseconds before the query is auto applied after a change.
 	 */
 	FooTable.Defaults.prototype.filtering = {
@@ -23,15 +23,18 @@
 	};
 
 	/**
-	 * An object containing the filtering options for the request. Added by the {@link FooTable.Filtering} component.
-	 * @type {object}
-	 * @prop {string} query=null - The query to filter the rows by. Rows that match this query are included in the result.
-	 * @prop {(Array.<string>|Array.<FooTable.Column>)} columns=[\] - The columns to apply the query to.
+	 * The query to filter the rows by. Rows that match this query are included in the result.
+	 * @type {string}
+	 * @default NULL
 	 */
-	FooTable.RequestData.prototype.filtering = {
-		query: null,
-		columns: []
-	};
+	FooTable.RequestData.prototype.filterQuery = null;
+
+	/**
+	 * The columns to apply the {@link FooTable.RequestData#filterQuery} to.
+	 * @type {Array.<string>}
+	 * @default []
+	 */
+	FooTable.RequestData.prototype.filterColumns = [];
 
 	FooTable.Filtering = FooTable.Component.extend(/** @lends FooTable.Filtering */{
 		/**
@@ -139,8 +142,10 @@
 		 */
 		preajax: function(data){
 			if (this.instance.options.filtering.enabled == false) return;
-			data.filtering.query = this.instance.options.filtering.query;
-			data.filtering.columns = this.instance.options.filtering.columns;
+			data.filterQuery = this.instance.options.filtering.query;
+			data.filterColumns = $.map(this.instance.options.filtering.columns, function(col){
+				return col.name;
+			});
 		},
 		/**
 		 * Performs the filtering of rows before they are appended to the page.

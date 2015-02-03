@@ -36,25 +36,25 @@
 	};
 
 	/**
-	 * An object containing the paging options for the request. Added by the {@link FooTable.Paging} component.
-	 * @type {object}
-	 * @prop {number} current=1 - The page number to display.
-	 * @prop {number} size=10 - The number of rows displayed per page.
+	 * The page number to display.
+	 * @type {number}
+	 * @default 1
 	 */
-	FooTable.RequestData.prototype.paging = {
-		current: 1,
-		size: 10
-	};
+	FooTable.RequestData.prototype.currentPage = 1;
 
 	/**
-	 * An object containing updated paging information for the plugin to use. If rows have been added to the underlying data you can supply the new total row count so the plugin can adjust accordingly.
-	 * Added by the {@link FooTable.Paging} component.
-	 * @type {object}
-	 * @prop {number} total=-1 - The total number of rows available.
+	 * The number of rows to display per page.
+	 * @type {number}
+	 * @default 10
 	 */
-	FooTable.ResponseData.prototype.paging = {
-		total: -1
-	};
+	FooTable.RequestData.prototype.pageSize = 10;
+
+	/**
+	 * The total number of rows available.
+	 * @type {number}
+	 * @default NULL
+	 */
+	FooTable.ResponseData.prototype.totalRows = null;
 
 	FooTable.Paging = FooTable.Component.extend(/** @lends FooTable.Paging */{
 		/**
@@ -143,8 +143,8 @@
 		 */
 		preajax: function(data){
 			if (this.instance.options.paging.enabled == false) return;
-			data.paging.current = this.instance.options.paging.current;
-			data.paging.size = this.instance.options.paging.size;
+			data.currentPage = this.instance.options.paging.current;
+			data.pageSize = this.instance.options.paging.size;
 		},
 		/**
 		 * Parses the ajax response object and sets the current page, size and total if they exists.
@@ -152,10 +152,8 @@
 		 * @param {object} response - The response object that contains the paging options.
 		 */
 		postajax: function(response){
-			if (!response.paging) return;
-			this.instance.options.paging.total = typeof response.paging.total == 'number' ? response.paging.total : this.instance.options.paging.total;
-			this.instance.options.paging.current = typeof response.paging.current == 'number' ? response.paging.current : this.instance.options.paging.current;
-			this.instance.options.paging.size = typeof response.paging.size == 'number' ? response.paging.size : this.instance.options.paging.size;
+			if (this.instance.options.paging.enabled == false) return;
+			this.instance.options.paging.total = typeof response.totalRows == 'number' ? response.totalRows : this.instance.options.paging.total;
 		},
 		/**
 		 * Performs the actual paging against the {@link FooTable.Rows#array} removing all rows that are not on the current visible page.
