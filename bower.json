@@ -1,6 +1,5 @@
 {
     "name": "footable",
-    "version": "2.0.3",
     "description": "jQuery plugin to make HTML tables responsive",
     "keywords": [
         "table",
