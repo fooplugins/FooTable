@@ -130,7 +130,6 @@
 
         p.showRow = function (row, ft) {
             var $row = $(row), $next = $row.next(), $table = $(ft.table);
-            if ($row.is(':visible')) return; //already visible - do nothing
             if ($table.hasClass('breakpoint') && $row.hasClass('footable-detail-show') && $next.hasClass('footable-row-detail')) {
                 $row.add($next).show();
                 ft.createOrUpdateDetailRow(row);
