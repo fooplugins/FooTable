@@ -195,7 +195,7 @@
 		draw: function () {
 			if (this.instance.options.sorting.enabled == false || !this.instance.options.sorting.column || !this.instance.options.sorting.direction) return;
 			var $sortable = this.instance.$table.children('thead').children('tr.footable-header').children('.footable-sortable'),
-				$active = $sortable.eq(this.instance.options.sorting.column.index);
+				$active = this.instance.options.sorting.column.$headerCell;
 
 			$sortable.removeClass('footable-asc footable-desc').children('.glyphicon').removeClass('glyphicon-sort glyphicon-sort-by-attributes glyphicon-sort-by-attributes-alt');
 			$sortable.not($active).children('.glyphicon').addClass('glyphicon-sort');
