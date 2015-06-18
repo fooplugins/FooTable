@@ -32,7 +32,10 @@
 
 		// Bind the panel header clicks to toggle
 		$('.fp-nav-items').on('click', '.panel-heading', function(e){
-			togglePanel($(e.target).closest('.panel'));
+			var $t = $(e.target);
+			if (!$t.is('a')){
+				togglePanel($t.closest('.panel'));
+			}
 		});
 
 		// Auto show the current page's navigation item.
