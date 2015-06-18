@@ -43,7 +43,7 @@
 				return value instanceof Date ? value.getDate() + ' ' + months[value.getMonth()] + ' ' + value.getFullYear() : null;
 			}}
 		},
-		rows: FAjax.createRows(10000),
+		rows: FAjax.createRows(1000),
 		sorters: {
 			text: function (a, b) {
 				if (typeof(a) === 'string') { a = a.toLowerCase(); }
