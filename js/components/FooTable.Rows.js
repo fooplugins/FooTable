@@ -8,6 +8,13 @@
 	FooTable.Defaults.prototype.rows = [];
 
 	/**
+	 * A string to display when there are no rows in the table.
+	 * @type {string}
+	 * @default "No results"
+	 */
+	FooTable.Defaults.prototype.empty = 'No results';
+
+	/**
 	 * An array of JSON objects containing the row data.
 	 * @type {Array.<object>}
 	 * @default []
@@ -24,6 +31,12 @@
 		 */
 		ctor: function (instance) {
 			/**
+			 * This provides a shortcut to the {@link FooTable.Instance#options} object.
+			 * @protected
+			 * @type {FooTable.Instance#options}
+			 */
+			this.o = instance.options;
+			/**
 			 * An array of {@link FooTable.Row} objects created from parsing the options and/or DOM.
 			 * @type {Array.<FooTable.Row>}
 			 * @default []
@@ -37,6 +50,12 @@
 			 */
 			this._array = [];
 
+			/**
+			 * The jQuery object that contains the empty row control.
+			 * @type {jQuery}
+			 */
+			this.$empty = null;
+
 			// call the base class constructor
 			this._super(instance);
 		},
@@ -49,19 +68,20 @@
 		 */
 		init: function (table, options) {
 			var self = this;
-			if (self.instance.$table.children('tbody').length == 0) self.instance.$table.append('<tbody/>');
-			self.instance.$table.on('click.footable', '> tbody > tr:has(td > span.footable-toggle)', { self: self }, self._onToggleClicked);
-			self._array = (self.instance.options.ajaxEnabled == false && self.instance.options.rows.length == 0)
-				? self.fromDOM(self.instance.$table.children('tbody').get(0).rows)
+			self.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(options.empty));
+			if (self.ft.$table.children('tbody').length == 0) self.ft.$table.append('<tbody/>');
+			self.ft.$table.on('click.footable', '> tbody > tr:has(td > span.footable-toggle)', { self: self }, self._onToggleClicked);
+			self._array = (self.o.ajaxEnabled == false && self.o.rows.length == 0)
+				? self.fromDOM(self.ft.$table.children('tbody').get(0).rows)
 				: self.fromJSON(options.rows);
 			/**
-			 * The rows_init event is raised after the body rows are parsed for rows data.
+			 * The rows_init event is raised after the the rows are parsed from either the DOM or the options.
 			 * @event FooTable.Columns#rows_init
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the options and/or DOM.
+			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the DOM or the options.
 			 */
-			self.instance.raise('rows_init', [self._array]);
+			self.ft.raise('rows_init', [self._array]);
 		},
 		/**
 		 * Reinitializes the rows class using the supplied options.
@@ -71,20 +91,21 @@
 		 */
 		reinit: function (options) {
 			var self = this;
-			if (self.instance.$table.children('tbody').length == 0) self.instance.$table.append('<tbody/>');
-			self.instance.$table.off('click.footable', '> tbody > tr:has(td > span.footable-toggle)', self._onToggleClicked)
+			self.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(options.empty));
+			if (self.ft.$table.children('tbody').length == 0) self.ft.$table.append('<tbody/>');
+			self.ft.$table.off('click.footable', '> tbody > tr:has(td > span.footable-toggle)', self._onToggleClicked)
 				.on('click.footable', '> tbody > tr:has(td > span.footable-toggle)', { self: self }, self._onToggleClicked);
-			self._array = (self.instance.options.ajaxEnabled == false && self.instance.options.rows.length == 0)
-				? self.fromDOM(self.instance.$table.children('tbody').get(0).rows)
+			self._array = (self.o.ajaxEnabled == false && self.o.rows.length == 0)
+				? self.fromDOM(self.ft.$table.children('tbody').get(0).rows)
 				: self.fromJSON(options.rows);
 			/**
-			 * The rows_init event is raised after the body rows are parsed for rows data.
-			 * @event FooTable.Columns#rows_init
+			 * The rows_reinit event is raised after the the rows are parsed from either the DOM or the options.
+			 * @event FooTable.Columns#rows_reinit
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the options and/or DOM.
+			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the DOM or the options.
 			 */
-			self.instance.raise('rows_init', [self._array]);
+			self.ft.raise('rows_reinit', [self._array]);
 		},
 		/**
 		 * Parses the supplied rows to produce an array of {@link FooTable.Row}s.
@@ -96,10 +117,10 @@
 			var self = this, _rows = [], row, cell, column;
 			if (!rows) return _rows;
 			for (var i = 0, len = rows.length; i < len; i++) {
-				row = new FooTable.Row(self.instance, rows[i], self.instance.columns.array);
+				row = new FooTable.Row(self.ft, rows[i], self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.instance, row, rows[i].cells[column.index], column, column.parser(rows[i].cells[column.index]));
+					cell = new FooTable.Cell(self.ft, row, rows[i].cells[column.index], column, column.parser(rows[i].cells[column.index]));
 					row.cells.push(cell);
 				}
 				_rows.push(row);
@@ -116,12 +137,12 @@
 			var self = this, _rows = [], row, cell, column;
 			if (!rows) return _rows;
 			for (var i = 0, len = rows.length; i < len; i++) {
-				row = new FooTable.Row(self.instance, document.createElement('tr'), self.instance.columns.array);
+				row = new FooTable.Row(self.ft, document.createElement('tr'), self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.instance, row, document.createElement('td'), column, rows[i][column.name]);
+					cell = new FooTable.Cell(self.ft, row, document.createElement('td'), column, rows[i][column.name]);
 					row.cells.push(cell);
-					row.$row.append(cell.$cell);
+					row.$el.append(cell.$el);
 				}
 				_rows.push(row);
 			}
@@ -140,7 +161,7 @@
 		 * @instance
 		 */
 		predraw: function(){
-			this.restoreDetails();
+			this.restore();
 			this.array = this._array.slice(0);
 		},
 		/**
@@ -148,24 +169,46 @@
 		 * @instance
 		 */
 		draw: function(){
-			var self = this, $tbody = self.instance.$table.children('tbody');
+			var self = this, $tbody = self.ft.$table.children('tbody');
+			self.$empty.detach();
 			$tbody.find('> tr > td > span.footable-toggle').remove();
 			// use detach to remove the rows to preserve jQuery data and any events.
 			$tbody.children('tr').detach();
 
 			// loop through the table and append the main rows
 			for (var i = 0, len = self.array.length; i < len; i++){
-				$tbody.append(self.array[i].$row);
+				$tbody.append(self.array[i].$el);
+			}
+			if (self.array.length == 0){
+				self.$empty.children('td').attr('colspan', self.ft.columns.colspan());
+				$tbody.append(self.$empty);
 			}
 
-			if (!self.instance.columns.hasHidden()) return;
+			if (!self.ft.columns.any(function(c){ return c.hidden && c.visible; })) return;
 
 			// update or create details for any rows with the footable-detail-show class
-			self.updateAllDetails();
+			self.refresh();
 			// add the row toggle to the first visible column
-			var index = (self.instance.columns.first(function (col) { return !col.hidden; }) || {}).index;
+			var index = (self.ft.columns.first(function (c) { return !c.hidden && c.visible; }) || {}).index;
 			if (typeof index !== 'number') return;
 			$tbody.find('> tr > td:nth-child(' + (index + 1) + '):not(tr.footable-detail-row > td, tr.footable-loader > td)').prepend($('<span/>', {'class': 'footable-toggle glyphicon glyphicon-plus'}));
+		},
+		/**
+		 * This method restores the detail row cells to there original row position but does not remove the expanded class.
+		 * @instance
+		 * @protected
+		 */
+		restore: function(){
+			var self = this, $detail, $el;
+			self.ft.$table.children('tbody').children('tr.footable-detail-row').each(function () {
+				$detail = $(this);
+				$detail.children('td').first()
+					.find('.footable-details > tbody > tr').each(function (i, el) {
+						$el = $(el);
+						$el.data('footable_detail').$el.append($el.children('td').first().contents());
+					});
+				$detail.remove();
+			});
 		},
 		/**
 		 * Gets the detail row for the supplied row if one exists.
@@ -173,7 +216,7 @@
 		 * @param {HTMLTableRowElement} row - The row to retrieve the details for.
 		 * @returns {(jQuery|null)}
 		 */
-		getDetail: function(row){
+		details: function(row){
 			var $row = $(row), $next;
 			if ($row.hasClass('footable-detail-show')){
 				$next = $row.next();
@@ -182,88 +225,69 @@
 			return null;
 		},
 		/**
-		 * Creates a new detail row for the supplied row.
+		 * Displays the details for the supplied row.
 		 * @instance
-		 * @param {HTMLTableRowElement} row - The row to create the details for.
+		 * @param {HTMLTableRowElement} row - The row to display the details for.
 		 */
-		createDetail: function(row){
+		expand: function(row){
 			var self = this,
-				data = $(row).get(0).__FooTable_Row__,
+				data = $(row).data('__FooTableRow__'),
 				hidden = $.map(data.cells, function(cell){
 					return cell.column.hidden && cell.column.visible ? cell : null;
-				}),
-				colspan = self.instance.columns.colspan();
+				});
 
-			if (hidden.length > 0 && !self.instance.raise('details_create', [ row, hidden, colspan ]).isDefaultPrevented()){
+			if (hidden.length > 0){
 				var i, len, $tr, $th, $td,
-					$cell = $('<td/>', { colspan: colspan }),
+					$cell = $('<td/>', { colspan: self.ft.columns.colspan() }),
 					$table = $('<table/>', { 'class': 'footable-details table table-bordered table-condensed table-hover' }).appendTo($cell),
 					$tbody = $('<tbody/>').appendTo($table);
 
 				for (i = 0, len = hidden.length; i < len; i++){
 					$tr = $('<tr/>').data('footable_detail', hidden[i]).appendTo($tbody);
 					$th = $('<th/>', { text: hidden[i].column.title }).appendTo($tr);
-					$td = $('<td/>').appendTo($tr).append(hidden[i].$cell.contents());
+					$td = $('<td/>').appendTo($tr).append(hidden[i].$el.contents());
 				}
-				data.$row.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-plus').addClass('glyphicon-minus');
-				$('<tr/>', { 'class': 'footable-detail-row' }).append($cell).insertAfter(data.$row);
+				data.$el.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+				$('<tr/>', { 'class': 'footable-detail-row' }).append($cell).insertAfter(data.$el);
 			}
 		},
 		/**
-		 * Removes the details row from the supplied row if one exists.
+		 * Hides the details for the supplied row.
 		 * @instance
-		 * @param {HTMLTableRowElement} row - The row to remove the details from.
+		 * @param {HTMLTableRowElement} row - The row to hide the details on.
 		 */
-		removeDetail: function(row){
+		collapse: function(row){
 			var self = this,
-				data = $(row).get(0).__FooTable_Row__,
-				$details = self.getDetail(data.$row.get(0)),
+				data = $(row).data('__FooTableRow__'),
+				$details = self.details(data.$el.get(0)),
 				$el;
 
-			if ($details != null && !self.instance.raise('details_remove', [ row, $details.get(0) ]).isDefaultPrevented()){
-				data.$row.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+			if ($details != null){
+				data.$el.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-minus').addClass('glyphicon-plus');
 				$details.children('td').first()
 					.find('.footable-details > tbody > tr').each(function(i, el){
 						$el = $(el);
-						$el.data('footable_detail').$cell.append($el.children('td').first().contents());
+						$el.data('footable_detail').$el.append($el.children('td').first().contents());
 					});
 				$details.remove();
 			}
 		},
 		/**
-		 * Updates the detail row for the supplied row by removing and then recreating it.
+		 * Refresh the details for all active rows or for a single specified row.
 		 * @instance
-		 * @param {HTMLTableRowElement} row - The row to remove the details from.
+		 * @param {HTMLTableRowElement} [row] - A specific row to refresh the details for.
 		 */
-		updateDetail: function(row){
-			this.removeDetail(row);
-			this.createDetail(row);
-		},
-		/**
-		 * Updates all visible detail rows in the table.
-		 * @instance
-		 */
-		updateAllDetails: function(){
+		refresh: function(row){
 			var self = this;
-			self.instance.$table.children('tbody').children('tr.footable-detail-show').each(function(i, row){
-				self.updateDetail(row);
-			});
-		},
-		/**
-		 * This method restores the detail row cells to there original row position but does not remove the expanded class.
-		 * @instance
-		 */
-		restoreDetails: function(){
-			var self = this, $detail, $el;
-			self.instance.$table.children('tbody').children('tr.footable-detail-show').each(function () {
-				$detail = $(this).next('tr.footable-detail-row');
-				$detail.children('td').first()
-					.find('.footable-details > tbody > tr').each(function (i, el) {
-						$el = $(el);
-						$el.data('footable_detail').$cell.append($el.children('td').first().contents());
-					});
-				$detail.remove();
-			});
+			if (FooTable.is.undef(row)){
+				self.ft.$table.children('tbody').children('tr.footable-detail-show').each(function(i, row){
+					self.collapse(row);
+					self.expand(row);
+				});
+			} else {
+				self.collapse(row);
+				self.expand(row);
+			}
 		},
 		/**
 		 * Handles the toggle click event for rows.
@@ -273,12 +297,10 @@
 		 */
 		_onToggleClicked: function (e) {
 			var self = e.data.self;
-			if (self.instance.columns.hasHidden() && $(e.target).is('tr,td,span.footable-toggle')){ // only execute the toggle code if the event.target matches our check selector
-				var row = $(this), hasDetail = row.hasClass('footable-detail-show');
-				if (!self.instance.raise('rows_toggle_clicked', [ row, hasDetail ]).isDefaultPrevented()){
-					if (hasDetail) self.removeDetail(row.get(0));
-					else self.createDetail(row.get(0));
-				}
+			if (self.ft.columns.any(function(c){ return c.hidden && c.visible; }) && $(e.target).is('tr,td,span.footable-toggle')){ // only execute the toggle code if the event.target matches our check selector
+				var $row = $(this), exists = $row.hasClass('footable-detail-show');
+				if (exists) self.collapse($row.get(0));
+				else self.expand($row.get(0));
 			}
 		}
 	});

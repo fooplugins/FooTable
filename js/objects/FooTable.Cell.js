@@ -17,7 +17,7 @@
 			 * The {@link FooTable.Instance} for the cell.
 			 * @type {FooTable.Instance}
 			 */
-			this.instance = instance;
+			this.ft = instance;
 			/**
 			 * The parent {@link FooTable.Row} for the cell.
 			 * @type {FooTable.Row}
@@ -27,7 +27,7 @@
 			 * The jQuery table cell object this instance wraps.
 			 * @type {jQuery}
 			 */
-			this.$cell = $(cell);
+			this.$el = $(cell);
 			/**
 			 * The {@link FooTable.Column} this cell falls under.
 			 * @type {FooTable.Column}
@@ -39,15 +39,15 @@
 			 */
 			this.value = value;
 			/**
-			 * The display text of the cell.
+			 * The display value of the cell, this can be HTML.
 			 * @type {string}
 			 */
-			this.display = $.isFunction(column.formatter) ? column.formatter(value) : value;
+			this.display = FooTable.is.fn(column.formatter) ? column.formatter(value) : value;
+
+			this.ft.execute('ctor_cell', this);
 
 			// set the cells' html to the display value
-			this.$cell.html(this.display).get(0).__FooTable_Cell__ = this;
-
-			this.instance.execute('ctor_cell', this);
+			this.$el.html(this.display);
 		}
 	});
 

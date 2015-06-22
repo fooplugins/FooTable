@@ -6,18 +6,61 @@
 	 * The jQuery plugin initializer.
 	 * @function jQuery.fn.footable
 	 * @param {(object|FooTable.Defaults)} [options] - The options to initialize the plugin with.
+	 * @param {function} [ready] - A callback function to execute for each initialized plugin.
 	 * @returns {jQuery}
 	 */
-	$.fn.footable = function (options) {
+	$.fn.footable = function (options, ready) {
 		options = options || {};
 		// make sure we only work with tables
 		return this.filter('table').each(function (i, tbl) {
 			if (FooTable.exists(tbl)){
-				FooTable.get(tbl).reinit(options);
+				FooTable.get(tbl).reinit(options, ready);
 			} else {
-				FooTable.init(tbl, options);
+				FooTable.init(tbl, options, ready);
 			}
 		});
+	};
+
+	/**
+	 * An array containing all registered components for the plugin.
+	 * @type {Array.<FooTable.Component>}
+	 * @protected
+	 * @readonly
+	 */
+	FooTable.registered = [];
+
+	/**
+	 * Registers the specified component enabling a new instance of it to be created for each new {@link FooTable.Instance}.
+	 * @param {FooTable.Component} component - The component to register with the plugin.
+	 * @throws {TypeError} The component parameter must be a pointer to a class that inherits from {@link FooTable.Component}.
+	 */
+	FooTable.register = function(component){
+		if (!FooTable.is.fn(component))
+			throw new TypeError('The component parameter must be a pointer to a class that inherits from FooTable.Component.');
+		FooTable.registered.push(component);
+	};
+
+	// The jQuery div object used to convert a JSON object to cssText.
+	var _$json2css = $('<div/>');
+
+	/**
+	 * Converts the supplied JSON object into a cssText string.
+	 * @param {object} obj - An object containing CSS properties and values.
+	 * @returns {string}
+	 * @protected
+	 */
+	FooTable.json2css = function(obj){
+		return _$json2css.removeAttr('style').css(obj).get(0).style.cssText;
+	};
+
+	/**
+	 * Retrieves the specified URL parameters' value.
+	 * @param {string} name - The name of the parameter to retrieve.
+	 * @param {*} [def] - The default value to be returned for the parameter.
+	 * @returns {(string|*|undefined)}
+	 */
+	FooTable.getURLParameter = function (name, def) {
+		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || def;
 	};
 
 	/**
@@ -35,21 +78,29 @@
 	 * @returns {FooTable.Instance}
 	 */
 	FooTable.get = function(table){
-		return $(table).data('__FooTable__');
+		return $(table).eq(0).data('__FooTable__');
 	};
 
 	/**
 	 * Initializes a new instance of FooTable on the supplied table.
 	 * @param {(jQuery|jQuery.selector|HTMLTableElement)} table - The jQuery table object, selector or the HTMLTableElement to initialize FooTable on.
 	 * @param {object} options - The options to initialize FooTable with.
+	 * @param {function} [ready] - A callback function to execute once the plugin is initialized.
 	 * @returns {FooTable.Instance}
 	 */
-	FooTable.init = function(table, options){
-		var footable = new FooTable.Instance(table, options);
-		$(table).data('__FooTable__', footable);
+	FooTable.init = function(table, options, ready){
+		var $tbl = $(table).eq(0), footable = new FooTable.Instance($tbl.get(0), options, ready);
+		$tbl.data('__FooTable__', footable);
 		return footable;
 	};
 
+	/**
+	 * Used to exit early from chained jQuery.Deferred without outputting anything to the console.
+	 * @param {string} [message] - The message for the error.
+	 * @returns {FooTable.ExitEarly}
+	 * @constructor
+	 * @ignore
+	 */
 	FooTable.ExitEarly = function(message) {
 		if (!(this instanceof FooTable.ExitEarly)) return new FooTable.ExitEarly(message);
 		this.name = 'EarlyExit';
@@ -57,6 +108,63 @@
 	};
 	FooTable.ExitEarly.prototype = new Error();
 	FooTable.ExitEarly.prototype.constructor = FooTable.ExitEarly;
+
+	/**
+	 * Whether or not we are currently on a mobile device.
+	 * @type {boolean}
+	 * @protected
+	 * @readonly
+	 */
+	FooTable.isMobile = (function(a){
+		return (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)
+		||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)));
+	})(navigator.userAgent||navigator.vendor||window.opera);
+
+	// The below are external type definitions mainly used as pointers to jQuery docs for important information
+	/**
+	 * jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API
+	 * that works across a multitude of browsers. With a combination of versatility and extensibility, jQuery has changed the way that millions of people write JavaScript.
+	 * @name jQuery
+	 * @constructor
+	 * @returns {jQuery}
+	 * @see {@link http://api.jquery.com/}
+	 */
+
+	/**
+	 * This object provides a subset of the methods of the Deferred object (then, done, fail, always, pipe, and state) to prevent users from changing the state of the Deferred.
+	 * @typedef {object} jQuery.Promise
+	 * @see {@link http://api.jquery.com/Types/#Promise}
+	 */
+
+	/**
+	 * As of jQuery 1.5, the Deferred object provides a way to register multiple callbacks into self-managed callback queues, invoke callback queues as appropriate,
+	 * and relay the success or failure state of any synchronous or asynchronous function.
+	 * @typedef {object} jQuery.Deferred
+	 * @see {@link http://api.jquery.com/Types/#Deferred}
+	 */
+
+	/**
+	 * jQuery's event system normalizes the event object according to W3C standards. The event object is guaranteed to be passed to the event handler. Most properties from
+	 * the original event are copied over and normalized to the new event object.
+	 * @typedef {object} jQuery.Event
+	 * @see {@link http://api.jquery.com/category/events/event-object/}
+	 */
+
+	/**
+	 * Provides a way to execute callback functions based on one or more objects, usually Deferred objects that represent asynchronous events.
+	 * @memberof jQuery
+	 * @function when
+	 * @param {...jQuery.Deferred} deferreds - Any number of deferred objects to wait for.
+	 * @returns {jQuery.Promise}
+	 * @see {@link http://api.jquery.com/jQuery.when/}
+	 */
+
+	/**
+	 * The jQuery.fn namespace used to register plugins with jQuery.
+	 * @memberof jQuery
+	 * @namespace fn
+	 * @see {@link http://learn.jquery.com/plugins/basic-plugin-creation/}
+	 */
 })(
 	jQuery,
 	/**
@@ -65,257 +173,238 @@
 	 */
 	FooTable = window.FooTable || {}
 );
-(function ($, FooTable) {
+(function (FooTable) {
+
 	/**
-	 * The FooTable.utils namespace houses commonly used utility methods.
+	 * The is namespace contains commonly used check methods that return boolean values.
 	 * @namespace
 	 */
-	FooTable.utils = {
-		/**
-		 * The jQuery div object used to convert a JSON object to cssText.
-		 * @type {jQuery}
-		 * @private
-		 */
-		_$jsonToCSS: $('<div/>'),
-		/**
-		 * Converts the supplied JSON object into a cssText string.
-		 * @param {object} obj - An object containing CSS properties and values.
-		 * @returns {string}
-		 */
-		jsonToCSS: function(obj){
-			return this._$jsonToCSS.removeAttr('style').css(obj).get(0).style.cssText;
-		},
-		/**
-		 * Wrote this as jQuery.extend merges arrays by index rather than overwriting them. This will not merge nested arrays.
-		 * @param {object} base - An object that will receive the new properties if additional objects are passed in.
-		 * @param {object} object1 - An object containing additional properties to merge in.
-		 * @param {...object} [objectN] - Additional objects containing properties to merge in.
-		 * @returns {object} - The modified base object is returned.
-		 */
-		merge: function (base, object1, objectN) {
-			var args = Array.prototype.slice.call(arguments), i, hasOwnProperties = function (obj) {
-					if (typeof obj !== 'object') { return false; }
-					var prop;
-					for (prop in obj) {
-						if (obj.hasOwnProperty(prop)) {
-							return true;
-						}
-					}
-					return false;
-				},
-				merge = function (base, changes) {
-					var prop;
-					for (prop in changes) {
-						if (changes.hasOwnProperty(prop)) {
-							if (hasOwnProperties(changes[prop]) && !$.isArray(changes[prop])) {
-								base[prop] = base[prop] || {};
-								merge(base[prop], changes[prop]);
-							} else if ($.isArray(changes[prop])) {
-								base[prop] = [];
-								$.extend(true, base[prop], changes[prop]);
-							} else {
-								base[prop] = changes[prop];
-							}
-						}
-					}
-				};
-			base = args.shift();
-			object1 = args.shift();
-			merge(base, object1);
-			for (i = 0; i < args.length; i++) {
-				objectN = args[i];
-				merge(base, objectN);
-			}
-			return base;
-		},
-		/**
-		 * Gets the value of the property specified by the name from the supplied obj.
-		 * @param {object} obj - The object to retrieve the property value from.
-		 * @param {string} name - The name of the property to get. Child properties are delimited with a period [.]
-		 * @returns {*} - The value of the property retrieved.
-		 */
-		getPropertyValue: function (obj, name) {
-			if (this.strings.contains(name, '.')) {
-				var propName = this.strings.until(name, '.'),
-					remainder = this.strings.from(name, '.');
-				obj[propName] = obj[propName] || {};
-				return this.getPropertyValue(obj[propName], remainder);
-			}
-			return obj[name];
-		},
-		/**
-		 * Sets the value of the property specified by the name on the supplied obj.
-		 * @param {object} obj - The object to set the property value on.
-		 * @param {string} name - The name of the property to set. Child properties are delimited with a period [.]
-		 * @param {*} value - The value to set the property to.
-		 */
-		setPropertyValue: function (obj, name, value) {
-			if (this.strings.contains(name, '.')) {
-				var propName = this.strings.until(name, '.'),
-					remainder = this.strings.from(name, '.');
-				obj[propName] = obj[propName] || {};
-				this.setPropertyValue(obj[propName], remainder, value);
-			} else {
-				obj[name] = value;
-			}
-		},
-		/**
-		 * Retrieves the specified URL parameters' value.
-		 * @param {string} name - The name of the parameter to retrieve.
-		 * @returns {(string|null)}
-		 */
-		getURLParameter: function (name) {
-			return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
-		},
-		/**
-		 * @classdesc The strings namespace contains commonly used string utility methods such as {@link FooTable.utils.strings.startsWith} and {@link FooTable.utils.strings.endsWith}.
-		 * @namespace
-		 */
-		strings: {
-			/**
-			 * Imitates .NET's String.format method, arguments that are not strings will be auto-converted to strings.
-			 * @param {string} formatString - The format string to use.
-			 * @param {*} arg1 - An argument to format the string with.
-			 * @param {...*} [argN] - Additional arguments to format the string with.
-			 * @returns {string}
-			 */
-			format: function (formatString, arg1, argN) {
-				var s = arguments[0], i, reg;
-				for (i = 0; i < arguments.length - 1; i++) {
-					reg = new RegExp("\\{" + i + "\\}", "gm");
-					s = s.replace(reg, arguments[i + 1]);
-				}
-				return s;
-			},
-			/**
-			 * Checks if the supplied string is NULL or empty.
-			 * @param {string} str - The string to check.
-			 * @returns {boolean}
-			 */
-			isNullOrEmpty: function (str) {
-				return str == null || typeof str !== 'string' || str.length == 0;
-			},
-			/**
-			 * Joins the supplied string arguments together into a single string using the supplied separator.
-			 * @param {string} separator - The separator to use when joining the strings.
-			 * @param {string} str1 - The first string to join.
-			 * @param {...string} [strN] - Additional strings to join to the first.
-			 * @returns {string}
-			 */
-			join: function (separator, str1, strN) {
-				var args = Array.prototype.slice.call(arguments);
-				separator = args.shift();
-				return args.join(separator);
-			},
-			/**
-			 * Checks if the supplied string contains the given substring.
-			 * @param {string} str - The string to check.
-			 * @param {string} contains - The string to check for.
-			 * @returns {boolean}
-			 */
-			contains: function (str, contains) {
-				return typeof str === 'string' && str.length > 0
-					&& typeof contains === 'string' && contains.length > 0 && contains.length <= str.length
-					&& str.indexOf(contains) !== -1;
-			},
-			/**
-			 * Returns the remainder of a string split on the first index of the given substring.
-			 * @param {string} str - The string to split.
-			 * @param {string} from - The substring to split on.
-			 * @returns {string}
-			 */
-			from: function (str, from) {
-				return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
-			},
-			/**
-			 * Returns the base of a string split on the first index of the given substring.
-			 * @param {string} str - The string to split.
-			 * @param {string} until - The substring to split on.
-			 * @returns {string}
-			 */
-			until: function (str, until) {
-				return this.contains(str, until) ? str.substring(0, str.indexOf(until)) : str;
-			},
-			/**
-			 * Checks if a string ends with the supplied suffix.
-			 * @param {string} str - The string to check.
-			 * @param {string} suffix - The suffix to check for.
-			 * @returns {boolean}
-			 */
-			endsWith: function (str, suffix) {
-				return str.slice(-suffix.length) == suffix;
-			},
-			/**
-			 * Checks if a string starts with the supplied prefix.
-			 * @param {string} str - The string to check.
-			 * @param {string} prefix - The prefix to check for.
-			 * @returns {boolean}
-			 */
-			startsWith: function (str, prefix) {
-				return str.slice(0, prefix.length) == prefix;
-			},
-			/**
-			 * Takes the supplied text and slugify's it.
-			 * @param {string} text - The text to slugify.
-			 * @returns {string} The slugified text string.
-			 */
-			slugify: function (text) {
-				return typeof text != 'string' ? '' : text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-			}
+	FooTable.is = {};
+
+	/**
+	 * Checks if the type of the value is the same as that supplied.
+	 * @param {*} value - The value to check the type of.
+	 * @param {string} type - The type to check for.
+	 * @returns {boolean}
+	 */
+	FooTable.is.type = function (value, type) {
+		return typeof value === type;
+	};
+
+	/**
+	 * Checks if the value is defined.
+	 * @param {*} value - The value to check is defined.
+	 * @returns {boolean}
+	 */
+	FooTable.is.defined = function (value) {
+		return typeof value !== 'undefined';
+	};
+
+	/**
+	 * Checks if the value is undefined.
+	 * @param {*} value - The value to check is undefined.
+	 * @returns {boolean}
+	 */
+	FooTable.is.undef = function (value) {
+		return typeof value === 'undefined';
+	};
+
+	/**
+	 * Checks if the value is an array.
+	 * @param {*} value - The value to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.array = function (value) {
+		return '[object Array]' === Object.prototype.toString.call(value);
+	};
+
+	/**
+	 * Checks if the value is a boolean.
+	 * @param {*} value - The value to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.boolean = function (value) {
+		return '[object Boolean]' === Object.prototype.toString.call(value);
+	};
+
+	/**
+	 * Checks if the value is a function.
+	 * @param {*} value - The value to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.fn = function (value) {
+		var isAlert = typeof window !== 'undefined' && value === window.alert;
+		return isAlert || '[object Function]' === Object.prototype.toString.call(value);
+	};
+
+	/**
+	 * Checks if the value is an object.
+	 * @param {*} value - The value to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.object = function (value) {
+		return '[object Object]' === Object.prototype.toString.call(value);
+	};
+
+	/**
+	 * Checks if the value is a hash.
+	 * @param {*} value - The value to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.hash = function (value) {
+		return FooTable.is.object(value) && value.constructor === Object && !value.nodeType && !value.setInterval;
+	};
+
+	/**
+	 * Checks if the supplied object is an HTMLElement
+	 * @param {object} obj - The object to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.element = function (obj) {
+		return typeof HTMLElement === 'object'
+			? obj instanceof HTMLElement
+			: obj && typeof obj === 'object' && obj !== null && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+	};
+
+	/**
+	 * Checks if the supplied string is a CSS selector.
+	 * @param {string} str - The string to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.selector = function (str) {
+		try {
+			document.querySelector(str);
+			return true;
+		} catch (e) {
+			return false;
 		}
 	};
 
-})(jQuery, FooTable = window.FooTable || {});
-(function($, FooTable){
+	/**
+	 * Checks if the supplied string contains HTML and should be interpreted as an HTMLString.
+	 * @param {string} str - The string to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.html = function (str) {
+		try {
+			return /<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\/\2>/i.test(str);
+		} catch (e) {
+			return false;
+		}
+	};
 
 	/**
-	 * This namespace contains the methods and members for add-on management.
+	 * Checks if the supplied value is a member or value depending on if the target is an object or an array.
+	 * @param {(string|*)} value - The member or value to check for.
+	 * @param {(Object|Array)} target - The object or array to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.any = function (value, target) {
+		if (FooTable.is.array(target)) {
+			var l = target.length + 1;
+			while (l -= 1) if (target[l - 1] === value) return true;
+		} else if (FooTable.is.object(target)) {
+			return value in target;
+		}
+		return false;
+	};
+
+})(FooTable = window.FooTable || {});
+(function ($, FooTable) {
+	/**
+	 * The strings namespace contains commonly used string utility methods such as {@link FooTable.strings.startsWith} and {@link FooTable.strings.endsWith}.
 	 * @namespace
 	 */
-	FooTable.addons = {
+	FooTable.strings = {
 		/**
-		 * An array containing all registered add-ons for the plugin.
-		 * @type {Array.<FooTable.AddOn>}
-		 * @default []
+		 * Imitates .NET's String.format method, arguments that are not strings will be auto-converted to strings.
+		 * @param {string} formatString - The format string to use.
+		 * @param {*} arg1 - An argument to format the string with.
+		 * @param {...*} [argN] - Additional arguments to format the string with.
+		 * @returns {string}
 		 */
-		registered: [],
-		/**
-		 * Registers the specified add-on enabling a new instance of the add-on to be created for each new instance of the plugin.
-		 * @param {FooTable.AddOn} addOn - The add-on to register with the plugin.
-		 * @throws {TypeError} The addOn parameter must be a pointer to a class that inherits from {@link FooTable.AddOn}.
-		 */
-		register: function(addOn){
-			if (typeof addOn !== 'function')
-				throw new TypeError('The addOn parameter must be a pointer to a class that inherits from FooTable.AddOn.');
-			this.registered.push(addOn);
+		format: function (formatString, arg1, argN) {
+			var s = arguments[0], i, reg;
+			for (i = 0; i < arguments.length - 1; i++) {
+				reg = new RegExp("\\{" + i + "\\}", "gm");
+				s = s.replace(reg, arguments[i + 1]);
+			}
+			return s;
 		},
 		/**
-		 * Creates a new instance of each registered add-on and returns them all in an array.
-		 * @param {FooTable.Instance} instance - The parent {@link FooTable.Instance} object for the add-on.
-		 * @returns {Array}
+		 * Checks if the supplied string is NULL or empty.
+		 * @param {string} str - The string to check.
+		 * @returns {boolean}
 		 */
-		ctor: function(instance){
-			var loaded = [];
-			$.each(this.registered, function(i, addOn){
-				loaded = new addOn(instance);
-			});
-			return loaded;
+		isNullOrEmpty: function (str) {
+			return str == null || typeof str !== 'string' || str.length == 0;
 		},
 		/**
-		 * Gets an instance add-on by name.
-		 * @param {FooTable.Instance} instance - The parent {@link FooTable.Instance} object containing the add-ons.
-		 * @param {string} name - The name of the add-on to retrieve
-		 * @returns {(FooTable.AddOn|null)}
+		 * Joins the supplied string arguments together into a single string using the supplied separator.
+		 * @param {string} separator - The separator to use when joining the strings.
+		 * @param {string} str1 - The first string to join.
+		 * @param {...string} [strN] - Additional strings to join to the first.
+		 * @returns {string}
 		 */
-		get: function(instance, name){
-			var found = null;
-			$.each(instance.components.addons, function(i, addOn){
-				if (addOn.name === name){
-					found = addOn;
-					return false;
-				}
-			});
-			return found;
+		join: function (separator, str1, strN) {
+			var args = Array.prototype.slice.call(arguments);
+			separator = args.shift();
+			return args.join(separator);
+		},
+		/**
+		 * Checks if the supplied string contains the given substring.
+		 * @param {string} str - The string to check.
+		 * @param {string} contains - The string to check for.
+		 * @returns {boolean}
+		 */
+		contains: function (str, contains) {
+			return typeof str === 'string' && str.length > 0
+				&& typeof contains === 'string' && contains.length > 0 && contains.length <= str.length
+				&& str.indexOf(contains) !== -1;
+		},
+		/**
+		 * Returns the remainder of a string split on the first index of the given substring.
+		 * @param {string} str - The string to split.
+		 * @param {string} from - The substring to split on.
+		 * @returns {string}
+		 */
+		from: function (str, from) {
+			return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
+		},
+		/**
+		 * Returns the base of a string split on the first index of the given substring.
+		 * @param {string} str - The string to split.
+		 * @param {string} until - The substring to split on.
+		 * @returns {string}
+		 */
+		until: function (str, until) {
+			return this.contains(str, until) ? str.substring(0, str.indexOf(until)) : str;
+		},
+		/**
+		 * Checks if a string ends with the supplied suffix.
+		 * @param {string} str - The string to check.
+		 * @param {string} suffix - The suffix to check for.
+		 * @returns {boolean}
+		 */
+		endsWith: function (str, suffix) {
+			return str.slice(-suffix.length) == suffix;
+		},
+		/**
+		 * Checks if a string starts with the supplied prefix.
+		 * @param {string} str - The string to check.
+		 * @param {string} prefix - The prefix to check for.
+		 * @returns {boolean}
+		 */
+		startsWith: function (str, prefix) {
+			return str.slice(0, prefix.length) == prefix;
+		},
+		/**
+		 * Takes the supplied text and slugify's it.
+		 * @param {string} text - The text to slugify.
+		 * @returns {string} The slugified text string.
+		 */
+		slugify: function (text) {
+			return typeof text != 'string' ? '' : text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
 		}
 	};
 
@@ -323,14 +412,14 @@
 (function (FooTable) {
 	"use strict";
 
-	if (typeof Object.create != 'function') {
+	if (!FooTable.is.fn(Object.create)) {
 		Object.create = (function () {
 			var Object = function () {};
 			return function (prototype) {
 				if (arguments.length > 1)
 					throw Error('Second argument not supported');
 
-				if (typeof prototype != 'object')
+				if (!FooTable.is.object(prototype))
 					throw TypeError('Argument must be an object');
 
 				Object.prototype = prototype;
@@ -404,8 +493,7 @@
 		for (var name in props) {
 			//if (!Object.prototype.hasOwnProperty.call(props, name)) continue;
 			// Check if we're overwriting an existing function
-			proto[name] = typeof props[name] === "function" &&
-			typeof _super[name] === "function" && fnTest.test(props[name]) ?
+			proto[name] = FooTable.is.fn(props[name]) && FooTable.is.fn(_super[name]) && fnTest.test(props[name]) ?
 				(function (name, fn) {
 					return function () {
 						var tmp = this._super;
@@ -426,7 +514,7 @@
 		}
 
 		// The new constructor
-		var newClass = typeof proto.ctor === "function" ?
+		var newClass = FooTable.is.fn(proto.ctor) ?
 			proto.ctor : // All construction is actually done in the construct method
 			function () {};
 
@@ -464,12 +552,13 @@
 			 * The parent {@link FooTable.Instance} for the component.
 			 * @type {FooTable.Instance}
 			 */
-			this.instance = instance;
+			this.ft = instance;
 		},
 		/**
 		 * The construct method called from within the {@link FooTable.Cell} constructor.
 		 * @instance
 		 * @param {FooTable.Cell} cell - The cell object being constructed.
+		 * @protected
 		 */
 		ctor_cell: function(cell){},
 		/**
@@ -477,12 +566,14 @@
 		 * @instance
 		 * @param {FooTable.Column} column - The column object being constructed.
 		 * @param {object} definition - The definition object used to populate the column.
+		 * @protected
 		 */
 		ctor_column: function(column, definition){},
 		/**
 		 * The construct method called from within the {@link FooTable.Row} constructor.
 		 * @instance
 		 * @param {FooTable.Row} row - The row object being constructed.
+		 * @protected
 		 */
 		ctor_row: function(row){},
 		/**
@@ -490,6 +581,7 @@
 		 * @instance
 		 * @param {HTMLElement} element - The element the parent instance is initializing on.
 		 * @param {object} options - The options the parent instance is using to initialize. See {@link FooTable.Defaults} for more information.
+		 * @protected
 		 */
 		preinit: function (element, options) {},
 		/**
@@ -497,42 +589,50 @@
 		 * @instance
 		 * @param {HTMLElement} element - The element the parent instance is initializing on.
 		 * @param {object} options - The options the parent instance is using to initialize. See {@link FooTable.Defaults} for more information.
+		 * @protected
 		 */
 		init: function (element, options) {},
 		/**
 		 * The reinitialize method called from the {@link FooTable.Instance#reinit} method.
 		 * @instance
 		 * @param {object} options - The options the parent instance is using to initialize. See {@link FooTable.Defaults} for more information.
+		 * @protected
 		 */
 		reinit: function (options) {},
 		/**
 		 * This method is called from the {@link FooTable.Instance#destroy} method.
 		 * @instance
+		 * @protected
 		 */
 		destroy: function () {},
 		/**
 		 * This method is called from the {@link FooTable.Instance#ajax} method.
 		 * @instance
+		 * @protected
 		 */
 		preajax: function () {},
 		/**
 		 * This method is called from the {@link FooTable.Instance#ajax} method.
 		 * @instance
+		 * @protected
 		 */
 		postajax: function () {},
 		/**
 		 * This method is called from the {@link FooTable.Instance#draw} method.
 		 * @instance
+		 * @protected
 		 */
 		predraw: function () {},
 		/**
 		 * This method is called from the {@link FooTable.Instance#draw} method.
 		 * @instance
+		 * @protected
 		 */
 		draw: function () {},
 		/**
 		 * This method is called from the {@link FooTable.Instance#draw} method.
 		 * @instance
+		 * @protected
 		 */
 		postdraw: function () {}
 	});
@@ -567,24 +667,32 @@
 		 */
 		this.ajax = $.when();
 		/**
+		 * Whether or not events raised using the {@link FooTable.Instance#raise} method are propagated up the DOM. By default this is set to true and all events can only be listened for on the
+		 * table itself. The reason for this if you have nested tables, the parent table would receive all the events raised by it's children and any handlers bound to both the parent and child
+		 * would be triggered which is not the desired behavior.
+		 * @type {boolean}
+		 * @default true
+		 */
+		this.stopPropagation = true;
+		/**
 		 * The namespace appended to all events raised by the plugin.
 		 * @type {string}
-		 * @default "footable"
+		 * @default NULL
 		 */
-		this.namespace = 'footable';
+		this.namespace = null;
 		/**
 		 * An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
 		 * @type {object.<string, function>}
-		 * @default null
+		 * @default NULL
 		 * @example <caption>This example shows how to pass an object containing the events and handlers.</caption>
 		 * on: {
 		 * 	click: function(e){
 		 * 		// do something whenever the table is clicked
 		 * 	},
-		 * 	"init.footable": function(e, instance){
+		 * 	"init": function(e, instance){
 		 * 		// do something when FooTable initializes
 		 * 	},
-		 * 	"init.footable reinit.footable": function(e, instance){
+		 * 	"init reinit": function(e, instance){
 		 * 		// do something when FooTable initializes or reinitializes
 		 * 	}
 		 * }
@@ -601,46 +709,16 @@
 })(jQuery, FooTable = window.FooTable || {});
 (function($, FooTable){
 
-	FooTable.AddOn = FooTable.Component.extend(/** @lends FooTable.AddOn */{
-		/**
-		 * The base class for all FooTable add-ons.
-		 * @constructs
-		 * @extends FooTable.Component
-		 * @param {string} name - The name of the add-on.
-		 * @param {FooTable.Instance} instance - The parent {@link FooTable.Instance} object for the add-on.
-		 * @throws {TypeError} The name parameter cannot be an empty or null string.
-		 * @throws {TypeError} The instance parameter must be an instance of {@link FooTable.Instance}.
-		 * @returns {FooTable.AddOn}
-		 */
-		ctor: function (name, instance) {
-			if (typeof name !== 'string' || name.length === 0)
-				throw new TypeError('The name parameter cannot be an empty or null string.');
-
-			/**
-			 * The name of the add-on.
-			 * @type {string}
-			 */
-			this.name = name;
-			// call the base constructor
-			this._super(instance);
-		}
-	});
-
-})(jQuery, FooTable = window.FooTable || {});
-(function($, FooTable){
-
 	FooTable.Breakpoint = FooTable.Class.extend(/** @lends FooTable.Breakpoint */{
 		/**
 		 * The breakpoint class containing the name and maximum width for the breakpoint.
 		 * @constructs
 		 * @extends FooTable.Class
-		 * @param {FooTable.Instance} instance -  The {@link FooTable.Instance} this breakpoint belongs to.
 		 * @param {string} name - The name of the breakpoint. Must contain no spaces or special characters.
 		 * @param {number} width - The width of the breakpoint in pixels.
 		 * @returns {FooTable.Breakpoint}
 		 */
-		ctor: function(instance, name, width){
-			this.instance = instance;
+		ctor: function(name, width){
 			/**
 			 * The name of the breakpoint.
 			 * @type {string}
@@ -674,7 +752,7 @@
 			 * The {@link FooTable.Instance} for the cell.
 			 * @type {FooTable.Instance}
 			 */
-			this.instance = instance;
+			this.ft = instance;
 			/**
 			 * The parent {@link FooTable.Row} for the cell.
 			 * @type {FooTable.Row}
@@ -684,7 +762,7 @@
 			 * The jQuery table cell object this instance wraps.
 			 * @type {jQuery}
 			 */
-			this.$cell = $(cell);
+			this.$el = $(cell);
 			/**
 			 * The {@link FooTable.Column} this cell falls under.
 			 * @type {FooTable.Column}
@@ -696,15 +774,15 @@
 			 */
 			this.value = value;
 			/**
-			 * The display text of the cell.
+			 * The display value of the cell, this can be HTML.
 			 * @type {string}
 			 */
-			this.display = $.isFunction(column.formatter) ? column.formatter(value) : value;
+			this.display = FooTable.is.fn(column.formatter) ? column.formatter(value) : value;
+
+			this.ft.execute('ctor_cell', this);
 
 			// set the cells' html to the display value
-			this.$cell.html(this.display).get(0).__FooTable_Cell__ = this;
-
-			this.instance.execute('ctor_cell', this);
+			this.$el.html(this.display);
 		}
 	});
 
@@ -726,42 +804,42 @@
 			 * The {@link FooTable.Instance} for the column. This is set by the plugin during initialization.
 			 * @type {FooTable.Instance}
 			 */
-			this.instance = instance;
+			this.ft = instance;
 			/**
 			 * The jQuery cell object for the column header. This is set by the plugin during initialization.
 			 * @type {jQuery}
 			 */
-			this.$headerCell = $(cell);
+			this.$el = $(cell);
 			/**
 			 * The index of the column in the table. This is set by the plugin during initialization.
 			 * @type {number}
 			 * @default -1
 			 */
-			this.index = typeof definition.index === 'number' ? definition.index : -1;
+			this.index = FooTable.is.type(definition.index, 'number') ? definition.index : -1;
 			/**
 			 * Whether or not this column is hidden from view and appears in the details row. This is set by the plugin during initialization.
 			 * @type {boolean}
 			 * @default false
 			 */
-			this.hidden = typeof definition.hidden === 'boolean' ? definition.hidden : false;
+			this.hidden = FooTable.is.boolean(definition.hidden) ? definition.hidden : false;
 			/**
 			 * Whether or not this column is completely hidden from view and will not appear in the details row.
 			 * @type {boolean}
 			 * @default true
 			 */
-			this.visible = typeof definition.visible === 'boolean' ? definition.visible : true;
+			this.visible = FooTable.is.boolean(definition.visible) ? definition.visible : true;
 			/**
 			 * The parse function for this column. This is set by the plugin during initialization.
 			 * @type {function}
 			 * @default jQuery.noop
 			 */
-			this.parser = typeof definition.parser === 'function' ? definition.parser : $.noop;
+			this.parser = FooTable.is.fn(definition.parser) ? definition.parser : $.noop;
 			/**
 			 * Whether or not to force a column to hide overflow with an ellipsis.
 			 * @type {boolean}
 			 * @default false
 			 */
-			this.ellipsis = typeof definition.ellipsis === 'boolean' ? definition.ellipsis : false;
+			this.ellipsis = FooTable.is.boolean(definition.ellipsis) ? definition.ellipsis : false;
 			/**
 			 * A function used to format the columns value into a string to display. If NULL the plugin uses the cell values' default toString result.
 			 * The column format function is passed the value obtained by the parser for the column and must return a string used to display the value in the cell, this result can be an HTML string.
@@ -774,60 +852,60 @@
 			 * 	return value instanceof Date ? value.getDate() + ' ' + months[value.getMonth()] + ' ' + value.getFullYear() : null;
 			 * }
 			 */
-			this.formatter = typeof definition.formatter === 'function' ? definition.formatter : null;
+			this.formatter = FooTable.is.fn(definition.formatter) ? definition.formatter : null;
 			/**
 			 * Specifies the maximum width for the column.
 			 * @type {number}
 			 * @default null
 			 */
-			this.maxWidth = typeof definition.maxWidth === 'number' ? definition.maxWidth : null;
+			this.maxWidth = FooTable.is.type(definition.maxWidth, 'number') ? definition.maxWidth : null;
 			/**
 			 * Specifies the minimum width for the column.
 			 * @type {number}
 			 * @default null
 			 */
-			this.minWidth = typeof definition.minWidth === 'number' ? definition.minWidth : null;
+			this.minWidth = FooTable.is.type(definition.minWidth, 'number') ? definition.minWidth : null;
 			/**
 			 * The name of the column. This name must correspond to the property name of the JSON row data.
 			 * @type {string}
 			 * @default null
 			 */
-			this.name = typeof definition.name === 'string' ? definition.name : null;
+			this.name = FooTable.is.type(definition.name, 'string') ? definition.name : null;
 			/**
 			 * Whether or not the column is the primary key for the row.
 			 * @type {boolean}
 			 * @default false
 			 */
-			this.pk = typeof definition.pk === 'boolean' ? definition.pk : false;
+			this.pk = FooTable.is.boolean(definition.pk) ? definition.pk : false;
 			/**
-			 * The title to display in the column header.
+			 * The title to display in the column header, this can be HTML.
 			 * @type {string}
 			 * @default null
 			 */
-			this.title = typeof definition.title === 'string' ? definition.title : null;
+			this.title = FooTable.is.type(definition.title, 'string') ? definition.title : null;
 			/**
 			 * The type of data displayed by the column.
 			 * @type {string}
 			 * @default "text"
 			 */
-			this.type = typeof definition.type === 'string' ? definition.type : 'text';
+			this.type = FooTable.is.type(definition.type, 'string') ? definition.type : 'text';
 			/**
 			 * Specifies the width for the column.
 			 * @type {number}
 			 * @default null
 			 */
-			this.width = typeof definition.width === 'number' ? definition.width : null;
+			this.width = FooTable.is.type(definition.width, 'number') ? definition.width : null;
 			/**
-			 * Whether or not to force a column to wrap overflow onto a new line. Overrides the {@link FooTable.Column#ellipsis} option.
+			 * Whether or not to force a column to wrap overflow onto a new line. Takes precedence over the {@link FooTable.Column#ellipsis} option.
 			 * @type {boolean}
 			 * @default false
 			 */
-			this.wrap = typeof definition.wrap === 'boolean' ? definition.wrap : false;
+			this.wrap = FooTable.is.boolean(definition.wrap) ? definition.wrap : false;
 
-			// add this object to the header element
-			this.$headerCell.html(this.title).get(0).__FooTable_Column__ = this;
+			this.ft.execute('ctor_column', this, definition);
 
-			this.instance.execute('ctor_column', this, definition);
+			// set the header cell's title
+			this.$el.html(this.title);
 		}
 	});
 
@@ -849,12 +927,12 @@
 			 * The {@link FooTable.Instance} for the row.
 			 * @type {FooTable.Instance}
 			 */
-			this.instance = instance;
+			this.ft = instance;
 			/**
 			 * The jQuery row object.
 			 * @type {jQuery}
 			 */
-			this.$row = $(row);
+			this.$el = $(row);
 			/**
 			 * The array of {@link FooTable.Column} for this row.
 			 * @type {Array.<FooTable.Column>}
@@ -866,10 +944,88 @@
 			 */
 			this.cells = [];
 
-			// add this object to the row
-			this.$row.get(0).__FooTable_Row__ = this;
+			this.ft.execute('ctor_row', this);
 
-			this.instance.execute('ctor_row', this);
+			// add this object to the row
+			this.$el.data('__FooTableRow__', this);
+		}
+	});
+
+})(jQuery, FooTable = window.FooTable || {});
+(function($, FooTable){
+
+	FooTable.Filter = FooTable.Class.extend(/** @lends FooTable.Filter */{
+		/**
+		 * The filter object contains the query to filter by and the columns to apply it to.
+		 * @constructs
+		 * @extends FooTable.Class
+		 * @param {string} query - The query for the filter.
+		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
+		 * @returns {FooTable.Filter}
+		 */
+		ctor: function(query, columns){
+			/**
+			 * The query for the filter.
+			 * @type {string}
+			 */
+			this.query = query;
+			/**
+			 * The columns to apply the query to.
+			 * @type {Array.<FooTable.Column>}
+			 */
+			this.columns = columns;
+		}
+	});
+
+})(jQuery, FooTable = window.FooTable || {});
+(function($, FooTable){
+
+	FooTable.Sorter = FooTable.Class.extend(/** @lends FooTable.Sorter */{
+		/**
+		 * The sorter object contains the column and direction to sort by.
+		 * @constructs
+		 * @extends FooTable.Class
+		 * @param {FooTable.Column} column - The column to sort.
+		 * @param {string} direction - The direction to sort by.
+		 * @returns {FooTable.Sorter}
+		 */
+		ctor: function(column, direction){
+			/**
+			 * The column to sort.
+			 * @type {FooTable.Column}
+			 */
+			this.column = column;
+			/**
+			 * The direction to sort by.
+			 * @type {string}
+			 */
+			this.direction = direction;
+		}
+	});
+
+})(jQuery, FooTable = window.FooTable || {});
+(function($, FooTable){
+
+	FooTable.Pager = FooTable.Class.extend(/** @lends FooTable.Pager */{
+		/**
+		 * The pager object contains the page number and direction to page to.
+		 * @constructs
+		 * @extends FooTable.Class
+		 * @param {number} page - The page number to goto.
+		 * @param {boolean} forward - The boolean indicating the direction of paging, TRUE = forward, FALSE = back.
+		 * @returns {FooTable.Pager}
+		 */
+		ctor: function(page, forward){
+			/**
+			 * The page number to goto.
+			 * @type {number}
+			 */
+			this.page = page;
+			/**
+			 * A boolean indicating the direction of paging, TRUE = forward, FALSE = back.
+			 * @type {boolean}
+			 */
+			this.forward = forward;
 		}
 	});
 
@@ -878,6 +1034,8 @@
 
 	/**
 	 * An array of all currently loaded instances of the plugin.
+	 * @protected
+	 * @readonly
 	 * @type {Array.<FooTable.Instance>}
 	 */
 	FooTable.instances = [];
@@ -889,26 +1047,19 @@
 		 * @extends FooTable.Class
 		 * @param {HTMLTableElement} element - The element to bind the plugin to.
 		 * @param {object} options - The options to initialize the plugin with.
+		 * @param {function} [ready] - A callback function to execute once the plugin is initialized.
 		 * @returns {FooTable.Instance}
 		 */
-		ctor: function (element, options) {
+		ctor: function (element, options, ready) {
 			var self = this;
 			//BEGIN MEMBERS
 			/**
 			 * The timeout ID for the resize event.
 			 * @instance
-			 * @type {?number}
 			 * @private
+			 * @type {?number}
 			 */
 			this._resizeTimeout = null;
-			/**
-			 * The callback function to execute once fully initialized.
-			 * @instance
-			 * @type {function}
-			 * @default jQuery.noop
-			 * @private
-			 */
-			this._ready = $.noop;
 			/**
 			 * The ID of the FooTable instance.
 			 * @instance
@@ -964,39 +1115,26 @@
 			 */
 			this.rows = new FooTable.Rows(self);
 			/**
-			 * The filtering component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Filtering}
-			 */
-			this.filtering = new FooTable.Filtering(self);
-			/**
-			 * The sorting component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Sorting}
-			 */
-			this.sorting = new FooTable.Sorting(self);
-			/**
-			 * The paging component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Paging}
-			 */
-			this.paging = new FooTable.Paging(self);
-
-			/**
 			 * The components for this instance of the plugin. These are executed in the order they appear in the array for the initialize phase and in reverse order for the destroy phase of the plugin.
 			 * @instance
+			 * @protected
 			 * @type {object}
 			 * @prop {Array.<FooTable.Component>} internal - The internal components for the plugin. These are executed either before all other components in the initialize phase or after them in the destroy phase of the plugin.
 			 * @prop {Array.<FooTable.Component>} core - The core components for the plugin. These are executed either after the internal components in the initialize phase or before them in the destroy phase of the plugin.
-			 * @prop {Array.<FooTable.AddOn>} addons - The addon components for the plugin. These are executed either after the core components in the initialize phase or before them in the destroy phase of the plugin.
+			 * @prop {Array.<FooTable.Component>} custom - The custom components for the plugin. These are executed either after the core components in the initialize phase or before them in the destroy phase of the plugin.
 			 */
 			this.components = {
 				internal: [self.breakpoints, self.columns, self.rows],
-				core: [self.filtering, self.sorting, self.paging],
-				addons: FooTable.addons.ctor(self)
+				core: [new FooTable.Filtering(self), new FooTable.Sorting(self), new FooTable.Paging(self)],
+				custom: []
 			};
+			// load all registered components
+			$.each(FooTable.registered, function(i, addOn){
+				self.components.custom.push(new addOn(self));
+			});
+
 			//END MEMBERS
-			self._init(element, self.options);
+			self._init(element, self.options, ready);
 		},
 		/**
 		 * Initializes this instance of the plugin with the supplied element and options.
@@ -1004,13 +1142,15 @@
 		 * @private
 		 * @param {HTMLElement} element - The table element to initialize the plugin on.
 		 * @param {object} options - The options to initialize the plugin with.
+		 * @param {function} [callback] - A callback function to execute once the plugin is initialized.
 		 * @return {jQuery.Promise}
 		 * @fires FooTable.Instance#preinit
 		 * @fires FooTable.Instance#init
 		 */
-		_init: function(element, options){
+		_init: function(element, options, callback){
 			var self = this;
-			if (typeof options.on === 'object') self.$table.on(options.on);
+			callback = FooTable.is.fn(callback) ? callback : $.noop;
+			if (FooTable.is.hash(options.on)) self.$table.on(options.on);
 			self.$table.addClass('footable-' + self.id);
 			self.when(false, true, 'preinit', element, options).then(function () {
 				/**
@@ -1030,7 +1170,7 @@
 					 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 					 */
 					self.raise('init');
-					self._ready.call(self, self);
+					callback.call(self, self);
 				});
 			}).then(function () {
 				self.update();
@@ -1044,19 +1184,21 @@
 		 * Reinitializes this instance of the plugin with the supplied options.
 		 * @instance
 		 * @param {object} options - The options to reinitialize the plugin with.
+		 * @param {function} [callback] - A callback function to execute once the plugin is reinitialized.
 		 * @return {jQuery.Promise}
 		 * @fires FooTable.Instance#reinit
 		 */
-		reinit: function (options) {
+		reinit: function (options, callback) {
 			var self = this;
+			callback = FooTable.is.fn(callback) ? callback : $.noop;
 			self.initialized = false;
 			self.$loader.remove();
 			self.clearCSSRules();
 			// cleanup any previously bound events before we merge the new options with the old
-			if (typeof self.options.on === 'object') self.$table.off(self.options.on);
+			if (FooTable.is.hash(self.options.on)) self.$table.off(self.options.on);
 			$.extend(true, self.options, options);
 
-			if (typeof self.options.on === 'object') self.$table.on(self.options.on);
+			if (FooTable.is.hash(options.on)) self.$table.on(self.options.on);
 			self.$table.addClass('footable-' + self.id);
 			return self.when(false, true, 'reinit', self.options).then(function () {
 				self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'glyphicon glyphicon-repeat'})));
@@ -1068,6 +1210,7 @@
 				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 				 */
 				self.raise('reinit');
+				callback.call(self, self);
 			}).then(function () {
 				self.update();
 				$(window).off('resize', self._onWindowResize).on('resize', { self: self }, self._onWindowResize);
@@ -1091,12 +1234,63 @@
 				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 				 */
 				self.raise('destroy');
-				if (typeof self.options.on === 'object') self.$table.off(self.options.on);
+				if (FooTable.is.hash(self.options.on)) self.$table.off(self.options.on);
 			});
+		},
+		/**
+		 * Raises an event on this instance supplying the args array as additional parameters to the handlers.
+		 * @instance
+		 * @param {string} eventName - The name of the event to raise, this can include namespaces.
+		 * @param {Array} [args] - An array containing additional parameters to be passed to any bound handlers.
+		 * @returns {jQuery.Event}
+		 */
+		raise: function (eventName, args) {
+			args = args || [];
+			args.unshift(this);
+			if (!FooTable.strings.isNullOrEmpty(this.options.namespace) && !FooTable.strings.contains(eventName, '.')) {
+				eventName = FooTable.strings.join('.', eventName, this.options.namespace);
+			}
+			var evt = $.Event(eventName);
+			if (this.options.stopPropagation == true){
+				this.$table.one(eventName, function (e) {e.stopPropagation();});
+			}
+			this.$table.trigger(evt, args);
+			return evt;
+		},
+		/**
+		 * Attempts to retrieve the instance of the supplied component type for this instance.
+		 * @instance
+		 * @param {object} type - The content type to retrieve for this instance.
+		 * @returns {(*|null)}
+		 */
+		use: function(type){
+			var components = this.components.internal.concat(this.components.core, this.components.custom);
+			for (var i = 0, len = components.length; i < len; i++){
+				if (components[i] instanceof type) return components[i];
+			}
+			return null;
+		},
+		/**
+		 * Performs an update for the table calling the ajax function if required and then drawing.
+		 * @instance
+		 * @returns {jQuery.Promise}
+		 */
+		update: function () {
+			var self = this;
+			if (self.options.ajaxEnabled == true) {
+				return self.ajax().then(function () {
+					return self.draw();
+				}, function (err) {
+					console.error(err);
+				});
+			} else {
+				return self.draw();
+			}
 		},
 		/**
 		 * Executes the ajax function and loads the response into the plugin.
 		 * @instance
+		 * @protected
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Instance#preajax
 		 * @fires FooTable.Instance#postajax
@@ -1143,6 +1337,7 @@
 		/**
 		 * Performs the drawing of the table.
 		 * @instance
+		 * @protected
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Instance#predraw
 		 * @fires FooTable.Instance#draw
@@ -1182,37 +1377,21 @@
 			});
 		},
 		/**
-		 * Performs an update for the table calling the ajax function if required and then drawing.
-		 * @instance
-		 * @returns {jQuery.Promise}
-		 */
-		update: function () {
-			var self = this;
-			if (self.options.ajaxEnabled == true) {
-				return self.ajax().then(function () {
-					return self.draw();
-				}, function (err) {
-					console.error(err);
-				});
-			} else {
-				return self.draw();
-			}
-		},
-		/**
 		 * Executes the specified method with the optional number of parameters on all components.
 		 * @instance
+		 * @protected
 		 * @param {string} methodName - The name of the method to execute.
 		 * @param {*} [param1] - The first parameter for the method.
 		 * @param {...*} [paramN] - Any number of additional parameters for the method.
-		 * @returns {jQuery.Promise} A jQuery Promise object containing promises for each of the executed methods.
+		 * @returns {jQuery.Promise}
 		 */
 		execute: function (methodName, param1, paramN) {
 			var self = this,
 				args = Array.prototype.slice.call(arguments),
-				components = self.components.internal.concat(self.components.core, self.components.internal);
+				components = self.components.internal.concat(self.components.core, self.components.custom);
 			methodName = args.shift();
 			$.each(components, function(i, component){
-				if (component[methodName] && typeof component[methodName] === 'function') {
+				if (FooTable.is.fn(component[methodName])) {
 					component[methodName].apply(component, args);
 				}
 			});
@@ -1220,36 +1399,62 @@
 		/**
 		 * Executes the specified method with the optional number of parameters on all components and waits for all promises to be resolved.
 		 * @instance
+		 * @protected
 		 * @param {boolean} reverse - Whether or not to execute the component methods in the reverse order to what they were registered in.
 		 * @param {boolean} chain - Whether or not to chain all the method calls waiting for the result of the first before calling the second and so on.
 		 * @param {string} methodName - The name of the method to execute.
 		 * @param {*} [param1] - The first parameter for the method.
 		 * @param {...*} [paramN] - Any number of additional parameters for the method.
-		 * @returns {jQuery.Promise} A jQuery Promise object containing promises for each of the executed methods.
+		 * @returns {jQuery.Promise}
 		 */
 		when: function(reverse, chain, methodName, param1, paramN){
 			var self = this, args = Array.prototype.slice.call(arguments);
 			reverse = args.shift();
 			chain = args.shift();
 			var exec = chain ? self._chain : self._when;
-			args.unshift(reverse ? self.components.addons.slice(0).reverse() : self.components.internal.slice(0));
+			args.unshift(reverse ? self.components.custom.slice(0).reverse() : self.components.internal.slice(0));
 			return exec.apply(self, args).then(function(){
 				args.shift();
 				args.unshift(reverse ? self.components.core.slice(0).reverse() : self.components.core.slice(0));
 				return exec.apply(self, args).then(function(){
 					args.shift();
-					args.unshift(reverse ? self.components.internal.slice(0).reverse() : self.components.addons.slice(0));
+					args.unshift(reverse ? self.components.internal.slice(0).reverse() : self.components.custom.slice(0));
 					return exec.apply(self, args);
 				});
 			});
 		},
 		/**
+		 * Clears all rules from this instances' {@link FooTable.Instance#$styles} tag.
+		 * @instance
+		 * @protected
+		 */
+		clearCSSRules: function(){
+			this.$styles.html('');
+		},
+		/**
+		 * Adds the supplied selector and cssText to this instances' {@link FooTable.Instance#$styles} tag.
+		 * @instance
+		 * @protected
+		 * @param {string} selector - The rule selector to append.
+		 * @param {string} cssText - The cssText for the selector.
+		 */
+		addCSSRule: function(selector, cssText){
+			var style = this.$styles.get(0), sheet = style.styleSheet || style.sheet;
+			if (sheet.insertRule){
+				sheet.insertRule(selector + " { " + cssText + " }", sheet.cssRules.length);
+			} else {
+				sheet.addRule(selector, cssText, -1);
+			}
+		},
+		/**
 		 * Executes the specified method with the optional number of parameters on all supplied components.
+		 * @instance
+		 * @private
 		 * @param {Array.<FooTable.Component>} components - The components to call the method on.
 		 * @param {string} methodName - The name of the method to execute
 		 * @param {*} [param1] - The first parameter for the method.
 		 * @param {...*} [paramN] - Any additional parameters for the method.
-		 * @returns {jQuery.Promise} A jQuery Promise object containing promises for each of the executed methods.
+		 * @returns {jQuery.Promise}
 		 */
 		_when: function (components, methodName, param1, paramN) {
 			if (!components || !components.length) return $.when();
@@ -1258,7 +1463,7 @@
 			components = args.shift();
 			methodName = args.shift();
 			$.each(components, function(i, component){
-				if (component[methodName] && typeof component[methodName] === 'function') {
+				if (FooTable.is.fn(component[methodName])) {
 					methods.push(component[methodName].apply(component, args));
 				}
 			});
@@ -1266,11 +1471,13 @@
 		},
 		/**
 		 * Executes the specified method with the optional number of parameters on all supplied components waiting for the result of each before executing the next.
+		 * @instance
+		 * @private
 		 * @param {Array.<FooTable.Component>} components - The components to call the method on.
 		 * @param {string} methodName - The name of the method to execute
 		 * @param {*} [param1] - The first parameter for the method.
 		 * @param {...*} [paramN] - Any additional parameters for the method.
-		 * @returns {jQuery.Promise} A jQuery Promise object containing promises for each of the executed methods.
+		 * @returns {jQuery.Promise}
 		 */
 		_chain: function(components, methodName, param1, paramN){
 			if (!components || !components.length) return $.when();
@@ -1282,54 +1489,6 @@
 			return $.when(component[methodName].apply(component, args)).then(function(){
 				return self._chain(components, methodName, param1, paramN);
 			});
-		},
-		/**
-		 * Raises an event on this instance supplying the args array as additional parameters to the handlers.
-		 * @instance
-		 * @param {string} eventName - The name of the event to raise, this can include namespaces.
-		 * @param {Array} [args] - An array containing additional parameters to be passed to any bound handlers.
-		 * @returns {jQuery.Event} The jQuery.Event object used to raise the event.
-		 */
-		raise: function (eventName, args) {
-			args = args || [];
-			args.unshift(this);
-			if (!FooTable.utils.strings.isNullOrEmpty(this.options.namespace) && !FooTable.utils.strings.contains(eventName, '.')) {
-				eventName = FooTable.utils.strings.join('.', eventName, this.options.namespace);
-			}
-			var evt = $.Event(eventName);
-			this.$table.one(eventName, function (e) {e.stopPropagation();}).trigger(evt, args);
-			return evt;
-		},
-		/**
-		 * This method is called once the entire plugin is initialized.
-		 * @instance
-		 * @param {function} callback - The function to execute once the entire plugin is initialized.
-		 */
-		ready: function (callback) {
-			if (typeof callback !== 'function') return;
-			this._ready = callback;
-			if (this.initialized === true) callback.call(this, this);
-		},
-		/**
-		 * Clears all rules from this instances' {@link FooTable.Instance#$styles} tag.
-		 * @instance
-		 */
-		clearCSSRules: function(){
-			this.$styles.html('');
-		},
-		/**
-		 * Adds the supplied selector and cssText to this instances' {@link FooTable.Instance#$styles} tag.
-		 * @instance
-		 * @param {string} selector - The rule selector to append.
-		 * @param {string} cssText - The cssText for the selector.
-		 */
-		addCSSRule: function(selector, cssText){
-			var style = this.$styles.get(0), sheet = style.styleSheet || style.sheet;
-			if (sheet.insertRule){
-				sheet.insertRule(selector + " { " + cssText + " }", sheet.cssRules.length);
-			} else {
-				sheet.addRule(selector, cssText, -1);
-			}
 		},
 		/**
 		 * Listens to the window resize event and performs a check to see if the breakpoint has changed.
@@ -1426,6 +1585,16 @@
 		 * @returns {FooTable.Columns}
 		 */
 		ctor: function(instance){
+
+			/* PROTECTED */
+			/**
+			 * This provides a shortcut to the {@link FooTable.Instance#options} object.
+			 * @protected
+			 * @type {FooTable.Instance#options}
+			 */
+			this.o = instance.options;
+
+			/* PUBLIC */
 			/**
 			 * An array of {@link FooTable.Column} objects created from parsing the options and/or DOM.
 			 * @type {Array.<FooTable.Column>}
@@ -1435,16 +1604,19 @@
 			// call the base class constructor
 			this._super(instance);
 		},
+
+		/* PROTECTED */
 		/**
 		 * Initializes the columns creating the table header if required.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableElement} table - The table element the plugin was initialized on.
 		 * @param {object} options - The options the plugin was initialized with.
 		 * @fires FooTable.Columns#columns_init
 		 */
 		init: function(table, options){
-			if (this.instance.$table.children('thead').length == 0) this.instance.$table.prepend('<thead/>');
-			var last = this.instance.$table.children('thead').children('tr').not('.footable-filtering,.footable-paging').last().get(0);
+			if (this.ft.$table.children('thead').length == 0) this.ft.$table.prepend('<thead/>');
+			var last = this.ft.$table.children('thead').children('tr').not('.footable-filtering,.footable-paging').last().get(0);
 			this.array = (last instanceof HTMLTableRowElement) ? this.fromDOM(last) : this.fromJSON(options.columns);
 			this._generateCSS();
 			/**
@@ -1454,17 +1626,18 @@
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 * @param {Array.<FooTable.Column>} columns - The array of {@link FooTable.Column} objects parsed from the options and/or DOM.
 			 */
-			this.instance.raise('columns_init', [ this.array ]);
+			this.ft.raise('columns_init', [ this.array ]);
 		},
 		/**
 		 * Reinitializes the columns creating the table header if required.
 		 * @instance
+		 * @protected
 		 * @param {object} options - The options the plugin was reinitialized with.
 		 * @fires FooTable.Columns#columns_reinit
 		 */
 		reinit: function(options){
-			if (this.instance.$table.children('thead').length == 0) this.instance.$table.prepend('<thead/>');
-			var last = this.instance.$table.children('thead').children('tr').not('.footable-filtering,.footable-paging').last().get(0);
+			if (this.ft.$table.children('thead').length == 0) this.ft.$table.prepend('<thead/>');
+			var last = this.ft.$table.children('thead').children('tr').not('.footable-filtering,.footable-paging').last().get(0);
 			this.array = (last instanceof HTMLTableRowElement) ? this.fromDOM(last) : this.fromJSON(options.columns);
 			this._generateCSS();
 			/**
@@ -1474,11 +1647,34 @@
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 * @param {Array.<FooTable.Column>} columns - The array of {@link FooTable.Column} objects parsed from the options and/or DOM.
 			 */
-			this.instance.raise('columns_reinit', [ this.array ]);
+			this.ft.raise('columns_reinit', [ this.array ]);
+		},
+		/**
+		 * The predraw method called from within the {@link FooTable.Instance#draw} method.
+		 * @instance
+		 * @protected
+		 */
+		predraw: function(){
+			var self = this;
+			$.each(self.array, function(i, col){
+				col.hidden = FooTable.strings.contains(col.hide, self.ft.breakpoints.current) || FooTable.strings.contains(col.hide, 'all');
+			});
+		},
+		/**
+		 * The postdraw method called from within the {@link FooTable.Instance#draw} method.
+		 * @instance
+		 * @protected
+		 */
+		postdraw: function(){
+			var self = this;
+			$.each(self.array, function(i, col){
+				self.toggle(col.index, !col.hidden);
+			});
 		},
 		/**
 		 * Parses the supplied rows' cells to produce an array of {@link FooTable.Column}s.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableRowElement} headerRow - The header row of the table.
 		 * @returns {Array.<FooTable.Column>}
 		 */
@@ -1489,10 +1685,10 @@
 				$cell = $(headerRow.cells[i]);
 				definition = $.extend(true, {
 					title: $cell.text()
-				}, self.instance.options.columns[i] || {}, $cell.data(), { index: i });
-				definition.sorter = self.instance.options.sorters[definition.type] || self.instance.options.sorters.text;
-				definition.parser = self.instance.options.parsers[definition.type] || self.instance.options.parsers.text;
-				column = new FooTable.Column(self.instance, $cell, definition);
+				}, self.o.columns[i] || {}, $cell.data(), { index: i });
+				definition.sorter = self.o.sorters[definition.type] || self.o.sorters.text;
+				definition.parser = self.o.parsers[definition.type] || self.o.parsers.text;
+				column = new FooTable.Column(self.ft, $cell, definition);
 				columns.push(column);
 			}
 			return columns;
@@ -1500,6 +1696,7 @@
 		/**
 		 * Parses the supplied JSON object to produce an array of {@link FooTable.Column}s and generates the table header.
 		 * @instance
+		 * @protected
 		 * @param {object.<number, object>} obj - The JSON object containing the column definitions.
 		 * @returns {Array}
 		 */
@@ -1513,51 +1710,146 @@
 					definition = $.extend(true, {
 						title: obj[i].title || obj[i].name && obj[i].name.replace(/(.)([A-Z])/, "$1 $2").replace(/(?:^|\s)\S/g, function (a) { return a.toUpperCase(); }) || i
 					}, obj[i], { index: i });
-					definition.sorter = self.instance.options.sorters[definition.type] || self.instance.options.sorters.text;
-					definition.parser = self.instance.options.parsers[definition.type] || self.instance.options.parsers.text;
-					column = new FooTable.Column(self.instance, document.createElement('th'), definition);
-					column.$headerCell.appendTo($row);
+					definition.sorter = self.o.sorters[definition.type] || self.o.sorters.text;
+					definition.parser = self.o.parsers[definition.type] || self.o.parsers.text;
+					column = new FooTable.Column(self.ft, document.createElement('th'), definition);
+					column.$el.appendTo($row);
 					columns.push(column);
 				}
 			}
-			self.instance.$table.children('thead').append($row);
+			self.ft.$table.children('thead').append($row);
 			return columns;
 		},
+
+		/* PUBLIC */
 		/**
-		 * The predraw method called from within the {@link FooTable.Instance#draw} method.
+		 * Toggles the visibility of the supplied column.
 		 * @instance
-		 */
-		predraw: function(){
-			var self = this;
-			$.each(self.array, function(i, col){
-				col.hidden = FooTable.utils.strings.contains(col.hide, self.instance.breakpoints.current) || FooTable.utils.strings.contains(col.hide, 'all');
-			});
-		},
-		/**
-		 * The postdraw method called from within the {@link FooTable.Instance#draw} method.
-		 * @instance
-		 */
-		postdraw: function(){
-			var self = this;
-			$.each(self.array, function(i, col){
-				self.toggle(col.index, !col.hidden);
-			});
-		},
-		/**
-		 * Toggles the visibility of the supplied column index.
-		 * @instance
-		 * @param {number} index - The zero based column index to toggle.
+		 * @param {(FooTable.Column|string|number)} column - The column to toggle.
 		 * @param {boolean} hidden - Whether or not to hide the column.
 		 * @example <caption>This example shows how to hide the second column in a table. The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
 		 * columns.toggle(1, true); // the index for the second column is 1 as it is zero based
 		 */
-		toggle: function(index, hidden) {
-			this.instance.$table.children('thead,tbody,tfoot').children('tr').not('.footable-detail-row,.footable-paging,.footable-filtering').each(function(i, row){
-				if (index >= 0 && index < row.cells.length) {
-					row.cells[index].style.display = hidden ? 'table-cell' : 'none';
+		toggle: function(column, hidden) {
+			column = this.get(column);
+			this.ft.$table.children('thead,tbody,tfoot').children('tr').not('.footable-detail-row,.footable-paging,.footable-filtering').each(function(i, row){
+				if (column.index >= 0 && column.index < row.cells.length) {
+					row.cells[column.index].style.display = hidden ? 'table-cell' : 'none';
 				}
 			});
 		},
+		/**
+		 * Attempts to return a {@link FooTable.Column} instance when passed the {@link FooTable.Column} instance, the {@link FooTable.Column#name} string or the {@link FooTable.Column#index} number.
+		 * @instance
+		 * @param {(FooTable.Column|string|number)} column - The column to retrieve.
+		 * @returns {(FooTable.Column|null)} The column if one is found otherwise it returns NULL.
+		 * @example <caption>This example shows retrieving a column by name assuming a column called "id" exists. The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
+		 * var column = columns.get('id');
+		 * if (column instanceof FooTable.Column){
+		 * 	// found the "id" column
+		 * } else {
+		 * 	// no column with a name of "id" exists
+		 * }
+		 */
+		get: function(column){
+			if (column instanceof FooTable.Column) return column;
+			if (FooTable.is.type(column, 'string')) return this.first(function (col) { return col.name == column; });
+			if (FooTable.is.type(column, 'number')) return this.first(function (col) { return col.index == column; });
+			return null;
+		},
+		/**
+		 * Translate all items in the {@link FooTable.Columns#array} to a new array of items.
+		 * @instance
+		 * @param {function} callback - The function to process each column with.
+		 * The first argument to the function is the {@link FooTable.Column} object.
+		 * The function can return any value except NULL values as they will be removed from the final result.
+		 * @returns {Array}
+		 * @example <caption>This example shows how to get an array of all column names. The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
+		 * var colNames = columns.map(function(column){
+		 * 	return column.name;
+		 * });
+		 */
+		map: function(callback){
+			var result = [], returned = null;
+			if (!FooTable.is.fn(callback)) { return result; }
+			for (var i = 0, len = this.array.length; i < len; i++) {
+				if ((returned = callback(this.array[i])) != null) result.push(returned);
+			}
+			return result;
+		},
+		/**
+		 * Returns the first instance of {@link FooTable.Column} that matches the supplied where function.
+		 * @instance
+		 * @param {function} where - The function to process each column with. The first argument to the function is the {@link FooTable.Column} object. The function must return a boolean value.
+		 * @returns {(FooTable.Column|null)} The first column that matches the where function otherwise if no column matches then NULL.
+		 * @example <caption>This example shows how to retrieve the first column that has a type of "text". The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
+		 * var firstTextColumn = columns.first(function(column){
+		 * 	return column.type == 'text';
+		 * });
+		 */
+		first: function(where){
+			where = where || function () { return true; };
+			for (var i = 0, len = this.array.length; i < len; i++) {
+				if (where(this.array[i])) return this.array[i];
+			}
+			return null;
+		},
+		/**
+		 * Returns the last instance of {@link FooTable.Column} that matches the supplied where function.
+		 * @instance
+		 * @param {function} where - The function to process each column with. The first argument to the function is the {@link FooTable.Column} object. The function must return a boolean value.
+		 * @returns {(FooTable.Column|null)} The last column that matches the where function otherwise if no column matches then NULL.
+		 * @example <caption>This example shows how to retrieve the last column that has a type of "text". The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
+		 * var lastTextColumn = columns.last(function(column){
+		 * 	return column.type == 'text';
+		 * });
+		 */
+		last: function(where){
+			where = where || function () { return true; };
+			for (var i = this.array.length - 1; i >= 0; i--) {
+				if (where(this.array[i])) return this.array[i];
+			}
+			return null;
+		},
+		/**
+		 * Returns the current colspan required to span all visible columns.
+		 * @instance
+		 * @returns {number}
+		 */
+		colspan: function(){
+			var colspan = 0;
+			$.each(this.array, function(i, col){
+				if (!col.hidden) colspan++;
+			});
+			return colspan;
+		},
+		/**
+		 * Checks if there are any columns that match the supplied where function.
+		 * @instance
+		 * @param {function} where - The function to process each column with. The first argument to the function is the {@link FooTable.Column} object. The function must return a boolean value.
+		 * @returns {boolean}
+		 */
+		any: function(where){
+			var self = this;
+			where = where || function () { return self.array.length > 0; };
+			return self.first(where) instanceof FooTable.Column;
+		},
+		/**
+		 * Takes an array of column names, index's or actual {@link FooTable.Column} and ensures that an array of only {@link FooTable.Column} is returned.
+		 * @instance
+		 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} columns - The array of column names, index's or {@link FooTable.Column} to check.
+		 * @returns {Array.<FooTable.Column>}
+		 */
+		ensure: function(columns){
+			var self = this, result = [];
+			if (!FooTable.is.array(columns)) return result;
+			$.each(columns, function(i, name){
+				result.push(self.get(name));
+			});
+			return result;
+		},
+
+		/* PRIVATE */
 		/**
 		 * Creates the CSS styles for the parsed columns by generating the classes and appending them in a &lt;style/&gt; tag to the document.
 		 * @instance
@@ -1587,15 +1879,15 @@
 					style.wordBreak = 'break-all';
 					style.whiteSpace = 'normal';
 				}
-				this.instance.addCSSRule(this._generateCSSSelector(col.index), FooTable.utils.jsonToCSS(style));
+				this.ft.addCSSRule(this._generateCSSSelector(col.index), FooTable.json2css(style));
 			}
 		},
 		/**
 		 * Creates a CSS selector to target the specified column index for this instance of the plugin.
 		 * @instance
+		 * @private
 		 * @param {number} index - The column index to create the selector for.
 		 * @returns {string}
-		 * @private
 		 */
 		_generateCSSSelector: function(index){
 			if (document.all && !document.addEventListener) {
@@ -1608,108 +1900,15 @@
 					th += ' + th';
 				}
 				for (i = 0; i < selectors.length; i++){
-					rules.push(FooTable.utils.strings.format(selectors[i], this.instance.id) + td);
-					rules.push(FooTable.utils.strings.format(selectors[i], this.instance.id) + th);
+					rules.push(FooTable.strings.format(selectors[i], this.ft.id) + td);
+					rules.push(FooTable.strings.format(selectors[i], this.ft.id) + th);
 				}
 				return rules.join(',');
 			} else {
 				// anything else we can use the nth-child selector
 				var formatString = 'table.footable-{0} > thead > tr > td:nth-child({1}),table.footable-{0} > thead > tr > th:nth-child({1}),table.footable-{0} > tbody > tr > td:nth-child({1}),table.footable-{0} > tbody > tr > th:nth-child({1}),table.footable-{0} > tfoot > tr > td:nth-child({1}),table.footable-{0} > tfoot > tr > th:nth-child({1})';
-				return FooTable.utils.strings.format(formatString, this.instance.id, index + 1);
+				return FooTable.strings.format(formatString, this.ft.id, index + 1);
 			}
-		},
-		/**
-		 * Attempts to return a {@link FooTable.Column} instance when passed the {@link FooTable.Column} instance, the {@link FooTable.Column#name} string or the {@link FooTable.Column#index} number.
-		 * @instance
-		 * @param {(FooTable.Column|string|number)} column - The column to retrieve.
-		 * @returns {(FooTable.Column|null)} The column if one is found otherwise it returns NULL.
-		 * @example <caption>This example shows retrieving a column by name assuming a column called "id" exists. The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
-		 * var column = columns.getColumn('id');
-		 * if (column instanceof FooTable.Column){
-		 * 	// found the "id" column
-		 * } else {
-		 * 	// no column with a name of "id" exists
-		 * }
-		 */
-		getColumn: function(column){
-			if (column instanceof FooTable.Column) return column;
-			if (typeof column == 'string') return this.first(function (col) { return col.name == column; });
-			if (typeof column == 'number') return this.first(function (col) { return col.index == column; });
-			return null;
-		},
-		/**
-		 * Translate all items in the {@link FooTable.Columns#array} to a new array of items.
-		 * @instance
-		 * @param {function} callback - The function to process each item against.
-		 * The first argument to the function is the {@link FooTable.Column} object.
-		 * The function can return any value except NULL values as they will be removed from the final result.
-		 * @returns {Array}
-		 * @example <caption>This example shows how to get an array of all column names. The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
-		 * var colNames = columns.map(function(column){
-		 * 	return column.name;
-		 * });
-		 */
-		map: function(callback){
-			var result = [], returned = null;
-			if (!$.isFunction(callback)) { return result; }
-			for (var i = 0, len = this.array.length; i < len; i++) {
-				if ((returned = callback(this.array[i])) != null) result.push(returned);
-			}
-			return result;
-		},
-		/**
-		 * Returns the first instance of {@link FooTable.Column} that matches the supplied where function.
-		 * @instance
-		 * @param {function} where - The function to process each item against. The first argument to the function is the {@link FooTable.Column} object. The function must return a boolean value.
-		 * @returns {(FooTable.Column|null)} The first column that matches the where function otherwise if no column matches then NULL.
-		 * @example <caption>This example shows how to retrieve the first column that has a type of "text". The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
-		 * var firstTextColumn = columns.first(function(column){
-		 * 	return column.type == 'text';
-		 * });
-		 */
-		first: function(where){
-			where = where || function () { return true; };
-			for (var i = 0, len = this.array.length; i < len; i++) {
-				if (where(this.array[i])) return this.array[i];
-			}
-			return null;
-		},
-		/**
-		 * Returns the last instance of {@link FooTable.Column} that matches the supplied where function.
-		 * @instance
-		 * @param {function} where - The function to process each item against. The first argument to the function is the {@link FooTable.Column} object. The function must return a boolean value.
-		 * @returns {(FooTable.Column|null)} The last column that matches the where function otherwise if no column matches then NULL.
-		 * @example <caption>This example shows how to retrieve the last column that has a type of "text". The <code>columns</code> object is an instance of {@link FooTable.Columns}.</caption>
-		 * var lastTextColumn = columns.last(function(column){
-		 * 	return column.type == 'text';
-		 * });
-		 */
-		last: function(where){
-			where = where || function () { return true; };
-			for (var i = this.array.length - 1; i >= 0; i--) {
-				if (where(this.array[i])) return this.array[i];
-			}
-			return null;
-		},
-		/**
-		 * Returns the current colspan required to span all visible columns.
-		 * @instance
-		 * @returns {number}
-		 */
-		colspan: function(){
-			var colspan = 0;
-			$.each(this.array, function(i, col){
-				if (!col.hidden) colspan++;
-			});
-			return colspan;
-		},
-		/**
-		 * Checks if there are any hidden columns.
-		 * @instance
-		 * @returns {boolean}
-		 */
-		hasHidden: function(){
-			return this.first(function(col){ return col.hidden && col.visible; }) instanceof FooTable.Column;
 		}
 	});
 
@@ -1722,6 +1921,13 @@
 	 * @default []
 	 */
 	FooTable.Defaults.prototype.rows = [];
+
+	/**
+	 * A string to display when there are no rows in the table.
+	 * @type {string}
+	 * @default "No results"
+	 */
+	FooTable.Defaults.prototype.empty = 'No results';
 
 	/**
 	 * An array of JSON objects containing the row data.
@@ -1740,6 +1946,12 @@
 		 */
 		ctor: function (instance) {
 			/**
+			 * This provides a shortcut to the {@link FooTable.Instance#options} object.
+			 * @protected
+			 * @type {FooTable.Instance#options}
+			 */
+			this.o = instance.options;
+			/**
 			 * An array of {@link FooTable.Row} objects created from parsing the options and/or DOM.
 			 * @type {Array.<FooTable.Row>}
 			 * @default []
@@ -1753,6 +1965,12 @@
 			 */
 			this._array = [];
 
+			/**
+			 * The jQuery object that contains the empty row control.
+			 * @type {jQuery}
+			 */
+			this.$empty = null;
+
 			// call the base class constructor
 			this._super(instance);
 		},
@@ -1765,19 +1983,20 @@
 		 */
 		init: function (table, options) {
 			var self = this;
-			if (self.instance.$table.children('tbody').length == 0) self.instance.$table.append('<tbody/>');
-			self.instance.$table.on('click.footable', '> tbody > tr:has(td > span.footable-toggle)', { self: self }, self._onToggleClicked);
-			self._array = (self.instance.options.ajaxEnabled == false && self.instance.options.rows.length == 0)
-				? self.fromDOM(self.instance.$table.children('tbody').get(0).rows)
+			self.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(options.empty));
+			if (self.ft.$table.children('tbody').length == 0) self.ft.$table.append('<tbody/>');
+			self.ft.$table.on('click.footable', '> tbody > tr:has(td > span.footable-toggle)', { self: self }, self._onToggleClicked);
+			self._array = (self.o.ajaxEnabled == false && self.o.rows.length == 0)
+				? self.fromDOM(self.ft.$table.children('tbody').get(0).rows)
 				: self.fromJSON(options.rows);
 			/**
-			 * The rows_init event is raised after the body rows are parsed for rows data.
+			 * The rows_init event is raised after the the rows are parsed from either the DOM or the options.
 			 * @event FooTable.Columns#rows_init
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the options and/or DOM.
+			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the DOM or the options.
 			 */
-			self.instance.raise('rows_init', [self._array]);
+			self.ft.raise('rows_init', [self._array]);
 		},
 		/**
 		 * Reinitializes the rows class using the supplied options.
@@ -1787,20 +2006,21 @@
 		 */
 		reinit: function (options) {
 			var self = this;
-			if (self.instance.$table.children('tbody').length == 0) self.instance.$table.append('<tbody/>');
-			self.instance.$table.off('click.footable', '> tbody > tr:has(td > span.footable-toggle)', self._onToggleClicked)
+			self.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(options.empty));
+			if (self.ft.$table.children('tbody').length == 0) self.ft.$table.append('<tbody/>');
+			self.ft.$table.off('click.footable', '> tbody > tr:has(td > span.footable-toggle)', self._onToggleClicked)
 				.on('click.footable', '> tbody > tr:has(td > span.footable-toggle)', { self: self }, self._onToggleClicked);
-			self._array = (self.instance.options.ajaxEnabled == false && self.instance.options.rows.length == 0)
-				? self.fromDOM(self.instance.$table.children('tbody').get(0).rows)
+			self._array = (self.o.ajaxEnabled == false && self.o.rows.length == 0)
+				? self.fromDOM(self.ft.$table.children('tbody').get(0).rows)
 				: self.fromJSON(options.rows);
 			/**
-			 * The rows_init event is raised after the body rows are parsed for rows data.
-			 * @event FooTable.Columns#rows_init
+			 * The rows_reinit event is raised after the the rows are parsed from either the DOM or the options.
+			 * @event FooTable.Columns#rows_reinit
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the options and/or DOM.
+			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the DOM or the options.
 			 */
-			self.instance.raise('rows_init', [self._array]);
+			self.ft.raise('rows_reinit', [self._array]);
 		},
 		/**
 		 * Parses the supplied rows to produce an array of {@link FooTable.Row}s.
@@ -1812,10 +2032,10 @@
 			var self = this, _rows = [], row, cell, column;
 			if (!rows) return _rows;
 			for (var i = 0, len = rows.length; i < len; i++) {
-				row = new FooTable.Row(self.instance, rows[i], self.instance.columns.array);
+				row = new FooTable.Row(self.ft, rows[i], self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.instance, row, rows[i].cells[column.index], column, column.parser(rows[i].cells[column.index]));
+					cell = new FooTable.Cell(self.ft, row, rows[i].cells[column.index], column, column.parser(rows[i].cells[column.index]));
 					row.cells.push(cell);
 				}
 				_rows.push(row);
@@ -1832,12 +2052,12 @@
 			var self = this, _rows = [], row, cell, column;
 			if (!rows) return _rows;
 			for (var i = 0, len = rows.length; i < len; i++) {
-				row = new FooTable.Row(self.instance, document.createElement('tr'), self.instance.columns.array);
+				row = new FooTable.Row(self.ft, document.createElement('tr'), self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.instance, row, document.createElement('td'), column, rows[i][column.name]);
+					cell = new FooTable.Cell(self.ft, row, document.createElement('td'), column, rows[i][column.name]);
 					row.cells.push(cell);
-					row.$row.append(cell.$cell);
+					row.$el.append(cell.$el);
 				}
 				_rows.push(row);
 			}
@@ -1856,7 +2076,7 @@
 		 * @instance
 		 */
 		predraw: function(){
-			this.restoreDetails();
+			this.restore();
 			this.array = this._array.slice(0);
 		},
 		/**
@@ -1864,24 +2084,46 @@
 		 * @instance
 		 */
 		draw: function(){
-			var self = this, $tbody = self.instance.$table.children('tbody');
+			var self = this, $tbody = self.ft.$table.children('tbody');
+			self.$empty.detach();
 			$tbody.find('> tr > td > span.footable-toggle').remove();
 			// use detach to remove the rows to preserve jQuery data and any events.
 			$tbody.children('tr').detach();
 
 			// loop through the table and append the main rows
 			for (var i = 0, len = self.array.length; i < len; i++){
-				$tbody.append(self.array[i].$row);
+				$tbody.append(self.array[i].$el);
+			}
+			if (self.array.length == 0){
+				self.$empty.children('td').attr('colspan', self.ft.columns.colspan());
+				$tbody.append(self.$empty);
 			}
 
-			if (!self.instance.columns.hasHidden()) return;
+			if (!self.ft.columns.any(function(c){ return c.hidden && c.visible; })) return;
 
 			// update or create details for any rows with the footable-detail-show class
-			self.updateAllDetails();
+			self.refresh();
 			// add the row toggle to the first visible column
-			var index = (self.instance.columns.first(function (col) { return !col.hidden; }) || {}).index;
+			var index = (self.ft.columns.first(function (c) { return !c.hidden && c.visible; }) || {}).index;
 			if (typeof index !== 'number') return;
 			$tbody.find('> tr > td:nth-child(' + (index + 1) + '):not(tr.footable-detail-row > td, tr.footable-loader > td)').prepend($('<span/>', {'class': 'footable-toggle glyphicon glyphicon-plus'}));
+		},
+		/**
+		 * This method restores the detail row cells to there original row position but does not remove the expanded class.
+		 * @instance
+		 * @protected
+		 */
+		restore: function(){
+			var self = this, $detail, $el;
+			self.ft.$table.children('tbody').children('tr.footable-detail-row').each(function () {
+				$detail = $(this);
+				$detail.children('td').first()
+					.find('.footable-details > tbody > tr').each(function (i, el) {
+						$el = $(el);
+						$el.data('footable_detail').$el.append($el.children('td').first().contents());
+					});
+				$detail.remove();
+			});
 		},
 		/**
 		 * Gets the detail row for the supplied row if one exists.
@@ -1889,7 +2131,7 @@
 		 * @param {HTMLTableRowElement} row - The row to retrieve the details for.
 		 * @returns {(jQuery|null)}
 		 */
-		getDetail: function(row){
+		details: function(row){
 			var $row = $(row), $next;
 			if ($row.hasClass('footable-detail-show')){
 				$next = $row.next();
@@ -1898,88 +2140,69 @@
 			return null;
 		},
 		/**
-		 * Creates a new detail row for the supplied row.
+		 * Displays the details for the supplied row.
 		 * @instance
-		 * @param {HTMLTableRowElement} row - The row to create the details for.
+		 * @param {HTMLTableRowElement} row - The row to display the details for.
 		 */
-		createDetail: function(row){
+		expand: function(row){
 			var self = this,
-				data = $(row).get(0).__FooTable_Row__,
+				data = $(row).data('__FooTableRow__'),
 				hidden = $.map(data.cells, function(cell){
 					return cell.column.hidden && cell.column.visible ? cell : null;
-				}),
-				colspan = self.instance.columns.colspan();
+				});
 
-			if (hidden.length > 0 && !self.instance.raise('details_create', [ row, hidden, colspan ]).isDefaultPrevented()){
+			if (hidden.length > 0){
 				var i, len, $tr, $th, $td,
-					$cell = $('<td/>', { colspan: colspan }),
+					$cell = $('<td/>', { colspan: self.ft.columns.colspan() }),
 					$table = $('<table/>', { 'class': 'footable-details table table-bordered table-condensed table-hover' }).appendTo($cell),
 					$tbody = $('<tbody/>').appendTo($table);
 
 				for (i = 0, len = hidden.length; i < len; i++){
 					$tr = $('<tr/>').data('footable_detail', hidden[i]).appendTo($tbody);
 					$th = $('<th/>', { text: hidden[i].column.title }).appendTo($tr);
-					$td = $('<td/>').appendTo($tr).append(hidden[i].$cell.contents());
+					$td = $('<td/>').appendTo($tr).append(hidden[i].$el.contents());
 				}
-				data.$row.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-plus').addClass('glyphicon-minus');
-				$('<tr/>', { 'class': 'footable-detail-row' }).append($cell).insertAfter(data.$row);
+				data.$el.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+				$('<tr/>', { 'class': 'footable-detail-row' }).append($cell).insertAfter(data.$el);
 			}
 		},
 		/**
-		 * Removes the details row from the supplied row if one exists.
+		 * Hides the details for the supplied row.
 		 * @instance
-		 * @param {HTMLTableRowElement} row - The row to remove the details from.
+		 * @param {HTMLTableRowElement} row - The row to hide the details on.
 		 */
-		removeDetail: function(row){
+		collapse: function(row){
 			var self = this,
-				data = $(row).get(0).__FooTable_Row__,
-				$details = self.getDetail(data.$row.get(0)),
+				data = $(row).data('__FooTableRow__'),
+				$details = self.details(data.$el.get(0)),
 				$el;
 
-			if ($details != null && !self.instance.raise('details_remove', [ row, $details.get(0) ]).isDefaultPrevented()){
-				data.$row.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+			if ($details != null){
+				data.$el.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-minus').addClass('glyphicon-plus');
 				$details.children('td').first()
 					.find('.footable-details > tbody > tr').each(function(i, el){
 						$el = $(el);
-						$el.data('footable_detail').$cell.append($el.children('td').first().contents());
+						$el.data('footable_detail').$el.append($el.children('td').first().contents());
 					});
 				$details.remove();
 			}
 		},
 		/**
-		 * Updates the detail row for the supplied row by removing and then recreating it.
+		 * Refresh the details for all active rows or for a single specified row.
 		 * @instance
-		 * @param {HTMLTableRowElement} row - The row to remove the details from.
+		 * @param {HTMLTableRowElement} [row] - A specific row to refresh the details for.
 		 */
-		updateDetail: function(row){
-			this.removeDetail(row);
-			this.createDetail(row);
-		},
-		/**
-		 * Updates all visible detail rows in the table.
-		 * @instance
-		 */
-		updateAllDetails: function(){
+		refresh: function(row){
 			var self = this;
-			self.instance.$table.children('tbody').children('tr.footable-detail-show').each(function(i, row){
-				self.updateDetail(row);
-			});
-		},
-		/**
-		 * This method restores the detail row cells to there original row position but does not remove the expanded class.
-		 * @instance
-		 */
-		restoreDetails: function(){
-			var self = this, $detail, $el;
-			self.instance.$table.children('tbody').children('tr.footable-detail-show').each(function () {
-				$detail = $(this).next('tr.footable-detail-row');
-				$detail.children('td').first()
-					.find('.footable-details > tbody > tr').each(function (i, el) {
-						$el = $(el);
-						$el.data('footable_detail').$cell.append($el.children('td').first().contents());
-					});
-				$detail.remove();
-			});
+			if (FooTable.is.undef(row)){
+				self.ft.$table.children('tbody').children('tr.footable-detail-show').each(function(i, row){
+					self.collapse(row);
+					self.expand(row);
+				});
+			} else {
+				self.collapse(row);
+				self.expand(row);
+			}
 		},
 		/**
 		 * Handles the toggle click event for rows.
@@ -1989,12 +2212,10 @@
 		 */
 		_onToggleClicked: function (e) {
 			var self = e.data.self;
-			if (self.instance.columns.hasHidden() && $(e.target).is('tr,td,span.footable-toggle')){ // only execute the toggle code if the event.target matches our check selector
-				var row = $(this), hasDetail = row.hasClass('footable-detail-show');
-				if (!self.instance.raise('rows_toggle_clicked', [ row, hasDetail ]).isDefaultPrevented()){
-					if (hasDetail) self.removeDetail(row.get(0));
-					else self.createDetail(row.get(0));
-				}
+			if (self.ft.columns.any(function(c){ return c.hidden && c.visible; }) && $(e.target).is('tr,td,span.footable-toggle')){ // only execute the toggle code if the event.target matches our check selector
+				var $row = $(this), exists = $row.hasClass('footable-detail-show');
+				if (exists) self.collapse($row.get(0));
+				else self.expand($row.get(0));
 			}
 		}
 	});
@@ -2046,12 +2267,16 @@
 		 * @returns {FooTable.Breakpoints}
 		 */
 		ctor: function(instance){
+
+			/* PROTECTED */
 			/**
-			 * Used when performing a {@link FooTable.Breakpoints#check} this stores the previous breakpoint value to compare to the current.
-			 * @type {string}
-			 * @private
+			 * This provides a shortcut to the {@link FooTable.Instance#options} object.
+			 * @protected
+			 * @type {FooTable.Instance#options}
 			 */
-			this._previous = null;
+			this.o = instance.options;
+
+			/* PUBLIC */
 			/**
 			 * The name of the current breakpoint.
 			 * @type {string}
@@ -2068,53 +2293,126 @@
 			 */
 			this.array = [];
 
+			/* PRIVATE */
+			/**
+			 * Used when performing a {@link FooTable.Breakpoints#check} this stores the previous breakpoint value to compare to the current.
+			 * @type {string}
+			 * @private
+			 */
+			this._previous = null;
+
 			// call the base class constructor
 			this._super(instance);
 		},
+
+		/* PROTECTED */
 		/**
 		 * Provides access to the {@link FooTable.Column} constructor allowing components to modify the object on creation.
 		 * @instance
+		 * @protected
 		 * @param {FooTable.Column} column - The column object being constructed.
 		 * @param {object} definition - The definition object used to populate the column.
 		 */
 		ctor_column: function(column, definition){
-			column.hide = typeof definition.hide === 'string' ? definition.hide : null;
+			column.hide = FooTable.is.type(definition.hide, 'string') ? definition.hide : null;
 		},
 		/**
 		 * Initializes the class parsing the options into a sorted array of {@link FooTable.Breakpoint} objects.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableElement} table - The table element the plugin was initialized on.
 		 * @param {object} options - The options the plugin was initialized with.
 		 * @fires FooTable.Breakpoints#breakpoints_init
 		 */
 		init: function(table, options){
 			this._generate(options.breakpoints);
-			this.current = this.getCurrent();
+			this.current = this.calculate();
 			/**
 			 * The breakpoints_init event raised after the breakpoints have been parsed.
 			 * @event FooTable.Breakpoints#breakpoints_init
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('breakpoints_init');
+			this.ft.raise('breakpoints_init');
 		},
 		/**
 		 * Reinitializes the class parsing the options into a sorted array of {@link FooTable.Breakpoint} objects.
 		 * @instance
+		 * @protected
 		 * @param {object} options - The options the plugin was reinitialized with.
 		 * @fires FooTable.Breakpoints#breakpoints_reinit
 		 */
 		reinit: function(options){
 			this._generate(options.breakpoints);
-			this.current = this.getCurrent();
+			this.current = this.calculate();
 			/**
 			 * The breakpoints_init event raised after the breakpoints have been parsed.
 			 * @event FooTable.Breakpoints#breakpoints_reinit
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('breakpoints_reinit');
+			this.ft.raise('breakpoints_reinit');
 		},
+
+		/* PUBLIC */
+		/**
+		 * Calculates the current breakpoint from the {@link FooTable.Breakpoints#array} and returns its name.
+		 * @instance
+		 * @returns {string}
+		 */
+		calculate: function(){
+			var self = this, current = null, breakpoint, width = self.getWidth();
+			for (var i = 0, len = self.array.length; i < len; i++) {
+				breakpoint = self.array[i];
+				if (breakpoint && breakpoint.width && width <= breakpoint.width) {
+					current = breakpoint;
+					break;
+				}
+			}
+			return current === null ? 'default' : current['name'];
+		},
+		/**
+		 * Performs a check between the current breakpoint and the previous breakpoint and performs a redraw if they differ.
+		 * @instance
+		 * @fires FooTable.Breakpoints#breakpoints_changed
+		 */
+		check: function(){
+			var self = this;
+			self.current = self.calculate();
+			if (self.current == self._previous) return;
+			self.ft.draw();
+			self._previous = self.current;
+			/**
+			 * The breakpoints_changed event is raised when a call to {@link FooTable.Breakpoints#check} determines that the breakpoint has changed.
+			 * @event FooTable.Breakpoints#breakpoints_changed
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} ft - The instance of FooTable raising the event.
+			 * @param {string} current - The current breakpoint name.
+			 * @param {string} previous - The previous breakpoint name.
+			 */
+			self.ft.raise('breakpoints_changed', [ self.current, self._previous ]);
+		},
+		/**
+		 * Gets the width used to determine breakpoints whether it be from the viewport, parent or a custom function.
+		 * @instance
+		 * @returns {number}
+		 */
+		getWidth: function(){
+			if (FooTable.is.fn(this.o.getWidth)) return this.o.getWidth(this.ft);
+			if (this.o.useParentWidth == true) return this.ft.$table.parent().width();
+			return this.getViewportWidth();
+		},
+		/**
+		 * Gets the current viewport width.
+		 * @instance
+		 * @returns {number}
+		 */
+		getViewportWidth: function(){
+			var ratio = FooTable.is.defined(window.devicePixelRatio) && FooTable.isMobile ? window.devicePixelRatio : 1;
+			return (window.innerWidth || (document.body ? document.body.offsetWidth : 0)) / ratio;
+		},
+
+		/* PRIVATE */
 		/**
 		 * Generates a sorted array of breakpoints from the supplied object populating the {@link FooTable.Breakpoints#array} and {@link FooTable.Breakpoints#name} members.
 		 * @instance
@@ -2127,7 +2425,7 @@
 			// Create a nice friendly array to work with out of the breakpoints object.
 			for (var name in breakpoints) {
 				if (!breakpoints.hasOwnProperty(name)) continue;
-				self.array.push(new FooTable.Breakpoint(self.instance, name, breakpoints[name]));
+				self.array.push(new FooTable.Breakpoint(name, breakpoints[name]));
 				self.names += (name + ' ');
 			}
 
@@ -2135,62 +2433,6 @@
 			self.array.sort(function (a, b) {
 				return a.width - b.width;
 			});
-		},
-		/**
-		 * Gets the current breakpoint from the {@link FooTable.Breakpoints#array} and returns its name.
-		 * @instance
-		 * @returns {string}
-		 */
-		getCurrent: function(){
-			var self = this, current = null, breakpoint, width = self.getWidth();
-			for (var i = 0, len = self.array.length; i < len; i++) {
-				breakpoint = self.array[i];
-				if (breakpoint && breakpoint.width && width <= breakpoint.width) {
-					current = breakpoint;
-					break;
-				}
-			}
-			return current === null ? 'default' : current['name'];
-		},
-		/**
-		 * Gets the width used to determine breakpoints whether it be from the viewport, parent or a custom function.
-		 * @instance
-		 * @returns {number}
-		 */
-		getWidth: function(){
-			if ($.isFunction(this.instance.options.getWidth)) return this.instance.options.getWidth(this.instance);
-			if (this.instance.options.useParentWidth == true) return this.instance.$table.parent().width();
-			return this.getViewportWidth();
-		},
-		/**
-		 * Gets the current viewport width.
-		 * @instance
-		 * @returns {number}
-		 */
-		getViewportWidth: function(){
-			return window.innerWidth || (document.body ? document.body.offsetWidth : 0);
-		},
-		/**
-		 * Performs a check between the current breakpoint and the previous breakpoint and performs a redraw if they differ.
-		 * @instance
-		 * @fires FooTable.Breakpoints#breakpoints_changed
-		 */
-		check: function(){
-			var self = this;
-			self.current = self.getCurrent();
-			if (self.current == self._previous) return;
-			/**
-			 * The breakpoints_changed event is raised when a call to {@link FooTable.Breakpoints#check} determines that the previous and current breakpoint values differ.
-			 * @event FooTable.Breakpoints#breakpoints_changed
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} ft - The instance of FooTable raising the event.
-			 * @param {string} current - The current breakpoint name.
-			 * @param {string} previous - The previous breakpoint name.
-			 */
-			if (!self.instance.raise('breakpoints_changed', [ self.current, self._previous ]).isDefaultPrevented()) {
-				self.instance.draw();
-				self._previous = self.current;
-			}
 		}
 	});
 
@@ -2210,24 +2452,31 @@
 	 * @prop {boolean} enabled=false - Whether or not to allow filtering on the table.
 	 * @prop {string} query=null - The query to filter the rows by. Rows that match this query are included in the result.
 	 * @prop {(Array.<FooTable.Column>|Array.<string>|Array.<number>)} columns - The columns to apply the query to.
-	 * @prop {string} delay=500 - The delay in milliseconds before the query is auto applied after a change.
+	 * @prop {number} delay=500 - The delay in milliseconds before the query is auto applied after a change.
+	 * @prop {number} min=3 - The minimum number of characters allowed before a filter is applied.
+	 * @prop {object} strings - An object containing the strings used by the filtering component.
+	 * @prop {string} strings.placeholder="Search" - The string used as the placeholder for the filter input.
 	 */
 	FooTable.Defaults.prototype.filtering = {
 		enabled: false,
 		query: null,
 		columns: [],
-		delay: 500
+		delay: 500,
+		min: 3,
+		strings: {
+			placeholder: 'Search'
+		}
 	};
 
 	/**
-	 * The query to filter the rows by. Rows that match this query are included in the result.
+	 * The query to filter the rows by. Rows that match this query are included in the result. Added by the {@link FooTable.Filtering} component.
 	 * @type {string}
 	 * @default NULL
 	 */
 	FooTable.RequestData.prototype.filterQuery = null;
 
 	/**
-	 * The columns to apply the {@link FooTable.RequestData#filterQuery} to.
+	 * The columns to apply the {@link FooTable.RequestData#filterQuery} to. Added by the {@link FooTable.Filtering} component.
 	 * @type {Array.<string>}
 	 * @default []
 	 */
@@ -2242,13 +2491,16 @@
 		 * @returns {FooTable.Filtering}
 		 */
 		ctor: function (instance) {
+
+			/* PROTECTED */
 			/**
-			 * The timeout ID for the filter changed event.
-			 * @instance
-			 * @type {?number}
-			 * @private
+			 * This provides a shortcut to the {@link FooTable.Instance#options}.[filtering]{@link FooTable.Defaults#filtering} object.
+			 * @protected
+			 * @type {object}
 			 */
-			this._filterTimeout = null;
+			this.o = instance.options.filtering;
+
+			/* PUBLIC */
 			/**
 			 * The jQuery object that contains the search input and column selector.
 			 * @type {jQuery}
@@ -2260,7 +2512,7 @@
 			 */
 			this.$dropdown_container = null;
 			/**
-			 * The jQuery object that of the column selector dropdown.
+			 * The jQuery object of the column selector dropdown.
 			 * @type {jQuery}
 			 */
 			this.$dropdown = null;
@@ -2274,21 +2526,41 @@
 			 * @type {jQuery}
 			 */
 			this.$search_button = null;
+
+			/* PRIVATE */
+			/**
+			 * The timeout ID for the filter changed event.
+			 * @private
+			 * @type {?number}
+			 */
+			this._filterTimeout = null;
+			/**
+			 * Sets a flag indicating whether or not the filter has changed. When set to true the {@link FooTable.Filtering#filtering_changing} and {@link FooTable.Filtering#filtering_changed} events
+			 * will be raised during the drawing operation.
+			 * @private
+			 * @type {boolean}
+			 */
+			this._changed = false;
+
 			// call the constructor of the base class
 			this._super(instance);
 		},
+
+		/* PROTECTED */
 		/**
 		 * Allows the filtering component to extend the {@link FooTable.Column} constructor.
 		 * @instance
+		 * @protected
 		 * @param {FooTable.Column} column - The column being constructed.
 		 * @param {object} definition - The definition to populate the column with.
 		 */
 		ctor_column: function(column, definition){
-			column.filterable = typeof definition.filterable == 'boolean' ? definition.filterable : true;
+			column.filterable = FooTable.is.boolean(definition.filterable) ? definition.filterable : true;
 		},
 		/**
 		 * Initializes the filtering component for the plugin using the supplied table and options.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableElement} table - The table element the plugin was initialized on.
 		 * @param {object} options - The options the plugin was initialized with.
 		 * @fires FooTable.Filtering#filtering_init
@@ -2302,11 +2574,12 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('filtering_init');
+			this.ft.raise('filtering_init');
 		},
 		/**
 		 * Reinitializes the filtering component for the plugin using the supplied options.
 		 * @instance
+		 * @protected
 		 * @param {object} options - The options the plugin was reinitialized with.
 		 * @fires FooTable.Filtering#filtering_reinit
 		 */
@@ -2320,113 +2593,216 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('filtering_reinit');
+			this.ft.raise('filtering_reinit');
 		},
 		/**
 		 * Destroys the filtering component removing any UI generated from the table.
 		 * @instance
+		 * @protected
 		 */
 		destroy: function () {
-			if (this.instance.options.filtering.enabled == false) return;
-			var $thead = this.instance.$table.children('tfoot');
+			if (this.o.enabled == false) return;
+			var $thead = this.ft.$table.children('tfoot');
 			$thead.children('.footable-filtering').remove();
 			if ($thead.children().length == 0) $thead.remove();
 		},
 		/**
 		 * Appends or updates any filtering specific properties on the {@link FooTable.RequestData} object.
 		 * @instance
+		 * @protected
 		 * @param {FooTable.RequestData} data - The {@link FooTable.RequestData} object about to passed to the {@link FooTable.Defaults#ajax} method.
 		 */
 		preajax: function(data){
-			if (this.instance.options.filtering.enabled == false) return;
-			data.filterQuery = this.instance.options.filtering.query;
-			data.filterColumns = $.map(this.instance.options.filtering.columns, function(col){
+			if (this.o.enabled == false) return;
+			if (this._changed == true) this.raiseChanging();
+			data.filterQuery = this.o.query;
+			data.filterColumns = $.map(this.o.columns, function(col){
 				return col.name;
 			});
 		},
 		/**
 		 * Performs the filtering of rows before they are appended to the page.
 		 * @instance
+		 * @protected
 		 */
 		predraw: function(){
-			if (this.instance.options.filtering.enabled == false || this.instance.options.ajaxEnabled == true
-				|| this.instance.options.filtering.query == null || this.instance.options.filtering.query.length == 0)
+			if (this.o.enabled == false
+				|| this.ft.options.ajaxEnabled == true)
 				return;
 
-			var self = this, i, text, len = self.instance.rows.array.length, remove = [];
+			var self = this;
+			if (self._changed == true) self.raiseChanging();
+
+			if (FooTable.strings.isNullOrEmpty(self.o.query)) return;
+
+			var i, text, len = self.ft.rows.array.length, remove = [];
 			for (i = 0; i < len; i++){
 				text = '';
-				for (var j = 0, column; j < self.instance.options.filtering.columns.length; j++){
-					column = self.instance.options.filtering.columns[j];
-					text += ' ' + self.instance.rows.array[i].cells[column.index].display;
+				for (var j = 0, column; j < self.o.columns.length; j++){
+					column = self.o.columns[j];
+					text += ' ' + self.ft.rows.array[i].cells[column.index].display;
 				}
-				if (self._filtered(self.instance.options.filtering.query, text)){
+				if (self.isFiltered(self.o.query, text)){
 					remove.push(i);
 				}
 			}
 			remove.sort(function(a, b){ return a - b; });
 			len = remove.length - 1;
 			for (i = len; i >= 0; i--){
-				self.instance.rows.array.splice(remove[i],1);
+				self.ft.rows.array.splice(remove[i],1);
 			}
 		},
 		/**
 		 * As the rows are drawn by the {@link FooTable.Rows#draw} method this simply updates the colspan for the UI.
 		 * @instance
+		 * @protected
 		 */
 		draw: function(){
-			if (this.instance.options.filtering.enabled == false) return;
-			this.$container.children().first().attr('colspan', this.instance.columns.colspan());
+			if (this.o.enabled == false) return;
+			var self = this;
+			self.$container.children('td').first().attr('colspan', self.ft.columns.colspan());
+			if (FooTable.strings.isNullOrEmpty(self.o.query)){
+				self.$search_button.children('.glyphicon').removeClass('glyphicon-remove').addClass('glyphicon-search');
+			} else {
+				self.$search_button.children('.glyphicon').removeClass('glyphicon-search').addClass('glyphicon-remove');
+			}
+			self.$search_input.val(self.o.query);
 		},
+		/**
+		 * Performs any post draw operations required for filtering.
+		 * @instance
+		 * @protected
+		 */
+		postdraw: function(){
+			if (this.o.enabled == false) return;
+			if (this._changed == true) this.raiseChanged();
+			this._changed = false;
+		},
+		/**
+		 * Checks if the supplied text is filtered by the query.
+		 * @instance
+		 * @protected
+		 * @param {string} query - The query to filter by.
+		 * @param {string} text - The text to check.
+		 * @returns {boolean}
+		 */
+		isFiltered: function(query, text){
+			var queries = query.split(' '), count = queries.length;
+			for (var i = 0, len = queries.length; i < len; i++){
+				if (text.toUpperCase().indexOf(queries[i].toUpperCase()) >= 0) count--;
+			}
+			return count > 0;
+		},
+		/**
+		 * Raises the filtering_changing event using the current filter and columns to generate a {@link FooTable.Filter} object for the event and merges changes made by any listeners back into the current state.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Filtering#filtering_changing
+		 */
+		raiseChanging: function(){
+			var filter = new FooTable.Filter(this.o.query, this.o.columns);
+			/**
+			 * The filtering_changing event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Filtering#filtering_changing
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Filter} filter - The filter that is about to be applied.
+			 */
+			if (this.ft.raise('filtering_changing', [filter]).isDefaultPrevented()) return;
+			this.o.query = filter.query;
+			this.o.columns = FooTable.is.array(filter.columns) ? this.ft.columns.ensure(filter.columns) : this.columns();
+		},
+		/**
+		 * Raises the filtering_changed event using the filter and columns to generate a {@link FooTable.Filter} object for the event.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Filtering#filtering_changed
+		 */
+		raiseChanged: function(){
+			/**
+			 * The filtering_changed event is raised after a filter has been applied.
+			 * @event FooTable.Filtering#filtering_changed
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Filter} filter - The filter that has been applied.
+			 */
+			this.ft.raise('filtering_changed', [new FooTable.Filter(this.o.query, this.o.columns)]);
+		},
+
+		/* PUBLIC */
 		/**
 		 * Sets the filtering options and calls the {@link FooTable.Instance#update} method to perform the actual filtering.
 		 * @instance
+		 * @param {string} query - The query to filter the rows by.
+		 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to in each row.
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Filtering#filtering_changing
+		 * @fires FooTable.Filtering#filtering_changed
 		 */
-		filter: function(){
-			var self = this, $icon = self.$search_button.children('.glyphicon'), query = (self.$search_input.val() || '').replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-			if ($icon.hasClass('glyphicon-search')){
-				$icon.removeClass('glyphicon-search').addClass('glyphicon-remove');
-				self.instance.options.filtering.query = query;
-				self.instance.options.filtering.columns = self.$dropdown.find('input:checked').map(function(){
-					return $(this).data('footable_column');
-				});
-			} else {
-				$icon.removeClass('glyphicon-remove').addClass('glyphicon-search');
-				self.instance.options.filtering.query = null;
-				self.instance.options.filtering.columns = [];
-				self.$search_input.val(self.instance.options.filtering.query);
-			}
-			self.instance.update();
+		filter: function(query, columns){
+			this.o.query = query;
+			this.o.columns = FooTable.is.array(columns) ? this.ft.columns.ensure(columns) : this.columns();
+			this._changed = true;
+			return this.ft.update();
 		},
+		/**
+		 * Clears the current filter.
+		 * @instance
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Filtering#filtering_changing
+		 * @fires FooTable.Filtering#filtering_changed
+		 */
+		clear: function(){
+			return this.filter(null, []);
+		},
+		/**
+		 * Gets an array of all selected {@link FooTable.Column}s to apply the filter to.
+		 * @instance
+		 * @param {boolean} [all=false] - Overrides returning only selected columns and instead returns all available filterable columns.
+		 * @returns {Array.<FooTable.Column>}
+		 */
+		columns: function(all){
+			var selector = 'input:checked';
+			if (FooTable.is.defined(all) && all === true) selector = 'input[type=checkbox]';
+			return this.$dropdown.find(selector).map(function(){
+				return $(this).data('footable_column');
+			}).get();
+		},
+		/**
+		 * Gets the query entered into filter input.
+		 * @instance
+		 * @returns {string}
+		 */
+		query: function(){
+			return $.trim(this.$search_input.val() || '');
+		},
+
+		/* PRIVATE */
 		/**
 		 * Generates the filtering UI from the supplied options.
 		 * @instance
-		 * @param {object} options - The options to use to generate the filtering UI.
 		 * @private
+		 * @param {object} options - The options to use to generate the filtering UI.
 		 */
 		_generate: function (options) {
 			var self = this;
 			// parse the options into actual FooTable.Columns if they are names or indexes.
-			for (var column, i = options.filtering.columns.length - 1; i > 0; i--) {
-				column = self.instance.columns.getColumn(options.filtering.columns[i]);
-				if (column != null) options.filtering.columns[i] = column;
-				else options.filtering.columns.splice(i);
-			}
+			options.filtering.columns = self.ft.columns.ensure(options.filtering.columns);
 			// if no options for filterable columns exists generate a default array using the column.filterable property.
 			if (options.filtering.columns.length == 0) {
-				options.filtering.columns = self.instance.columns.map(function (col) {
+				options.filtering.columns = self.ft.columns.map(function (col) {
 					return col.filterable ? col : null;
 				});
 			}
-			// a a header if none exists
-			if (self.instance.$table.children('thead').length == 0) self.instance.$table.prepend('<thead/>');
+			// add a header if none exists
+			if (self.ft.$table.children('thead').length == 0) self.ft.$table.prepend('<thead/>');
 			// generate the cell that actually contains all the UI.
-			var $cell = $('<th/>').attr('colspan', self.instance.columns.colspan());
+			var $cell = $('<th/>').attr('colspan', self.ft.columns.colspan());
 			// add it to a row and then populate it with the search input and column selector dropdown.
-			self.$container = $('<tr/>', {'class': 'footable-filtering'}).append($cell).prependTo(self.instance.$table.children('thead'));
+			self.$container = $('<tr/>', {'class': 'footable-filtering'}).append($cell).prependTo(self.ft.$table.children('thead'));
 			$('<div/>', {'class': 'input-group'})
 				.append(
-				(self.$search_input = $('<input/>', {type: 'text', 'class': 'form-control', placeholder: 'Search'}).on('keyup', { self: self }, self._onFilterChanged)),
+				(self.$search_input = $('<input/>', {type: 'text', 'class': 'form-control', placeholder: options.filtering.strings.placeholder}).on('keyup', { self: self }, self._onFilterChanged)),
 				(self.$dropdown_container = $('<div/>', {'class': 'input-group-btn'})
 					.append(
 					(self.$search_button = $('<button/>', {type: 'button', 'class': 'btn btn-primary'}).on('click', { self: self }, self._onFilterClicked)
@@ -2435,7 +2811,7 @@
 						.append($('<span/>', {'class': 'caret'})),
 					(self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'})
 						.append(
-						self.instance.columns.map(function (col) {
+						self.ft.columns.map(function (col) {
 							return col.filterable && col.visible ? $('<li/>').append(
 								$('<label/>', {text: col.title}).prepend(
 									$('<input/>', {type: 'checkbox', checked: $.inArray(options.filtering.columns, col)}).on('click', { self: self }, self._onColumnClicked).data('footable_column', col)
@@ -2447,58 +2823,47 @@
 			).appendTo($cell);
 		},
 		/**
-		 * Checks if the supplied text is filtered by the query.
-		 * @instance
-		 * @param {string} query - The query to filter by.
-		 * @param {string} text - The text to check.
-		 * @returns {boolean}
-		 * @private
-		 */
-		_filtered: function(query, text){
-			var queries = query.split(' '), count = queries.length;
-			for (var i = 0, len = queries.length; i < len; i++){
-				if (text.toUpperCase().indexOf(queries[i].toUpperCase()) >= 0) count--;
-			}
-			return count > 0;
-		},
-		/**
 		 * Handles the change event for the {@link FooTable.Filtering#$search_input}.
 		 * @instance
-		 * @param {jQuery.Event} e - The event object for the event.
 		 * @private
+		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onFilterChanged: function (e) {
 			e.preventDefault();
 			var self = e.data.self;
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
-			self._filterTimeout = setTimeout(function(){
-				self._filterTimeout = null;
-				var $icon = self.$search_button.children('.glyphicon');
-				if (e.which == 27){
-					$icon.removeClass('glyphicon-search glyphicon-remove').addClass('glyphicon-remove');
-				} else if ($icon.hasClass('glyphicon-remove')){
-					$icon.removeClass('glyphicon-remove').addClass('glyphicon-search');
-				}
-				self.filter();
-			}, self.instance.options.filtering.delay);
+
+			var query = self.query(),
+				alpha = String.fromCharCode(e.keyCode).match(/\w/),
+				ctrl = (e.keyCode == 8 || e.keyCode == 46); // backspace & delete
+
+			// if alphanumeric characters or specific control characters
+			if(alpha || ctrl) {
+				self._filterTimeout = setTimeout(function(){
+					self._filterTimeout = null;
+					if (query.length >= self.o.min) self.filter(query, self.columns());
+					else if (FooTable.strings.isNullOrEmpty(query)) self.clear();
+				}, self.o.delay);
+			}
 		},
 		/**
 		 * Handles the click event for the {@link FooTable.Filtering#$search_button}.
 		 * @instance
-		 * @param {jQuery.Event} e - The event object for the event.
 		 * @private
+		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onFilterClicked: function (e) {
 			e.preventDefault();
 			var self = e.data.self;
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
-			self.filter();
+			if (self.$search_button.children('.glyphicon').hasClass('glyphicon-search')) self.filter(self.query(), self.columns());
+			else self.clear();
 		},
 		/**
 		 * Handles the click event for the column checkboxes in the {@link FooTable.Filtering#$dropdown}.
 		 * @instance
-		 * @param {jQuery.Event} e - The event object for the event.
 		 * @private
+		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onColumnClicked: function (e) {
 			var self = e.data.self;
@@ -2508,15 +2873,15 @@
 				var $icon = self.$search_button.children('.glyphicon');
 				if ($icon.hasClass('glyphicon-remove')){
 					$icon.removeClass('glyphicon-remove').addClass('glyphicon-search');
-					self.filter();
+					self.filter(self.query(), self.columns());
 				}
-			}, self.instance.options.filtering.delay);
+			}, self.o.delay);
 		},
 		/**
 		 * Handles the click event for the {@link FooTable.Filtering#$dropdown} toggle.
 		 * @instance
-		 * @param {jQuery.Event} e - The event object for the event.
 		 * @private
+		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onDropdownClicked: function (e) {
 			e.preventDefault();
@@ -2529,8 +2894,8 @@
 		/**
 		 * Checks all click events when the dropdown is visible and closes the menu if the target is not the dropdown.
 		 * @instance
-		 * @param {jQuery.Event} e - The event object for the event.
 		 * @private
+		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onDocumentClicked: function(e){
 			if ($(e.target).closest('.dropdown-menu').length == 0){
@@ -2541,6 +2906,34 @@
 			}
 		}
 	});
+
+	// Below are methods exposed on the core FooTable.Instance object for easy access
+
+	/**
+	 * Filter the table using the supplied query and columns. Added by the {@link FooTable.Filtering} component.
+	 * @instance
+	 * @param {string} query - The query to filter the rows by.
+	 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to in each row.
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Filtering#filtering_changing
+	 * @fires FooTable.Filtering#filtering_changed
+	 * @see FooTable.Filtering#filter
+	 */
+	FooTable.Instance.prototype.applyFilter = function(query, columns){
+		return this.use(FooTable.Filtering).filter(query, columns);
+	};
+
+	/**
+	 * Clear the current filter from the table. Added by the {@link FooTable.Filtering} component.
+	 * @instance
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Filtering#filtering_changing
+	 * @fires FooTable.Filtering#filtering_changed
+	 * @see FooTable.Filtering#clear
+	 */
+	FooTable.Instance.prototype.clearFilter = function(){
+		return this.use(FooTable.Filtering).clear();
+	};
 
 })(jQuery, FooTable = window.FooTable || {});
 (function($, FooTable){
@@ -2581,21 +2974,21 @@
 	};
 
 	/**
-	 * The page number to display.
+	 * The page number to display. Added by the {@link FooTable.Paging} component.
 	 * @type {number}
 	 * @default 1
 	 */
 	FooTable.RequestData.prototype.currentPage = 1;
 
 	/**
-	 * The number of rows to display per page.
+	 * The number of rows to display per page. Added by the {@link FooTable.Paging} component.
 	 * @type {number}
 	 * @default 10
 	 */
 	FooTable.RequestData.prototype.pageSize = 10;
 
 	/**
-	 * The total number of rows available.
+	 * The total number of rows available. Added by the {@link FooTable.Paging} component.
 	 * @type {number}
 	 * @default NULL
 	 */
@@ -2610,6 +3003,16 @@
 		 * @returns {FooTable.Filtering}
 		 */
 		ctor: function(instance){
+
+			/* PROTECTED */
+			/**
+			 * This provides a shortcut to the {@link FooTable.Instance#options}.[paging]{@link FooTable.Defaults#paging} object.
+			 * @protected
+			 * @type {object}
+			 */
+			this.o = instance.options.paging;
+
+			/* PUBLIC */
 			/**
 			 * The jQuery object that contains the pagination control.
 			 * @type {jQuery}
@@ -2625,24 +3028,30 @@
 			 * @type {jQuery}
 			 */
 			this.$count = null;
+
+			/* PRIVATE */
 			/**
-			 * A boolean used to indicate the direction of paging.
-			 * @type {boolean}
+			 * A boolean indicating the direction of paging, TRUE = forward, FALSE = back.
 			 * @private
+			 * @type {boolean}
 			 */
 			this._forward = false;
+
 			// call the base constructor
 			this._super(instance);
 		},
+
+		/* PROTECTED */
 		/**
 		 * Initializes the paging component for the plugin using the supplied table and options.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableElement} table - The table element the plugin was initialized on.
 		 * @param {object} options - The options the plugin was initialized with.
 		 * @fires FooTable.Paging#paging_init
 		 */
 		init: function(table, options){
-			if (this.instance.options.paging.enabled == false) return;
+			if (this.o.enabled == false) return;
 			this._generate(options);
 			/**
 			 * The paging_init event is raised after its UI is generated.
@@ -2650,18 +3059,19 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('paging_init');
+			this.ft.raise('paging_init');
 		},
 		/**
 		 * Reinitializes the paging component for the plugin using the supplied table and options.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableElement} table - The table element the plugin was initialized on.
 		 * @param {object} options - The options the plugin was initialized with.
 		 * @fires FooTable.Paging#paging_reinit
 		 */
 		reinit: function(table, options){
 			this.destroy();
-			if (this.instance.options.paging.enabled == false) return;
+			if (this.o.enabled == false) return;
 			this._generate(options);
 			/**
 			 * The paging_reinit event is raised after its UI is regenerated.
@@ -2669,91 +3079,195 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('paging_reinit');
+			this.ft.raise('paging_reinit');
 		},
 		/**
 		 * Destroys the paging component removing any UI generated from the table.
 		 * @instance
+		 * @protected
 		 */
 		destroy: function () {
-			if (this.instance.options.paging.enabled == false) return;
-			var $tfoot = this.instance.$table.children('tfoot');
+			if (this.o.enabled == false) return;
+			var $tfoot = this.ft.$table.children('tfoot');
 			$tfoot.children('.footable-paging').remove();
 			if ($tfoot.children().length == 0) $tfoot.remove();
 		},
 		/**
 		 * Appends or updates any filtering specific properties on the {@link FooTable.RequestData} object.
 		 * @instance
+		 * @protected
 		 * @param {FooTable.RequestData} data - The {@link FooTable.RequestData} object about to passed to the {@link FooTable.Defaults#ajax} method.
 		 */
 		preajax: function(data){
-			if (this.instance.options.paging.enabled == false) return;
-			data.currentPage = this.instance.options.paging.current;
-			data.pageSize = this.instance.options.paging.size;
+			if (this.o.enabled == false) return;
+			if (this._changed == true) this.raiseChanging();
+			data.currentPage = this.o.current;
+			data.pageSize = this.o.size;
 		},
 		/**
 		 * Parses the ajax response object and sets the current page, size and total if they exists.
 		 * @instance
+		 * @protected
 		 * @param {object} response - The response object that contains the paging options.
 		 */
 		postajax: function(response){
-			if (this.instance.options.paging.enabled == false) return;
-			this.instance.options.paging.total = typeof response.totalRows == 'number' ? response.totalRows : this.instance.options.paging.total;
+			if (this.o.enabled == false) return;
+			this.o.total = FooTable.is.type(response.totalRows, 'number') ? response.totalRows : this.o.total;
+			this.o.current = this.current();
 		},
 		/**
 		 * Performs the actual paging against the {@link FooTable.Rows#array} removing all rows that are not on the current visible page.
 		 * @instance
+		 * @protected
 		 */
 		predraw: function(){
-			if (this.instance.options.paging.enabled == false || this.instance.options.ajaxEnabled == true) return;
-			this.instance.options.paging.total = this.instance.rows.array.length == 0 ? 1 : this.instance.rows.array.length;
-			this.instance.options.paging.current = this.instance.options.paging.current > this.instance.options.paging.total ? this.instance.options.paging.total : this.instance.options.paging.current;
-			var start = (this.instance.options.paging.current - 1) * this.instance.options.paging.size;
-			if (this.instance.options.paging.total > this.instance.options.paging.size) this.instance.rows.array = this.instance.rows.array.splice(start, this.instance.options.paging.size);
+			if (this.o.enabled == false || this.ft.options.ajaxEnabled == true) return;
+
+			var self = this;
+			if (self._changed == true) self.raiseChanging();
+
+			self.o.total = self.ft.rows.array.length == 0 ? 1 : self.ft.rows.array.length;
+			self.o.current = self.current();
+			var start = (self.o.current - 1) * self.o.size;
+			if (self.o.total > self.o.size) self.ft.rows.array = self.ft.rows.array.splice(start, self.o.size);
 		},
 		/**
 		 * Updates the paging UI setting the state of the pagination control.
 		 * @instance
+		 * @protected
 		 */
 		draw: function(){
-			if (this.instance.options.paging.enabled == false) return;
-			this.$container.children('td').attr('colspan', this.instance.columns.colspan());
+			if (this.o.enabled == false) return;
+			this.$container.children('td').first().attr('colspan', this.ft.columns.colspan());
 			this._generateLinks();
+		},
+		/**
+		 * Performs any post draw operations required for paging.
+		 * @instance
+		 * @protected
+		 */
+		postdraw: function(){
+			if (this.o.enabled == false) return;
+			if (this._changed == true) this.raiseChanged();
+			this._changed = false;
+		},
+		/**
+		 * Raises the paging_changing event using the page number and direction to generate a {@link FooTable.Pager} object for the event and merges changes made by any listeners back into the current state.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Paging#paging_changing
+		 */
+		raiseChanging: function(){
+			var pager = new FooTable.Pager(this.current(), this._forward);
+			/**
+			 * The paging_changing event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Paging#paging_changing
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Pager} pager - The pager that is about to be applied.
+			 */
+			if (this._changed == true && this.ft.raise('paging_changing', [pager]).isDefaultPrevented()) return $.when();
+			this.o.current = pager.page;
+			this._forward = pager.forward;
+		},
+		/**
+		 * Raises the paging_changed event using the page number and direction to generate a {@link FooTable.Pager} object for the event.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Paging#paging_changed
+		 */
+		raiseChanged: function(){
+			/**
+			 * The paging_changed event is raised after a pager has been applied.
+			 * @event FooTable.Paging#paging_changed
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Pager} pager - The pager that has been applied.
+			 */
+			this.ft.raise('paging_changed', [new FooTable.Pager(this.current(), this._forward)]);
+		},
+
+		/* PUBLIC */
+		/**
+		 * Returns the maximum number of pages taking into account the total number of rows and the page size.
+		 * @instance
+		 * @returns {number}
+		 */
+		total: function(){
+			return Math.ceil(this.o.total / this.o.size);
+		},
+		/**
+		 * Returns the current page number taking into account the total number of rows and page size to ensure a valid number.
+		 * @instance
+		 * @returns {number}
+		 */
+		current: function(){
+			var current = this.o.current * this.o.size > this.o.total
+				? this.total()
+				: this.o.current;
+			return current < 1 ? 1 : current;
 		},
 		/**
 		 * Pages to the first page.
 		 * @instance
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Paging#paging_changing
+		 * @fires FooTable.Paging#paging_changed
 		 */
 		first: function(){
-			this._set(1, false);
+			return this._set(1, false);
 		},
 		/**
 		 * Pages to the previous page.
 		 * @instance
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Paging#paging_changing
+		 * @fires FooTable.Paging#paging_changed
 		 */
 		prev: function(){
-			var page = this.instance.options.paging.current - 1 > 0 ? this.instance.options.paging.current - 1 : 1;
-			this._set(page, false);
+			var page = this.o.current - 1 > 0 ? this.o.current - 1 : 1;
+			return this._set(page, false);
 		},
 		/**
 		 * Pages to the next page.
 		 * @instance
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Paging#paging_changing
+		 * @fires FooTable.Paging#paging_changed
 		 */
 		next: function(){
-			var total = Math.ceil(this.instance.options.paging.total / this.instance.options.paging.size),
-				page = this.instance.options.paging.current + 1 < total ? this.instance.options.paging.current + 1 : total;
-			this._set(page, true);
+			var total = this.total(),
+				page = this.o.current + 1 < total ? this.o.current + 1 : total;
+			return this._set(page, true);
 		},
 		/**
 		 * Pages to the last page.
 		 * @instance
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Paging#paging_changing
+		 * @fires FooTable.Paging#paging_changed
 		 */
 		last: function(){
-			var page = Math.ceil(this.instance.options.paging.total / this.instance.options.paging.size);
-			this._set(page, true);
+			return this._set(this.total(), true);
+		},
+		/**
+		 * Pages to the specified page.
+		 * @instance
+		 * @param {number} page - The page number to go to.
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Paging#paging_changing
+		 * @fires FooTable.Paging#paging_changed
+		 */
+		goto: function(page){
+			var total = this.total();
+			page = page > total ? total : page;
+			if (this.o.current == page) return $.when();
+			var forward = page > this.o.current;
+			return this._set(page, forward);
 		},
 		/**
 		 * Shows the previous X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value.
+		 * @instance
 		 */
 		prevX: function(){
 			var page = this.$pagination.children('li.footable-page.visible:first').data('page') - 1;
@@ -2762,43 +3276,50 @@
 		},
 		/**
 		 * Shows the next X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value.
+		 * @instance
 		 */
 		nextX: function(){
 			var page = this.$pagination.children('li.footable-page.visible:last').data('page') + 1;
 			this._setVisible(page, false, false);
 			this._setNavigation(false);
 		},
+
+		/* PRIVATE */
 		/**
 		 * Used by the paging functions to set the actual page, direction and then trigger the {@link FooTable.Instance#update} method.
 		 * @instance
-		 * @param {number} page - The page to set.
-		 * @param {boolean} forward - Whether or not the set direction is forward.
 		 * @private
+		 * @param {number} page - The page to set.
+		 * @param {boolean} forward - Whether or not to set the direction as forward.
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Paging#paging_changing
+		 * @fires FooTable.Paging#paging_changed
 		 */
 		_set: function(page, forward){
-			if (this.instance.options.paging.current == page) return;
-			this.instance.options.paging.current = page;
+			if (this.o.current == page) return;
+			this.o.current = page;
 			this._forward = forward;
-			this.instance.update();
+			this._changed = true;
+			return this.ft.update();
 		},
 		/**
 		 * Generates the paging UI from the supplied options.
 		 * @instance
-		 * @param {object} options - The options to use to generate the paging UI.
 		 * @private
+		 * @param {object} options - The options to use to generate the paging UI.
 		 */
 		_generate: function(options){
 			options.paging.total = options.paging.total == -1
-				? this.instance.rows.array.length
+				? this.ft.rows.array.length
 				: options.paging.total;
 
-			if (this.instance.$table.children('tfoot').length == 0) this.instance.$table.append('<tfoot/>');
-			var $cell = $('<td/>').attr('colspan', this.instance.columns.colspan());
+			if (this.ft.$table.children('tfoot').length == 0) this.ft.$table.append('<tfoot/>');
+			var $cell = $('<td/>').attr('colspan', this.ft.columns.colspan());
 			this.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: this }, this._onPageClicked);
 			this.$count = $('<span/>', { 'class': 'label label-default' });
 			this._generateLinks();
 			$cell.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
-			this.$container = $('<tr/>', { 'class': 'footable-paging' }).append($cell).appendTo(this.instance.$table.children('tfoot'));
+			this.$container = $('<tr/>', { 'class': 'footable-paging' }).append($cell).appendTo(this.ft.$table.children('tfoot'));
 		},
 		/**
 		 * Generates all page links for the pagination control.
@@ -2806,41 +3327,42 @@
 		 * @private
 		 */
 		_generateLinks: function(){
-			var total = Math.ceil(this.instance.options.paging.total / this.instance.options.paging.size),
+			var total = this.total(),
 				multiple = total > 1,
 				changed = this.$pagination.children('li.footable-page').length != total;
-			if (total == 0){
+			if (total == 0 || total == 1){
 				this.$pagination.empty();
+				this.$count.text(total + ' of ' + total);
 				return;
 			}
-			if (!changed && this.$pagination.children('li.footable-page[data-page="'+this.instance.options.paging.current+'"]').hasClass('visible')){
+			if (!changed && this.$pagination.children('li.footable-page[data-page="'+this.o.current+'"]').hasClass('visible')){
 				this._setNavigation(true);
 				return;
 			}
 			this.$pagination.empty();
-			if (multiple) this.$pagination.append(this._createLink('first', this.instance.options.paging.strings.first, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('prev', this.instance.options.paging.strings.prev, 'footable-page-nav'));
-			if (multiple && this.instance.options.paging.limit.size > 0 && this.instance.options.paging.limit.size < total) this.$pagination.append(this._createLink('prev-limit', this.instance.options.paging.limit.prev, 'footable-page-nav'));
+			if (multiple) this.$pagination.append(this._createLink('first', this.o.strings.first, 'footable-page-nav'));
+			if (multiple) this.$pagination.append(this._createLink('prev', this.o.strings.prev, 'footable-page-nav'));
+			if (multiple && this.o.limit.size > 0 && this.o.limit.size < total) this.$pagination.append(this._createLink('prev-limit', this.o.limit.prev, 'footable-page-nav'));
 
 			for (var i = 0, $li; i < total; i++){
 				$li = this._createLink(i + 1, i + 1, 'footable-page');
 				this.$pagination.append($li);
 			}
 
-			if (multiple && this.instance.options.paging.limit.size > 0 && this.instance.options.paging.limit.size < total) this.$pagination.append(this._createLink('next-limit', this.instance.options.paging.limit.next, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('next', this.instance.options.paging.strings.next, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('last', this.instance.options.paging.strings.last, 'footable-page-nav'));
+			if (multiple && this.o.limit.size > 0 && this.o.limit.size < total) this.$pagination.append(this._createLink('next-limit', this.o.limit.next, 'footable-page-nav'));
+			if (multiple) this.$pagination.append(this._createLink('next', this.o.strings.next, 'footable-page-nav'));
+			if (multiple) this.$pagination.append(this._createLink('last', this.o.strings.last, 'footable-page-nav'));
 
-			this._setVisible((this.instance.options.paging.current = this.instance.options.paging.current > total ? (total == 0 ? 1 : total) : this.instance.options.paging.current), this._forward);
+			this._setVisible((this.o.current = this.o.current > total ? (total == 0 ? 1 : total) : this.o.current), this._forward);
 			this._setNavigation(true);
 		},
 		/**
 		 * Generates an individual page link for the pagination control using the supplied parameters.
 		 * @instance
+		 * @private
 		 * @param {string} attr - The value for the data-page attribute for the link.
 		 * @param {string} html - The inner HTML for the link created.
 		 * @param {string} klass - A CSS class or class names (space separated) to add to the link.
-		 * @private
 		 */
 		_createLink: function(attr, html, klass){
 			return $('<li/>', { 'class': klass }).attr('data-page', attr).append($('<a/>', { 'class': 'footable-page-link', href: '#' }).data('page', attr).html(html));
@@ -2848,57 +3370,57 @@
 		/**
 		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the individual page links.
 		 * @instance
-		 * @param {boolean} active - Whether or not to set the active class state on the individual page links.
 		 * @private
+		 * @param {boolean} active - Whether or not to set the active class state on the individual page links.
 		 */
 		_setNavigation: function(active){
-			var total = Math.ceil(this.instance.options.paging.total / this.instance.options.paging.size);
+			var total = this.total();
 
-			this.$count.text(this.instance.options.paging.current + ' of ' + total);
+			this.$count.text(this.o.current + ' of ' + total);
 
-			if (this.instance.options.paging.current == 1) this.$pagination.children('li[data-page="first"],li[data-page="prev"]').addClass('disabled');
+			if (this.o.current == 1) this.$pagination.children('li[data-page="first"],li[data-page="prev"]').addClass('disabled');
 			else this.$pagination.children('li[data-page="first"],li[data-page="prev"]').removeClass('disabled');
 
-			if (this.instance.options.paging.current == total) this.$pagination.children('li[data-page="next"],li[data-page="last"]').addClass('disabled');
+			if (this.o.current == total) this.$pagination.children('li[data-page="next"],li[data-page="last"]').addClass('disabled');
 			else this.$pagination.children('li[data-page="next"],li[data-page="last"]').removeClass('disabled');
 
 			if ((this.$pagination.children('li.footable-page.visible:first').data('page') || 1) == 1) this.$pagination.children('li[data-page="prev-limit"]').addClass('disabled');
 			else this.$pagination.children('li[data-page="prev-limit"]').removeClass('disabled');
 
-			if ((this.$pagination.children('li.footable-page.visible:last').data('page') || this.instance.options.paging.limit.size) == total) this.$pagination.children('li[data-page="next-limit"]').addClass('disabled');
+			if ((this.$pagination.children('li.footable-page.visible:last').data('page') || this.o.limit.size) == total) this.$pagination.children('li[data-page="next-limit"]').addClass('disabled');
 			else this.$pagination.children('li[data-page="next-limit"]').removeClass('disabled');
 
-			if (active) this.$pagination.children('li.footable-page').removeClass('active').filter('li[data-page="' + this.instance.options.paging.current + '"]').addClass('active');
+			if (active) this.$pagination.children('li.footable-page').removeClass('active').filter('li[data-page="' + this.o.current + '"]').addClass('active');
 		},
 		/**
 		 * Sets the visible page using the supplied parameters.
 		 * @instance
+		 * @private
 		 * @param {number} page - The page to make visible.
 		 * @param {boolean} forward - The direction the pagination control should scroll to make the page visible. If set to true the supplied page will be the right most visible pagination link.
 		 * @param {boolean} [invert=false] - If invert is set to tru the supplied page will be the left most visible pagination link.
-		 * @private
 		 */
 		_setVisible: function(page, forward, invert){
 			if (this.$pagination.children('li.footable-page[data-page="'+page+'"]').hasClass('visible')) return;
 
-			var total = Math.ceil(this.instance.options.paging.total / this.instance.options.paging.size);
-			if (this.instance.options.paging.limit.size > 0 && total > this.instance.options.paging.limit.size){
+			var total = this.total();
+			if (this.o.limit.size > 0 && total > this.o.limit.size){
 				page -= 1;
 				var start = 0, end = 0;
 				if (forward == true || invert == true){
 					end = page > total ? total : page;
-					start = end - this.instance.options.paging.limit.size;
+					start = end - this.o.limit.size;
 				} else {
 					start = page < 0 ? 0 : page;
-					end = start + this.instance.options.paging.limit.size;
+					end = start + this.o.limit.size;
 				}
 				if (start < 0){
 					start = 0;
-					end = this.instance.options.paging.limit.size > total ? total : this.instance.options.paging.limit.size;
+					end = this.o.limit.size > total ? total : this.o.limit.size;
 				}
 				if (end > total){
 					end = total;
-					start = total - this.instance.options.paging.limit.size < 0 ? 0 : total - this.instance.options.paging.limit.size;
+					start = total - this.o.limit.size < 0 ? 0 : total - this.o.limit.size;
 				}
 				if (forward == true){
 					start++;
@@ -2912,8 +3434,8 @@
 		/**
 		 * Handles the click event for all links in the pagination control.
 		 * @instance
-		 * @param {jQuery.Event} e - The event object for the event.
 		 * @private
+		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onPageClicked: function(e){
 			e.preventDefault();
@@ -2939,36 +3461,137 @@
 		}
 	});
 
+	// Below are methods exposed on the core FooTable.Instance object for easy access
+
+	/**
+	 * Navigates to the specified page number. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @param {number} num - The page number to go to.
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Paging#paging_changing
+	 * @fires FooTable.Paging#paging_changed
+	 * @see FooTable.Paging#goto
+	 */
+	FooTable.Instance.prototype.gotoPage = function(num){
+		return this.use(FooTable.Paging).goto(num);
+	};
+
+	/**
+	 * Navigates to the next page. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Paging#paging_changing
+	 * @fires FooTable.Paging#paging_changed
+	 * @see FooTable.Paging#next
+	 */
+	FooTable.Instance.prototype.nextPage = function(){
+		return this.use(FooTable.Paging).next();
+	};
+
+	/**
+	 * Navigates to the previous page. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Paging#paging_changing
+	 * @fires FooTable.Paging#paging_changed
+	 * @see FooTable.Paging#prev
+	 */
+	FooTable.Instance.prototype.prevPage = function(){
+		return this.use(FooTable.Paging).prev();
+	};
+
+	/**
+	 * Navigates to the first page. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Paging#paging_changing
+	 * @fires FooTable.Paging#paging_changed
+	 * @see FooTable.Paging#first
+	 */
+	FooTable.Instance.prototype.firstPage = function(){
+		return this.use(FooTable.Paging).first();
+	};
+
+	/**
+	 * Navigates to the last page. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Paging#paging_changing
+	 * @fires FooTable.Paging#paging_changed
+	 * @see FooTable.Paging#last
+	 */
+	FooTable.Instance.prototype.lastPage = function(){
+		return this.use(FooTable.Paging).last();
+	};
+
+	/**
+	 * Shows the next X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @see FooTable.Paging#nextX
+	 */
+	FooTable.Instance.prototype.nextPages = function(){
+		return this.use(FooTable.Paging).nextX();
+	};
+
+	/**
+	 * Shows the previous X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @see FooTable.Paging#prevX
+	 */
+	FooTable.Instance.prototype.prevPages = function(){
+		return this.use(FooTable.Paging).prevX();
+	};
+
+	/**
+	 * Gets the current page number. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @returns {number}
+	 * @see FooTable.Paging#current
+	 */
+	FooTable.Instance.prototype.currentPage = function(){
+		return this.use(FooTable.Paging).current();
+	};
+
+	/**
+	 * Gets the total number of pages. Added by the {@link FooTable.Paging} component.
+	 * @instance
+	 * @returns {number}
+	 * @see FooTable.Paging#total
+	 */
+	FooTable.Instance.prototype.totalPages = function(){
+		return this.use(FooTable.Paging).total();
+	};
+
 })(jQuery, FooTable = window.FooTable || {});
 (function ($, FooTable) {
 
 	/**
-	 * The sort function for this column. This is set by the plugin.
+	 * The sort function for this column. This is set by the plugin. Added by the {@link FooTable.Sorting} component.
 	 * @type {function}
 	 * @default jQuery.noop
 	 */
 	FooTable.Column.prototype.sorter = null;
 	/**
-	 * The direction to sort if the {@link FooTable.Column#sorted} property is set to true. Can be "ASC", "DESC" or NULL.
+	 * The direction to sort if the {@link FooTable.Column#sorted} property is set to true. Can be "ASC", "DESC" or NULL. Added by the {@link FooTable.Sorting} component.
 	 * @type {string}
 	 * @default null
 	 */
 	FooTable.Column.prototype.direction = null;
 	/**
-	 * Whether or not the column can be sorted.
+	 * Whether or not the column can be sorted. Added by the {@link FooTable.Sorting} component.
 	 * @type {boolean}
 	 * @default true
 	 */
 	FooTable.Column.prototype.sortable = true;
 	/**
-	 * Whether or not the column is sorted.
+	 * Whether or not the column is sorted. Added by the {@link FooTable.Sorting} component.
 	 * @type {boolean}
 	 * @default false
 	 */
 	FooTable.Column.prototype.sorted = false;
 
 	/**
-	 * An object containing the sorting options for the plugin.
+	 * An object containing the sorting options for the plugin. Added by the {@link FooTable.Sorting} component.
 	 * @type {object}
 	 * @prop {boolean} enabled=false - Whether or not to allow sorting on the table.
 	 * @prop {(string|number|FooTable.Column)} column=null - The column to sort on. Can be an instance of FooTable.Column, the name of a column or the index of a column.
@@ -2983,6 +3606,7 @@
 	/**
 	 * These sorters are supplied two values from the column and a comparison must be made between them and the result returned.
 	 * The name of the sorter must match a {@link FooTable.Column#type} for it to be used automatically by the plugin for those columns.
+	 * Added by the {@link FooTable.Sorting} component.
 	 * @summary An object containing the default sorters for the plugin to use.
 	 * @type {object.<string, function(HTMLTableCellElement)>}
 	 * @default { "text": function, "number": function }
@@ -3022,14 +3646,14 @@
 	};
 
 	/**
-	 * The name of the column to sort on.
+	 * The name of the column to sort on. Added by the {@link FooTable.Sorting} component.
 	 * @type {string}
 	 * @default NULL
 	 */
 	FooTable.RequestData.prototype.sortColumn = null;
 
 	/**
-	 * The direction to sort the column by. Can be "ASC", "DESC" or NULL.
+	 * The direction to sort the column by. Can be "ASC", "DESC" or NULL. Added by the {@link FooTable.Sorting} component.
 	 * @type {string}
 	 * @default NULL
 	 */
@@ -3044,30 +3668,53 @@
 		 * @returns {FooTable.Sorting}
 		 */
 		ctor: function (instance) {
+
+			/* PROTECTED */
+			/**
+			 * This provides a shortcut to the {@link FooTable.Instance#options}.[sorting]{@link FooTable.Defaults#sorting} object.
+			 * @protected
+			 * @type {object}
+			 */
+			this.o = instance.options.sorting;
+
+			/* PRIVATE */
+			/**
+			 * Sets a flag indicating whether or not the sorting has changed. When set to true the {@link FooTable.Sorting#sorting_changing} and {@link FooTable.Sorting#sorting_changed} events
+			 * will be raised during the drawing operation.
+			 * @private
+			 * @type {boolean}
+			 */
+			this._changed = false;
+
+			// call the constructor of the base class
 			this._super(instance);
 		},
+
+		/* PROTECTED */
 		/**
 		 * Allows the filtering component to extend the {@link FooTable.Column} constructor.
 		 * @instance
+		 * @protected
 		 * @param {FooTable.Column} column - The column being constructed.
 		 * @param {object} definition - The definition to populate the column with.
 		 */
 		ctor_column: function(column, definition){
-			column.sorter = typeof definition.sorter == 'function' ? definition.sorter : $.noop;
-			column.direction = typeof definition.direction == 'string' ? definition.direction : null;
-			column.sortable = typeof definition.sortable == 'boolean' ? definition.sortable : true;
-			column.sorted = typeof definition.sorted == 'boolean' ? definition.sorted : false;
-			if (column.sortable) column.$headerCell.addClass('footable-sortable');
+			column.sorter = FooTable.is.fn(definition.sorter) ? definition.sorter : $.noop;
+			column.direction = FooTable.is.type(definition.direction, 'string') ? definition.direction : null;
+			column.sortable = FooTable.is.boolean(definition.sortable) ? definition.sortable : true;
+			column.sorted = FooTable.is.boolean(definition.sorted) ? definition.sorted : false;
+			if (column.sortable) column.$el.addClass('footable-sortable');
 		},
 		/**
 		 * Initializes the sorting component for the plugin using the supplied table and options.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableElement} table - The table element the plugin was initialized on.
 		 * @param {object} options - The options the plugin was initialized with.
 		 * @fires FooTable.Sorting#sorting_init
 		 */
 		init: function (table, options) {
-			if (this.instance.options.sorting.enabled == false) return;
+			if (this.o.enabled == false) return;
 			this._generate(options);
 			/**
 			 * The sorting_init event is raised after its UI is generated.
@@ -3075,18 +3722,19 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('sorting_init');
+			this.ft.raise('sorting_init');
 		},
 		/**
 		 * Reinitializes the sorting component for the plugin using the supplied table and options.
 		 * @instance
+		 * @protected
 		 * @param {HTMLTableElement} table - The table element the plugin was initialized on.
 		 * @param {object} options - The options the plugin was initialized with.
 		 * @fires FooTable.Sorting#sorting_reinit
 		 */
 		reinit: function (table, options) {
 			this.destroy();
-			if (this.instance.options.sorting.enabled == false) return;
+			if (this.o.enabled == false) return;
 			this._generate(options);
 			/**
 			 * The sorting_reinit event is raised after its UI is regenerated.
@@ -3094,90 +3742,185 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 			 */
-			this.instance.raise('sorting_reinit');
+			this.ft.raise('sorting_reinit');
 		},
 		/**
 		 * Destroys the sorting component removing any UI generated from the table.
 		 * @instance
+		 * @protected
 		 */
 		destroy: function () {
-			if (this.instance.options.sorting.enabled == false) return;
-			this.instance.$table.off('click.footable', '.footable-sortable', this._onSortClicked);
-			this.instance.$table.children('thead').children('tr.footable-header')
+			if (this.o.enabled == false) return;
+			this.ft.$table.off('click.footable', '.footable-sortable', this._onSortClicked);
+			this.ft.$table.children('thead').children('tr.footable-header')
 				.children('.footable-sortable').removeClass('footable-sortable')
 				.find('span.direction').remove();
 		},
 		/**
 		 * Appends or updates any sorting specific properties on the {@link FooTable.RequestData} object.
 		 * @instance
+		 * @protected
 		 * @param {FooTable.RequestData} data - The {@link FooTable.RequestData} object about to passed to the {@link FooTable.Defaults#ajax} method.
 		 */
 		preajax: function (data) {
-			if (this.instance.options.sorting.enabled == false) return;
-			data.sortColumn = this.instance.options.sorting.column.name;
-			data.sortDirection = this.instance.options.sorting.direction;
+			if (this.o.enabled == false) return;
+			if (this._changed == true) this.raiseChanging();
+			data.sortColumn = this.o.column.name;
+			data.sortDirection = this.o.direction;
 		},
 		/**
 		 * Performs the actual sorting against the {@link FooTable.Rows#array}.
 		 * @instance
+		 * @protected
 		 */
 		predraw: function () {
-			if (this.instance.options.sorting.enabled == false || this.instance.options.ajaxEnabled == true || !this.instance.options.sorting.column || !this.instance.options.sorting.direction) return;
+			if (this.o.enabled == false
+				|| this.ft.options.ajaxEnabled == true)
+				return;
+
 			var self = this;
-			self.instance.rows.array.sort(function (a, b) {
-				return self.instance.options.sorting.direction == 'ASC'
-					? self.instance.options.sorting.column.sorter(a.cells[self.instance.options.sorting.column.index].value, b.cells[self.instance.options.sorting.column.index].value)
-					: self.instance.options.sorting.column.sorter(b.cells[self.instance.options.sorting.column.index].value, a.cells[self.instance.options.sorting.column.index].value);
+			if (self._changed == true) self.raiseChanging();
+
+			if (!self.o.column
+				|| !self.o.direction)
+				return;
+
+			self.ft.rows.array.sort(function (a, b) {
+				return self.o.direction == 'ASC'
+					? self.o.column.sorter(a.cells[self.o.column.index].value, b.cells[self.o.column.index].value)
+					: self.o.column.sorter(b.cells[self.o.column.index].value, a.cells[self.o.column.index].value);
 			});
 		},
 		/**
 		 * Updates the sorting UI setting the state of the sort buttons.
 		 * @instance
+		 * @protected
 		 */
 		draw: function () {
-			if (this.instance.options.sorting.enabled == false || !this.instance.options.sorting.column || !this.instance.options.sorting.direction) return;
-			var $sortable = this.instance.$table.children('thead').children('tr.footable-header').children('.footable-sortable'),
-				$active = this.instance.options.sorting.column.$headerCell;
+			if (this.o.enabled == false || !this.o.column || !this.o.direction) return;
+			var self = this,
+				$sortable = self.ft.$table.children('thead').children('tr.footable-header').children('.footable-sortable'),
+				$active = self.o.column.$el;
 
 			$sortable.removeClass('footable-asc footable-desc').children('.glyphicon').removeClass('glyphicon-sort glyphicon-sort-by-attributes glyphicon-sort-by-attributes-alt');
 			$sortable.not($active).children('.glyphicon').addClass('glyphicon-sort');
-			$active.addClass(this.instance.options.sorting.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
-				.children('.glyphicon').addClass(this.instance.options.sorting.direction == 'ASC' ? 'glyphicon-sort-by-attributes' : 'glyphicon-sort-by-attributes-alt');
+			$active.addClass(self.o.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
+				.children('.glyphicon').addClass(self.o.direction == 'ASC' ? 'glyphicon-sort-by-attributes' : 'glyphicon-sort-by-attributes-alt');
 		},
+		/**
+		 * Performs any post draw operations required for sorting.
+		 * @instance
+		 * @protected
+		 */
+		postdraw: function(){
+			if (this.o.enabled == false) return;
+			if (this._changed == true) this.raiseChanged();
+			this._changed = false;
+		},
+		/**
+		 * Raises the sorting_changing event using the column and direction to generate a {@link FooTable.Sorter} object for the event and merges changes made by any listeners back into the current state.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Sorting#sorting_changing
+		 */
+		raiseChanging: function(){
+			var sorter = new FooTable.Sorter(this.o.column, this.o.direction);
+			/**
+			 * The sorting_changing event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Sorting#sorting_changing
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Sorter} sorter - The sorter that is about to be applied.
+			 */
+			if (this._changed == true && this.ft.raise('sorting_changing', [sorter]).isDefaultPrevented()) return $.when();
+			this.o.column = this.ft.columns.get(sorter.column);
+			this.o.direction = FooTable.is.type(sorter.direction, 'string') && (sorter.direction == 'ASC' || sorter.direction == 'DESC') ? sorter.direction : 'ASC';
+		},
+		/**
+		 * Raises the sorting_changed event using the column and direction to generate a {@link FooTable.Sorter} object for the event.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Sorting#sorting_changed
+		 */
+		raiseChanged: function(){
+			/**
+			 * The sorting_changed event is raised after a sorter has been applied.
+			 * @event FooTable.Sorting#sorting_changed
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Sorter} sorter - The sorter that has been applied.
+			 */
+			this.ft.raise('sorting_changed', [new FooTable.Sorter(this.o.column, this.o.direction)]);
+		},
+
+		/* PUBLIC */
+		/**
+		 * Sets the sorting options and calls the {@link FooTable.Instance#update} method to perform the actual sorting.
+		 * @instance
+		 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
+		 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
+		 * @fires FooTable.Sorting#sorting_changing
+		 * @fires FooTable.Sorting#sorting_changed
+		 */
+		sort: function(column, direction){
+			var self = this;
+			self.o.column = self.ft.columns.get(column);
+			self.o.direction = FooTable.is.type(direction, 'string') && (direction == 'ASC' || direction == 'DESC') ? direction : 'ASC';
+			self._changed = true;
+			return this.ft.update();
+		},
+
+		/* PRIVATE */
 		/**
 		 * Generates the sorting UI from the supplied options.
 		 * @instance
-		 * @param {object} options - The options to use to generate UI.
 		 * @private
+		 * @param {object} options - The options to use to generate UI.
 		 */
 		_generate: function (options) {
 			var self = this;
-			options.sorting.column = self.instance.columns.getColumn(options.sorting.column) || self.instance.columns.first(function (col) { return col.sorted; });
+			options.sorting.column = self.ft.columns.get(options.sorting.column) || self.ft.columns.first(function (col) { return col.sorted; });
 			options.sorting.direction = options.sorting.column == null
 				? null
 				: (options.sorting.direction == null
-				? (options.sorting.column.direction == null
-				? 'ASC'
-				: options.sorting.column.direction)
-				: options.sorting.direction);
-			self.instance.$table.addClass('footable-sorting').children('thead').children('tr.footable-header').children('th,td').filter(function (i) {
-				return self.instance.columns.array[i].sortable == true;
+					? (options.sorting.column.direction == null
+						? 'ASC'
+						: options.sorting.column.direction)
+					: options.sorting.direction);
+			self.ft.$table.addClass('footable-sorting').children('thead').children('tr.footable-header').children('th,td').filter(function (i) {
+				return self.ft.columns.array[i].sortable == true;
 			}).append($('<span/>', {'class': 'glyphicon glyphicon-sort'}));
-			self.instance.$table.on('click.footable', '.footable-sortable', { self: self }, self._onSortClicked);
+			self.ft.$table.on('click.footable', '.footable-sortable', { self: self }, self._onSortClicked);
 		},
 		/**
 		 * Handles the sort button clicked event.
 		 * @instance
-		 * @param {jQuery.Event} e - The event object for the event.
 		 * @private
+		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onSortClicked: function (e) {
 			e.preventDefault();
-			var self = e.data.self, $header = $(this).closest('th,td'), direction = 'ASC';
-			self.instance.options.sorting.column = self.instance.columns.array[$header.index()];
-			self.instance.options.sorting.direction = $header.is('.footable-asc, .footable-desc') ? ($header.hasClass('footable-desc') ? 'ASC' : 'DESC') : direction;
-			self.instance.update();
+			var self = e.data.self, $header = $(this).closest('th,td'),
+				direction = $header.is('.footable-asc, .footable-desc')
+					? ($header.hasClass('footable-desc') ? 'ASC' : 'DESC')
+					: 'ASC';
+			self.sort($header.index(), direction);
 		}
 	});
+
+	// Below are methods exposed on the core FooTable.Instance object for easy access
+
+	/**
+	 * Sort the table using the specified column and direction. Added by the {@link FooTable.Sorting} component.
+	 * @instance
+	 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
+	 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
+	 * @fires FooTable.Sorting#sorting_changing
+	 * @fires FooTable.Sorting#sorting_changed
+	 * @see FooTable.Sorting#sort
+	 */
+	FooTable.Instance.prototype.sort = function(column, direction){
+		return this.use(FooTable.Sorting).sort(column, direction);
+	};
 
 })(jQuery, FooTable = window.FooTable || {});

@@ -7,52 +7,22 @@ module.exports = function (grunt) {
 		clean: {
 			files: ['dist']
 		},
-		uglify: {
-			prod: {
-				options: {
-					preserveComments: 'some',
-					mangle: {
-						except: [ "undefined" ]
-					}
-				},
-				files: {
-					'dist/footable.min.js': [
-						"js/FooTable.js",
-						"js/FooTable.utils.js",
-						"js/FooTable.addons.js",
-						"js/objects/FooTable.Class.js",
-						"js/objects/FooTable.Component.js",
-						"js/objects/FooTable.Defaults.js",
-						"js/objects/FooTable.AddOn.js",
-						"js/objects/FooTable.Breakpoint.js",
-						"js/objects/FooTable.Cell.js",
-						"js/objects/FooTable.Column.js",
-						"js/objects/FooTable.Row.js",
-						"js/components/FooTable.Instance.js",
-						"js/components/FooTable.Columns.js",
-						"js/components/FooTable.Rows.js",
-						"js/components/FooTable.Breakpoints.js",
-						"js/components/core/FooTable.Filtering.js",
-						"js/components/core/FooTable.Paging.js",
-						"js/components/core/FooTable.Sorting.js"
-					]
-				}
-			}
-		},
 		concat: {
 			js: {
 				src: [
 					"js/FooTable.js",
-					"js/FooTable.utils.js",
-					"js/FooTable.addons.js",
+					"js/FooTable.is.js",
+					"js/FooTable.strings.js",
 					"js/objects/FooTable.Class.js",
 					"js/objects/FooTable.Component.js",
 					"js/objects/FooTable.Defaults.js",
-					"js/objects/FooTable.AddOn.js",
 					"js/objects/FooTable.Breakpoint.js",
 					"js/objects/FooTable.Cell.js",
 					"js/objects/FooTable.Column.js",
 					"js/objects/FooTable.Row.js",
+					"js/objects/FooTable.Filter.js",
+					"js/objects/FooTable.Sorter.js",
+					"js/objects/FooTable.Pager.js",
 					"js/components/FooTable.Instance.js",
 					"js/components/FooTable.Columns.js",
 					"js/components/FooTable.Rows.js",
@@ -73,15 +43,23 @@ module.exports = function (grunt) {
 				dest: "dist/footable.bootstrap.css"
 			}
 		},
+		uglify: {
+			prod: {
+				options: {
+					preserveComments: 'some',
+					mangle: {
+						except: [ "undefined" ]
+					}
+				},
+				files: {
+					'dist/footable.min.js': [ "dist/footable.js" ]
+				}
+			}
+		},
 		cssmin: {
 			minify: {
 				files: {
-					'dist/footable.bootstrap.min.css': [
-						"css/bootstrap/FooTable.css",
-						"css/bootstrap/components/FooTable.Sorting.css",
-						"css/bootstrap/components/FooTable.Paging.css",
-						"css/bootstrap/components/FooTable.Filtering.css"
-					]
+					'dist/footable.bootstrap.min.css': [ "dist/footable.bootstrap.css" ]
 				}
 			}
 		}
@@ -92,5 +70,5 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.registerTask('default', ['clean', 'uglify', 'concat', 'cssmin']);
+	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin']);
 };

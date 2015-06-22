@@ -26,6 +26,11 @@ table.footable > tbody > tr.footable-loader > td > span.glyphicon {
 	-webkit-animation: glyphicon-spin-r 2s infinite linear;
 	animation: glyphicon-spin-r 2s infinite linear;
 }
+table.footable > tbody > tr.footable-empty > td {
+	vertical-align: middle;
+	text-align: center;
+	font-size: 30px;
+}
 
 @-webkit-keyframes glyphicon-spin-r {
 	0% {

@@ -113,9 +113,10 @@
 					var i, text, len = rows.length, remove = [];
 					for (i = 0; i < len; i++){
 						text = '';
-						for (var j = 0, column; j < data.filterColumns.length; j++){
-							column = data.filterColumns[j];
-							text += ' ' + ($.isFunction(column.formatter) ? column.formatter(rows[i][column.name]) + '' : rows[i][column.name] + '');
+						for (var j = 0, column, name; j < data.filterColumns.length; j++){
+							name = data.filterColumns[j];
+							column = FAjax.getColumn(name);
+							text += ' ' + ($.isFunction(column.formatter) ? column.formatter(rows[i][name]) + '' : rows[i][name] + '');
 						}
 						if (FAjax.isFiltered(data.filterQuery, text)){
 							remove.push(i);

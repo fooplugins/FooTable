@@ -1,14 +1,14 @@
 (function (FooTable) {
 	"use strict";
 
-	if (typeof Object.create != 'function') {
+	if (!FooTable.is.fn(Object.create)) {
 		Object.create = (function () {
 			var Object = function () {};
 			return function (prototype) {
 				if (arguments.length > 1)
 					throw Error('Second argument not supported');
 
-				if (typeof prototype != 'object')
+				if (!FooTable.is.object(prototype))
 					throw TypeError('Argument must be an object');
 
 				Object.prototype = prototype;
@@ -82,8 +82,7 @@
 		for (var name in props) {
 			//if (!Object.prototype.hasOwnProperty.call(props, name)) continue;
 			// Check if we're overwriting an existing function
-			proto[name] = typeof props[name] === "function" &&
-			typeof _super[name] === "function" && fnTest.test(props[name]) ?
+			proto[name] = FooTable.is.fn(props[name]) && FooTable.is.fn(_super[name]) && fnTest.test(props[name]) ?
 				(function (name, fn) {
 					return function () {
 						var tmp = this._super;
@@ -104,7 +103,7 @@
 		}
 
 		// The new constructor
-		var newClass = typeof proto.ctor === "function" ?
+		var newClass = FooTable.is.fn(proto.ctor) ?
 			proto.ctor : // All construction is actually done in the construct method
 			function () {};
 

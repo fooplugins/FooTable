@@ -27,24 +27,32 @@
 		 */
 		this.ajax = $.when();
 		/**
+		 * Whether or not events raised using the {@link FooTable.Instance#raise} method are propagated up the DOM. By default this is set to true and all events can only be listened for on the
+		 * table itself. The reason for this if you have nested tables, the parent table would receive all the events raised by it's children and any handlers bound to both the parent and child
+		 * would be triggered which is not the desired behavior.
+		 * @type {boolean}
+		 * @default true
+		 */
+		this.stopPropagation = true;
+		/**
 		 * The namespace appended to all events raised by the plugin.
 		 * @type {string}
-		 * @default "footable"
+		 * @default NULL
 		 */
-		this.namespace = 'footable';
+		this.namespace = null;
 		/**
 		 * An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
 		 * @type {object.<string, function>}
-		 * @default null
+		 * @default NULL
 		 * @example <caption>This example shows how to pass an object containing the events and handlers.</caption>
 		 * on: {
 		 * 	click: function(e){
 		 * 		// do something whenever the table is clicked
 		 * 	},
-		 * 	"init.footable": function(e, instance){
+		 * 	"init": function(e, instance){
 		 * 		// do something when FooTable initializes
 		 * 	},
-		 * 	"init.footable reinit.footable": function(e, instance){
+		 * 	"init reinit": function(e, instance){
 		 * 		// do something when FooTable initializes or reinitializes
 		 * 	}
 		 * }

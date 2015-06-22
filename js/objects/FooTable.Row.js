@@ -15,12 +15,12 @@
 			 * The {@link FooTable.Instance} for the row.
 			 * @type {FooTable.Instance}
 			 */
-			this.instance = instance;
+			this.ft = instance;
 			/**
 			 * The jQuery row object.
 			 * @type {jQuery}
 			 */
-			this.$row = $(row);
+			this.$el = $(row);
 			/**
 			 * The array of {@link FooTable.Column} for this row.
 			 * @type {Array.<FooTable.Column>}
@@ -32,10 +32,10 @@
 			 */
 			this.cells = [];
 
-			// add this object to the row
-			this.$row.get(0).__FooTable_Row__ = this;
+			this.ft.execute('ctor_row', this);
 
-			this.instance.execute('ctor_row', this);
+			// add this object to the row
+			this.$el.data('__FooTableRow__', this);
 		}
 	});
 

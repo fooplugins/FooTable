@@ -3,8 +3,11 @@
 <head>
 	<meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
 	<title></title>
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 	<script src="fajax.js"></script>
 
 	<link href="../dist/footable.bootstrap.css" rel="stylesheet" />
@@ -13,7 +16,35 @@
 	<script>
 		jQuery(function($){
 			FAjax.defaults.delay = 1000;
-			$('#table_1').footable({
+			var ft = $('#table_1').on({
+				'filtering_changing': function(e, instance, filter){
+					console.log('filtering_original: ', filter);
+					if (filter.query == 'Leo'){
+						filter.query = 'Alice';
+					}
+				},
+				'filtering_changed': function(e, instance, filter){
+					console.log('filtering_applied: ', filter);
+				},
+				'sorting_changing': function(e, instance, sorter){
+					console.log('sorting_original: ', sorter);
+					if (sorter.column.name == 'id'){
+						sorter.direction = 'ASC';
+					}
+				},
+				'sorting_changed': function(e, instance, filter){
+					console.log('sorting_applied: ', filter);
+				},
+				'paging_changing': function(e, instance, pager){
+					console.log('paging_original: ', pager);
+					if (pager.page == 3){
+						pager.page = pager.forward ? 4 : 2;
+					}
+				},
+				'paging_changed': function(e, instance, pager){
+					console.log('paging_applied: ', pager);
+				}
+			}).footable({
 				ajaxEnabled: true,
 				sorting: {
 					enabled: true
@@ -21,13 +52,18 @@
 				paging: {
 					enabled: true,
 					size: 15,
-					current: parseInt(FooTable.utils.getURLParameter('page')) || 1
+					current: parseInt(FooTable.getURLParameter('page')) || 1
 				},
 				filtering: {
 					enabled: true
 				},
 				ajax: FAjax.request,
 				columns: FAjax.defaults.columns
+			}).data('__FooTable__');
+			$('#filter_leo').on('click', function(){
+				ft.applyFilter('Leo').then(function(){
+					console.log('After filter');
+				});
 			});
 		});
 	</script>
@@ -38,6 +74,7 @@
 	</style>
 </head>
 <body>
+<button id="filter_leo" type="button">Filter "Leo"</button>
 <table id="table_1" class="footable table table-bordered table-striped table-hover table-condensed">
 </table>
 </body>
