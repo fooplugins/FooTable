@@ -1,0 +1,31 @@
+/* FontAwesome Icons - We're not actually using FontAwesome classes but instead provide a simple mapping from FontAwesome to FooTable class names. */
+.fooicon {
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transform: translate(0, 0);
+}
+.fooicon:before,
+.fooicon:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.fooicon-search:before {
+	content: "\f002";
+}
+.fooicon-remove:before {
+	content: "\f00d";
+}
+.fooicon-sort:before {
+	content: "\f0dc";
+}
+.fooicon-sort-asc:before {
+	content: "\f160";
+}
+.fooicon-sort-desc:before {
+	content: "\f161";
+}

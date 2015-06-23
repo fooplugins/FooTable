@@ -1,3 +1,36 @@
+/* Glyphicons Icons - We're not actually using Glyphicons classes but instead provide a simple mapping from Glyphicons to FooTable class names. */
+.fooicon {
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.fooicon:before,
+.fooicon:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.fooicon-search:before {
+	content: "\e003";
+}
+.fooicon-remove:before {
+	content: "\e014";
+}
+.fooicon-sort:before {
+	content: "\e150";
+}
+.fooicon-sort-asc:before {
+	content: "\e155";
+}
+.fooicon-sort-desc:before {
+	content: "\e156";
+}
 table.footable,
 table.footable-details {
 	position: relative;
@@ -62,8 +95,8 @@ th.footable-sortable {
 	padding-right: 30px;
 	cursor: pointer;
 }
-td.footable-sortable > span.glyphicon,
-th.footable-sortable > span.glyphicon {
+td.footable-sortable > span.fooicon,
+th.footable-sortable > span.fooicon {
 	position: absolute;
 	right: 6px;
 	top: 50%;
@@ -71,14 +104,14 @@ th.footable-sortable > span.glyphicon {
 	opacity: 0;
 	transition: opacity 0.3s ease-in;
 }
-td.footable-sortable:hover > span.glyphicon,
-th.footable-sortable:hover > span.glyphicon {
+td.footable-sortable:hover > span.fooicon,
+th.footable-sortable:hover > span.fooicon {
 	opacity: 1;
 }
-td.footable-sortable.footable-asc > span.glyphicon,
-th.footable-sortable.footable-asc > span.glyphicon,
-td.footable-sortable.footable-desc > span.glyphicon,
-th.footable-sortable.footable-desc > span.glyphicon {
+td.footable-sortable.footable-asc > span.fooicon,
+th.footable-sortable.footable-asc > span.fooicon,
+td.footable-sortable.footable-desc > span.fooicon,
+th.footable-sortable.footable-desc > span.fooicon {
 	opacity: 1;
 }
 table.footable > tfoot > tr.footable-paging > td > ul.pagination {

@@ -1,0 +1,33 @@
+/* Glyphicons Icons - We're not actually using Glyphicons classes but instead provide a simple mapping from Glyphicons to FooTable class names. */
+.fooicon {
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.fooicon:before,
+.fooicon:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.fooicon-search:before {
+	content: "\e003";
+}
+.fooicon-remove:before {
+	content: "\e014";
+}
+.fooicon-sort:before {
+	content: "\e150";
+}
+.fooicon-sort-asc:before {
+	content: "\e155";
+}
+.fooicon-sort-desc:before {
+	content: "\e156";
+}

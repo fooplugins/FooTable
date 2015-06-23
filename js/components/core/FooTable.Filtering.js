@@ -223,9 +223,9 @@
 			var self = this;
 			self.$container.children('td').first().attr('colspan', self.ft.columns.colspan());
 			if (FooTable.strings.isNullOrEmpty(self.o.query)){
-				self.$search_button.children('.glyphicon').removeClass('glyphicon-remove').addClass('glyphicon-search');
+				self.$search_button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
 			} else {
-				self.$search_button.children('.glyphicon').removeClass('glyphicon-search').addClass('glyphicon-remove');
+				self.$search_button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
 			}
 			self.$search_input.val(self.o.query);
 		},
@@ -367,7 +367,7 @@
 				(self.$dropdown_container = $('<div/>', {'class': 'input-group-btn'})
 					.append(
 					(self.$search_button = $('<button/>', {type: 'button', 'class': 'btn btn-primary'}).on('click', { self: self }, self._onFilterClicked)
-						.append($('<span/>', {'class': 'glyphicon glyphicon-search'}))),
+						.append($('<span/>', {'class': 'fooicon fooicon-search'}))),
 					$('<button/>', {type: 'button', 'class': 'btn btn-default dropdown-toggle'}).on('click', { self: self }, self._onDropdownClicked)
 						.append($('<span/>', {'class': 'caret'})),
 					(self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'})
@@ -417,7 +417,7 @@
 			e.preventDefault();
 			var self = e.data.self;
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
-			if (self.$search_button.children('.glyphicon').hasClass('glyphicon-search')) self.filter(self.query(), self.columns());
+			if (self.$search_button.children('.fooicon').hasClass('fooicon-search')) self.filter(self.query(), self.columns());
 			else self.clear();
 		},
 		/**
@@ -431,9 +431,9 @@
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 			self._filterTimeout = setTimeout(function(){
 				self._filterTimeout = null;
-				var $icon = self.$search_button.children('.glyphicon');
-				if ($icon.hasClass('glyphicon-remove')){
-					$icon.removeClass('glyphicon-remove').addClass('glyphicon-search');
+				var $icon = self.$search_button.children('.fooicon');
+				if ($icon.hasClass('fooicon-remove')){
+					$icon.removeClass('fooicon-remove').addClass('fooicon-search');
 					self.filter(self.query(), self.columns());
 				}
 			}, self.o.delay);

@@ -119,7 +119,7 @@
 			var self = this;
 			callback = FooTable.is.fn(callback) ? callback : $.noop;
 			if (FooTable.is.hash(options.on)) self.$table.on(options.on);
-			self.$table.addClass('footable-' + self.id);
+			self.$table.addClass('footable footable-' + self.id);
 			self.when(false, true, 'preinit', element, options).then(function () {
 				/**
 				 * The preinit event is raised before any core components or add-ons are initialized.
@@ -165,9 +165,7 @@
 			// cleanup any previously bound events before we merge the new options with the old
 			if (FooTable.is.hash(self.options.on)) self.$table.off(self.options.on);
 			$.extend(true, self.options, options);
-
 			if (FooTable.is.hash(options.on)) self.$table.on(self.options.on);
-			self.$table.addClass('footable-' + self.id);
 			return self.when(false, true, 'reinit', self.options).then(function () {
 				self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'glyphicon glyphicon-repeat'})));
 				self.initialized = true;

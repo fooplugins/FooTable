@@ -35,10 +35,22 @@ module.exports = function (grunt) {
 			},
 			css: {
 				src: [
-					"css/bootstrap/FooTable.css",
-					"css/bootstrap/components/FooTable.Sorting.css",
-					"css/bootstrap/components/FooTable.Paging.css",
-					"css/bootstrap/components/FooTable.Filtering.css"
+					"css/FooTable.NoBootstrap.css",
+					"css/FooTable.css",
+					"css/FooTable.FontAwesome.css",
+					"css/components/FooTable.Sorting.css",
+					"css/components/FooTable.Paging.css",
+					"css/components/FooTable.Filtering.css"
+				],
+				dest: "dist/footable.css"
+			},
+			bootstrap_css: {
+				src: [
+					"css/FooTable.css",
+					"css/FooTable.Glyphicons.css",
+					"css/components/FooTable.Sorting.css",
+					"css/components/FooTable.Paging.css",
+					"css/components/FooTable.Filtering.css"
 				],
 				dest: "dist/footable.bootstrap.css"
 			}
@@ -59,6 +71,7 @@ module.exports = function (grunt) {
 		cssmin: {
 			minify: {
 				files: {
+					'dist/footable.min.css': [ "dist/footable.css" ],
 					'dist/footable.bootstrap.min.css': [ "dist/footable.bootstrap.css" ]
 				}
 			}

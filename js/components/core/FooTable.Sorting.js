@@ -237,10 +237,10 @@
 				$sortable = self.ft.$table.children('thead').children('tr.footable-header').children('.footable-sortable'),
 				$active = self.o.column.$el;
 
-			$sortable.removeClass('footable-asc footable-desc').children('.glyphicon').removeClass('glyphicon-sort glyphicon-sort-by-attributes glyphicon-sort-by-attributes-alt');
-			$sortable.not($active).children('.glyphicon').addClass('glyphicon-sort');
+			$sortable.removeClass('footable-asc footable-desc').children('.fooicon').removeClass('fooicon-sort fooicon-sort-asc fooicon-sort-desc');
+			$sortable.not($active).children('.fooicon').addClass('fooicon-sort');
 			$active.addClass(self.o.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
-				.children('.glyphicon').addClass(self.o.direction == 'ASC' ? 'glyphicon-sort-by-attributes' : 'glyphicon-sort-by-attributes-alt');
+				.children('.fooicon').addClass(self.o.direction == 'ASC' ? 'fooicon-sort-asc' : 'fooicon-sort-desc');
 		},
 		/**
 		 * Performs any post draw operations required for sorting.
@@ -324,7 +324,7 @@
 					: options.sorting.direction);
 			self.ft.$table.addClass('footable-sorting').children('thead').children('tr.footable-header').children('th,td').filter(function (i) {
 				return self.ft.columns.array[i].sortable == true;
-			}).append($('<span/>', {'class': 'glyphicon glyphicon-sort'}));
+			}).append($('<span/>', {'class': 'fooicon fooicon-sort'}));
 			self.ft.$table.on('click.footable', '.footable-sortable', { self: self }, self._onSortClicked);
 		},
 		/**

@@ -1151,7 +1151,7 @@
 			var self = this;
 			callback = FooTable.is.fn(callback) ? callback : $.noop;
 			if (FooTable.is.hash(options.on)) self.$table.on(options.on);
-			self.$table.addClass('footable-' + self.id);
+			self.$table.addClass('footable footable-' + self.id);
 			self.when(false, true, 'preinit', element, options).then(function () {
 				/**
 				 * The preinit event is raised before any core components or add-ons are initialized.
@@ -1197,9 +1197,7 @@
 			// cleanup any previously bound events before we merge the new options with the old
 			if (FooTable.is.hash(self.options.on)) self.$table.off(self.options.on);
 			$.extend(true, self.options, options);
-
 			if (FooTable.is.hash(options.on)) self.$table.on(self.options.on);
-			self.$table.addClass('footable-' + self.id);
 			return self.when(false, true, 'reinit', self.options).then(function () {
 				self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'glyphicon glyphicon-repeat'})));
 				self.initialized = true;
@@ -2453,7 +2451,7 @@
 	 * @prop {string} query=null - The query to filter the rows by. Rows that match this query are included in the result.
 	 * @prop {(Array.<FooTable.Column>|Array.<string>|Array.<number>)} columns - The columns to apply the query to.
 	 * @prop {number} delay=500 - The delay in milliseconds before the query is auto applied after a change.
-	 * @prop {number} min=3 - The minimum number of characters allowed before a filter is applied.
+	 * @prop {number} min=3 - The minimum number of characters allowed before a filter is auto applied.
 	 * @prop {object} strings - An object containing the strings used by the filtering component.
 	 * @prop {string} strings.placeholder="Search" - The string used as the placeholder for the filter input.
 	 */
@@ -2662,9 +2660,9 @@
 			var self = this;
 			self.$container.children('td').first().attr('colspan', self.ft.columns.colspan());
 			if (FooTable.strings.isNullOrEmpty(self.o.query)){
-				self.$search_button.children('.glyphicon').removeClass('glyphicon-remove').addClass('glyphicon-search');
+				self.$search_button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
 			} else {
-				self.$search_button.children('.glyphicon').removeClass('glyphicon-search').addClass('glyphicon-remove');
+				self.$search_button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
 			}
 			self.$search_input.val(self.o.query);
 		},
@@ -2806,7 +2804,7 @@
 				(self.$dropdown_container = $('<div/>', {'class': 'input-group-btn'})
 					.append(
 					(self.$search_button = $('<button/>', {type: 'button', 'class': 'btn btn-primary'}).on('click', { self: self }, self._onFilterClicked)
-						.append($('<span/>', {'class': 'glyphicon glyphicon-search'}))),
+						.append($('<span/>', {'class': 'fooicon fooicon-search'}))),
 					$('<button/>', {type: 'button', 'class': 'btn btn-default dropdown-toggle'}).on('click', { self: self }, self._onDropdownClicked)
 						.append($('<span/>', {'class': 'caret'})),
 					(self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'})
@@ -2856,7 +2854,7 @@
 			e.preventDefault();
 			var self = e.data.self;
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
-			if (self.$search_button.children('.glyphicon').hasClass('glyphicon-search')) self.filter(self.query(), self.columns());
+			if (self.$search_button.children('.fooicon').hasClass('fooicon-search')) self.filter(self.query(), self.columns());
 			else self.clear();
 		},
 		/**
@@ -2870,9 +2868,9 @@
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 			self._filterTimeout = setTimeout(function(){
 				self._filterTimeout = null;
-				var $icon = self.$search_button.children('.glyphicon');
-				if ($icon.hasClass('glyphicon-remove')){
-					$icon.removeClass('glyphicon-remove').addClass('glyphicon-search');
+				var $icon = self.$search_button.children('.fooicon');
+				if ($icon.hasClass('fooicon-remove')){
+					$icon.removeClass('fooicon-remove').addClass('fooicon-search');
 					self.filter(self.query(), self.columns());
 				}
 			}, self.o.delay);
@@ -3802,10 +3800,10 @@
 				$sortable = self.ft.$table.children('thead').children('tr.footable-header').children('.footable-sortable'),
 				$active = self.o.column.$el;
 
-			$sortable.removeClass('footable-asc footable-desc').children('.glyphicon').removeClass('glyphicon-sort glyphicon-sort-by-attributes glyphicon-sort-by-attributes-alt');
-			$sortable.not($active).children('.glyphicon').addClass('glyphicon-sort');
+			$sortable.removeClass('footable-asc footable-desc').children('.fooicon').removeClass('fooicon-sort fooicon-sort-asc fooicon-sort-desc');
+			$sortable.not($active).children('.fooicon').addClass('fooicon-sort');
 			$active.addClass(self.o.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
-				.children('.glyphicon').addClass(self.o.direction == 'ASC' ? 'glyphicon-sort-by-attributes' : 'glyphicon-sort-by-attributes-alt');
+				.children('.fooicon').addClass(self.o.direction == 'ASC' ? 'fooicon-sort-asc' : 'fooicon-sort-desc');
 		},
 		/**
 		 * Performs any post draw operations required for sorting.
@@ -3889,7 +3887,7 @@
 					: options.sorting.direction);
 			self.ft.$table.addClass('footable-sorting').children('thead').children('tr.footable-header').children('th,td').filter(function (i) {
 				return self.ft.columns.array[i].sortable == true;
-			}).append($('<span/>', {'class': 'glyphicon glyphicon-sort'}));
+			}).append($('<span/>', {'class': 'fooicon fooicon-sort'}));
 			self.ft.$table.on('click.footable', '.footable-sortable', { self: self }, self._onSortClicked);
 		},
 		/**
