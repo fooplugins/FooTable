@@ -18,32 +18,32 @@
 				}
 			});
 			var ft = $('#table_1').on({
-				'filtering_changing': function(e, instance, filter){
-					console.log('filtering_original: ', filter);
+				'change.ft.filtering': function(e, instance, filter){
+					console.log('change.ft.filtering: ', filter);
 					if (filter.query == 'Leo'){
 						filter.query = 'Alice';
 					}
 				},
-				'filtering_changed': function(e, instance, filter){
-					console.log('filtering_applied: ', filter);
+				'changed.ft.filtering': function(e, instance, filter){
+					console.log('changed.ft.filtering: ', filter);
 				},
-				'sorting_changing': function(e, instance, sorter){
-					console.log('sorting_original: ', sorter);
+				'change.ft.sorting': function(e, instance, sorter){
+					console.log('change.ft.sorting: ', sorter);
 					if (sorter.column.name == 'id'){
 						sorter.direction = 'ASC';
 					}
 				},
-				'sorting_changed': function(e, instance, filter){
-					console.log('sorting_applied: ', filter);
+				'changed.ft.sorting': function(e, instance, filter){
+					console.log('changed.ft.sorting: ', filter);
 				},
-				'paging_changing': function(e, instance, pager){
-					console.log('paging_original: ', pager);
+				'change.ft.paging': function(e, instance, pager){
+					console.log('change.ft.paging: ', pager);
 					if (pager.page == 3){
 						pager.page = pager.forward ? 4 : 2;
 					}
 				},
-				'paging_changed': function(e, instance, pager){
-					console.log('paging_applied: ', pager);
+				'changed.ft.paging': function(e, instance, pager){
+					console.log('changed.ft.paging: ', pager);
 				}
 			}).footable({
 				stopPropagation: true,

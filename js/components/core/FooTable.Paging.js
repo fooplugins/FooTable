@@ -6,7 +6,7 @@
 	 * @prop {boolean} enabled=false - Whether or not to allow paging on the table.
 	 * @prop {number} current=1 - The page number to display.
 	 * @prop {number} size=10 - The number of rows displayed per page.
-	 * @prop {number} total=-1 - The total number of rows. This is only required if you are using Ajax to provide paging capabilities.
+	 * @prop {number} total=-1 - The total number of pages. This is only required if you are using Ajax to provide paging capabilities.
 	 * @prop {object} strings - An object containing the strings used by the paging buttons.
 	 * @prop {string} strings.first="&laquo;" - The string used for the 'first' button.
 	 * @prop {string} strings.prev="&lsaquo;" - The string used for the 'previous' button.
@@ -50,11 +50,32 @@
 	FooTable.RequestData.prototype.pageSize = 10;
 
 	/**
-	 * The total number of rows available. Added by the {@link FooTable.Paging} component.
+	 * The total number of pages available. Added by the {@link FooTable.Paging} component.
 	 * @type {number}
-	 * @default NULL
+	 * @default -1
 	 */
-	FooTable.ResponseData.prototype.totalRows = null;
+	FooTable.RequestData.prototype.pageCount = -1;
+
+	/**
+	 * The page number to display. Added by the {@link FooTable.Paging} component.
+	 * @type {number}
+	 * @default 1
+	 */
+	FooTable.ResponseData.prototype.currentPage = 1;
+
+	/**
+	 * The number of rows to display per page. Added by the {@link FooTable.Paging} component.
+	 * @type {number}
+	 * @default 10
+	 */
+	FooTable.ResponseData.prototype.pageSize = 10;
+
+	/**
+	 * The total number of pages available. Added by the {@link FooTable.Paging} component.
+	 * @type {number}
+	 * @default -1
+	 */
+	FooTable.ResponseData.prototype.pageCount = -1;
 
 	FooTable.Paging = FooTable.Component.extend(/** @lends FooTable.Paging */{
 		/**
@@ -93,11 +114,17 @@
 
 			/* PRIVATE */
 			/**
-			 * A boolean indicating the direction of paging, TRUE = forward, FALSE = back.
+			 * A number indicating the previous page displayed.
 			 * @private
-			 * @type {boolean}
+			 * @type {number}
 			 */
-			this._forward = false;
+			this._previous = 1;
+			/**
+			 * The total number of pages used to generated the pagination links. Used in the draw method to determine if the total has changed and the links should be regenerated.
+			 * @type {number}
+			 * @private
+			 */
+			this._generated = 0;
 
 			// call the base constructor
 			this._super(instance);
@@ -162,9 +189,9 @@
 		 */
 		preajax: function(data){
 			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanging();
 			data.currentPage = this.o.current;
 			data.pageSize = this.o.size;
+			data.pageCount = this.o.total;
 		},
 		/**
 		 * Parses the ajax response object and sets the current page, size and total if they exists.
@@ -174,8 +201,9 @@
 		 */
 		postajax: function(response){
 			if (this.o.enabled == false) return;
-			this.o.total = FooTable.is.type(response.totalRows, 'number') ? response.totalRows : this.o.total;
-			this.o.current = this.current();
+			this.o.size = FooTable.is.type(response.pageSize, 'number') ? response.pageSize : this.o.size;
+			this.o.total = FooTable.is.type(response.pageCount, 'number') ? response.pageCount : this.o.total;
+			this.o.current = FooTable.is.type(response.currentPage, 'number') ? response.currentPage : this.o.current;
 		},
 		/**
 		 * Performs the actual paging against the {@link FooTable.Rows#array} removing all rows that are not on the current visible page.
@@ -184,12 +212,9 @@
 		 */
 		predraw: function(){
 			if (this.o.enabled == false || this.ft.options.ajaxEnabled == true) return;
-
 			var self = this;
-			if (self._changed == true) self.raiseChanging();
-
-			self.o.total = self.ft.rows.array.length == 0 ? 1 : self.ft.rows.array.length;
-			self.o.current = self.current();
+			self.o.total = self.ft.rows.array.length == 0 ? 1 : Math.ceil(self.ft.rows.array.length / self.o.size);
+			self.o.current = self.o.current > self.o.total ? self.o.total : (self.o.current < 1 ? 1 : self.o.current);
 			var start = (self.o.current - 1) * self.o.size;
 			if (self.o.total > self.o.size) self.ft.rows.array = self.ft.rows.array.splice(start, self.o.size);
 		},
@@ -201,137 +226,70 @@
 		draw: function(){
 			if (this.o.enabled == false) return;
 			this.$container.children('td').first().attr('colspan', this.ft.columns.colspan());
-			this._generateLinks();
-		},
-		/**
-		 * Performs any post draw operations required for paging.
-		 * @instance
-		 * @protected
-		 */
-		postdraw: function(){
-			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanged();
-			this._changed = false;
-		},
-		/**
-		 * Raises the paging_changing event using the page number and direction to generate a {@link FooTable.Pager} object for the event and merges changes made by any listeners back into the current state.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Paging#paging_changing
-		 */
-		raiseChanging: function(){
-			var pager = new FooTable.Pager(this.current(), this._forward);
-			/**
-			 * The paging_changing event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Paging#paging_changing
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Pager} pager - The pager that is about to be applied.
-			 */
-			if (this._changed == true && this.ft.raise('paging_changing', [pager]).isDefaultPrevented()) return $.when();
-			this.o.current = pager.page;
-			this._forward = pager.forward;
-		},
-		/**
-		 * Raises the paging_changed event using the page number and direction to generate a {@link FooTable.Pager} object for the event.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Paging#paging_changed
-		 */
-		raiseChanged: function(){
-			/**
-			 * The paging_changed event is raised after a pager has been applied.
-			 * @event FooTable.Paging#paging_changed
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Pager} pager - The pager that has been applied.
-			 */
-			this.ft.raise('paging_changed', [new FooTable.Pager(this.current(), this._forward)]);
+			if (this._generated !== this.o.total){
+				this._generateLinks();
+			}
+			this._setVisible(this.o.current, this.o.current > this._previous);
+			this._setNavigation(true);
 		},
 
 		/* PUBLIC */
 		/**
-		 * Returns the maximum number of pages taking into account the total number of rows and the page size.
-		 * @instance
-		 * @returns {number}
-		 */
-		total: function(){
-			return Math.ceil(this.o.total / this.o.size);
-		},
-		/**
-		 * Returns the current page number taking into account the total number of rows and page size to ensure a valid number.
-		 * @instance
-		 * @returns {number}
-		 */
-		current: function(){
-			var current = this.o.current * this.o.size > this.o.total
-				? this.total()
-				: this.o.current;
-			return current < 1 ? 1 : current;
-		},
-		/**
 		 * Pages to the first page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		first: function(){
-			return this._set(1, false);
+			return this._set(1, true);
 		},
 		/**
 		 * Pages to the previous page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		prev: function(){
-			var page = this.o.current - 1 > 0 ? this.o.current - 1 : 1;
-			return this._set(page, false);
+			return this._set(this.o.current - 1 > 0 ? this.o.current - 1 : 1, true);
 		},
 		/**
 		 * Pages to the next page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		next: function(){
-			var total = this.total(),
-				page = this.o.current + 1 < total ? this.o.current + 1 : total;
-			return this._set(page, true);
+			return this._set(this.o.current + 1 < this.o.total ? this.o.current + 1 : this.o.total, true);
 		},
 		/**
 		 * Pages to the last page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		last: function(){
-			return this._set(this.total(), true);
+			return this._set(this.o.total, true);
 		},
 		/**
 		 * Pages to the specified page.
 		 * @instance
 		 * @param {number} page - The page number to go to.
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		goto: function(page){
-			var total = this.total();
-			page = page > total ? total : page;
-			if (this.o.current == page) return $.when();
-			var forward = page > this.o.current;
-			return this._set(page, forward);
+			return this._set(page > this.o.total ? this.o.total : (page < 1 ? 1 : page), true);
 		},
 		/**
 		 * Shows the previous X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value.
 		 * @instance
 		 */
-		prevX: function(){
+		prevPages: function(){
 			var page = this.$pagination.children('li.footable-page.visible:first').data('page') - 1;
 			this._setVisible(page, false, true);
 			this._setNavigation(false);
@@ -340,7 +298,7 @@
 		 * Shows the next X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value.
 		 * @instance
 		 */
-		nextX: function(){
+		nextPages: function(){
 			var page = this.$pagination.children('li.footable-page.visible:last').data('page') + 1;
 			this._setVisible(page, false, false);
 			this._setNavigation(false);
@@ -348,21 +306,41 @@
 
 		/* PRIVATE */
 		/**
-		 * Used by the paging functions to set the actual page, direction and then trigger the {@link FooTable.Instance#update} method.
+		 * Performs the required steps to handle paging including the raising of the {@link FooTable.Paging#"change.ft.paging"} and {@link FooTable.Paging#"changed.ft.paging"} events.
 		 * @instance
 		 * @private
 		 * @param {number} page - The page to set.
-		 * @param {boolean} forward - Whether or not to set the direction as forward.
+		 * @param {boolean} redraw - Whether or not this operation requires a redraw of the table.
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
-		_set: function(page, forward){
-			if (this.o.current == page) return;
-			this.o.current = page;
-			this._forward = forward;
-			this._changed = true;
-			return this.ft.update();
+		_set: function(page, redraw){
+			var self = this,
+				pager = new FooTable.Pager(self.o.total, self.o.current, self.o.size, page, page > self.o.current);
+			/**
+			 * The change.ft.paging event is raised before a sort is applied and allows listeners to modify the pager or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Paging#"change.ft.paging"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Pager} pager - The pager that is about to be applied.
+			 */
+			if (self.ft.raise('change.ft.paging', [pager]).isDefaultPrevented()) return $.when();
+			pager.page = pager.page > pager.total ? pager.total	: pager.page;
+			pager.page = pager.page < 1 ? 1 : pager.page;
+			if (self.o.current == page) return $.when();
+			self._previous = self.o.current;
+			self.o.current = pager.page;
+			return (redraw ? self.ft.update() : $.when()).then(function(){
+				/**
+				 * The changed.ft.paging event is raised after a pager has been applied.
+				 * @event FooTable.Paging#"changed.ft.paging"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+				 * @param {FooTable.Pager} pager - The pager that has been applied.
+				 */
+				self.ft.raise('changed.ft.paging', [pager]);
+			});
 		},
 		/**
 		 * Generates the paging UI from the supplied options.
@@ -375,7 +353,7 @@
 				? this.ft.rows.array.length
 				: options.paging.total;
 
-			if (this.ft.$table.children('tfoot').length == 0) this.ft.$table.append('<tfoot/>');
+			if (this.ft.$table.addClass('footable-paging').children('tfoot').length == 0) this.ft.$table.append('<tfoot/>');
 			var $cell = $('<td/>').attr('colspan', this.ft.columns.colspan());
 			this.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: this }, this._onPageClicked);
 			this.$count = $('<span/>', { 'class': 'label label-default' });
@@ -389,70 +367,80 @@
 		 * @private
 		 */
 		_generateLinks: function(){
-			var total = this.total(),
-				multiple = total > 1,
-				changed = this.$pagination.children('li.footable-page').length != total;
-			if (total == 0 || total == 1){
-				this.$pagination.empty();
-				this.$count.text(total + ' of ' + total);
+			var self = this,
+				multiple = self.o.total > 1,
+				link = function(attr, html, klass){
+					return $('<li/>', {
+						'class': klass
+					}).attr('data-page', attr)
+						.append($('<a/>', {
+							'class': 'footable-page-link',
+							href: '#'
+						}).data('page', attr).html(html));
+				};
+			if (self.o.total == 0 || self.o.total == 1){
+				self.$pagination.empty();
+				self.$count.text(self.o.total + ' of ' + self.o.total);
+				self._generated = self.o.total;
 				return;
 			}
-			if (!changed && this.$pagination.children('li.footable-page[data-page="'+this.o.current+'"]').hasClass('visible')){
-				this._setNavigation(true);
-				return;
+			self.$pagination.empty();
+			if (multiple) {
+				self.$pagination.append(link('first', self.o.strings.first, 'footable-page-nav'));
+				self.$pagination.append(link('prev', self.o.strings.prev, 'footable-page-nav'));
+				if (self.o.limit.size > 0 && self.o.limit.size < self.o.total){
+					self.$pagination.append(link('prev-limit', self.o.limit.prev, 'footable-page-nav'));
+				}
 			}
-			this.$pagination.empty();
-			if (multiple) this.$pagination.append(this._createLink('first', this.o.strings.first, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('prev', this.o.strings.prev, 'footable-page-nav'));
-			if (multiple && this.o.limit.size > 0 && this.o.limit.size < total) this.$pagination.append(this._createLink('prev-limit', this.o.limit.prev, 'footable-page-nav'));
-
-			for (var i = 0, $li; i < total; i++){
-				$li = this._createLink(i + 1, i + 1, 'footable-page');
-				this.$pagination.append($li);
+			for (var i = 0, $li; i < self.o.total; i++){
+				$li = link(i + 1, i + 1, 'footable-page');
+				self.$pagination.append($li);
 			}
-
-			if (multiple && this.o.limit.size > 0 && this.o.limit.size < total) this.$pagination.append(this._createLink('next-limit', this.o.limit.next, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('next', this.o.strings.next, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('last', this.o.strings.last, 'footable-page-nav'));
-
-			this._setVisible((this.o.current = this.o.current > total ? (total == 0 ? 1 : total) : this.o.current), this._forward);
-			this._setNavigation(true);
+			if (multiple){
+				if (self.o.limit.size > 0 && self.o.limit.size < self.o.total){
+					self.$pagination.append(link('next-limit', self.o.limit.next, 'footable-page-nav'));
+				}
+				self.$pagination.append(link('next', self.o.strings.next, 'footable-page-nav'));
+				self.$pagination.append(link('last', self.o.strings.last, 'footable-page-nav'));
+			}
+			self._generated = self.o.total;
 		},
 		/**
-		 * Generates an individual page link for the pagination control using the supplied parameters.
-		 * @instance
-		 * @private
-		 * @param {string} attr - The value for the data-page attribute for the link.
-		 * @param {string} html - The inner HTML for the link created.
-		 * @param {string} klass - A CSS class or class names (space separated) to add to the link.
-		 */
-		_createLink: function(attr, html, klass){
-			return $('<li/>', { 'class': klass }).attr('data-page', attr).append($('<a/>', { 'class': 'footable-page-link', href: '#' }).data('page', attr).html(html));
-		},
-		/**
-		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the individual page links.
+		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the current page link.
 		 * @instance
 		 * @private
 		 * @param {boolean} active - Whether or not to set the active class state on the individual page links.
 		 */
 		_setNavigation: function(active){
-			var total = this.total();
+			this.$count.text(this.o.current + ' of ' + this.o.total);
 
-			this.$count.text(this.o.current + ' of ' + total);
+			if (this.o.current == 1) {
+				this.$pagination.children('li[data-page="first"],li[data-page="prev"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="first"],li[data-page="prev"]').removeClass('disabled');
+			}
 
-			if (this.o.current == 1) this.$pagination.children('li[data-page="first"],li[data-page="prev"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="first"],li[data-page="prev"]').removeClass('disabled');
+			if (this.o.current == this.o.total) {
+				this.$pagination.children('li[data-page="next"],li[data-page="last"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="next"],li[data-page="last"]').removeClass('disabled');
+			}
 
-			if (this.o.current == total) this.$pagination.children('li[data-page="next"],li[data-page="last"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="next"],li[data-page="last"]').removeClass('disabled');
+			if ((this.$pagination.children('li.footable-page.visible:first').data('page') || 1) == 1) {
+				this.$pagination.children('li[data-page="prev-limit"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="prev-limit"]').removeClass('disabled');
+			}
 
-			if ((this.$pagination.children('li.footable-page.visible:first').data('page') || 1) == 1) this.$pagination.children('li[data-page="prev-limit"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="prev-limit"]').removeClass('disabled');
+			if ((this.$pagination.children('li.footable-page.visible:last').data('page') || this.o.limit.size) == this.o.total) {
+				this.$pagination.children('li[data-page="next-limit"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="next-limit"]').removeClass('disabled');
+			}
 
-			if ((this.$pagination.children('li.footable-page.visible:last').data('page') || this.o.limit.size) == total) this.$pagination.children('li[data-page="next-limit"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="next-limit"]').removeClass('disabled');
-
-			if (active) this.$pagination.children('li.footable-page').removeClass('active').filter('li[data-page="' + this.o.current + '"]').addClass('active');
+			if (active){
+				this.$pagination.children('li.footable-page').removeClass('active').filter('li[data-page="' + this.o.current + '"]').addClass('active');
+			}
 		},
 		/**
 		 * Sets the visible page using the supplied parameters.
@@ -464,13 +452,11 @@
 		 */
 		_setVisible: function(page, forward, invert){
 			if (this.$pagination.children('li.footable-page[data-page="'+page+'"]').hasClass('visible')) return;
-
-			var total = this.total();
-			if (this.o.limit.size > 0 && total > this.o.limit.size){
+			if (this.o.limit.size > 0 && this.o.total > this.o.limit.size){
 				page -= 1;
 				var start = 0, end = 0;
 				if (forward == true || invert == true){
-					end = page > total ? total : page;
+					end = page > this.o.total ? this.o.total : page;
 					start = end - this.o.limit.size;
 				} else {
 					start = page < 0 ? 0 : page;
@@ -478,11 +464,11 @@
 				}
 				if (start < 0){
 					start = 0;
-					end = this.o.limit.size > total ? total : this.o.limit.size;
+					end = this.o.limit.size > this.o.total ? this.o.total : this.o.limit.size;
 				}
-				if (end > total){
-					end = total;
-					start = total - this.o.limit.size < 0 ? 0 : total - this.o.limit.size;
+				if (end > this.o.total){
+					end = this.o.total;
+					start = this.o.total - this.o.limit.size < 0 ? 0 : this.o.total - this.o.limit.size;
 				}
 				if (forward == true){
 					start++;
@@ -513,11 +499,11 @@
 					return;
 				case 'last': self.last();
 					return;
-				case 'prev-limit': self.prevX();
+				case 'prev-limit': self.prevPages();
 					return;
-				case 'next-limit': self.nextX();
+				case 'next-limit': self.nextPages();
 					return;
-				default: self._set(page, false);
+				default: self._set(page, true);
 					return;
 			}
 		}
@@ -589,39 +575,19 @@
 	/**
 	 * Shows the next X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value. Added by the {@link FooTable.Paging} component.
 	 * @instance
-	 * @see FooTable.Paging#nextX
+	 * @see FooTable.Paging#nextPages
 	 */
 	FooTable.Instance.prototype.nextPages = function(){
-		return this.use(FooTable.Paging).nextX();
+		return this.use(FooTable.Paging).nextPages();
 	};
 
 	/**
 	 * Shows the previous X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value. Added by the {@link FooTable.Paging} component.
 	 * @instance
-	 * @see FooTable.Paging#prevX
+	 * @see FooTable.Paging#prevPages
 	 */
 	FooTable.Instance.prototype.prevPages = function(){
-		return this.use(FooTable.Paging).prevX();
-	};
-
-	/**
-	 * Gets the current page number. Added by the {@link FooTable.Paging} component.
-	 * @instance
-	 * @returns {number}
-	 * @see FooTable.Paging#current
-	 */
-	FooTable.Instance.prototype.currentPage = function(){
-		return this.use(FooTable.Paging).current();
-	};
-
-	/**
-	 * Gets the total number of pages. Added by the {@link FooTable.Paging} component.
-	 * @instance
-	 * @returns {number}
-	 * @see FooTable.Paging#total
-	 */
-	FooTable.Instance.prototype.totalPages = function(){
-		return this.use(FooTable.Paging).total();
+		return this.use(FooTable.Paging).prevPages();
 	};
 
 })(jQuery, FooTable = window.FooTable || {});

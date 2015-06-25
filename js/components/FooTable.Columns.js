@@ -39,6 +39,21 @@
 		}
 	};
 
+	/**
+	 * These formatters are supplied the value retrieved from the parser for the {@link FooTable.Column} and must return a string value.
+	 * The value returned from the formatter is what is displayed in the cell in the table and can be a HTML string.
+	 * @type {object.<string, function(*)>}
+	 * @default { "text": function, "number": function }
+	 */
+	FooTable.Defaults.prototype.formatters = {
+		text: function(value){
+			return ''+value; // ensure a string is returned.
+		},
+		number: function(value){
+			return ''+value; // ensure a string is returned.
+		}
+	};
+
 	FooTable.Columns = FooTable.Component.extend(/** @lends FooTable.Columns */{
 		/**
 		 * The columns class contains all the logic for handling columns.
@@ -120,7 +135,7 @@
 		predraw: function(){
 			var self = this;
 			$.each(self.array, function(i, col){
-				col.hidden = FooTable.strings.contains(col.hide, self.ft.breakpoints.current) || FooTable.strings.contains(col.hide, 'all');
+				col.hidden = self.ft.breakpoints.isHidden(col.hide);
 			});
 		},
 		/**
@@ -144,13 +159,13 @@
 		fromDOM: function(headerRow){
 			var self = this, columns = [];
 			$(headerRow).addClass('footable-header');
-			for (var i = 0, $cell, column, definition, len = headerRow.cells.length; i < len; i++){
+			for (var i = 0, $cell, txt, column, definition, len = headerRow.cells.length; i < len; i++){
 				$cell = $(headerRow.cells[i]);
+				txt = $cell.text();
 				definition = $.extend(true, {
-					title: $cell.text()
+					name: FooTable.strings.toCamelCase(txt),
+					title: txt
 				}, self.o.columns[i] || {}, $cell.data(), { index: i });
-				definition.sorter = self.o.sorters[definition.type] || self.o.sorters.text;
-				definition.parser = self.o.parsers[definition.type] || self.o.parsers.text;
 				column = new FooTable.Column(self.ft, $cell, definition);
 				columns.push(column);
 			}
@@ -173,8 +188,6 @@
 					definition = $.extend(true, {
 						title: obj[i].title || obj[i].name && obj[i].name.replace(/(.)([A-Z])/, "$1 $2").replace(/(?:^|\s)\S/g, function (a) { return a.toUpperCase(); }) || i
 					}, obj[i], { index: i });
-					definition.sorter = self.o.sorters[definition.type] || self.o.sorters.text;
-					definition.parser = self.o.parsers[definition.type] || self.o.parsers.text;
 					column = new FooTable.Column(self.ft, document.createElement('th'), definition);
 					column.$el.appendTo($row);
 					columns.push(column);

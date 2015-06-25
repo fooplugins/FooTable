@@ -45,9 +45,9 @@
 
 	/**
 	 * Converts the supplied JSON object into a cssText string.
+	 * @protected
 	 * @param {object} obj - An object containing CSS properties and values.
 	 * @returns {string}
-	 * @protected
 	 */
 	FooTable.json2css = function(obj){
 		return _$json2css.removeAttr('style').css(obj).get(0).style.cssText;
@@ -55,12 +55,47 @@
 
 	/**
 	 * Retrieves the specified URL parameters' value.
+	 * @protected
 	 * @param {string} name - The name of the parameter to retrieve.
 	 * @param {*} [def] - The default value to be returned for the parameter.
 	 * @returns {(string|*|undefined)}
 	 */
 	FooTable.getURLParameter = function (name, def) {
 		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || def;
+	};
+
+	/**
+	 * Attempts to retrieve a function pointer using the given name.
+	 * @protected
+	 * @param {string} functionName - The name of the function to fetch a pointer to.
+	 * @returns {(function|object|null)}
+	 */
+	FooTable.getFnPointer = function(functionName){
+		if (FooTable.strings.isNullOrEmpty(functionName)) return null;
+		// first try and retrieve the function from the global namespace.
+		if (FooTable.is.fn(window[functionName])) return window[functionName];
+		// the second method to try involves using eval which goes against everything that is good and holy so let's be careful with it
+		try {
+			// as this should only ever be a function name test the string to make sure it is a valid JavaScript name
+			if (!FooTable.strings.isValidVariableName(functionName, true)) return null;
+			var fn = eval(functionName);
+			return FooTable.is.fn(fn) ? fn : null;
+		} catch (e) {
+			return null;
+		}
+	};
+
+	/**
+	 * Checks the value for function properties such as the {@link FooTable.Column#formatter} option which could also be specified using just the name
+	 * and attempts to return the correct function pointer or null if none was found matching the value.
+	 * @protected
+	 * @param {(function|string)} value - The actual function or the name of the function for the property.
+	 * @param {function} [def] - A default function to return if none is found.
+	 * @returns {(function|null)}
+	 */
+	FooTable.checkFnPropValue = function(value, def){
+		def = FooTable.is.fn(def) ? def : null;
+		return FooTable.is.fn(value) ? value : (FooTable.is.type(value, 'string') ? FooTable.getFnPointer(value) : def);
 	};
 
 	/**

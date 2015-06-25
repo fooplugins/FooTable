@@ -17,18 +17,23 @@
 		jQuery(function($){
 			FAjax.defaults.delay = 1000;
 			var ft = $('#table_1').on({
-				'filtering_changing': function(e, instance, filter){
-					console.log('filtering_original: ', filter);
+				'change.ft.filter': function(e, instance, filter){
+					console.log('change.ft.filter: ', filter);
 					if (filter.query == 'Leo'){
 						filter.query = 'Alice';
 					}
 				},
-				'filtering_changed': function(e, instance, filter){
-					console.log('filtering_applied: ', filter);
+				'changed.ft.filter': function(e, instance, filter){
+					console.log('changed.ft.filter: ', filter);
 				},
 				'sorting_changing': function(e, instance, sorter){
 					console.log('sorting_original: ', sorter);
 					if (sorter.column.name == 'id'){
+						if (sorter.column.direction == 'ASC'){
+							// if the column is already sorted in the direction we want don't continue and end the sort operation.
+							e.preventDefault();
+							return;
+						}
 						sorter.direction = 'ASC';
 					}
 				},

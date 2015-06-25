@@ -44,6 +44,15 @@
 	};
 
 	/**
+	 * Checks if the value is a date.
+	 * @param {*} value - The value to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.date = function (value) {
+		return '[object Date]' === Object.prototype.toString.call(value) && !isNaN(value.getTime());
+	};
+
+	/**
 	 * Checks if the value is a boolean.
 	 * @param {*} value - The value to check.
 	 * @returns {boolean}
@@ -132,6 +141,18 @@
 			return value in target;
 		}
 		return false;
+	};
+
+	/**
+	 * This is a simple check to determine if an object is a jQuery promise object. It simply checks the object has a "then" and "promise" function defined.
+	 * The promise object is created as an object literal inside of jQuery.Deferred.
+	 * It has no prototype, nor any other truly unique properties that could be used to distinguish it.
+	 * This method should be a little more accurate than the internal jQuery one that simply checks for a "promise" method.
+	 * @param {object} obj - The object to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.promise = function(obj){
+		return FooTable.is.object(obj) && FooTable.is.fn(obj.then) && FooTable.is.fn(obj.promise);
 	};
 
 })(FooTable = window.FooTable || {});

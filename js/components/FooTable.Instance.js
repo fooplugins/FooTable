@@ -129,7 +129,7 @@
 				 */
 				if (self.raise('preinit').isDefaultPrevented()) throw FooTable.ExitEarly;
 				return self.when(false, true, 'init', element, options).then(function(){
-					self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'glyphicon glyphicon-repeat'})));
+					self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'fooicon fooicon-loader'})));
 					self.initialized = true;
 					/**
 					 * The init event is raised after all core components and add-ons are initialized.
@@ -167,7 +167,7 @@
 			$.extend(true, self.options, options);
 			if (FooTable.is.hash(options.on)) self.$table.on(self.options.on);
 			return self.when(false, true, 'reinit', self.options).then(function () {
-				self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'glyphicon glyphicon-repeat'})));
+				self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'fooicon fooicon-loader'})));
 				self.initialized = true;
 				/**
 				 * The reinit event is raised after all core components are reinitialized.
@@ -298,6 +298,11 @@
 						self.$loader.detach();
 					});
 				});
+			}, function(err){
+				// hide the loader
+				self.$table.children('thead').children('tr.footable-header').show();
+				self.$loader.detach();
+				if (!(err instanceof FooTable.ExitEarly)) console.log('FooTable: An unhandled error was thrown during an ajax operation:', err);
 			});
 		},
 		/**
@@ -319,7 +324,7 @@
 				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 				 */
-				if (self.raise('predraw').isDefaultPrevented()) throw FooTable.ExitEarly;
+				if (self.raise('predraw').isDefaultPrevented()) throw FooTable.ExitEarly();
 				return self.when(false, true, 'draw').then(function(){
 					self.$loader.children('td').attr('colspan', self.columns.colspan());
 					/**
@@ -328,7 +333,7 @@
 					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 					 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 					 */
-					if (self.raise('draw').isDefaultPrevented()) throw FooTable.ExitEarly;
+					if (self.raise('draw').isDefaultPrevented()) throw FooTable.ExitEarly();
 					return self.when(false, true, 'postdraw').then(function(){
 						self.$loader.children('td').attr('colspan', self.columns.colspan());
 						/**
@@ -340,6 +345,8 @@
 						self.raise('postdraw');
 					});
 				});
+			}, function(err){
+				if (!(err instanceof FooTable.ExitEarly)) console.log('FooTable: An unhandled error was thrown during a draw operation:', err);
 			});
 		},
 		/**
@@ -430,7 +437,15 @@
 			methodName = args.shift();
 			$.each(components, function(i, component){
 				if (FooTable.is.fn(component[methodName])) {
-					methods.push(component[methodName].apply(component, args));
+					methods.push($.Deferred(function(d){
+						try {
+							var result = component[methodName].apply(component, args);
+							if (FooTable.is.promise(result)) return result;
+							d.resolve(result);
+						} catch (err) {
+							d.reject(err);
+						}
+					}));
 				}
 			});
 			return $.when.apply($, methods);
@@ -452,7 +467,15 @@
 			components = args.shift();
 			methodName = args.shift();
 			component = components.shift();
-			return $.when(component[methodName].apply(component, args)).then(function(){
+			return $.when($.Deferred(function(d){
+				try {
+					var result = component[methodName].apply(component, args);
+					if (FooTable.is.promise(result)) return result;
+					d.resolve(result);
+				} catch (err) {
+					d.reject(err);
+				}
+			})).then(function(){
 				return self._chain(components, methodName, param1, paramN);
 			});
 		},

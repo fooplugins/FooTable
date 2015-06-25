@@ -42,9 +42,9 @@
 			/**
 			 * The parse function for this column. This is set by the plugin during initialization.
 			 * @type {function}
-			 * @default jQuery.noop
+			 * @default FooTable.Defaults#parsers.text
 			 */
-			this.parser = FooTable.is.fn(definition.parser) ? definition.parser : $.noop;
+			this.parser = FooTable.checkFnPropValue(definition.parser, instance.options.parsers[definition.type] || instance.options.parsers.text);
 			/**
 			 * Whether or not to force a column to hide overflow with an ellipsis.
 			 * @type {boolean}
@@ -56,14 +56,12 @@
 			 * The column format function is passed the value obtained by the parser for the column and must return a string used to display the value in the cell, this result can be an HTML string.
 			 * @type {function}
 			 * @default null
-			 * @example <caption>The below shows a formatter to convert a date or a ticks value to a string representation to display in a cell.</caption>
+			 * @example <caption>The below shows a formatter that simply wraps it's value in quotation marks.</caption>
 			 * format: function(value){
-			 * 	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-			 * 	if (typeof value == "number") value = new Date(value);
-			 * 	return value instanceof Date ? value.getDate() + ' ' + months[value.getMonth()] + ' ' + value.getFullYear() : null;
+			 * 	return '"' + value + '"';
 			 * }
 			 */
-			this.formatter = FooTable.is.fn(definition.formatter) ? definition.formatter : null;
+			this.formatter = FooTable.checkFnPropValue(definition.formatter, instance.options.formatters[definition.type] || instance.options.formatters.text);
 			/**
 			 * Specifies the maximum width for the column.
 			 * @type {number}

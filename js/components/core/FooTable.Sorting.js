@@ -134,11 +134,11 @@
 		 * @param {object} definition - The definition to populate the column with.
 		 */
 		ctor_column: function(column, definition){
-			column.sorter = FooTable.is.fn(definition.sorter) ? definition.sorter : $.noop;
+			column.sorter = FooTable.checkFnPropValue(definition.sorter, this.ft.options.sorters[definition.type] || this.ft.options.sorters.text);
 			column.direction = FooTable.is.type(definition.direction, 'string') ? definition.direction : null;
 			column.sortable = FooTable.is.boolean(definition.sortable) ? definition.sortable : true;
 			column.sorted = FooTable.is.boolean(definition.sorted) ? definition.sorted : false;
-			if (column.sortable) column.$el.addClass('footable-sortable');
+			if (this.o.enabled == true && column.sortable) column.$el.addClass('footable-sortable');
 		},
 		/**
 		 * Initializes the sorting component for the plugin using the supplied table and options.
@@ -199,7 +199,6 @@
 		 */
 		preajax: function (data) {
 			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanging();
 			data.sortColumn = this.o.column.name;
 			data.sortDirection = this.o.direction;
 		},
@@ -210,20 +209,16 @@
 		 */
 		predraw: function () {
 			if (this.o.enabled == false
-				|| this.ft.options.ajaxEnabled == true)
+				|| this.ft.options.ajaxEnabled == true
+				|| !this.o.column
+				|| !this.o.direction)
 				return;
 
 			var self = this;
-			if (self._changed == true) self.raiseChanging();
-
-			if (!self.o.column
-				|| !self.o.direction)
-				return;
-
 			self.ft.rows.array.sort(function (a, b) {
 				return self.o.direction == 'ASC'
-					? self.o.column.sorter(a.cells[self.o.column.index].value, b.cells[self.o.column.index].value)
-					: self.o.column.sorter(b.cells[self.o.column.index].value, a.cells[self.o.column.index].value);
+					? self.o.column.sorter(a.cells[self.o.column.index].value, b.cells[self.o.column.index].value, self.ft.options)
+					: self.o.column.sorter(b.cells[self.o.column.index].value, a.cells[self.o.column.index].value, self.ft.options);
 			});
 		},
 		/**
@@ -242,51 +237,6 @@
 			$active.addClass(self.o.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
 				.children('.fooicon').addClass(self.o.direction == 'ASC' ? 'fooicon-sort-asc' : 'fooicon-sort-desc');
 		},
-		/**
-		 * Performs any post draw operations required for sorting.
-		 * @instance
-		 * @protected
-		 */
-		postdraw: function(){
-			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanged();
-			this._changed = false;
-		},
-		/**
-		 * Raises the sorting_changing event using the column and direction to generate a {@link FooTable.Sorter} object for the event and merges changes made by any listeners back into the current state.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Sorting#sorting_changing
-		 */
-		raiseChanging: function(){
-			var sorter = new FooTable.Sorter(this.o.column, this.o.direction);
-			/**
-			 * The sorting_changing event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Sorting#sorting_changing
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Sorter} sorter - The sorter that is about to be applied.
-			 */
-			if (this._changed == true && this.ft.raise('sorting_changing', [sorter]).isDefaultPrevented()) return $.when();
-			this.o.column = this.ft.columns.get(sorter.column);
-			this.o.direction = FooTable.is.type(sorter.direction, 'string') && (sorter.direction == 'ASC' || sorter.direction == 'DESC') ? sorter.direction : 'ASC';
-		},
-		/**
-		 * Raises the sorting_changed event using the column and direction to generate a {@link FooTable.Sorter} object for the event.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Sorting#sorting_changed
-		 */
-		raiseChanged: function(){
-			/**
-			 * The sorting_changed event is raised after a sorter has been applied.
-			 * @event FooTable.Sorting#sorting_changed
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Sorter} sorter - The sorter that has been applied.
-			 */
-			this.ft.raise('sorting_changed', [new FooTable.Sorter(this.o.column, this.o.direction)]);
-		},
 
 		/* PUBLIC */
 		/**
@@ -294,15 +244,12 @@
 		 * @instance
 		 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
 		 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
-		 * @fires FooTable.Sorting#sorting_changing
-		 * @fires FooTable.Sorting#sorting_changed
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Sorting#"change.ft.sorting"
+		 * @fires FooTable.Sorting#"changed.ft.sorting"
 		 */
 		sort: function(column, direction){
-			var self = this;
-			self.o.column = self.ft.columns.get(column);
-			self.o.direction = FooTable.is.type(direction, 'string') && (direction == 'ASC' || direction == 'DESC') ? direction : 'ASC';
-			self._changed = true;
-			return this.ft.update();
+			return this._sort(column, direction, true);
 		},
 
 		/* PRIVATE */
@@ -322,10 +269,63 @@
 						? 'ASC'
 						: options.sorting.column.direction)
 					: options.sorting.direction);
+
+			$.each(self.ft.columns.array, function(i, col){
+				if (col == options.sorting.column) col.direction = options.sorting.direction;
+				else col.direction = null;
+			});
 			self.ft.$table.addClass('footable-sorting').children('thead').children('tr.footable-header').children('th,td').filter(function (i) {
 				return self.ft.columns.array[i].sortable == true;
 			}).append($('<span/>', {'class': 'fooicon fooicon-sort'}));
 			self.ft.$table.on('click.footable', '.footable-sortable', { self: self }, self._onSortClicked);
+		},
+
+		/**
+		 * Performs the required steps to handle sorting including the raising of the {@link FooTable.Sorting#"change.ft.sorting"} and {@link FooTable.Sorting#"changed.ft.sorting"} events.
+		 * @instance
+		 * @private
+		 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
+		 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
+		 * @param {boolean} redraw - Whether or not this operation requires a redraw of the table.
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Sorting#"change.ft.sorting"
+		 * @fires FooTable.Sorting#"changed.ft.sorting"
+		 */
+		_sort: function(column, direction, redraw){
+			var self = this;
+			var sorter = new FooTable.Sorter(self.ft.columns.get(column), self._direction(direction));
+			/**
+			 * The change.ft.sorting event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Sorting#"change.ft.sorting"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Sorter} sorter - The sorter that is about to be applied.
+			 */
+			if (self.ft.raise('change.ft.sorting', [sorter]).isDefaultPrevented()) return $.when();
+			self.o.column = self.ft.columns.get(sorter.column);
+			self.o.direction = self._direction(sorter.direction);
+			return (redraw ? self.ft.update() : $.when()).then(function(){
+				$.each(self.ft.columns.array, function(i, col){
+					if (col == self.o.column) col.direction = self.o.direction;
+					else col.direction = null;
+				});
+				/**
+				 * The changed.ft.sorting event is raised after a sorter has been applied.
+				 * @event FooTable.Sorting#"changed.ft.sorting"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+				 * @param {FooTable.Sorter} sorter - The sorter that has been applied.
+				 */
+				self.ft.raise('changed.ft.sorting', [sorter]);
+			});
+		},
+		/**
+		 * Checks the supplied string is a valid direction and if not assigns it to ASC.
+		 * @param {string} str - The string to check.
+		 * @private
+		 */
+		_direction: function(str){
+			return FooTable.is.type(str, 'string') && (str == 'ASC' || str == 'DESC') ? str : 'ASC';
 		},
 		/**
 		 * Handles the sort button clicked event.
@@ -339,7 +339,7 @@
 				direction = $header.is('.footable-asc, .footable-desc')
 					? ($header.hasClass('footable-desc') ? 'ASC' : 'DESC')
 					: 'ASC';
-			self.sort($header.index(), direction);
+			self._sort($header.index(), direction, true);
 		}
 	});
 
@@ -350,8 +350,9 @@
 	 * @instance
 	 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
 	 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
-	 * @fires FooTable.Sorting#sorting_changing
-	 * @fires FooTable.Sorting#sorting_changed
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Sorting#"change.ft.sorting"
+	 * @fires FooTable.Sorting#"changed.ft.sorting"
 	 * @see FooTable.Sorting#sort
 	 */
 	FooTable.Instance.prototype.sort = function(column, direction){

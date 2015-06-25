@@ -4,10 +4,14 @@ table.footable-details {
 	width: 100%;
 	border-spacing: 0;
 	border-collapse: collapse;
+	background-color: #FFF;
 }
 table > tbody > tr > td > span.footable-toggle {
-	margin-right: 3px;
+	margin-right: 8px;
 	opacity: 0.3;
+}
+table.table-condensed > tbody > tr > td > span.footable-toggle {
+	margin-right: 5px;
 }
 table.footable-details > tbody > tr > th:nth-child(1) {
 	min-width: 40px;
@@ -22,9 +26,9 @@ table.footable > tbody > tr.footable-loader > td {
 	font-size: 30px;
 	opacity: 0.3;
 }
-table.footable > tbody > tr.footable-loader > td > span.glyphicon {
-	-webkit-animation: glyphicon-spin-r 2s infinite linear;
-	animation: glyphicon-spin-r 2s infinite linear;
+table.footable > tbody > tr.footable-loader > td > span.fooicon {
+	-webkit-animation: fooicon-spin-r 2s infinite linear;
+	animation: fooicon-spin-r 2s infinite linear;
 }
 table.footable > tbody > tr.footable-empty > td {
 	vertical-align: middle;
@@ -32,7 +36,7 @@ table.footable > tbody > tr.footable-empty > td {
 	font-size: 30px;
 }
 
-@-webkit-keyframes glyphicon-spin-r {
+@-webkit-keyframes fooicon-spin-r {
 	0% {
 		-webkit-transform: rotate(0deg);
 		transform: rotate(0deg);
@@ -44,7 +48,7 @@ table.footable > tbody > tr.footable-empty > td {
 	}
 }
 
-@keyframes glyphicon-spin-r {
+@keyframes fooicon-spin-r {
 	0% {
 		-webkit-transform: rotate(0deg);
 		transform: rotate(0deg);

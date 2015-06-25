@@ -14,6 +14,15 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+.fooicon-loader:before {
+	content: "\f01e";
+}
+.fooicon-plus:before {
+	content: "\f067";
+}
+.fooicon-minus:before {
+	content: "\f068";
+}
 .fooicon-search:before {
 	content: "\f002";
 }

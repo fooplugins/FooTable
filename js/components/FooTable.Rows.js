@@ -15,6 +15,16 @@
 	FooTable.Defaults.prototype.empty = 'No results';
 
 	/**
+	 * A space delimited string of class names to append to the details table for a row. When left as the default of null the details will
+	 * inherit all classes from the root table that start with "table-".
+	 * @type {string}
+	 * @default NULL
+	 * @example <caption>To prevent the details inheriting from it's parent and to instead specify that it should be bordered and condensed.</caption>
+	 * detailsClasses: 'table-bordered table-condensed'
+	 */
+	FooTable.Defaults.prototype.detailsClasses = null;
+
+	/**
 	 * An array of JSON objects containing the row data.
 	 * @type {Array.<object>}
 	 * @default []
@@ -120,7 +130,7 @@
 				row = new FooTable.Row(self.ft, rows[i], self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.ft, row, rows[i].cells[column.index], column, column.parser(rows[i].cells[column.index]));
+					cell = new FooTable.Cell(self.ft, row, column, rows[i].cells[column.index]);
 					row.cells.push(cell);
 				}
 				_rows.push(row);
@@ -140,7 +150,7 @@
 				row = new FooTable.Row(self.ft, document.createElement('tr'), self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.ft, row, document.createElement('td'), column, rows[i][column.name]);
+					cell = new FooTable.Cell(self.ft, row, column, $('<td/>').data('value', rows[i][column.name]).get(0));
 					row.cells.push(cell);
 					row.$el.append(cell.$el);
 				}
@@ -191,7 +201,7 @@
 			// add the row toggle to the first visible column
 			var index = (self.ft.columns.first(function (c) { return !c.hidden && c.visible; }) || {}).index;
 			if (typeof index !== 'number') return;
-			$tbody.find('> tr > td:nth-child(' + (index + 1) + '):not(tr.footable-detail-row > td, tr.footable-loader > td)').prepend($('<span/>', {'class': 'footable-toggle glyphicon glyphicon-plus'}));
+			$tbody.find('> tr > td:nth-child(' + (index + 1) + '):not(tr.footable-detail-row > td, tr.footable-loader > td)').prepend($('<span/>', {'class': 'footable-toggle fooicon fooicon-plus'}));
 		},
 		/**
 		 * This method restores the detail row cells to there original row position but does not remove the expanded class.
@@ -239,7 +249,7 @@
 			if (hidden.length > 0){
 				var i, len, $tr, $th, $td,
 					$cell = $('<td/>', { colspan: self.ft.columns.colspan() }),
-					$table = $('<table/>', { 'class': 'footable-details table table-bordered table-condensed table-hover' }).appendTo($cell),
+					$table = $('<table/>', { 'class': 'footable-details table ' + self._getDetailsClasses() }).appendTo($cell),
 					$tbody = $('<tbody/>').appendTo($table);
 
 				for (i = 0, len = hidden.length; i < len; i++){
@@ -247,7 +257,7 @@
 					$th = $('<th/>', { text: hidden[i].column.title }).appendTo($tr);
 					$td = $('<td/>').appendTo($tr).append(hidden[i].$el.contents());
 				}
-				data.$el.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+				data.$el.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('fooicon-plus').addClass('fooicon-minus');
 				$('<tr/>', { 'class': 'footable-detail-row' }).append($cell).insertAfter(data.$el);
 			}
 		},
@@ -263,7 +273,7 @@
 				$el;
 
 			if ($details != null){
-				data.$el.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+				data.$el.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('fooicon-minus').addClass('fooicon-plus');
 				$details.children('td').first()
 					.find('.footable-details > tbody > tr').each(function(i, el){
 						$el = $(el);
@@ -288,6 +298,21 @@
 				self.collapse(row);
 				self.expand(row);
 			}
+		},
+		/**
+		 * Retrieves the space delimited list of classes to apply to the details table. If the {@link FooTable.Defaults#detailsClasses} value is null or empty
+		 * this will parse the root table for all classes starting with table- and return those.
+		 * @instance
+		 * @returns {string}
+		 * @private
+		 */
+		_getDetailsClasses: function(){
+			if (this.o.detailsClasses != null) return this.o.detailsClasses;
+			var classes = this.ft.$table.get(0).className.split(' '), result = [];
+			for (var i = 0, len = classes.length; i < len; i++){
+				if (FooTable.strings.startsWith(classes[i], 'table-')) result.push(classes[i]);
+			}
+			return this.o.detailsClasses = result.join(' ');
 		},
 		/**
 		 * Handles the toggle click event for rows.

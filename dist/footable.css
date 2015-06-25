@@ -6,16 +6,19 @@
 	will need to include either the FooTable.FontAwesome.css file or your own custom icons file in the build.
 */
 /* globals - instead we house them under the .table class as the root of FooTable is always the table itself. */
-.footable.table, .footable.table * {
+.footable.table, .footable.table *,
+.footable-details.table, .footable-details.table * {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
-.footable.table th {
+.footable.table th,
+.footable-details.table th {
 	text-align: left;
 }
 /* tables */
-.footable.table {
+.footable.table,
+.footable-details.table {
 	width: 100%;
 	max-width: 100%;
 	margin-bottom: 20px;
@@ -25,7 +28,13 @@
 .footable.table > thead:first-child > tr:first-child > th,
 .footable.table > caption + thead > tr:first-child > td,
 .footable.table > colgroup + thead > tr:first-child > td,
-.footable.table > thead:first-child > tr:first-child > td {
+.footable.table > thead:first-child > tr:first-child > td,
+.footable-details.table > caption + thead > tr:first-child > th,
+.footable-details.table > colgroup + thead > tr:first-child > th,
+.footable-details.table > thead:first-child > tr:first-child > th,
+.footable-details.table > caption + thead > tr:first-child > td,
+.footable-details.table > colgroup + thead > tr:first-child > td,
+.footable-details.table > thead:first-child > tr:first-child > td {
 	border-top: 0;
 }
 .footable.table > thead > tr > th,
@@ -33,14 +42,22 @@
 .footable.table > tfoot > tr > th,
 .footable.table > thead > tr > td,
 .footable.table > tbody > tr > td,
-.footable.table > tfoot > tr > td {
+.footable.table > tfoot > tr > td,
+.footable-details.table > thead > tr > th,
+.footable-details.table > tbody > tr > th,
+.footable-details.table > tfoot > tr > th,
+.footable-details.table > thead > tr > td,
+.footable-details.table > tbody > tr > td,
+.footable-details.table > tfoot > tr > td {
 	padding: 8px;
 	line-height: 1.42857143;
 	vertical-align: top;
 	border-top: 1px solid #ddd;
 }
 .footable.table > thead > tr > th,
-.footable.table > thead > tr > td {
+.footable.table > thead > tr > td,
+.footable-details.table > thead > tr > th,
+.footable-details.table > thead > tr > td {
 	vertical-align: bottom;
 	border-bottom: 2px solid #ddd;
 }
@@ -49,10 +66,17 @@
 .footable.table-condensed > tfoot > tr > th,
 .footable.table-condensed > thead > tr > td,
 .footable.table-condensed > tbody > tr > td,
-.footable.table-condensed > tfoot > tr > td {
+.footable.table-condensed > tfoot > tr > td,
+.footable-details.table-condensed > thead > tr > th,
+.footable-details.table-condensed > tbody > tr > th,
+.footable-details.table-condensed > tfoot > tr > th,
+.footable-details.table-condensed > thead > tr > td,
+.footable-details.table-condensed > tbody > tr > td,
+.footable-details.table-condensed > tfoot > tr > td {
 	padding: 5px;
 }
-.footable.table-bordered {
+.footable.table-bordered,
+.footable-details.table-bordered {
 	border: 1px solid #ddd;
 }
 .footable.table-bordered > thead > tr > th,
@@ -60,17 +84,27 @@
 .footable.table-bordered > tfoot > tr > th,
 .footable.table-bordered > thead > tr > td,
 .footable.table-bordered > tbody > tr > td,
-.footable.table-bordered > tfoot > tr > td {
+.footable.table-bordered > tfoot > tr > td,
+.footable-details.table-bordered > thead > tr > th,
+.footable-details.table-bordered > tbody > tr > th,
+.footable-details.table-bordered > tfoot > tr > th,
+.footable-details.table-bordered > thead > tr > td,
+.footable-details.table-bordered > tbody > tr > td,
+.footable-details.table-bordered > tfoot > tr > td {
 	border: 1px solid #ddd;
 }
 .footable.table-bordered > thead > tr > th,
-.footable.table-bordered > thead > tr > td {
+.footable.table-bordered > thead > tr > td,
+.footable-details.table-bordered > thead > tr > th,
+.footable-details.table-bordered > thead > tr > td {
 	border-bottom-width: 2px;
 }
-.footable.table-striped > tbody > tr:nth-child(odd) {
+.footable.table-striped > tbody > tr:nth-child(odd),
+.footable-details.table-striped > tbody > tr:nth-child(odd) {
 	background-color: #f9f9f9;
 }
-.footable.table-hover > tbody > tr:hover {
+.footable.table-hover > tbody > tr:hover,
+.footable-details.table-hover > tbody > tr:hover {
 	background-color: #f5f5f5;
 }
 /* buttons */
@@ -336,6 +370,68 @@
 .footable .label-default {
 	background-color: #777;
 }
+table.footable,
+table.footable-details {
+	position: relative;
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+	background-color: #FFF;
+}
+table > tbody > tr > td > span.footable-toggle {
+	margin-right: 8px;
+	opacity: 0.3;
+}
+table.table-condensed > tbody > tr > td > span.footable-toggle {
+	margin-right: 5px;
+}
+table.footable-details > tbody > tr > th:nth-child(1) {
+	min-width: 40px;
+	width: 120px;
+}
+table.footable-details > tbody > tr > td:nth-child(2) {
+	word-break: break-all;
+}
+table.footable > tbody > tr.footable-loader > td {
+	vertical-align: middle;
+	text-align: center;
+	font-size: 30px;
+	opacity: 0.3;
+}
+table.footable > tbody > tr.footable-loader > td > span.fooicon {
+	-webkit-animation: fooicon-spin-r 2s infinite linear;
+	animation: fooicon-spin-r 2s infinite linear;
+}
+table.footable > tbody > tr.footable-empty > td {
+	vertical-align: middle;
+	text-align: center;
+	font-size: 30px;
+}
+
+@-webkit-keyframes fooicon-spin-r {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+@keyframes fooicon-spin-r {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
 /* FontAwesome Icons - We're not actually using FontAwesome classes but instead provide a simple mapping from FontAwesome to FooTable class names. */
 .fooicon {
 	display: inline-block;
@@ -352,6 +448,15 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+.fooicon-loader:before {
+	content: "\f01e";
+}
+.fooicon-plus:before {
+	content: "\f067";
+}
+.fooicon-minus:before {
+	content: "\f068";
+}
 .fooicon-search:before {
 	content: "\f002";
 }
@@ -367,64 +472,6 @@
 .fooicon-sort-desc:before {
 	content: "\f161";
 }
-table.footable,
-table.footable-details {
-	position: relative;
-	width: 100%;
-	border-spacing: 0;
-	border-collapse: collapse;
-}
-table > tbody > tr > td > span.footable-toggle {
-	margin-right: 3px;
-	opacity: 0.3;
-}
-table.footable-details > tbody > tr > th:nth-child(1) {
-	min-width: 40px;
-	width: 120px;
-}
-table.footable-details > tbody > tr > td:nth-child(2) {
-	word-break: break-all;
-}
-table.footable > tbody > tr.footable-loader > td {
-	vertical-align: middle;
-	text-align: center;
-	font-size: 30px;
-	opacity: 0.3;
-}
-table.footable > tbody > tr.footable-loader > td > span.glyphicon {
-	-webkit-animation: glyphicon-spin-r 2s infinite linear;
-	animation: glyphicon-spin-r 2s infinite linear;
-}
-table.footable > tbody > tr.footable-empty > td {
-	vertical-align: middle;
-	text-align: center;
-	font-size: 30px;
-}
-
-@-webkit-keyframes glyphicon-spin-r {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-
-	100% {
-		-webkit-transform: rotate(359deg);
-		transform: rotate(359deg);
-	}
-}
-
-@keyframes glyphicon-spin-r {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-
-	100% {
-		-webkit-transform: rotate(359deg);
-		transform: rotate(359deg);
-	}
-}
-
 td.footable-sortable,
 th.footable-sortable {
 	position: relative;

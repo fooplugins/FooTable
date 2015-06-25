@@ -45,9 +45,9 @@
 
 	/**
 	 * Converts the supplied JSON object into a cssText string.
+	 * @protected
 	 * @param {object} obj - An object containing CSS properties and values.
 	 * @returns {string}
-	 * @protected
 	 */
 	FooTable.json2css = function(obj){
 		return _$json2css.removeAttr('style').css(obj).get(0).style.cssText;
@@ -55,12 +55,47 @@
 
 	/**
 	 * Retrieves the specified URL parameters' value.
+	 * @protected
 	 * @param {string} name - The name of the parameter to retrieve.
 	 * @param {*} [def] - The default value to be returned for the parameter.
 	 * @returns {(string|*|undefined)}
 	 */
 	FooTable.getURLParameter = function (name, def) {
 		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || def;
+	};
+
+	/**
+	 * Attempts to retrieve a function pointer using the given name.
+	 * @protected
+	 * @param {string} functionName - The name of the function to fetch a pointer to.
+	 * @returns {(function|object|null)}
+	 */
+	FooTable.getFnPointer = function(functionName){
+		if (FooTable.strings.isNullOrEmpty(functionName)) return null;
+		// first try and retrieve the function from the global namespace.
+		if (FooTable.is.fn(window[functionName])) return window[functionName];
+		// the second method to try involves using eval which goes against everything that is good and holy so let's be careful with it
+		try {
+			// as this should only ever be a function name test the string to make sure it is a valid JavaScript name
+			if (!FooTable.strings.isValidVariableName(functionName, true)) return null;
+			var fn = eval(functionName);
+			return FooTable.is.fn(fn) ? fn : null;
+		} catch (e) {
+			return null;
+		}
+	};
+
+	/**
+	 * Checks the value for function properties such as the {@link FooTable.Column#formatter} option which could also be specified using just the name
+	 * and attempts to return the correct function pointer or null if none was found matching the value.
+	 * @protected
+	 * @param {(function|string)} value - The actual function or the name of the function for the property.
+	 * @param {function} [def] - A default function to return if none is found.
+	 * @returns {(function|null)}
+	 */
+	FooTable.checkFnPropValue = function(value, def){
+		def = FooTable.is.fn(def) ? def : null;
+		return FooTable.is.fn(value) ? value : (FooTable.is.type(value, 'string') ? FooTable.getFnPointer(value) : def);
 	};
 
 	/**
@@ -219,6 +254,15 @@
 	};
 
 	/**
+	 * Checks if the value is a date.
+	 * @param {*} value - The value to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.date = function (value) {
+		return '[object Date]' === Object.prototype.toString.call(value) && !isNaN(value.getTime());
+	};
+
+	/**
 	 * Checks if the value is a boolean.
 	 * @param {*} value - The value to check.
 	 * @returns {boolean}
@@ -309,104 +353,188 @@
 		return false;
 	};
 
+	/**
+	 * This is a simple check to determine if an object is a jQuery promise object. It simply checks the object has a "then" and "promise" function defined.
+	 * The promise object is created as an object literal inside of jQuery.Deferred.
+	 * It has no prototype, nor any other truly unique properties that could be used to distinguish it.
+	 * This method should be a little more accurate than the internal jQuery one that simply checks for a "promise" method.
+	 * @param {object} obj - The object to check.
+	 * @returns {boolean}
+	 */
+	FooTable.is.promise = function(obj){
+		return FooTable.is.object(obj) && FooTable.is.fn(obj.then) && FooTable.is.fn(obj.promise);
+	};
+
 })(FooTable = window.FooTable || {});
 (function ($, FooTable) {
 	/**
 	 * The strings namespace contains commonly used string utility methods such as {@link FooTable.strings.startsWith} and {@link FooTable.strings.endsWith}.
 	 * @namespace
 	 */
-	FooTable.strings = {
-		/**
-		 * Imitates .NET's String.format method, arguments that are not strings will be auto-converted to strings.
-		 * @param {string} formatString - The format string to use.
-		 * @param {*} arg1 - An argument to format the string with.
-		 * @param {...*} [argN] - Additional arguments to format the string with.
-		 * @returns {string}
-		 */
-		format: function (formatString, arg1, argN) {
-			var s = arguments[0], i, reg;
-			for (i = 0; i < arguments.length - 1; i++) {
-				reg = new RegExp("\\{" + i + "\\}", "gm");
-				s = s.replace(reg, arguments[i + 1]);
-			}
-			return s;
-		},
-		/**
-		 * Checks if the supplied string is NULL or empty.
-		 * @param {string} str - The string to check.
-		 * @returns {boolean}
-		 */
-		isNullOrEmpty: function (str) {
-			return str == null || typeof str !== 'string' || str.length == 0;
-		},
-		/**
-		 * Joins the supplied string arguments together into a single string using the supplied separator.
-		 * @param {string} separator - The separator to use when joining the strings.
-		 * @param {string} str1 - The first string to join.
-		 * @param {...string} [strN] - Additional strings to join to the first.
-		 * @returns {string}
-		 */
-		join: function (separator, str1, strN) {
-			var args = Array.prototype.slice.call(arguments);
-			separator = args.shift();
-			return args.join(separator);
-		},
-		/**
-		 * Checks if the supplied string contains the given substring.
-		 * @param {string} str - The string to check.
-		 * @param {string} contains - The string to check for.
-		 * @returns {boolean}
-		 */
-		contains: function (str, contains) {
-			return typeof str === 'string' && str.length > 0
-				&& typeof contains === 'string' && contains.length > 0 && contains.length <= str.length
-				&& str.indexOf(contains) !== -1;
-		},
-		/**
-		 * Returns the remainder of a string split on the first index of the given substring.
-		 * @param {string} str - The string to split.
-		 * @param {string} from - The substring to split on.
-		 * @returns {string}
-		 */
-		from: function (str, from) {
-			return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
-		},
-		/**
-		 * Returns the base of a string split on the first index of the given substring.
-		 * @param {string} str - The string to split.
-		 * @param {string} until - The substring to split on.
-		 * @returns {string}
-		 */
-		until: function (str, until) {
-			return this.contains(str, until) ? str.substring(0, str.indexOf(until)) : str;
-		},
-		/**
-		 * Checks if a string ends with the supplied suffix.
-		 * @param {string} str - The string to check.
-		 * @param {string} suffix - The suffix to check for.
-		 * @returns {boolean}
-		 */
-		endsWith: function (str, suffix) {
-			return str.slice(-suffix.length) == suffix;
-		},
-		/**
-		 * Checks if a string starts with the supplied prefix.
-		 * @param {string} str - The string to check.
-		 * @param {string} prefix - The prefix to check for.
-		 * @returns {boolean}
-		 */
-		startsWith: function (str, prefix) {
-			return str.slice(0, prefix.length) == prefix;
-		},
-		/**
-		 * Takes the supplied text and slugify's it.
-		 * @param {string} text - The text to slugify.
-		 * @returns {string} The slugified text string.
-		 */
-		slugify: function (text) {
-			return typeof text != 'string' ? '' : text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+	FooTable.strings = {};
+
+	/**
+	 * Imitates .NET's String.format method, arguments that are not strings will be auto-converted to strings.
+	 * @param {string} formatString - The format string to use.
+	 * @param {*} arg1 - An argument to format the string with.
+	 * @param {...*} [argN] - Additional arguments to format the string with.
+	 * @returns {string}
+	 */
+	FooTable.strings.format = function (formatString, arg1, argN) {
+		var s = arguments[0], i, reg;
+		for (i = 0; i < arguments.length - 1; i++) {
+			reg = new RegExp("\\{" + i + "\\}", "gm");
+			s = s.replace(reg, arguments[i + 1]);
 		}
+		return s;
 	};
+
+	/**
+	 * Checks if the supplied string is NULL or empty.
+	 * @param {string} str - The string to check.
+	 * @returns {boolean}
+	 */
+	FooTable.strings.isNullOrEmpty = function (str) {
+		return typeof str !== 'string' || str == null || str.length == 0;
+	};
+
+	/**
+	 * Joins the supplied string arguments together into a single string using the supplied separator.
+	 * @param {string} separator - The separator to use when joining the strings.
+	 * @param {string} str1 - The first string to join.
+	 * @param {...string} [strN] - Additional strings to join to the first.
+	 * @returns {string}
+	 */
+	FooTable.strings.join = function (separator, str1, strN) {
+		var args = Array.prototype.slice.call(arguments);
+		separator = args.shift();
+		return args.join(separator);
+	};
+
+	/**
+	 * Checks if the supplied string contains the given substring.
+	 * @param {string} str - The string to check.
+	 * @param {string} contains - The string to check for.
+	 * @returns {boolean}
+	 */
+	FooTable.strings.contains = function (str, contains) {
+		return !FooTable.strings.isNullOrEmpty(str)
+			&& !FooTable.strings.isNullOrEmpty(contains) && contains.length <= str.length
+			&& str.indexOf(contains) !== -1;
+	};
+
+	/**
+	 * Checks if the supplied string contains the given word.
+	 * @param {string} str - The string to check.
+	 * @param {string} word - The word to check for.
+	 * @returns {boolean}
+	 */
+	FooTable.strings.containsWord = function(str, word){
+		if (FooTable.strings.isNullOrEmpty(str) || FooTable.strings.isNullOrEmpty(word) || str.length < word.length)
+			return false;
+		var parts = str.split(/\W/);
+		for (var i = 0, len = parts.length; i < len; i++){
+			if (parts[i] == word) return true;
+		}
+		return false;
+	};
+
+	/**
+	 * Returns the remainder of a string split on the first index of the given substring.
+	 * @param {string} str - The string to split.
+	 * @param {string} from - The substring to split on.
+	 * @returns {string}
+	 */
+	FooTable.strings.from = function (str, from) {
+		return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
+	};
+
+
+	/**
+	 * Returns the base of a string split on the first index of the given substring.
+	 * @param {string} str - The string to split.
+	 * @param {string} until - The substring to split on.
+	 * @returns {string}
+	 */
+	FooTable.strings.until = function (str, until) {
+		return this.contains(str, until) ? str.substring(0, str.indexOf(until)) : str;
+	};
+
+	/**
+	 * Checks if a string ends with the supplied suffix.
+	 * @param {string} str - The string to check.
+	 * @param {string} suffix - The suffix to check for.
+	 * @returns {boolean}
+	 */
+	FooTable.strings.endsWith = function (str, suffix) {
+		return str.slice(-suffix.length) == suffix;
+	};
+
+	/**
+	 * Checks if a string starts with the supplied prefix.
+	 * @param {string} str - The string to check.
+	 * @param {string} prefix - The prefix to check for.
+	 * @returns {boolean}
+	 */
+	FooTable.strings.startsWith = function (str, prefix) {
+		return str.slice(0, prefix.length) == prefix;
+	};
+
+
+	/**
+	 * Takes the supplied text and slugify's it.
+	 * @param {string} text - The text to slugify.
+	 * @returns {string} The slugified text string.
+	 */
+	FooTable.strings.slugify = function (text) {
+		return typeof text != 'string' ? '' : text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+	};
+
+	/**
+	 * Takes the supplied string and converts it to camel case.
+	 * @param {string} str - The string to camel case.
+	 * @returns {string}
+	 */
+	FooTable.strings.toCamelCase = function (str) {
+		if (str.toUpperCase() === str) return str.toLowerCase();
+		return str.replace(/^([A-Z])|[-\s_](\w)/g, function (match, p1, p2) {
+			if (p2) return p2.toUpperCase();
+			return p1.toLowerCase();
+		});
+	};
+
+	/**
+	 * Takes the supplied string and converts it to hyphen case.
+	 * @param {string} str - The string to hyphen case.
+	 * @returns {string}
+	 */
+	FooTable.strings.toHyphenCase = function (str) {
+		return str.replace(/^([A-Z])|[-\s_](\w)/g, function (match, p1, p2) {
+			if (p2) return '-' + p2.toLowerCase();
+			return p1.toLowerCase();
+		});
+	};
+
+	var _isValidVariableName = /^(?!(?:do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)$)[$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc][$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc0-9\u0300-\u036f\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0eb9\u0ebb\u0ebc\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1712-\u1714\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19b0-\u19c0\u19c8\u19c9\u19d0-\u19d9\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf2-\u1cf4\u1dc0-\u1de6\u1dfc-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\ua620-\ua629\ua66f\ua674-\ua67d\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua880\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8e0-\ua8f1\ua900-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f]*$/;
+	/**
+	 * Checks if the supplied string is a valid JavaScript variable name.
+	 * @param {string} name - The name of the string to check.
+	 * @param {boolean} [namespaced] - Whether or not to allow periods (.) in the name being checked.
+	 * @returns {boolean}
+	 * @see http://stackoverflow.com/questions/1661197/what-characters-are-valid-for-javascript-variable-names
+	 */
+	FooTable.strings.isValidVariableName = function(name, namespaced){
+		if (namespaced && FooTable.strings.contains(name, '.')){
+			var valid = true, parts = name.split('.');
+			for (var i = 0, len = parts.length; i < len; i++){
+				valid = _isValidVariableName.test(parts[i]);
+				if (!valid) break;
+			}
+			return valid;
+		}
+		return _isValidVariableName.test(name);
+	};
+
 
 })(jQuery, FooTable = window.FooTable || {});
 (function (FooTable) {
@@ -742,12 +870,11 @@
 		 * @extends FooTable.Class
 		 * @param {FooTable.Instance} instance -  The {@link FooTable.Instance} this cell belongs to.
 		 * @param {FooTable.Row} row - The parent {@link FooTable.Row} this cell belongs to.
-		 * @param {HTMLElement} cell -  The cell element this object wraps.
 		 * @param {FooTable.Column} column - The {@link FooTable.Column} this cell falls under.
-		 * @param {*} value - The value of the cell.
+		 * @param {HTMLElement} cell -  The cell element this object wraps.
 		 * @returns {FooTable.Cell}
 		 */
-		ctor: function (instance, row, cell, column, value) {
+		ctor: function (instance, row, column, cell) {
 			/**
 			 * The {@link FooTable.Instance} for the cell.
 			 * @type {FooTable.Instance}
@@ -772,12 +899,12 @@
 			 * The value of the cell.
 			 * @type {*}
 			 */
-			this.value = value;
+			this.value = column.parser.call(this, cell, instance.options);
 			/**
 			 * The display value of the cell, this can be HTML.
 			 * @type {string}
 			 */
-			this.display = FooTable.is.fn(column.formatter) ? column.formatter(value) : value;
+			this.display = column.formatter.call(this, this.value, instance.options);
 
 			this.ft.execute('ctor_cell', this);
 
@@ -831,9 +958,9 @@
 			/**
 			 * The parse function for this column. This is set by the plugin during initialization.
 			 * @type {function}
-			 * @default jQuery.noop
+			 * @default FooTable.Defaults#parsers.text
 			 */
-			this.parser = FooTable.is.fn(definition.parser) ? definition.parser : $.noop;
+			this.parser = FooTable.checkFnPropValue(definition.parser, instance.options.parsers[definition.type] || instance.options.parsers.text);
 			/**
 			 * Whether or not to force a column to hide overflow with an ellipsis.
 			 * @type {boolean}
@@ -845,14 +972,12 @@
 			 * The column format function is passed the value obtained by the parser for the column and must return a string used to display the value in the cell, this result can be an HTML string.
 			 * @type {function}
 			 * @default null
-			 * @example <caption>The below shows a formatter to convert a date or a ticks value to a string representation to display in a cell.</caption>
+			 * @example <caption>The below shows a formatter that simply wraps it's value in quotation marks.</caption>
 			 * format: function(value){
-			 * 	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-			 * 	if (typeof value == "number") value = new Date(value);
-			 * 	return value instanceof Date ? value.getDate() + ' ' + months[value.getMonth()] + ' ' + value.getFullYear() : null;
+			 * 	return '"' + value + '"';
 			 * }
 			 */
-			this.formatter = FooTable.is.fn(definition.formatter) ? definition.formatter : null;
+			this.formatter = FooTable.checkFnPropValue(definition.formatter, instance.options.formatters[definition.type] || instance.options.formatters.text);
 			/**
 			 * Specifies the maximum width for the column.
 			 * @type {number}
@@ -1011,11 +1136,29 @@
 		 * The pager object contains the page number and direction to page to.
 		 * @constructs
 		 * @extends FooTable.Class
+		 * @param {number} total - The total number of pages available.
+		 * @param {number} current - The current page number.
+		 * @param {number} size - The number of rows per page.
 		 * @param {number} page - The page number to goto.
-		 * @param {boolean} forward - The boolean indicating the direction of paging, TRUE = forward, FALSE = back.
+		 * @param {boolean} forward - A boolean indicating the direction of paging, TRUE = forward, FALSE = back.
 		 * @returns {FooTable.Pager}
 		 */
-		ctor: function(page, forward){
+		ctor: function(total, current, size, page, forward){
+			/**
+			 * The total number of pages available.
+			 * @type {number}
+			 */
+			this.total = total;
+			/**
+			 * The current page number.
+			 * @type {number}
+			 */
+			this.current = current;
+			/**
+			 * The number of rows per page.
+			 * @type {number}
+			 */
+			this.size = size;
 			/**
 			 * The page number to goto.
 			 * @type {number}
@@ -1161,7 +1304,7 @@
 				 */
 				if (self.raise('preinit').isDefaultPrevented()) throw FooTable.ExitEarly;
 				return self.when(false, true, 'init', element, options).then(function(){
-					self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'glyphicon glyphicon-repeat'})));
+					self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'fooicon fooicon-loader'})));
 					self.initialized = true;
 					/**
 					 * The init event is raised after all core components and add-ons are initialized.
@@ -1199,7 +1342,7 @@
 			$.extend(true, self.options, options);
 			if (FooTable.is.hash(options.on)) self.$table.on(self.options.on);
 			return self.when(false, true, 'reinit', self.options).then(function () {
-				self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'glyphicon glyphicon-repeat'})));
+				self.$loader = $('<tr/>', { 'class': 'footable-loader' }).append($('<td/>').attr('colspan', self.columns.colspan()).append($('<span/>', {'class': 'fooicon fooicon-loader'})));
 				self.initialized = true;
 				/**
 				 * The reinit event is raised after all core components are reinitialized.
@@ -1330,6 +1473,11 @@
 						self.$loader.detach();
 					});
 				});
+			}, function(err){
+				// hide the loader
+				self.$table.children('thead').children('tr.footable-header').show();
+				self.$loader.detach();
+				if (!(err instanceof FooTable.ExitEarly)) console.log('FooTable: An unhandled error was thrown during an ajax operation:', err);
 			});
 		},
 		/**
@@ -1351,7 +1499,7 @@
 				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 				 */
-				if (self.raise('predraw').isDefaultPrevented()) throw FooTable.ExitEarly;
+				if (self.raise('predraw').isDefaultPrevented()) throw FooTable.ExitEarly();
 				return self.when(false, true, 'draw').then(function(){
 					self.$loader.children('td').attr('colspan', self.columns.colspan());
 					/**
@@ -1360,7 +1508,7 @@
 					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 					 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
 					 */
-					if (self.raise('draw').isDefaultPrevented()) throw FooTable.ExitEarly;
+					if (self.raise('draw').isDefaultPrevented()) throw FooTable.ExitEarly();
 					return self.when(false, true, 'postdraw').then(function(){
 						self.$loader.children('td').attr('colspan', self.columns.colspan());
 						/**
@@ -1372,6 +1520,8 @@
 						self.raise('postdraw');
 					});
 				});
+			}, function(err){
+				if (!(err instanceof FooTable.ExitEarly)) console.log('FooTable: An unhandled error was thrown during a draw operation:', err);
 			});
 		},
 		/**
@@ -1462,7 +1612,15 @@
 			methodName = args.shift();
 			$.each(components, function(i, component){
 				if (FooTable.is.fn(component[methodName])) {
-					methods.push(component[methodName].apply(component, args));
+					methods.push($.Deferred(function(d){
+						try {
+							var result = component[methodName].apply(component, args);
+							if (FooTable.is.promise(result)) return result;
+							d.resolve(result);
+						} catch (err) {
+							d.reject(err);
+						}
+					}));
 				}
 			});
 			return $.when.apply($, methods);
@@ -1484,7 +1642,15 @@
 			components = args.shift();
 			methodName = args.shift();
 			component = components.shift();
-			return $.when(component[methodName].apply(component, args)).then(function(){
+			return $.when($.Deferred(function(d){
+				try {
+					var result = component[methodName].apply(component, args);
+					if (FooTable.is.promise(result)) return result;
+					d.resolve(result);
+				} catch (err) {
+					d.reject(err);
+				}
+			})).then(function(){
 				return self._chain(components, methodName, param1, paramN);
 			});
 		},
@@ -1574,6 +1740,21 @@
 		}
 	};
 
+	/**
+	 * These formatters are supplied the value retrieved from the parser for the {@link FooTable.Column} and must return a string value.
+	 * The value returned from the formatter is what is displayed in the cell in the table and can be a HTML string.
+	 * @type {object.<string, function(*)>}
+	 * @default { "text": function, "number": function }
+	 */
+	FooTable.Defaults.prototype.formatters = {
+		text: function(value){
+			return ''+value; // ensure a string is returned.
+		},
+		number: function(value){
+			return ''+value; // ensure a string is returned.
+		}
+	};
+
 	FooTable.Columns = FooTable.Component.extend(/** @lends FooTable.Columns */{
 		/**
 		 * The columns class contains all the logic for handling columns.
@@ -1655,7 +1836,7 @@
 		predraw: function(){
 			var self = this;
 			$.each(self.array, function(i, col){
-				col.hidden = FooTable.strings.contains(col.hide, self.ft.breakpoints.current) || FooTable.strings.contains(col.hide, 'all');
+				col.hidden = self.ft.breakpoints.isHidden(col.hide);
 			});
 		},
 		/**
@@ -1679,13 +1860,13 @@
 		fromDOM: function(headerRow){
 			var self = this, columns = [];
 			$(headerRow).addClass('footable-header');
-			for (var i = 0, $cell, column, definition, len = headerRow.cells.length; i < len; i++){
+			for (var i = 0, $cell, txt, column, definition, len = headerRow.cells.length; i < len; i++){
 				$cell = $(headerRow.cells[i]);
+				txt = $cell.text();
 				definition = $.extend(true, {
-					title: $cell.text()
+					name: FooTable.strings.toCamelCase(txt),
+					title: txt
 				}, self.o.columns[i] || {}, $cell.data(), { index: i });
-				definition.sorter = self.o.sorters[definition.type] || self.o.sorters.text;
-				definition.parser = self.o.parsers[definition.type] || self.o.parsers.text;
 				column = new FooTable.Column(self.ft, $cell, definition);
 				columns.push(column);
 			}
@@ -1708,8 +1889,6 @@
 					definition = $.extend(true, {
 						title: obj[i].title || obj[i].name && obj[i].name.replace(/(.)([A-Z])/, "$1 $2").replace(/(?:^|\s)\S/g, function (a) { return a.toUpperCase(); }) || i
 					}, obj[i], { index: i });
-					definition.sorter = self.o.sorters[definition.type] || self.o.sorters.text;
-					definition.parser = self.o.parsers[definition.type] || self.o.parsers.text;
 					column = new FooTable.Column(self.ft, document.createElement('th'), definition);
 					column.$el.appendTo($row);
 					columns.push(column);
@@ -1928,6 +2107,16 @@
 	FooTable.Defaults.prototype.empty = 'No results';
 
 	/**
+	 * A space delimited string of class names to append to the details table for a row. When left as the default of null the details will
+	 * inherit all classes from the root table that start with "table-".
+	 * @type {string}
+	 * @default NULL
+	 * @example <caption>To prevent the details inheriting from it's parent and to instead specify that it should be bordered and condensed.</caption>
+	 * detailsClasses: 'table-bordered table-condensed'
+	 */
+	FooTable.Defaults.prototype.detailsClasses = null;
+
+	/**
 	 * An array of JSON objects containing the row data.
 	 * @type {Array.<object>}
 	 * @default []
@@ -2033,7 +2222,7 @@
 				row = new FooTable.Row(self.ft, rows[i], self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.ft, row, rows[i].cells[column.index], column, column.parser(rows[i].cells[column.index]));
+					cell = new FooTable.Cell(self.ft, row, column, rows[i].cells[column.index]);
 					row.cells.push(cell);
 				}
 				_rows.push(row);
@@ -2053,7 +2242,7 @@
 				row = new FooTable.Row(self.ft, document.createElement('tr'), self.ft.columns.array);
 				for (var j = 0, len2 = row.columns.length; j < len2; j++) {
 					column = row.columns[j];
-					cell = new FooTable.Cell(self.ft, row, document.createElement('td'), column, rows[i][column.name]);
+					cell = new FooTable.Cell(self.ft, row, column, $('<td/>').data('value', rows[i][column.name]).get(0));
 					row.cells.push(cell);
 					row.$el.append(cell.$el);
 				}
@@ -2104,7 +2293,7 @@
 			// add the row toggle to the first visible column
 			var index = (self.ft.columns.first(function (c) { return !c.hidden && c.visible; }) || {}).index;
 			if (typeof index !== 'number') return;
-			$tbody.find('> tr > td:nth-child(' + (index + 1) + '):not(tr.footable-detail-row > td, tr.footable-loader > td)').prepend($('<span/>', {'class': 'footable-toggle glyphicon glyphicon-plus'}));
+			$tbody.find('> tr > td:nth-child(' + (index + 1) + '):not(tr.footable-detail-row > td, tr.footable-loader > td)').prepend($('<span/>', {'class': 'footable-toggle fooicon fooicon-plus'}));
 		},
 		/**
 		 * This method restores the detail row cells to there original row position but does not remove the expanded class.
@@ -2152,7 +2341,7 @@
 			if (hidden.length > 0){
 				var i, len, $tr, $th, $td,
 					$cell = $('<td/>', { colspan: self.ft.columns.colspan() }),
-					$table = $('<table/>', { 'class': 'footable-details table table-bordered table-condensed table-hover' }).appendTo($cell),
+					$table = $('<table/>', { 'class': 'footable-details table ' + self._getDetailsClasses() }).appendTo($cell),
 					$tbody = $('<tbody/>').appendTo($table);
 
 				for (i = 0, len = hidden.length; i < len; i++){
@@ -2160,7 +2349,7 @@
 					$th = $('<th/>', { text: hidden[i].column.title }).appendTo($tr);
 					$td = $('<td/>').appendTo($tr).append(hidden[i].$el.contents());
 				}
-				data.$el.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+				data.$el.addClass('footable-detail-show').find('td > span.footable-toggle').removeClass('fooicon-plus').addClass('fooicon-minus');
 				$('<tr/>', { 'class': 'footable-detail-row' }).append($cell).insertAfter(data.$el);
 			}
 		},
@@ -2176,7 +2365,7 @@
 				$el;
 
 			if ($details != null){
-				data.$el.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+				data.$el.removeClass('footable-detail-show').find('td > span.footable-toggle').removeClass('fooicon-minus').addClass('fooicon-plus');
 				$details.children('td').first()
 					.find('.footable-details > tbody > tr').each(function(i, el){
 						$el = $(el);
@@ -2203,6 +2392,21 @@
 			}
 		},
 		/**
+		 * Retrieves the space delimited list of classes to apply to the details table. If the {@link FooTable.Defaults#detailsClasses} value is null or empty
+		 * this will parse the root table for all classes starting with table- and return those.
+		 * @instance
+		 * @returns {string}
+		 * @private
+		 */
+		_getDetailsClasses: function(){
+			if (this.o.detailsClasses != null) return this.o.detailsClasses;
+			var classes = this.ft.$table.get(0).className.split(' '), result = [];
+			for (var i = 0, len = classes.length; i < len; i++){
+				if (FooTable.strings.startsWith(classes[i], 'table-')) result.push(classes[i]);
+			}
+			return this.o.detailsClasses = result.join(' ');
+		},
+		/**
 		 * Handles the toggle click event for rows.
 		 * @instance
 		 * @param {jQuery.Event} e - The jQuery.Event object for the click event.
@@ -2226,14 +2430,14 @@
 	 * @type {string}
 	 * @default null
 	 * @example
-	 * hide: "phone tablet"
+	 * hide: "small medium"
 	 */
 	FooTable.Column.prototype.hide = null;
 
 	/**
 	 * An object containing the breakpoints for the plugin.
 	 * @type {object.<string, number>}
-	 * @default { "phone": 480, "tablet": 1024 }
+	 * @default { "xs": 480, "sm": 768, "md": 992, "lg": 1200 }
 	 */
 	FooTable.Defaults.prototype.breakpoints = null;
 
@@ -2276,8 +2480,8 @@
 
 			/* PUBLIC */
 			/**
-			 * The name of the current breakpoint.
-			 * @type {string}
+			 * The current breakpoint.
+			 * @type {FooTable.Breakpoint}
 			 */
 			this.current = null;
 			/**
@@ -2294,10 +2498,22 @@
 			/* PRIVATE */
 			/**
 			 * Used when performing a {@link FooTable.Breakpoints#check} this stores the previous breakpoint value to compare to the current.
-			 * @type {string}
+			 * @type {FooTable.Breakpoint}
 			 * @private
 			 */
 			this._previous = null;
+			/**
+			 * This value is updated each time the current breakpoint changes and contains a space delimited string of the names of breakpoints that should also be hidden.
+			 * @type {string}
+			 * @private
+			 */
+			this._hidden = null;
+			/**
+			 * This value is set once when the {@link FooTable.Breakpoints#array} is generated and contains a space delimited string of all the breakpoint class names.
+			 * @type {string}
+			 * @private
+			 */
+			this._classNames = '';
 
 			// call the base class constructor
 			this._super(instance);
@@ -2324,7 +2540,7 @@
 		 */
 		init: function(table, options){
 			this._generate(options.breakpoints);
-			this.current = this.calculate();
+			this.calculate();
 			/**
 			 * The breakpoints_init event raised after the breakpoints have been parsed.
 			 * @event FooTable.Breakpoints#breakpoints_init
@@ -2342,7 +2558,7 @@
 		 */
 		reinit: function(options){
 			this._generate(options.breakpoints);
-			this.current = this.calculate();
+			this.calculate();
 			/**
 			 * The breakpoints_init event raised after the breakpoints have been parsed.
 			 * @event FooTable.Breakpoints#breakpoints_reinit
@@ -2351,23 +2567,42 @@
 			 */
 			this.ft.raise('breakpoints_reinit');
 		},
+		draw: function(){
+			this.ft.$table.removeClass(this._classNames).addClass('breakpoint-' + this.current.name);
+		},
 
 		/* PUBLIC */
 		/**
-		 * Calculates the current breakpoint from the {@link FooTable.Breakpoints#array} and returns its name.
+		 * Calculates the current breakpoint from the {@link FooTable.Breakpoints#array} and sets the {@link FooTable.Breakpoints#current} property.
 		 * @instance
 		 * @returns {string}
 		 */
 		calculate: function(){
-			var self = this, current = null, breakpoint, width = self.getWidth();
+			var self = this, current = null, hidden = [], breakpoint, prev = null, has_prev, width = self.getWidth();
 			for (var i = 0, len = self.array.length; i < len; i++) {
+				has_prev = prev instanceof FooTable.Breakpoint;
 				breakpoint = self.array[i];
-				if (breakpoint && breakpoint.width && width <= breakpoint.width) {
+				// if the width is smaller than the smallest breakpoint set that as the current.
+				// if the width is larger than the largest breakpoint set that as the current.
+				// otherwise if the width is somewhere in between check all breakpoints testing if the width
+				// is greater than the current but smaller than the previous.
+				if ((!current && i == len -1)
+					|| (width >= breakpoint.width && (has_prev ? width <= prev.width : true))) {
 					current = breakpoint;
 					break;
 				}
+				if (!current) hidden.push(breakpoint.name);
+				prev = breakpoint;
 			}
-			return current === null ? 'default' : current['name'];
+			hidden.push(current.name);
+			self.current = current;
+			self._hidden = hidden.join(' ');
+			return current;
+		},
+		isHidden: function(name){
+			if (FooTable.strings.isNullOrEmpty(name)) return false;
+			if (name === 'all') return true;
+			return FooTable.strings.containsWord(this._hidden, name);
 		},
 		/**
 		 * Performs a check between the current breakpoint and the previous breakpoint and performs a redraw if they differ.
@@ -2376,7 +2611,7 @@
 		 */
 		check: function(){
 			var self = this;
-			self.current = self.calculate();
+			self.calculate();
 			if (self.current == self._previous) return;
 			self.ft.draw();
 			self._previous = self.current;
@@ -2419,17 +2654,16 @@
 		 */
 		_generate: function(breakpoints){
 			var self = this;
-			if (breakpoints == null) breakpoints = { phone: 480, tablet: 1024 };
+			if (breakpoints == null) breakpoints = { "xs": 480, "sm": 768, "md": 992, "lg": 1200 };
 			// Create a nice friendly array to work with out of the breakpoints object.
 			for (var name in breakpoints) {
 				if (!breakpoints.hasOwnProperty(name)) continue;
 				self.array.push(new FooTable.Breakpoint(name, breakpoints[name]));
-				self.names += (name + ' ');
+				self._classNames += 'breakpoint-' + (name + ' ');
 			}
-
-			// Sort the breakpoints so the smallest is checked first
+			// Sort the breakpoints so the largest is checked first
 			self.array.sort(function (a, b) {
-				return a.width - b.width;
+				return b.width - a.width;
 			});
 		}
 	});
@@ -2532,13 +2766,6 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
-			/**
-			 * Sets a flag indicating whether or not the filter has changed. When set to true the {@link FooTable.Filtering#filtering_changing} and {@link FooTable.Filtering#filtering_changed} events
-			 * will be raised during the drawing operation.
-			 * @private
-			 * @type {boolean}
-			 */
-			this._changed = false;
 
 			// call the constructor of the base class
 			this._super(instance);
@@ -2612,7 +2839,6 @@
 		 */
 		preajax: function(data){
 			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanging();
 			data.filterQuery = this.o.query;
 			data.filterColumns = $.map(this.o.columns, function(col){
 				return col.name;
@@ -2625,15 +2851,11 @@
 		 */
 		predraw: function(){
 			if (this.o.enabled == false
-				|| this.ft.options.ajaxEnabled == true)
+				|| this.ft.options.ajaxEnabled == true
+				|| FooTable.strings.isNullOrEmpty(this.o.query))
 				return;
 
-			var self = this;
-			if (self._changed == true) self.raiseChanging();
-
-			if (FooTable.strings.isNullOrEmpty(self.o.query)) return;
-
-			var i, text, len = self.ft.rows.array.length, remove = [];
+			var self = this, i, text, len = self.ft.rows.array.length, remove = [];
 			for (i = 0; i < len; i++){
 				text = '';
 				for (var j = 0, column; j < self.o.columns.length; j++){
@@ -2667,16 +2889,6 @@
 			self.$search_input.val(self.o.query);
 		},
 		/**
-		 * Performs any post draw operations required for filtering.
-		 * @instance
-		 * @protected
-		 */
-		postdraw: function(){
-			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanged();
-			this._changed = false;
-		},
-		/**
 		 * Checks if the supplied text is filtered by the query.
 		 * @instance
 		 * @protected
@@ -2691,41 +2903,6 @@
 			}
 			return count > 0;
 		},
-		/**
-		 * Raises the filtering_changing event using the current filter and columns to generate a {@link FooTable.Filter} object for the event and merges changes made by any listeners back into the current state.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Filtering#filtering_changing
-		 */
-		raiseChanging: function(){
-			var filter = new FooTable.Filter(this.o.query, this.o.columns);
-			/**
-			 * The filtering_changing event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Filtering#filtering_changing
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Filter} filter - The filter that is about to be applied.
-			 */
-			if (this.ft.raise('filtering_changing', [filter]).isDefaultPrevented()) return;
-			this.o.query = filter.query;
-			this.o.columns = FooTable.is.array(filter.columns) ? this.ft.columns.ensure(filter.columns) : this.columns();
-		},
-		/**
-		 * Raises the filtering_changed event using the filter and columns to generate a {@link FooTable.Filter} object for the event.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Filtering#filtering_changed
-		 */
-		raiseChanged: function(){
-			/**
-			 * The filtering_changed event is raised after a filter has been applied.
-			 * @event FooTable.Filtering#filtering_changed
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Filter} filter - The filter that has been applied.
-			 */
-			this.ft.raise('filtering_changed', [new FooTable.Filter(this.o.query, this.o.columns)]);
-		},
 
 		/* PUBLIC */
 		/**
@@ -2734,24 +2911,21 @@
 		 * @param {string} query - The query to filter the rows by.
 		 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to in each row.
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Filtering#filtering_changing
-		 * @fires FooTable.Filtering#filtering_changed
+		 * @fires FooTable.Filtering#"change.ft.filtering"
+		 * @fires FooTable.Filtering#"changed.ft.filtering"
 		 */
 		filter: function(query, columns){
-			this.o.query = query;
-			this.o.columns = FooTable.is.array(columns) ? this.ft.columns.ensure(columns) : this.columns();
-			this._changed = true;
-			return this.ft.update();
+			return this._filter(query, columns, true);
 		},
 		/**
 		 * Clears the current filter.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Filtering#filtering_changing
-		 * @fires FooTable.Filtering#filtering_changed
+		 * @fires FooTable.Filtering#"change.ft.filtering"
+		 * @fires FooTable.Filtering#"changed.ft.filtering"
 		 */
 		clear: function(){
-			return this.filter(null, []);
+			return this._filter(null, null, true);
 		},
 		/**
 		 * Gets an array of all selected {@link FooTable.Column}s to apply the filter to.
@@ -2792,8 +2966,8 @@
 					return col.filterable ? col : null;
 				});
 			}
-			// add a header if none exists
-			if (self.ft.$table.children('thead').length == 0) self.ft.$table.prepend('<thead/>');
+			// add a header if none exists and add the filtering class
+			if (self.ft.$table.addClass('footable-filtering').children('thead').length == 0) self.ft.$table.prepend('<thead/>');
 			// generate the cell that actually contains all the UI.
 			var $cell = $('<th/>').attr('colspan', self.ft.columns.colspan());
 			// add it to a row and then populate it with the search input and column selector dropdown.
@@ -2821,6 +2995,43 @@
 			).appendTo($cell);
 		},
 		/**
+		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"change.ft.filtering"} and {@link FooTable.Filtering#"changed.ft.filtering"} events.
+		 * @instance
+		 * @private
+		 * @param {string} query - The query to apply.
+		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
+		 * @param {boolean} redraw - Whether or not this operation requires a redraw of the table.
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Filtering#"change.ft.filtering"
+		 * @fires FooTable.Filtering#"changed.ft.filtering"
+		 */
+		_filter: function(query, columns, redraw){
+			var self = this,
+				q = FooTable.strings.isNullOrEmpty(query) ? self.query() : query,
+				c = FooTable.is.array(columns) ? self.ft.columns.ensure(columns) : self.columns(),
+				filter = new FooTable.Filter(q, c);
+			/**
+			 * The change.ft.filtering event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Filtering#"change.ft.filtering"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Filter} filter - The filter that is about to be applied.
+			 */
+			if (self.ft.raise('change.ft.filter', [filter]).isDefaultPrevented()) return $.when();
+			self.o.query = filter.query;
+			self.o.columns = FooTable.is.array(filter.columns) ? self.ft.columns.ensure(filter.columns) : self.columns();
+			return (redraw ? self.ft.update() : $.when()).then(function(){
+				/**
+				 * The changed.ft.filtering event is raised after a filter has been applied.
+				 * @event FooTable.Filtering#"changed.ft.filtering"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+				 * @param {FooTable.Filter} filter - The filter that has been applied.
+				 */
+				self.ft.raise('changed.ft.filtering', [filter]);
+			});
+		},
+		/**
 		 * Handles the change event for the {@link FooTable.Filtering#$search_input}.
 		 * @instance
 		 * @private
@@ -2839,8 +3050,8 @@
 			if(alpha || ctrl) {
 				self._filterTimeout = setTimeout(function(){
 					self._filterTimeout = null;
-					if (query.length >= self.o.min) self.filter(query, self.columns());
-					else if (FooTable.strings.isNullOrEmpty(query)) self.clear();
+					if (query.length >= self.o.min) self._filter(query, null, true);
+					else if (FooTable.strings.isNullOrEmpty(query)) self._filter(null, null, true);
 				}, self.o.delay);
 			}
 		},
@@ -2854,7 +3065,7 @@
 			e.preventDefault();
 			var self = e.data.self;
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
-			if (self.$search_button.children('.fooicon').hasClass('fooicon-search')) self.filter(self.query(), self.columns());
+			if (self.$search_button.children('.fooicon').hasClass('fooicon-search')) self._filter(null, null, true);
 			else self.clear();
 		},
 		/**
@@ -2871,7 +3082,7 @@
 				var $icon = self.$search_button.children('.fooicon');
 				if ($icon.hasClass('fooicon-remove')){
 					$icon.removeClass('fooicon-remove').addClass('fooicon-search');
-					self.filter(self.query(), self.columns());
+					self._filter(null, null, true);
 				}
 			}, self.o.delay);
 		},
@@ -2942,7 +3153,7 @@
 	 * @prop {boolean} enabled=false - Whether or not to allow paging on the table.
 	 * @prop {number} current=1 - The page number to display.
 	 * @prop {number} size=10 - The number of rows displayed per page.
-	 * @prop {number} total=-1 - The total number of rows. This is only required if you are using Ajax to provide paging capabilities.
+	 * @prop {number} total=-1 - The total number of pages. This is only required if you are using Ajax to provide paging capabilities.
 	 * @prop {object} strings - An object containing the strings used by the paging buttons.
 	 * @prop {string} strings.first="&laquo;" - The string used for the 'first' button.
 	 * @prop {string} strings.prev="&lsaquo;" - The string used for the 'previous' button.
@@ -2986,11 +3197,32 @@
 	FooTable.RequestData.prototype.pageSize = 10;
 
 	/**
-	 * The total number of rows available. Added by the {@link FooTable.Paging} component.
+	 * The total number of pages available. Added by the {@link FooTable.Paging} component.
 	 * @type {number}
-	 * @default NULL
+	 * @default -1
 	 */
-	FooTable.ResponseData.prototype.totalRows = null;
+	FooTable.RequestData.prototype.pageCount = -1;
+
+	/**
+	 * The page number to display. Added by the {@link FooTable.Paging} component.
+	 * @type {number}
+	 * @default 1
+	 */
+	FooTable.ResponseData.prototype.currentPage = 1;
+
+	/**
+	 * The number of rows to display per page. Added by the {@link FooTable.Paging} component.
+	 * @type {number}
+	 * @default 10
+	 */
+	FooTable.ResponseData.prototype.pageSize = 10;
+
+	/**
+	 * The total number of pages available. Added by the {@link FooTable.Paging} component.
+	 * @type {number}
+	 * @default -1
+	 */
+	FooTable.ResponseData.prototype.pageCount = -1;
 
 	FooTable.Paging = FooTable.Component.extend(/** @lends FooTable.Paging */{
 		/**
@@ -3029,11 +3261,17 @@
 
 			/* PRIVATE */
 			/**
-			 * A boolean indicating the direction of paging, TRUE = forward, FALSE = back.
+			 * A number indicating the previous page displayed.
 			 * @private
-			 * @type {boolean}
+			 * @type {number}
 			 */
-			this._forward = false;
+			this._previous = 1;
+			/**
+			 * The total number of pages used to generated the pagination links. Used in the draw method to determine if the total has changed and the links should be regenerated.
+			 * @type {number}
+			 * @private
+			 */
+			this._generated = 0;
 
 			// call the base constructor
 			this._super(instance);
@@ -3098,9 +3336,9 @@
 		 */
 		preajax: function(data){
 			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanging();
 			data.currentPage = this.o.current;
 			data.pageSize = this.o.size;
+			data.pageCount = this.o.total;
 		},
 		/**
 		 * Parses the ajax response object and sets the current page, size and total if they exists.
@@ -3110,8 +3348,9 @@
 		 */
 		postajax: function(response){
 			if (this.o.enabled == false) return;
-			this.o.total = FooTable.is.type(response.totalRows, 'number') ? response.totalRows : this.o.total;
-			this.o.current = this.current();
+			this.o.size = FooTable.is.type(response.pageSize, 'number') ? response.pageSize : this.o.size;
+			this.o.total = FooTable.is.type(response.pageCount, 'number') ? response.pageCount : this.o.total;
+			this.o.current = FooTable.is.type(response.currentPage, 'number') ? response.currentPage : this.o.current;
 		},
 		/**
 		 * Performs the actual paging against the {@link FooTable.Rows#array} removing all rows that are not on the current visible page.
@@ -3120,12 +3359,9 @@
 		 */
 		predraw: function(){
 			if (this.o.enabled == false || this.ft.options.ajaxEnabled == true) return;
-
 			var self = this;
-			if (self._changed == true) self.raiseChanging();
-
-			self.o.total = self.ft.rows.array.length == 0 ? 1 : self.ft.rows.array.length;
-			self.o.current = self.current();
+			self.o.total = self.ft.rows.array.length == 0 ? 1 : Math.ceil(self.ft.rows.array.length / self.o.size);
+			self.o.current = self.o.current > self.o.total ? self.o.total : (self.o.current < 1 ? 1 : self.o.current);
 			var start = (self.o.current - 1) * self.o.size;
 			if (self.o.total > self.o.size) self.ft.rows.array = self.ft.rows.array.splice(start, self.o.size);
 		},
@@ -3137,137 +3373,70 @@
 		draw: function(){
 			if (this.o.enabled == false) return;
 			this.$container.children('td').first().attr('colspan', this.ft.columns.colspan());
-			this._generateLinks();
-		},
-		/**
-		 * Performs any post draw operations required for paging.
-		 * @instance
-		 * @protected
-		 */
-		postdraw: function(){
-			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanged();
-			this._changed = false;
-		},
-		/**
-		 * Raises the paging_changing event using the page number and direction to generate a {@link FooTable.Pager} object for the event and merges changes made by any listeners back into the current state.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Paging#paging_changing
-		 */
-		raiseChanging: function(){
-			var pager = new FooTable.Pager(this.current(), this._forward);
-			/**
-			 * The paging_changing event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Paging#paging_changing
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Pager} pager - The pager that is about to be applied.
-			 */
-			if (this._changed == true && this.ft.raise('paging_changing', [pager]).isDefaultPrevented()) return $.when();
-			this.o.current = pager.page;
-			this._forward = pager.forward;
-		},
-		/**
-		 * Raises the paging_changed event using the page number and direction to generate a {@link FooTable.Pager} object for the event.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Paging#paging_changed
-		 */
-		raiseChanged: function(){
-			/**
-			 * The paging_changed event is raised after a pager has been applied.
-			 * @event FooTable.Paging#paging_changed
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Pager} pager - The pager that has been applied.
-			 */
-			this.ft.raise('paging_changed', [new FooTable.Pager(this.current(), this._forward)]);
+			if (this._generated !== this.o.total){
+				this._generateLinks();
+			}
+			this._setVisible(this.o.current, this.o.current > this._previous);
+			this._setNavigation(true);
 		},
 
 		/* PUBLIC */
 		/**
-		 * Returns the maximum number of pages taking into account the total number of rows and the page size.
-		 * @instance
-		 * @returns {number}
-		 */
-		total: function(){
-			return Math.ceil(this.o.total / this.o.size);
-		},
-		/**
-		 * Returns the current page number taking into account the total number of rows and page size to ensure a valid number.
-		 * @instance
-		 * @returns {number}
-		 */
-		current: function(){
-			var current = this.o.current * this.o.size > this.o.total
-				? this.total()
-				: this.o.current;
-			return current < 1 ? 1 : current;
-		},
-		/**
 		 * Pages to the first page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		first: function(){
-			return this._set(1, false);
+			return this._set(1, true);
 		},
 		/**
 		 * Pages to the previous page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		prev: function(){
-			var page = this.o.current - 1 > 0 ? this.o.current - 1 : 1;
-			return this._set(page, false);
+			return this._set(this.o.current - 1 > 0 ? this.o.current - 1 : 1, true);
 		},
 		/**
 		 * Pages to the next page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		next: function(){
-			var total = this.total(),
-				page = this.o.current + 1 < total ? this.o.current + 1 : total;
-			return this._set(page, true);
+			return this._set(this.o.current + 1 < this.o.total ? this.o.current + 1 : this.o.total, true);
 		},
 		/**
 		 * Pages to the last page.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		last: function(){
-			return this._set(this.total(), true);
+			return this._set(this.o.total, true);
 		},
 		/**
 		 * Pages to the specified page.
 		 * @instance
 		 * @param {number} page - The page number to go to.
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
 		goto: function(page){
-			var total = this.total();
-			page = page > total ? total : page;
-			if (this.o.current == page) return $.when();
-			var forward = page > this.o.current;
-			return this._set(page, forward);
+			return this._set(page > this.o.total ? this.o.total : (page < 1 ? 1 : page), true);
 		},
 		/**
 		 * Shows the previous X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value.
 		 * @instance
 		 */
-		prevX: function(){
+		prevPages: function(){
 			var page = this.$pagination.children('li.footable-page.visible:first').data('page') - 1;
 			this._setVisible(page, false, true);
 			this._setNavigation(false);
@@ -3276,7 +3445,7 @@
 		 * Shows the next X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value.
 		 * @instance
 		 */
-		nextX: function(){
+		nextPages: function(){
 			var page = this.$pagination.children('li.footable-page.visible:last').data('page') + 1;
 			this._setVisible(page, false, false);
 			this._setNavigation(false);
@@ -3284,21 +3453,41 @@
 
 		/* PRIVATE */
 		/**
-		 * Used by the paging functions to set the actual page, direction and then trigger the {@link FooTable.Instance#update} method.
+		 * Performs the required steps to handle paging including the raising of the {@link FooTable.Paging#"change.ft.paging"} and {@link FooTable.Paging#"changed.ft.paging"} events.
 		 * @instance
 		 * @private
 		 * @param {number} page - The page to set.
-		 * @param {boolean} forward - Whether or not to set the direction as forward.
+		 * @param {boolean} redraw - Whether or not this operation requires a redraw of the table.
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Paging#paging_changing
-		 * @fires FooTable.Paging#paging_changed
+		 * @fires FooTable.Paging#"change.ft.paging"
+		 * @fires FooTable.Paging#"changed.ft.paging"
 		 */
-		_set: function(page, forward){
-			if (this.o.current == page) return;
-			this.o.current = page;
-			this._forward = forward;
-			this._changed = true;
-			return this.ft.update();
+		_set: function(page, redraw){
+			var self = this,
+				pager = new FooTable.Pager(self.o.total, self.o.current, self.o.size, page, page > self.o.current);
+			/**
+			 * The change.ft.paging event is raised before a sort is applied and allows listeners to modify the pager or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Paging#"change.ft.paging"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Pager} pager - The pager that is about to be applied.
+			 */
+			if (self.ft.raise('change.ft.paging', [pager]).isDefaultPrevented()) return $.when();
+			pager.page = pager.page > pager.total ? pager.total	: pager.page;
+			pager.page = pager.page < 1 ? 1 : pager.page;
+			if (self.o.current == page) return $.when();
+			self._previous = self.o.current;
+			self.o.current = pager.page;
+			return (redraw ? self.ft.update() : $.when()).then(function(){
+				/**
+				 * The changed.ft.paging event is raised after a pager has been applied.
+				 * @event FooTable.Paging#"changed.ft.paging"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+				 * @param {FooTable.Pager} pager - The pager that has been applied.
+				 */
+				self.ft.raise('changed.ft.paging', [pager]);
+			});
 		},
 		/**
 		 * Generates the paging UI from the supplied options.
@@ -3311,7 +3500,7 @@
 				? this.ft.rows.array.length
 				: options.paging.total;
 
-			if (this.ft.$table.children('tfoot').length == 0) this.ft.$table.append('<tfoot/>');
+			if (this.ft.$table.addClass('footable-paging').children('tfoot').length == 0) this.ft.$table.append('<tfoot/>');
 			var $cell = $('<td/>').attr('colspan', this.ft.columns.colspan());
 			this.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: this }, this._onPageClicked);
 			this.$count = $('<span/>', { 'class': 'label label-default' });
@@ -3325,70 +3514,80 @@
 		 * @private
 		 */
 		_generateLinks: function(){
-			var total = this.total(),
-				multiple = total > 1,
-				changed = this.$pagination.children('li.footable-page').length != total;
-			if (total == 0 || total == 1){
-				this.$pagination.empty();
-				this.$count.text(total + ' of ' + total);
+			var self = this,
+				multiple = self.o.total > 1,
+				link = function(attr, html, klass){
+					return $('<li/>', {
+						'class': klass
+					}).attr('data-page', attr)
+						.append($('<a/>', {
+							'class': 'footable-page-link',
+							href: '#'
+						}).data('page', attr).html(html));
+				};
+			if (self.o.total == 0 || self.o.total == 1){
+				self.$pagination.empty();
+				self.$count.text(self.o.total + ' of ' + self.o.total);
+				self._generated = self.o.total;
 				return;
 			}
-			if (!changed && this.$pagination.children('li.footable-page[data-page="'+this.o.current+'"]').hasClass('visible')){
-				this._setNavigation(true);
-				return;
+			self.$pagination.empty();
+			if (multiple) {
+				self.$pagination.append(link('first', self.o.strings.first, 'footable-page-nav'));
+				self.$pagination.append(link('prev', self.o.strings.prev, 'footable-page-nav'));
+				if (self.o.limit.size > 0 && self.o.limit.size < self.o.total){
+					self.$pagination.append(link('prev-limit', self.o.limit.prev, 'footable-page-nav'));
+				}
 			}
-			this.$pagination.empty();
-			if (multiple) this.$pagination.append(this._createLink('first', this.o.strings.first, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('prev', this.o.strings.prev, 'footable-page-nav'));
-			if (multiple && this.o.limit.size > 0 && this.o.limit.size < total) this.$pagination.append(this._createLink('prev-limit', this.o.limit.prev, 'footable-page-nav'));
-
-			for (var i = 0, $li; i < total; i++){
-				$li = this._createLink(i + 1, i + 1, 'footable-page');
-				this.$pagination.append($li);
+			for (var i = 0, $li; i < self.o.total; i++){
+				$li = link(i + 1, i + 1, 'footable-page');
+				self.$pagination.append($li);
 			}
-
-			if (multiple && this.o.limit.size > 0 && this.o.limit.size < total) this.$pagination.append(this._createLink('next-limit', this.o.limit.next, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('next', this.o.strings.next, 'footable-page-nav'));
-			if (multiple) this.$pagination.append(this._createLink('last', this.o.strings.last, 'footable-page-nav'));
-
-			this._setVisible((this.o.current = this.o.current > total ? (total == 0 ? 1 : total) : this.o.current), this._forward);
-			this._setNavigation(true);
+			if (multiple){
+				if (self.o.limit.size > 0 && self.o.limit.size < self.o.total){
+					self.$pagination.append(link('next-limit', self.o.limit.next, 'footable-page-nav'));
+				}
+				self.$pagination.append(link('next', self.o.strings.next, 'footable-page-nav'));
+				self.$pagination.append(link('last', self.o.strings.last, 'footable-page-nav'));
+			}
+			self._generated = self.o.total;
 		},
 		/**
-		 * Generates an individual page link for the pagination control using the supplied parameters.
-		 * @instance
-		 * @private
-		 * @param {string} attr - The value for the data-page attribute for the link.
-		 * @param {string} html - The inner HTML for the link created.
-		 * @param {string} klass - A CSS class or class names (space separated) to add to the link.
-		 */
-		_createLink: function(attr, html, klass){
-			return $('<li/>', { 'class': klass }).attr('data-page', attr).append($('<a/>', { 'class': 'footable-page-link', href: '#' }).data('page', attr).html(html));
-		},
-		/**
-		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the individual page links.
+		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the current page link.
 		 * @instance
 		 * @private
 		 * @param {boolean} active - Whether or not to set the active class state on the individual page links.
 		 */
 		_setNavigation: function(active){
-			var total = this.total();
+			this.$count.text(this.o.current + ' of ' + this.o.total);
 
-			this.$count.text(this.o.current + ' of ' + total);
+			if (this.o.current == 1) {
+				this.$pagination.children('li[data-page="first"],li[data-page="prev"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="first"],li[data-page="prev"]').removeClass('disabled');
+			}
 
-			if (this.o.current == 1) this.$pagination.children('li[data-page="first"],li[data-page="prev"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="first"],li[data-page="prev"]').removeClass('disabled');
+			if (this.o.current == this.o.total) {
+				this.$pagination.children('li[data-page="next"],li[data-page="last"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="next"],li[data-page="last"]').removeClass('disabled');
+			}
 
-			if (this.o.current == total) this.$pagination.children('li[data-page="next"],li[data-page="last"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="next"],li[data-page="last"]').removeClass('disabled');
+			if ((this.$pagination.children('li.footable-page.visible:first').data('page') || 1) == 1) {
+				this.$pagination.children('li[data-page="prev-limit"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="prev-limit"]').removeClass('disabled');
+			}
 
-			if ((this.$pagination.children('li.footable-page.visible:first').data('page') || 1) == 1) this.$pagination.children('li[data-page="prev-limit"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="prev-limit"]').removeClass('disabled');
+			if ((this.$pagination.children('li.footable-page.visible:last').data('page') || this.o.limit.size) == this.o.total) {
+				this.$pagination.children('li[data-page="next-limit"]').addClass('disabled');
+			} else {
+				this.$pagination.children('li[data-page="next-limit"]').removeClass('disabled');
+			}
 
-			if ((this.$pagination.children('li.footable-page.visible:last').data('page') || this.o.limit.size) == total) this.$pagination.children('li[data-page="next-limit"]').addClass('disabled');
-			else this.$pagination.children('li[data-page="next-limit"]').removeClass('disabled');
-
-			if (active) this.$pagination.children('li.footable-page').removeClass('active').filter('li[data-page="' + this.o.current + '"]').addClass('active');
+			if (active){
+				this.$pagination.children('li.footable-page').removeClass('active').filter('li[data-page="' + this.o.current + '"]').addClass('active');
+			}
 		},
 		/**
 		 * Sets the visible page using the supplied parameters.
@@ -3400,13 +3599,11 @@
 		 */
 		_setVisible: function(page, forward, invert){
 			if (this.$pagination.children('li.footable-page[data-page="'+page+'"]').hasClass('visible')) return;
-
-			var total = this.total();
-			if (this.o.limit.size > 0 && total > this.o.limit.size){
+			if (this.o.limit.size > 0 && this.o.total > this.o.limit.size){
 				page -= 1;
 				var start = 0, end = 0;
 				if (forward == true || invert == true){
-					end = page > total ? total : page;
+					end = page > this.o.total ? this.o.total : page;
 					start = end - this.o.limit.size;
 				} else {
 					start = page < 0 ? 0 : page;
@@ -3414,11 +3611,11 @@
 				}
 				if (start < 0){
 					start = 0;
-					end = this.o.limit.size > total ? total : this.o.limit.size;
+					end = this.o.limit.size > this.o.total ? this.o.total : this.o.limit.size;
 				}
-				if (end > total){
-					end = total;
-					start = total - this.o.limit.size < 0 ? 0 : total - this.o.limit.size;
+				if (end > this.o.total){
+					end = this.o.total;
+					start = this.o.total - this.o.limit.size < 0 ? 0 : this.o.total - this.o.limit.size;
 				}
 				if (forward == true){
 					start++;
@@ -3449,11 +3646,11 @@
 					return;
 				case 'last': self.last();
 					return;
-				case 'prev-limit': self.prevX();
+				case 'prev-limit': self.prevPages();
 					return;
-				case 'next-limit': self.nextX();
+				case 'next-limit': self.nextPages();
 					return;
-				default: self._set(page, false);
+				default: self._set(page, true);
 					return;
 			}
 		}
@@ -3525,39 +3722,19 @@
 	/**
 	 * Shows the next X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value. Added by the {@link FooTable.Paging} component.
 	 * @instance
-	 * @see FooTable.Paging#nextX
+	 * @see FooTable.Paging#nextPages
 	 */
 	FooTable.Instance.prototype.nextPages = function(){
-		return this.use(FooTable.Paging).nextX();
+		return this.use(FooTable.Paging).nextPages();
 	};
 
 	/**
 	 * Shows the previous X number of pages in the pagination control where X is the value set by the {@link FooTable.Defaults#paging} - limit.size option value. Added by the {@link FooTable.Paging} component.
 	 * @instance
-	 * @see FooTable.Paging#prevX
+	 * @see FooTable.Paging#prevPages
 	 */
 	FooTable.Instance.prototype.prevPages = function(){
-		return this.use(FooTable.Paging).prevX();
-	};
-
-	/**
-	 * Gets the current page number. Added by the {@link FooTable.Paging} component.
-	 * @instance
-	 * @returns {number}
-	 * @see FooTable.Paging#current
-	 */
-	FooTable.Instance.prototype.currentPage = function(){
-		return this.use(FooTable.Paging).current();
-	};
-
-	/**
-	 * Gets the total number of pages. Added by the {@link FooTable.Paging} component.
-	 * @instance
-	 * @returns {number}
-	 * @see FooTable.Paging#total
-	 */
-	FooTable.Instance.prototype.totalPages = function(){
-		return this.use(FooTable.Paging).total();
+		return this.use(FooTable.Paging).prevPages();
 	};
 
 })(jQuery, FooTable = window.FooTable || {});
@@ -3697,11 +3874,11 @@
 		 * @param {object} definition - The definition to populate the column with.
 		 */
 		ctor_column: function(column, definition){
-			column.sorter = FooTable.is.fn(definition.sorter) ? definition.sorter : $.noop;
+			column.sorter = FooTable.checkFnPropValue(definition.sorter, this.ft.options.sorters[definition.type] || this.ft.options.sorters.text);
 			column.direction = FooTable.is.type(definition.direction, 'string') ? definition.direction : null;
 			column.sortable = FooTable.is.boolean(definition.sortable) ? definition.sortable : true;
 			column.sorted = FooTable.is.boolean(definition.sorted) ? definition.sorted : false;
-			if (column.sortable) column.$el.addClass('footable-sortable');
+			if (this.o.enabled == true && column.sortable) column.$el.addClass('footable-sortable');
 		},
 		/**
 		 * Initializes the sorting component for the plugin using the supplied table and options.
@@ -3762,7 +3939,6 @@
 		 */
 		preajax: function (data) {
 			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanging();
 			data.sortColumn = this.o.column.name;
 			data.sortDirection = this.o.direction;
 		},
@@ -3773,20 +3949,16 @@
 		 */
 		predraw: function () {
 			if (this.o.enabled == false
-				|| this.ft.options.ajaxEnabled == true)
+				|| this.ft.options.ajaxEnabled == true
+				|| !this.o.column
+				|| !this.o.direction)
 				return;
 
 			var self = this;
-			if (self._changed == true) self.raiseChanging();
-
-			if (!self.o.column
-				|| !self.o.direction)
-				return;
-
 			self.ft.rows.array.sort(function (a, b) {
 				return self.o.direction == 'ASC'
-					? self.o.column.sorter(a.cells[self.o.column.index].value, b.cells[self.o.column.index].value)
-					: self.o.column.sorter(b.cells[self.o.column.index].value, a.cells[self.o.column.index].value);
+					? self.o.column.sorter(a.cells[self.o.column.index].value, b.cells[self.o.column.index].value, self.ft.options)
+					: self.o.column.sorter(b.cells[self.o.column.index].value, a.cells[self.o.column.index].value, self.ft.options);
 			});
 		},
 		/**
@@ -3805,51 +3977,6 @@
 			$active.addClass(self.o.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
 				.children('.fooicon').addClass(self.o.direction == 'ASC' ? 'fooicon-sort-asc' : 'fooicon-sort-desc');
 		},
-		/**
-		 * Performs any post draw operations required for sorting.
-		 * @instance
-		 * @protected
-		 */
-		postdraw: function(){
-			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanged();
-			this._changed = false;
-		},
-		/**
-		 * Raises the sorting_changing event using the column and direction to generate a {@link FooTable.Sorter} object for the event and merges changes made by any listeners back into the current state.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Sorting#sorting_changing
-		 */
-		raiseChanging: function(){
-			var sorter = new FooTable.Sorter(this.o.column, this.o.direction);
-			/**
-			 * The sorting_changing event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Sorting#sorting_changing
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Sorter} sorter - The sorter that is about to be applied.
-			 */
-			if (this._changed == true && this.ft.raise('sorting_changing', [sorter]).isDefaultPrevented()) return $.when();
-			this.o.column = this.ft.columns.get(sorter.column);
-			this.o.direction = FooTable.is.type(sorter.direction, 'string') && (sorter.direction == 'ASC' || sorter.direction == 'DESC') ? sorter.direction : 'ASC';
-		},
-		/**
-		 * Raises the sorting_changed event using the column and direction to generate a {@link FooTable.Sorter} object for the event.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Sorting#sorting_changed
-		 */
-		raiseChanged: function(){
-			/**
-			 * The sorting_changed event is raised after a sorter has been applied.
-			 * @event FooTable.Sorting#sorting_changed
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Sorter} sorter - The sorter that has been applied.
-			 */
-			this.ft.raise('sorting_changed', [new FooTable.Sorter(this.o.column, this.o.direction)]);
-		},
 
 		/* PUBLIC */
 		/**
@@ -3857,15 +3984,12 @@
 		 * @instance
 		 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
 		 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
-		 * @fires FooTable.Sorting#sorting_changing
-		 * @fires FooTable.Sorting#sorting_changed
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Sorting#"change.ft.sorting"
+		 * @fires FooTable.Sorting#"changed.ft.sorting"
 		 */
 		sort: function(column, direction){
-			var self = this;
-			self.o.column = self.ft.columns.get(column);
-			self.o.direction = FooTable.is.type(direction, 'string') && (direction == 'ASC' || direction == 'DESC') ? direction : 'ASC';
-			self._changed = true;
-			return this.ft.update();
+			return this._sort(column, direction, true);
 		},
 
 		/* PRIVATE */
@@ -3885,10 +4009,63 @@
 						? 'ASC'
 						: options.sorting.column.direction)
 					: options.sorting.direction);
+
+			$.each(self.ft.columns.array, function(i, col){
+				if (col == options.sorting.column) col.direction = options.sorting.direction;
+				else col.direction = null;
+			});
 			self.ft.$table.addClass('footable-sorting').children('thead').children('tr.footable-header').children('th,td').filter(function (i) {
 				return self.ft.columns.array[i].sortable == true;
 			}).append($('<span/>', {'class': 'fooicon fooicon-sort'}));
 			self.ft.$table.on('click.footable', '.footable-sortable', { self: self }, self._onSortClicked);
+		},
+
+		/**
+		 * Performs the required steps to handle sorting including the raising of the {@link FooTable.Sorting#"change.ft.sorting"} and {@link FooTable.Sorting#"changed.ft.sorting"} events.
+		 * @instance
+		 * @private
+		 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
+		 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
+		 * @param {boolean} redraw - Whether or not this operation requires a redraw of the table.
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Sorting#"change.ft.sorting"
+		 * @fires FooTable.Sorting#"changed.ft.sorting"
+		 */
+		_sort: function(column, direction, redraw){
+			var self = this;
+			var sorter = new FooTable.Sorter(self.ft.columns.get(column), self._direction(direction));
+			/**
+			 * The change.ft.sorting event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Sorting#"change.ft.sorting"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Sorter} sorter - The sorter that is about to be applied.
+			 */
+			if (self.ft.raise('change.ft.sorting', [sorter]).isDefaultPrevented()) return $.when();
+			self.o.column = self.ft.columns.get(sorter.column);
+			self.o.direction = self._direction(sorter.direction);
+			return (redraw ? self.ft.update() : $.when()).then(function(){
+				$.each(self.ft.columns.array, function(i, col){
+					if (col == self.o.column) col.direction = self.o.direction;
+					else col.direction = null;
+				});
+				/**
+				 * The changed.ft.sorting event is raised after a sorter has been applied.
+				 * @event FooTable.Sorting#"changed.ft.sorting"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+				 * @param {FooTable.Sorter} sorter - The sorter that has been applied.
+				 */
+				self.ft.raise('changed.ft.sorting', [sorter]);
+			});
+		},
+		/**
+		 * Checks the supplied string is a valid direction and if not assigns it to ASC.
+		 * @param {string} str - The string to check.
+		 * @private
+		 */
+		_direction: function(str){
+			return FooTable.is.type(str, 'string') && (str == 'ASC' || str == 'DESC') ? str : 'ASC';
 		},
 		/**
 		 * Handles the sort button clicked event.
@@ -3902,7 +4079,7 @@
 				direction = $header.is('.footable-asc, .footable-desc')
 					? ($header.hasClass('footable-desc') ? 'ASC' : 'DESC')
 					: 'ASC';
-			self.sort($header.index(), direction);
+			self._sort($header.index(), direction, true);
 		}
 	});
 
@@ -3913,8 +4090,9 @@
 	 * @instance
 	 * @param {(string|number|FooTable.Column)} column - The column name, index or the actual {@link FooTable.Column} object to sort by.
 	 * @param {string} [direction="ASC"] - The direction to sort by, either ASC or DESC.
-	 * @fires FooTable.Sorting#sorting_changing
-	 * @fires FooTable.Sorting#sorting_changed
+	 * @returns {jQuery.Promise}
+	 * @fires FooTable.Sorting#"change.ft.sorting"
+	 * @fires FooTable.Sorting#"changed.ft.sorting"
 	 * @see FooTable.Sorting#sort
 	 */
 	FooTable.Instance.prototype.sort = function(column, direction){

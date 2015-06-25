@@ -95,13 +95,6 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
-			/**
-			 * Sets a flag indicating whether or not the filter has changed. When set to true the {@link FooTable.Filtering#filtering_changing} and {@link FooTable.Filtering#filtering_changed} events
-			 * will be raised during the drawing operation.
-			 * @private
-			 * @type {boolean}
-			 */
-			this._changed = false;
 
 			// call the constructor of the base class
 			this._super(instance);
@@ -175,7 +168,6 @@
 		 */
 		preajax: function(data){
 			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanging();
 			data.filterQuery = this.o.query;
 			data.filterColumns = $.map(this.o.columns, function(col){
 				return col.name;
@@ -188,15 +180,11 @@
 		 */
 		predraw: function(){
 			if (this.o.enabled == false
-				|| this.ft.options.ajaxEnabled == true)
+				|| this.ft.options.ajaxEnabled == true
+				|| FooTable.strings.isNullOrEmpty(this.o.query))
 				return;
 
-			var self = this;
-			if (self._changed == true) self.raiseChanging();
-
-			if (FooTable.strings.isNullOrEmpty(self.o.query)) return;
-
-			var i, text, len = self.ft.rows.array.length, remove = [];
+			var self = this, i, text, len = self.ft.rows.array.length, remove = [];
 			for (i = 0; i < len; i++){
 				text = '';
 				for (var j = 0, column; j < self.o.columns.length; j++){
@@ -230,16 +218,6 @@
 			self.$search_input.val(self.o.query);
 		},
 		/**
-		 * Performs any post draw operations required for filtering.
-		 * @instance
-		 * @protected
-		 */
-		postdraw: function(){
-			if (this.o.enabled == false) return;
-			if (this._changed == true) this.raiseChanged();
-			this._changed = false;
-		},
-		/**
 		 * Checks if the supplied text is filtered by the query.
 		 * @instance
 		 * @protected
@@ -254,41 +232,6 @@
 			}
 			return count > 0;
 		},
-		/**
-		 * Raises the filtering_changing event using the current filter and columns to generate a {@link FooTable.Filter} object for the event and merges changes made by any listeners back into the current state.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Filtering#filtering_changing
-		 */
-		raiseChanging: function(){
-			var filter = new FooTable.Filter(this.o.query, this.o.columns);
-			/**
-			 * The filtering_changing event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Filtering#filtering_changing
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Filter} filter - The filter that is about to be applied.
-			 */
-			if (this.ft.raise('filtering_changing', [filter]).isDefaultPrevented()) return;
-			this.o.query = filter.query;
-			this.o.columns = FooTable.is.array(filter.columns) ? this.ft.columns.ensure(filter.columns) : this.columns();
-		},
-		/**
-		 * Raises the filtering_changed event using the filter and columns to generate a {@link FooTable.Filter} object for the event.
-		 * @instance
-		 * @protected
-		 * @fires FooTable.Filtering#filtering_changed
-		 */
-		raiseChanged: function(){
-			/**
-			 * The filtering_changed event is raised after a filter has been applied.
-			 * @event FooTable.Filtering#filtering_changed
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
-			 * @param {FooTable.Filter} filter - The filter that has been applied.
-			 */
-			this.ft.raise('filtering_changed', [new FooTable.Filter(this.o.query, this.o.columns)]);
-		},
 
 		/* PUBLIC */
 		/**
@@ -297,24 +240,21 @@
 		 * @param {string} query - The query to filter the rows by.
 		 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to in each row.
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Filtering#filtering_changing
-		 * @fires FooTable.Filtering#filtering_changed
+		 * @fires FooTable.Filtering#"change.ft.filtering"
+		 * @fires FooTable.Filtering#"changed.ft.filtering"
 		 */
 		filter: function(query, columns){
-			this.o.query = query;
-			this.o.columns = FooTable.is.array(columns) ? this.ft.columns.ensure(columns) : this.columns();
-			this._changed = true;
-			return this.ft.update();
+			return this._filter(query, columns, true);
 		},
 		/**
 		 * Clears the current filter.
 		 * @instance
 		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Filtering#filtering_changing
-		 * @fires FooTable.Filtering#filtering_changed
+		 * @fires FooTable.Filtering#"change.ft.filtering"
+		 * @fires FooTable.Filtering#"changed.ft.filtering"
 		 */
 		clear: function(){
-			return this.filter(null, []);
+			return this._filter(null, null, true);
 		},
 		/**
 		 * Gets an array of all selected {@link FooTable.Column}s to apply the filter to.
@@ -355,8 +295,8 @@
 					return col.filterable ? col : null;
 				});
 			}
-			// add a header if none exists
-			if (self.ft.$table.children('thead').length == 0) self.ft.$table.prepend('<thead/>');
+			// add a header if none exists and add the filtering class
+			if (self.ft.$table.addClass('footable-filtering').children('thead').length == 0) self.ft.$table.prepend('<thead/>');
 			// generate the cell that actually contains all the UI.
 			var $cell = $('<th/>').attr('colspan', self.ft.columns.colspan());
 			// add it to a row and then populate it with the search input and column selector dropdown.
@@ -384,6 +324,43 @@
 			).appendTo($cell);
 		},
 		/**
+		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"change.ft.filtering"} and {@link FooTable.Filtering#"changed.ft.filtering"} events.
+		 * @instance
+		 * @private
+		 * @param {string} query - The query to apply.
+		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
+		 * @param {boolean} redraw - Whether or not this operation requires a redraw of the table.
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Filtering#"change.ft.filtering"
+		 * @fires FooTable.Filtering#"changed.ft.filtering"
+		 */
+		_filter: function(query, columns, redraw){
+			var self = this,
+				q = FooTable.strings.isNullOrEmpty(query) ? self.query() : query,
+				c = FooTable.is.array(columns) ? self.ft.columns.ensure(columns) : self.columns(),
+				filter = new FooTable.Filter(q, c);
+			/**
+			 * The change.ft.filtering event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Filtering#"change.ft.filtering"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+			 * @param {FooTable.Filter} filter - The filter that is about to be applied.
+			 */
+			if (self.ft.raise('change.ft.filter', [filter]).isDefaultPrevented()) return $.when();
+			self.o.query = filter.query;
+			self.o.columns = FooTable.is.array(filter.columns) ? self.ft.columns.ensure(filter.columns) : self.columns();
+			return (redraw ? self.ft.update() : $.when()).then(function(){
+				/**
+				 * The changed.ft.filtering event is raised after a filter has been applied.
+				 * @event FooTable.Filtering#"changed.ft.filtering"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Instance} instance - The instance of the plugin raising the event.
+				 * @param {FooTable.Filter} filter - The filter that has been applied.
+				 */
+				self.ft.raise('changed.ft.filtering', [filter]);
+			});
+		},
+		/**
 		 * Handles the change event for the {@link FooTable.Filtering#$search_input}.
 		 * @instance
 		 * @private
@@ -402,8 +379,8 @@
 			if(alpha || ctrl) {
 				self._filterTimeout = setTimeout(function(){
 					self._filterTimeout = null;
-					if (query.length >= self.o.min) self.filter(query, self.columns());
-					else if (FooTable.strings.isNullOrEmpty(query)) self.clear();
+					if (query.length >= self.o.min) self._filter(query, null, true);
+					else if (FooTable.strings.isNullOrEmpty(query)) self._filter(null, null, true);
 				}, self.o.delay);
 			}
 		},
@@ -417,7 +394,7 @@
 			e.preventDefault();
 			var self = e.data.self;
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
-			if (self.$search_button.children('.fooicon').hasClass('fooicon-search')) self.filter(self.query(), self.columns());
+			if (self.$search_button.children('.fooicon').hasClass('fooicon-search')) self._filter(null, null, true);
 			else self.clear();
 		},
 		/**
@@ -434,7 +411,7 @@
 				var $icon = self.$search_button.children('.fooicon');
 				if ($icon.hasClass('fooicon-remove')){
 					$icon.removeClass('fooicon-remove').addClass('fooicon-search');
-					self.filter(self.query(), self.columns());
+					self._filter(null, null, true);
 				}
 			}, self.o.delay);
 		},

@@ -1,3 +1,65 @@
+table.footable,
+table.footable-details {
+	position: relative;
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+	background-color: #FFF;
+}
+table > tbody > tr > td > span.footable-toggle {
+	margin-right: 8px;
+	opacity: 0.3;
+}
+table.table-condensed > tbody > tr > td > span.footable-toggle {
+	margin-right: 5px;
+}
+table.footable-details > tbody > tr > th:nth-child(1) {
+	min-width: 40px;
+	width: 120px;
+}
+table.footable-details > tbody > tr > td:nth-child(2) {
+	word-break: break-all;
+}
+table.footable > tbody > tr.footable-loader > td {
+	vertical-align: middle;
+	text-align: center;
+	font-size: 30px;
+	opacity: 0.3;
+}
+table.footable > tbody > tr.footable-loader > td > span.fooicon {
+	-webkit-animation: fooicon-spin-r 2s infinite linear;
+	animation: fooicon-spin-r 2s infinite linear;
+}
+table.footable > tbody > tr.footable-empty > td {
+	vertical-align: middle;
+	text-align: center;
+	font-size: 30px;
+}
+
+@-webkit-keyframes fooicon-spin-r {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+@keyframes fooicon-spin-r {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
 /* Glyphicons Icons - We're not actually using Glyphicons classes but instead provide a simple mapping from Glyphicons to FooTable class names. */
 .fooicon {
 	position: relative;
@@ -16,6 +78,15 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+.fooicon-loader:before {
+	content: "\e030";
+}
+.fooicon-plus:before {
+	content: "\2b";
+}
+.fooicon-minus:before {
+	content: "\2212";
+}
 .fooicon-search:before {
 	content: "\e003";
 }
@@ -31,64 +102,6 @@
 .fooicon-sort-desc:before {
 	content: "\e156";
 }
-table.footable,
-table.footable-details {
-	position: relative;
-	width: 100%;
-	border-spacing: 0;
-	border-collapse: collapse;
-}
-table > tbody > tr > td > span.footable-toggle {
-	margin-right: 3px;
-	opacity: 0.3;
-}
-table.footable-details > tbody > tr > th:nth-child(1) {
-	min-width: 40px;
-	width: 120px;
-}
-table.footable-details > tbody > tr > td:nth-child(2) {
-	word-break: break-all;
-}
-table.footable > tbody > tr.footable-loader > td {
-	vertical-align: middle;
-	text-align: center;
-	font-size: 30px;
-	opacity: 0.3;
-}
-table.footable > tbody > tr.footable-loader > td > span.glyphicon {
-	-webkit-animation: glyphicon-spin-r 2s infinite linear;
-	animation: glyphicon-spin-r 2s infinite linear;
-}
-table.footable > tbody > tr.footable-empty > td {
-	vertical-align: middle;
-	text-align: center;
-	font-size: 30px;
-}
-
-@-webkit-keyframes glyphicon-spin-r {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-
-	100% {
-		-webkit-transform: rotate(359deg);
-		transform: rotate(359deg);
-	}
-}
-
-@keyframes glyphicon-spin-r {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-
-	100% {
-		-webkit-transform: rotate(359deg);
-		transform: rotate(359deg);
-	}
-}
-
 td.footable-sortable,
 th.footable-sortable {
 	position: relative;

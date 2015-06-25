@@ -18,9 +18,9 @@
   },
   "opts": {
     "template": "templates/fooplugins",
-    "destination": "gh-pages/dev-docs",
+    "destination": "docs/jsdocs",
     "readme": "README.md",
-    "mainpagetitle": "Welcome to FooTable V3",
+    "mainpagetitle": "FooTable Developer Documentation",
     "recurse": true,
     "private": true
   }

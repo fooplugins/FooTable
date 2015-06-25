@@ -7,12 +7,11 @@
 		 * @extends FooTable.Class
 		 * @param {FooTable.Instance} instance -  The {@link FooTable.Instance} this cell belongs to.
 		 * @param {FooTable.Row} row - The parent {@link FooTable.Row} this cell belongs to.
-		 * @param {HTMLElement} cell -  The cell element this object wraps.
 		 * @param {FooTable.Column} column - The {@link FooTable.Column} this cell falls under.
-		 * @param {*} value - The value of the cell.
+		 * @param {HTMLElement} cell -  The cell element this object wraps.
 		 * @returns {FooTable.Cell}
 		 */
-		ctor: function (instance, row, cell, column, value) {
+		ctor: function (instance, row, column, cell) {
 			/**
 			 * The {@link FooTable.Instance} for the cell.
 			 * @type {FooTable.Instance}
@@ -37,12 +36,12 @@
 			 * The value of the cell.
 			 * @type {*}
 			 */
-			this.value = value;
+			this.value = column.parser.call(this, cell, instance.options);
 			/**
 			 * The display value of the cell, this can be HTML.
 			 * @type {string}
 			 */
-			this.display = FooTable.is.fn(column.formatter) ? column.formatter(value) : value;
+			this.display = column.formatter.call(this, this.value, instance.options);
 
 			this.ft.execute('ctor_cell', this);
 
