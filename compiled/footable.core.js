@@ -2056,15 +2056,37 @@
 			return F.is.object(value) && F.is.boolean(value._isAMomentObject) ? value.format(this.formatString) : '';
 		},
 		/**
-		 * This is supplied a {@link FooTable.Cell} object after it's value has been parsed using the {@link FooTable.DateColumn#parser} function and must return a string.
-		 * The result from this function is used during filtering operations.
-		 * @param {FooTable.Cell} cell - The the cell to retrieve the filter value from.
+		 * This is supplied either the cell value or jQuery object to parse. A string value must be returned from this method and will be used during filtering operations.
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
 		 * @returns {string}
 		 * @this FooTable.DateColumn
 		 */
-		filterValue: function(cell){
-			var def = F.is.object(cell.value) && F.is.boolean(cell.value._isAMomentObject) ? cell.value.format(this.formatString) : '';
-			return F.is.jq(cell.$el) ? (cell.$el.data('filterValue') || def) : def;
+		filterValue: function(valueOrElement){
+			// if we have an element or a jQuery object use jQuery to get the value
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) valueOrElement = $(valueOrElement).data('filterValue') || $(valueOrElement).text();
+			// if options are supplied with the value
+			if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
+				if (F.is.string(valueOrElement.options.filterValue)) valueOrElement = valueOrElement.options.filterValue;
+				if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+			}
+			// if the value is a moment object just return the formatted value
+			if (F.is.object(valueOrElement) && F.is.boolean(valueOrElement._isAMomentObject)) return valueOrElement.format(this.formatString);
+			// if its a string
+			if (F.is.string(valueOrElement)){
+				// if its not a number return it
+				if (isNaN(valueOrElement)){
+					return valueOrElement;
+				} else { // otherwise convert it and carry on
+					valueOrElement = +valueOrElement;
+				}
+			}
+			// if the value is a number or date convert to a moment object and return the formatted result.
+			if (F.is.number(valueOrElement) || F.is.date(valueOrElement)){
+				return moment(valueOrElement).format(this.formatString);
+			}
+			// try use the native toString of the value if its not undefined or null
+			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+'';
+			return ''; // otherwise we have no value so return an empty string
 		}
 	});
 
@@ -2189,10 +2211,8 @@
 		/**
 		 * The breakpoint class containing the name and maximum width for the breakpoint.
 		 * @constructs
-		 * @extends FooTable.Class
 		 * @param {string} name - The name of the breakpoint. Must contain no spaces or special characters.
 		 * @param {number} width - The width of the breakpoint in pixels.
-		 * @returns {FooTable.Breakpoint}
 		 */
 		construct: function(name, width){
 			/**
