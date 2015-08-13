@@ -150,7 +150,7 @@
 		predraw: function () {
 			if (!this.column) return;
 			var self = this, col = self.column;
-			self.ft.rows.current.sort(function (a, b) {
+			self.ft.rows.array.sort(function (a, b) {
 				return col.direction == 'ASC'
 					? col.sorter(a.cells[col.index].value, b.cells[col.index].value)
 					: col.sorter(b.cells[col.index].value, a.cells[col.index].value);

@@ -326,7 +326,7 @@
 				return;
 
 			var self = this;
-			self.ft.rows.current = $.grep(self.ft.rows.current, function(r){
+			self.ft.rows.array = $.grep(self.ft.rows.array, function(r){
 				return r.filtered(self.filters);
 			});
 		},

@@ -1249,6 +1249,8 @@
 (function ($, F) {
 	/**
 	 * Contains all the available options for the FooTable plugin.
+	 * @name FooTable.Defaults
+	 * @function
 	 * @constructor
 	 * @returns {FooTable.Defaults}
 	 */
@@ -2834,7 +2836,7 @@
 			 * @type {Array.<FooTable.Row>}
 			 * @default []
 			 */
-			this.current = [];
+			this.array = [];
 			/**
 			 * The base array of rows parsed from either the DOM or the constructor options.
 			 * The {@link FooTable.Rows#current} member is populated with a shallow clone of this array
@@ -2844,7 +2846,7 @@
 			 * @type {Array.<FooTable.Row>}
 			 * @default []
 			 */
-			this.array = [];
+			this.all = [];
 			/**
 			 * Whether or not to display a toggle in each row when it contains hidden columns.
 			 * @type {boolean}
@@ -2926,8 +2928,8 @@
 			 */
 			return self.ft.raise('preinit.ft.rows', [data]).then(function(){
 				return self.parse().then(function(rows){
-					self.array = rows;
-					self.current = self.array.slice(0);
+					self.all = rows;
+					self.array = self.all.slice(0);
 					self.showToggle = F.is.boolean(data.showToggle) ? data.showToggle : self.showToggle;
 					self.toggleColumn = F.is.string(data.toggleColumn) ? data.toggleColumn : self.toggleColumn;
 					if (self.toggleColumn != "first" && self.toggleColumn != "last") self.toggleColumn = "first";
@@ -2952,7 +2954,7 @@
 			 * @param {FooTable.Table} instance - The instance of the plugin raising the event.
 			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the DOM or the options.
 			 */
-			return self.ft.raise('init.ft.rows', [self.array]).then(function(){
+			return self.ft.raise('init.ft.rows', [self.all]).then(function(){
 				self.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(self.emptyString));
 			});
 		},
@@ -2962,10 +2964,10 @@
 		 * @protected
 		 */
 		predraw: function(){
-			F.arr.each(this.current, function(row){
+			F.arr.each(this.array, function(row){
 				row.predraw();
 			});
-			this.current = this.array.slice(0);
+			this.array = this.all.slice(0);
 		},
 		/**
 		 * Performs the actual drawing of the table rows.
@@ -2975,10 +2977,10 @@
 		draw: function(){
 			var self = this, $tbody = self.ft.$el.children('tbody'), first = true;
 			// if we have rows
-			if (self.current.length > 0){
+			if (self.array.length > 0){
 				self.$empty.detach();
 				// loop through them appending to the tbody and then drawing
-				F.arr.each(self.current, function(row){
+				F.arr.each(self.array, function(row){
 					if (self.expandFirst && first){
 						row.expanded = true;
 						first = false;

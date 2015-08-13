@@ -173,7 +173,7 @@
 					? data.pagingPosition
 					: self.position;
 
-				self.total = Math.ceil(self.ft.rows.current.length / self.size);
+				self.total = Math.ceil(self.ft.rows.array.length / self.size);
 				self._total = self.total;
 			}, function(){
 				self.enabled = false;
@@ -226,10 +226,10 @@
 		 * @protected
 		 */
 		predraw: function(){
-			this.total = Math.ceil(this.ft.rows.current.length / this.size);
+			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
-			if (this.ft.rows.current.length > this.size)
-				this.ft.rows.current = this.ft.rows.current.splice((this.current - 1) * this.size, this.size);
+			if (this.ft.rows.array.length > this.size)
+				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
 		},
 		/**
 		 * Updates the paging UI setting the state of the pagination control.

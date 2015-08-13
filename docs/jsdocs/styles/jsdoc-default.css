@@ -140,10 +140,6 @@ footer {
     font-size: 90%;
 }
 
-p {
-    margin-bottom: 24px;
-}
-
 h1, h2, h3, h4 {
     font-weight: 200;
     margin: 0;
@@ -178,7 +174,7 @@ h5, .container-overview .subsection-title
     font-size: 120%;
     font-weight: bold;
     letter-spacing: -0.01em;
-    margin: 8px 0 3px -16px;
+    margin: 8px 0 3px 0;
 }
 
 h6
@@ -194,6 +190,11 @@ h6
 {
     color: #999 !important;
     text-decoration: none;
+}
+
+.clear
+{
+    clear: both;
 }
 
 .important
@@ -333,13 +334,15 @@ h6
 .params th, .props th { border-right: 1px solid #aaa; }
 .params thead .last, .props thead .last { border-right: 1px solid #ddd; }
 
-.params td.description > p:first-child
+.params td.description > p:first-child,
+.props td.description > p:first-child
 {
     margin-top: 0;
     padding-top: 0;
 }
 
-.params td.description > p:last-child
+.params td.description > p:last-child,
+.props td.description > p:last-child
 {
     margin-bottom: 0;
     padding-bottom: 0;
