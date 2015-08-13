@@ -7,7 +7,8 @@ module.exports = function (grunt) {
 		clean: {
 			pre: [
 				'compiled',
-				'releases/*.v<%= pkg.version %>.zip'
+				'releases/*.v<%= pkg.version %>.zip',
+				'docs/jsdocs'
 			]
 		},
 		concat: {
@@ -211,6 +212,15 @@ module.exports = function (grunt) {
 					dest: 'js/'
 				}]
 			}
+		},
+		jsdoc: {
+			dist: {
+				src: ['src/js/**/*.js'],
+				options: {
+					destination: 'docs/jsdocs',
+					configure: 'jsdoc.json'
+				}
+			}
 		}
 	});
 
@@ -220,5 +230,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-compress');
-	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'compress']);
+	grunt.loadNpmTasks('grunt-jsdoc');
+	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'compress', 'jsdoc']);
 };
