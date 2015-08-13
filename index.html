@@ -80,23 +80,7 @@
 
 <div class="container">
 
-	<table class="example-1 table table-striped footable-pagination-right" data-cascade="true">
-		<thead>
-		<tr>
-			<th data-breakpoints="xs" data-type="number">ID</th>
-			<th>First Name</th>
-			<th>Last Name</th>
-			<th data-breakpoints="xs">Job Title</th>
-			<th data-breakpoints="sm" data-type="date">Started</th>
-			<th data-breakpoints="md" data-type="date">DOB</th>
-		</tr>
-		</thead>
-		<tbody>
-		<!-- For consistency across demos and avoid copying large amounts of row HTML across demos we generate the rows from the DemoRows.rows array. -->
-		<script>
-			DemoRows.write();
-		</script>
-		</tbody>
+	<table class="table table-striped">
 	</table>
 
 </div> <!-- /container -->
@@ -113,16 +97,18 @@
 <!-- Initialize FooTable -->
 <script>
 	jQuery(function($){
-		$('.example-1').footable({
-			paging: {
-				enabled: true
+		$('.table').footable({
+			"paging": {
+				"enabled": true
 			},
-			filtering: {
-				enabled: true
+			"filtering": {
+				"enabled": true
 			},
-			sorting: {
-				enabled: true
-			}
+			"sorting": {
+				"enabled": true
+			},
+			"columns": $.get("docs/content/columns.json"),
+			"rows": $.get("docs/content/rows.json")
 		});
 	});
 </script>

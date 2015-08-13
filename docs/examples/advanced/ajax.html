@@ -94,7 +94,7 @@
 					options as long as when resolved it returns the correct data.
 				</li>
 				<li>
-					We make use of two static files (<a href="columns.json" target="_blank">columns.json</a> and <a href="rows.json" target="_blank">rows.json</a>)
+					We make use of two static files (<a href="../../content/columns.json" target="_blank">columns.json</a> and <a href="../../content/rows.json" target="_blank">rows.json</a>)
 					to supply our data and retrieve it in the same way you would call your own end point, using jQuery's ajax functionality, in this case the <code>jQuery.get</code> function.
 				</li>
 				<li>
@@ -140,10 +140,10 @@
 		$('#ajax-example-1').footable({
 			"columns": $.Deferred(function(d){
 				setTimeout(function(){
-					$.get('columns.json').then(d.resolve, d.reject);
+					$.get('../../content/columns.json').then(d.resolve, d.reject);
 				}, 3000);
 			}),
-			"rows": $.get('rows.json')
+			"rows": $.get('../../content/rows.json')
 		});
 	});
 </script>
