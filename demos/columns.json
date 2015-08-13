@@ -1,9 +1,0 @@
-[
-  {"name":"id","title":"ID","type":"number","style":{"width":80,"maxWidth":80}},
-  {"name":"firstName","title":"First Name","sorted":true,"direction":"ASC"},
-  {"name":"lastName","title":"Last Name"},{"name":"something","title":"Something","visible":false},
-  {"name":"jobTitle","title":"Job Title","breakpoints":"sm","style":{"maxWidth":200,"overflow":"hidden","textOverflow":"ellipsis","wordBreak":"keep-all","whiteSpace":"nowrap"}},
-  {"name":"started","title":"Started","type":"date","breakpoints":"md","sortable":false,"formatString":"MMM YYYY"},
-  {"name":"dob","title":"DOB","type":"date","breakpoints":"md","formatString":"DD MMM YYYY"},
-  {"name":"status","title":"Status","filterable":false}
-]
