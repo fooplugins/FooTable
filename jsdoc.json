@@ -7,7 +7,6 @@
     "includePattern": ".+\\.js(doc)?$",
     "excludePattern": "docs|lib"
   },
-  "plugins": [],
   "templates": {
     "applicationName": "FooTable V3",
     "default":{
@@ -17,8 +16,6 @@
     "monospaceLinks": true
   },
   "opts": {
-    "destination": "docs/jsdocs",
-    "readme": "README.md",
     "mainpagetitle": "FooTable Developer Documentation",
     "recurse": true,
     "private": true
