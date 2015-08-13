@@ -103,3 +103,6 @@ pip-log.txt
 
 #npm
 npm-debug.log
+
+#developer specific test folder for anything I want to test but not check in.
+/.test/
