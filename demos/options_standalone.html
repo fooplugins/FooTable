@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
+	<title></title>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+	<script src="fajax.js"></script>
+
+	<link href="../compiled/footable.standalone.css" rel="stylesheet" />
+	<script src="../compiled/footable.js"></script>
+
+
+	<script>
+		(function($, F){
+
+//			var statuses = ['Active','Disabled','Suspended'], def = 'Any Status';
+//
+//			F.Filtering.prototype.$status = null;
+//
+//			F.Filtering.extend('$create', function(){
+//				this._super();
+//				var self = this;
+//				self.$status = $('<select/>', { 'class': 'form-control status_filter' })
+//						.on('change', { self: self }, self._onStatusDropdownChanged)
+//						.append($('<option/>').text(def));
+//
+//				$.each(statuses, function(i, s){
+//					self.$status.append($('<option/>').text(s));
+//				});
+//				self.$cell.append(self.$status);
+//			});
+//
+//			F.Filtering.extend('filter', function(query, columns){
+//				var val = this.$status.val();
+//				if (val != def) this.addFilter('status', val, ['status']);
+//				else this.removeFilter('status');
+//				this._super(query, columns);
+//			});
+//
+//			F.Filtering.extend('clear', function(){
+//				this.$status.val(def);
+//				this.removeFilter('status');
+//				this._super();
+//			});
+//
+//			F.Filtering.prototype._onStatusDropdownChanged = function(e){
+//				e.data.self.filter();
+//			};
+
+			F.MyFiltering = F.Filtering.extend({
+				construct: function(instance){
+					this._super(instance);
+					this.statuses = ['Active','Disabled','Suspended'];
+					this.def = 'Any Status';
+					this.$status = null;
+				},
+				$create: function(){
+					this._super();
+					var self = this,
+							$form_grp = $('<div/>', {'class': 'form-group'})
+								.append($('<label/>', {'class': 'sr-only', text: 'Status'}))
+									.appendTo(self.$form);
+
+					self.$status = $('<select/>', { 'class': 'form-control' })
+							.on('change', { self: self }, self._onStatusDropdownChanged)
+							.append($('<option/>', {text: self.def}))
+							.appendTo($form_grp);
+
+					$.each(self.statuses, function(i, s){
+						self.$status.append($('<option/>').text(s));
+					});
+				},
+				filter: function(query, columns){
+					var val = this.$status.val();
+					if (val != this.def) this.addFilter('status', val, ['status']);
+					else this.removeFilter('status');
+					return this._super(query, columns);
+				},
+				clear: function(){
+					this.$status.val(this.def);
+					this.removeFilter('status');
+					return this._super();
+				},
+				_onStatusDropdownChanged: function(e){
+					e.data.self.filter();
+				}
+			});
+
+			F.components.core.register('filtering', F.MyFiltering);
+
+		})(jQuery, FooTable);
+		jQuery(function($){
+			$('body').on({
+				'init': function(e, instance){
+					console.log('When stopPropagation is true this should not be seen!!!');
+				}
+			});
+
+//			$.get('rows.json').then(function(rows){
+//				console.log(rows);
+//			}, function(err){
+//				console.log(err);
+//			});
+
+
+			window.FT = $('#table_1').on({
+				'before.ft.paging': function(e, ft, pager){
+					if (pager.page == 3){
+						pager.page = pager.forward ? 4 : 2;
+					}
+				}
+			}).footable({
+				stopPropagation: true,
+				sorting: {
+					enabled: true
+				},
+				paging: {
+					enabled: true,
+					size: 10,
+					current: 1
+				},
+				filtering: {
+					enabled: true,
+					delay: -1
+				},
+				cascade: true,
+				columns: FAjax.defaults.columns,
+				rows: FAjax.defaults.rows
+				//rows: $.get('rows.json')
+			}).data('__FooTable__');
+			$('#filter_leo').on('click', function(){
+				FT.applyFilter('Leo').then(function(){
+					console.log('After filter');
+				});
+			});
+		});
+	</script>
+	<style>
+		body {
+			padding: 50px;
+			font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+			font-size: 14px;
+			line-height: 1.42857143;
+			color: #333;
+			background-color: #fff;
+		}
+		.footable .status_filter {
+			float: right;
+			display: inline-block;
+			margin-right: 5px;
+			width: auto;
+		}
+	</style>
+</head>
+<body>
+<button id="filter_leo" type="button">Filter "Leo"</button>
+<table id="table_1" class="table table-bordered table-striped table-hover table-condensed">
+	<!--<script>FAjax.writeRows()</script>-->
+</table>
+</body>
+</html>

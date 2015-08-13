@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Filtering Component - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../css/docs.css" rel="stylesheet">
+
+	<script src="../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="docs">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../getting-started.html">Getting started</a></li>
+				<li class="dropdown active">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a>Filtering</a></li>
+						<li><a href="paging.html">Paging</a></li>
+						<li><a href="sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>Filtering</h1>
+		<h2>Display just the rows you want to see.</h2>
+	</div>
+</div>
+
+<div class="container">
+	<!-- General -->
+	<div class="docs-section">
+		<p class="lead">The filtering component allows you to quickly and easily display just the rows you want to see by providing a simple search input.</p>
+		<div class="callout callout-info">
+			<h4>Note</h4>
+			<p>See the <a href="../getting-started.html#examples">Getting started - Examples</a> section for examples of this component.</p>
+		</div>
+	</div>
+
+	<!-- Options -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="options" class="anchor">&nbsp;</span>Options</h1>
+		<p class="lead">The below lists all the options for the filtering component, these are available in addition to the <a href="../getting-started.html#options">core options</a>.</p>
+
+		<div class="list-group list-group-detailed">
+			<h3 class="list-group-header">General options</h3>
+
+			<!-- enabled -->
+			<a href="#enabled" class="list-group-item anchored">
+				<span id="enabled" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">enabled <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not the component is enabled.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>By default this component is disabled, no UI or features of this component will be available.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-filtering=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;enabled&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- filters -->
+			<a href="#filters" class="list-group-item anchored">
+				<span id="filters" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">filters <small>array</small></h4>
+				<p class="list-group-item-text">An array of filters to apply to the tables rows.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<p>
+						A filter is a simple object containing a <code>name</code>, a <code>query</code> and an array of <code>columns</code>. The name is used purely as an identifier so duplicate
+						filters are not applied. The query is the string that is used when determining whether a row should be included in the results or not.
+						The columns specify which cell values from a row are used when applying the query. The columns values can be supplied as either an index (zero based) or as
+						the <a href="../getting-started.html#column-name"><code>name</code></a> of the column.
+					</p>
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>[]</code></p>
+							<p>The below shows what one of the filter objects would look like.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>var filter = {
+	&quot;name&quot;: string,
+	&quot;query&quot;: string,
+	&quot;columns&quot;: array
+};</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply filters through data attributes you must follow <a href="http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example" target="_blank">valid JSON syntax</a> <i>including quoted property names</i>.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-filtering=&#39;[{"name":"my-filter","query":"The value","columns":["id"]}]&#39;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;filters&quot;: [{
+				&quot;name&quot;: &quot;my-filter&quot;,
+				&quot;query&quot;: &quot;The value&quot;,
+				&quot;columns&quot;: [&quot;id&quot;]
+			}]
+		}
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Notes</h4>
+						<ul>
+							<li>The <code>name</code> is used to avoid applying duplicate filters and when removing existing ones.</li>
+							<li>The <code>query</code> is the value used to actually filter the rows with.</li>
+							<li>
+								The <code>columns</code> array is used to specify which columns the query applies to, the array values can be either the
+								<a href="../getting-started.html#column-name"><code>name</code></a> or the zero based index of the column.
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- delay -->
+			<a href="#delay" class="list-group-item anchored">
+				<span id="delay" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">delay <small>number</small></h4>
+				<p class="list-group-item-text">The number of milliseconds before a search input filter is applied after it changes.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>1200</code></p>
+							<p>By default the plugin waits 1.2 seconds (1200 milliseconds) before auto applying a new search filter, setting this option to any value equal to or less than zero will disable this feature.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-delay=&quot;-1&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;delay&quot;: -1
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- min -->
+			<a href="#min" class="list-group-item anchored">
+				<span id="min" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">min <small>number</small></h4>
+				<p class="list-group-item-text">The minimum number of characters in the search input before auto applying the filter.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>3</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-min=&quot;4&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;min&quot;: 4
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- placeholder -->
+			<a href="#placeholder" class="list-group-item anchored">
+				<span id="placeholder" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">placeholder <small>string</small></h4>
+				<p class="list-group-item-text">The placeholder text displayed within the search input.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"Search"</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-placeholder=&quot;Suche&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;placeholder&quot;: &quot;Suche&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- position -->
+			<a href="#position" class="list-group-item anchored">
+				<span id="position" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">position <small>string</small></h4>
+				<p class="list-group-item-text">The position of the search input within the filter row.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"right"</code></p>
+							<p>The other supported values for this option are <code>"left"</code> and <code>"center"</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-position=&quot;center&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;position&quot;: &quot;center&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- space -->
+			<a href="#" class="list-group-item anchored">
+				<span id="space" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">space <small>string</small></h4>
+				<p class="list-group-item-text">Specifies how to treat whitespace in a filter query.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<p>
+						When evaluating a filter query this option specifies how whitespace in a string is treated. By default all whitespace is treated as an <a href="#queries-and"><code>AND</code></a> operator meaning
+						that a row must contain all parts of the query, the parts are created by splitting the query on whitespace. When changed to <a href="#queries-or"><code>OR</code></a> a row must contain only a
+						single part of the query to be included in the results.
+					</p>
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"AND"</code></p>
+							<p>The only other supported value is <code>"OR"</code> for this option.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-space=&quot;OR&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$('.table').footable({
+		"filtering": {
+			"space": "OR"
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="list-group list-group-detailed child">
+			<h3 class="list-group-header">Column options</h3>
+
+			<!-- filterValue -->
+			<a href="#filterValue" class="list-group-item anchored">
+				<span id="filterValue" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">filterValue <small>function</small></h4>
+				<p class="list-group-item-text">The function used to retrieve the filter value for a cell.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<p>
+						To improve the performance of the component all cells provide a string value to be used during filtering operations. Using a string value avoids having to perform any
+						type conversions in an already expensive operation, this function is called whenever a cells filter value needs to be set.
+					</p>
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default the column will use its <a href="../getting-started.html#column-type"><code>type</code></a>s filterValue function.</p>
+						</div>
+						<div class="example returns">
+							<p><code>string</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply the function through data attributes it must be defined as a named JavaScript function with the name supplied as the attribute value.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>function filterValue(valueOrElement){
+	if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data(&#39;filterValue&#39;) || $(valueOrElement).text();
+	if (F.is.hash(valueOrElement) &amp;&amp; F.is.hash(valueOrElement.options)){
+		if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
+		if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+	}
+	if (F.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
+	return &#39;&#39;;
+}</code></pre>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-filter-value=&quot;filterValue&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;filterValue&quot;: function(valueOrElement){
+				if (F.is.jq(valueOrElement)) return valueOrElement.data(&#39;filterValue&#39;) || valueOrElement.text();
+				if (F.is.hash(valueOrElement) &amp;&amp; F.is.hash(valueOrElement.options)){
+					if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
+					if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+				}
+				if (F.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
+				return &#39;&#39;;
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>The first argument (<code>valueOrElement</code>) is either the jQuery wrapper around the <code>td</code> element to parse or a value that needs to be parsed into a string.</p>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- filterable -->
+			<a href="#filterable" class="list-group-item anchored">
+				<span id="filterable" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">filterable <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not the column is included in a rows value when filtering.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>true</code></p>
+							<p>All columns can be searched by default, this would only need to be changed if a columns contents can not be represented as a string.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-filterable=&quot;false&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;filterable&quot;: false
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="list-group list-group-detailed grand-child">
+			<h3 class="list-group-header">Cell options</h3>
+
+			<!-- filterValue -->
+			<a href="#cell-filterValue" class="list-group-item anchored">
+				<span id="cell-filterValue" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">filterValue <small>string</small></h4>
+				<p class="list-group-item-text">The value used by the component to perform filtering operations.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>""</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>td</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td data-filter-value=&quot;My Filter Value&quot;&gt;...&lt;/td&gt;
+		...
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;id&quot;: {
+				&quot;options&quot;: {
+					&quot;filterValue&quot;: &quot;My Filter Value&quot;
+				},
+				&quot;value&quot;: ...
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>If no filter value is supplied for a cell the result of the cells default <code>toString</code> method will be used.</p>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<!-- Queries -->
+	<div class="docs-option">
+		<h1 class="page-header anchored"><span id="queries" class="anchor">&nbsp;</span>Queries</h1>
+		<p>
+			By default the filtering component treats all whitespace as an <a href="#queries-and"><code>AND</code></a> operator,
+			this behavior can be changed using the <a href="#space"><code>space</code></a> option.
+			The below example is probably the way most queries would be created which is why how whitespace is treated is very important.
+			The difference between the results returned when using the <a href="#queries-and"><code>AND</code></a> and <a href="#queries-or"><code>OR</code></a>
+			operators are very different. One would generally make the query more specific while the other would expand it to include more results.
+		</p>
+		<div class="example">
+			<p><code>john smith</code></p>
+			<p>The above query would match all rows containing both <code>john</code> and <code>smith</code>.</p>
+		</div>
+		<p>
+			While the <a href="#space"><code>space</code></a> option changes how whitespace is treated there are also the following basic operators that allow you to
+			build up more advanced queries.
+		</p>
+		<h3 class="anchored"><span id="queries-and" class="anchor">&nbsp;</span>AND</h3>
+		<p>Make a query more specific by separating additional parts with a capitalized <code>AND</code> string.</p>
+		<div class="example">
+			<p><code>john AND smith</code></p>
+			<p>The above query would match all rows containing both <code>john</code> and <code>smith</code>.</p>
+		</div>
+		<h3 class="anchored"><span id="queries-or" class="anchor">&nbsp;</span>OR</h3>
+		<p>Expand a query by separating additional parts with a capitalized <code>OR</code> string.</p>
+		<div class="example">
+			<p><code>john OR smith</code></p>
+			<p>The above query would match all rows containing <code>john</code> or <code>smith</code>.</p>
+		</div>
+		<h3 class="anchored"><span id="queries-negate" class="anchor">&nbsp;</span>Negate</h3>
+		<p>Exclude a value from the results by prefixing it with a minus <code>-</code> sign.</p>
+		<div class="example">
+			<p><code>john -smith</code></p>
+			<p>The above query would match all rows containing the word <code>john</code> but would exclude any containing <code>smith</code>.</p>
+		</div>
+		<h3 class="anchored"><span id="queries-phrases" class="anchor">&nbsp;</span>Phrases</h3>
+		<p>Match an exact word or phrase by wrapping it in quotes <code>"</code>.</p>
+		<div class="example">
+			<p><code>"brown fox"</code></p>
+			<p>The above query would match all rows containing the exact phrase <code>brown fox</code>.</p>
+		</div>
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+<script src="../js/docs.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		$('#filtering-example-1').footable();
+	});
+</script>
+</body>
+</html>

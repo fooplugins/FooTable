@@ -1,0 +1,106 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: #d9d9d9;
+	color: #222;
+	font: 400 14px/22px "merriweather";
+}
+#links {
+	width: 100%;
+	height: 40px;
+	background-color: #2C3E50;
+	color: #ffffff;
+}
+#links > a {
+	color: #AFAFAF;
+	text-decoration: none;
+	display: inline-block;
+	margin: 10px 10px;
+	transition: color 0.3s ease-in;
+}
+#links > a:hover {
+	color: #ffffff;
+}
+#header {
+	width: 100%;
+	height: 565px;
+	text-align: center;
+}
+#header.demo {
+	width: 100%;
+	height: 100px;
+	text-align: center;
+}
+#header > img {
+	margin-top: 40px;
+}
+#header > h1 {
+	font: bold 100px/1 "oswald";
+	margin: 40px 0 20px 0;
+}
+#header > h2 {
+	font: bold 48px/1 "oswald";
+	margin: 10px 0;
+}
+#header.demo > h2 {
+	margin: 40px 0 20px 0;
+}
+#header > h3 {
+	font: normal 14px/16px "pt mono";
+}
+#content {
+	width: 80%;
+	margin: 0 auto;
+}
+#content > h1 {
+	font: 700 30px/34px "pt sans narrow";
+}
+#content > h2 {
+	font: 700 22px/26px "pt sans";
+}
+#content > h3 {
+	font: 700 18px/22px "pt sans";
+}
+#content > ul {
+	list-style-type: disc;
+}
+#content a {
+	text-decoration: none;
+	color: #525986;
+}
+#content a:hover {
+	text-decoration: underline;
+}
+#content pre {
+	background-color: #ffffff;
+	padding: 0;
+	border-radius: 6px;
+}
+#content pre > code {
+	padding: 10px;
+}
+#content pre > code > .token.tab:not(:empty):before,
+#content pre > code > .token.cr:before,
+#content pre > code > .token.lf:before {
+	color: #ffffff;
+}
+#footer {
+	width: 100%;
+	height: 300px;
+	background-color: #2C3E50;
+	margin-top: 100px;
+	color: #ffffff;
+}
+#share-buttons {
+	text-align: center;
+}
+
+#share-buttons img {
+	width: 35px;
+	padding: 5px;
+	border: 0;
+	box-shadow: 0;
+	display: inline;
+}

@@ -1,0 +1,219 @@
+/* layout.tmpl */
+.fp-main {
+	padding: 10px 15px 10px 30px;
+	margin-left: 300px;
+	font-size: 13px;
+}
+.fp-options {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+}
+/* navigation.tmpl */
+.fp-nav {
+	width: 300px;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+.fp-nav > .panel-heading {
+	height: 125px;
+}
+.fp-nav > .panel-body {
+	height: calc(100vh - 125px);
+	overflow-y: auto;
+}
+.fp-nav-children {
+	list-style-type: none;
+	padding-left: 6px;
+}
+.fp-nav-items > .panel > .panel-heading {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: keep-all;
+	cursor: pointer;
+	position: relative;
+	padding-right: 26px;
+}
+.fp-nav-items > .panel > .panel-heading > .caret {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	margin-top: -2px;
+}
+.fp-nav-items > .panel.open > .panel-heading > .caret {
+	border-top: none;
+	border-bottom: 4px solid;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+}
+/* container.tmpl */
+.fp-main > header > .fp-title:after,
+.fp-main > article > .fp-subsection-title:after {
+	content: '';
+	margin: 3px 0 20px 0;
+	height: 1px;
+	display: block;
+	background: #337ab7; /* Old browsers */
+	background: -moz-linear-gradient(left,  #337ab7 0%, #7db9e8 38%, #ffffff 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#337ab7), color-stop(38%,#7db9e8), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  #337ab7 0%,#7db9e8 38%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  #337ab7 0%,#7db9e8 38%,#ffffff 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  #337ab7 0%,#7db9e8 38%,#ffffff 100%); /* IE10+ */
+	background: linear-gradient(to right,  #337ab7 0%,#7db9e8 38%,#ffffff 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#337ab7', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
+}
+.fp-main > article > dl > dd:after {
+	content: '';
+	margin: 20px 0 10px 0;
+	height: 1px;
+	display: block;
+	background: #E7E7E7; /* Old browsers */
+	background: -moz-linear-gradient(left,  #E7E7E7 0%, #EDEDED 38%, #ffffff 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#E7E7E7), color-stop(38%,#EDEDED), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  #E7E7E7 0%,#EDEDED 38%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  #E7E7E7 0%,#EDEDED 38%,#ffffff 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  #E7E7E7 0%,#EDEDED 38%,#ffffff 100%); /* IE10+ */
+	background: linear-gradient(to right,  #E7E7E7 0%,#EDEDED 38%,#ffffff 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E7E7E7', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
+}
+.fp-main > article > ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	font-size: 18px;
+}
+.fp-title > .fp-ancestors { /* Class for targeting an objects ancestor links */ }
+.fp-title > .fp-variation { /* Class for targeting an objects variation links */ }
+.fp-title > .fp-kind,
+.fp-title > .fp-inherited,
+.fp-title > .fp-overrides,
+.fp-title > .fp-attributes {
+	font-size: 28px;
+	font-style: normal;
+}
+.fp-container-overview { /* Class for targeting an objects sub header containing the signature and description */ }
+.fp-container-overview h4 {
+	font-size: 24px;
+}
+.fp-description {
+	margin-left: 30px;
+}
+.fp-class-description {
+	margin-left: -15px;
+	margin-bottom: 20px;
+}
+.fp-title, .fp-subsection-title {
+	margin-left: -15px;
+}
+.fp-title {
+	font-size: 0;
+}
+.fp-title > span {
+	font-size: 36px;
+}
+.fp-subsection-title {
+	margin-top: 50px;
+}
+.fp-summary {
+	margin-left: 15px;
+}
+/* details.tmpl */
+.fp-details {
+	margin-left: 30px;
+}
+.fp-details .form-group {
+	margin-bottom: 0;
+}
+.fp-details .control-label {
+	text-align: left;
+}
+.fp-details .form-control-static {
+	margin: 0;
+	padding-bottom: 0;
+}
+.fp-details .form-control-static+.form-control-static {
+	padding-top: 2px;
+}
+/* params.tmpl */
+.fp-params.table {
+	width: auto;
+	min-width: 400px;
+	margin-left: 30px;
+}
+/* properties.tmpl */
+.fp-props.table {
+	width: auto;
+	min-width: 400px;
+	margin-left: 30px;
+}
+/* returns.tmpl */
+.fp-returns-description {
+	margin-left: 30px;
+}
+.fp-returns-types {
+	margin-left: 45px;
+	margin-bottom: 10px;
+	font-weight: 600;
+}
+/* exceptions.tmpl */
+.fp-exceptions-description {
+	margin-left: 30px;
+}
+.fp-exceptions-types {
+	margin-left: 45px;
+	margin-bottom: 10px;
+	font-weight: 600;
+}
+/* method.tmpl */
+.fp-method > h5 {
+	margin-left: 15px;
+	font-weight: 600;
+}
+.fp-method > ul {
+	list-style-type: none;
+	margin: 0 0 0 30px;
+	padding: 0;
+}
+/* member.tmpl */
+.fp-member > h5 {
+	margin-left: 15px;
+	font-weight: 600;
+}
+.fp-member > ul {
+	list-style-type: none;
+	margin: 0 0 0 30px;
+	padding: 0;
+}
+/* examples.tmpl */
+.fp-example-description {
+	margin-left: 30px;
+	font-style: italic;
+}
+.fp-example {
+	margin-left: 30px;
+}
+/* *.tmpl */
+.fp-monospace, .fp-signature {
+	font-family: Consolas, Monaco, 'Andale Mono', monospace;
+}
+.fp-kind,
+.fp-inherited,
+.fp-overrides,
+.fp-attributes,
+.fp-signature,
+.fp-type-signature {
+	color: #aaa;
+}
+.fp-type-signature.static:after {
+	content: ' ';
+}
+.fp-kind,
+.fp-inherited,
+.fp-overrides,
+.fp-attributes {
+	font-style: italic;
+	font-size: 75%;
+}

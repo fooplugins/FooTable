@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no"/>
+	<title></title>
+	<link rel="stylesheet" href="//bootswatch.com/slate/bootstrap.min.css">
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="fajax.js"></script>
+
+	<link href="../compiled/footable.bootstrap.css" rel="stylesheet" />
+	<script src="../compiled/footable.js"></script>
+
+	<script>
+		jQuery(function($){
+			$('body').on({
+				'init': function(e, instance){
+					console.log('When stopPropagation is true this should not be seen!!!');
+				}
+			});
+
+			window.FT = $('#table_1').on({
+				'before.ft.filtering': function(e, instance, filter){
+					console.log('before.ft.filtering: ', filter);
+				},
+				'after.ft.filtering': function(e, instance, filter){
+					console.log('after.ft.filtering: ', filter);
+				},
+				'before.ft.sorting': function(e, instance, sorter){
+					console.log('before.ft.sorting: ', sorter);
+					if (sorter.column.name == 'id'){
+						sorter.direction = 'ASC';
+					}
+				},
+				'after.ft.sorting': function(e, instance, sorter){
+					console.log('after.ft.sorting: ', sorter);
+				},
+				'before.ft.paging': function(e, instance, pager){
+					console.log('before.ft.paging: ', pager);
+					if (pager.page == 3){
+						pager.page = pager.forward ? 4 : 2;
+					}
+				},
+				'after.ft.paging': function(e, instance, pager){
+					console.log('after.ft.paging: ', pager);
+				}
+			}).footable({
+				stopPropagation: true,
+				sorting: {
+					enabled: true
+				},
+				paging: {
+					enabled: true,
+					size: 10,
+					current: parseInt(FooTable.getURLParameter('page')) || 1
+				},
+				filtering: {
+					enabled: true
+				},
+				cascade: true,
+				columns: FAjax.defaults.columns,
+				rows: FAjax.defaults.rows
+			}).data('__FooTable__');
+			$('#filter_leo').on('click', function(){
+				FT.applyFilter('Leo').then(function(){
+					console.log('After filter');
+				});
+			});
+		});
+	</script>
+	<style>
+		body {
+			padding: 50px;
+		}
+		.status_filter {
+			float: right;
+			display: inline-block;
+			margin-right: 5px;
+			width: auto;
+		}
+	</style>
+</head>
+<body>
+<button id="filter_leo" type="button">Filter "Leo"</button>
+<table id="table_1" class="table table-bordered table-striped table-hover table-condensed">
+</table>
+</body>
+</html>

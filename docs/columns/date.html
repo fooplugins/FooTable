@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Date columns - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../css/docs.css" rel="stylesheet">
+
+	<script src="../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="docs">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a class="active">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../components/filtering.html">Filtering</a></li>
+						<li><a href="../components/paging.html">Paging</a></li>
+						<li><a href="../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>Date Columns</h1>
+		<h2>Options, how to use, and basic examples for dates.</h2>
+	</div>
+</div>
+
+<div class="container">
+
+	<p class="lead">
+		Dates are a common data type displayed in tables so we wanted to provide a default way to handle this rather unwieldy JavaScript object.
+		Rather than writing an entire date parsing and formatting library we decided to use <a href="http://momentjs.com/" target="_blank">moment.js</a> to provide this functionality.
+	</p>
+	<div class="callout callout-warning">
+		<h4>Required files</h4>
+		<p>If you need to use the <code>date</code> column type you must include <a href="http://momentjs.com/" target="_blank">moment.js</a> in your page.</p>
+	</div>
+
+	<div class="docs-section">
+		<h1 id="options" class="page-header">Options</h1>
+		<p class="lead">Apart from the default <a href="../options.html#column">column options</a> using the date type allows you to use the below additional options.</p>
+		<div class="docs-option">
+			<h2 id="formatString">formatString</h2>
+			<p>This option allows you to change how dates are display or parsed from cells (<code>td</code>) in the column.</p>
+
+			<div class="callout callout-info">
+				<h4>Note</h4>
+				<p>Please see the <a href="http://momentjs.com/docs/#/parsing/string-format/">moment.js</a> documentation for more information on format strings.</p>
+			</div>
+
+			<div class="examples">
+				<div class="example default">
+					<p><code>"MM-DD-YYYY"</code></p>
+				</div>
+			</div>
+
+			<div class="examples">
+				<div class="example static">
+					<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+				</div>
+				<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;date&quot; data-formatString=&quot;Do MMMM YYYY&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+				<div class="example javascript">
+					<p>The below shows how to supply this value directly through the options.</p>
+				</div>
+				<pre class="language-javascript javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;type&quot;: &quot;date&quot;,
+			&quot;formatString&quot;: &quot;Do MMMM YYYY&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+			</div>
+		</div>
+	</div>
+
+	<div class="docs-section">
+		<h1 id="examples" class="page-header">Examples</h1>
+		<p class="lead">
+			When supplying row data that contains dates the cell values can be supplied as either a <a href="http://momentjs.com/docs/#/parsing/" target="_blank">moment.js wrapper</a>,
+			a JavaScript date object, a numeric tick value or a string that can be parsed using the <a href="#formatString"><code>formatString</code></a> option.
+		</p>
+		<div class="examples">
+			<div class="example static plural">
+				<p>
+					The below shows the simplest way a date column could be implemented however this only works as the cell <a href="../options.html#cell-value"><code>value</code></a>
+					matches the default value of the <a href="#formatString"><code>formatString</code></a>.
+				</p>
+			</div>
+			<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;date&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tr&gt;
+		&lt;td&gt;12/1/2000&lt;/td&gt;
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+			<p>The <a href="#formatString"><code>formatString</code></a> option must match the format of the cells contents.</p>
+			<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;date&quot; data-formatString=&quot;Do MMMM YYYY&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tr&gt;
+		&lt;td&gt;1st December 2000&lt;/td&gt;
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+			<p>
+				To be able to change how a date is displayed when supplied as a ticks value use the cells <a href="../options.html#cell-value"><code>data-value</code></a>
+				attribute to supply the value and the column's <a href="#formatString"><code>formatString</code></a> option to specify how it is displayed.
+			</p>
+			<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;date&quot; data-formatString=&quot;Do MMMM YYYY&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tr&gt;
+		&lt;td data-value=&quot;975683133000&quot;&gt;&lt;!-- 1st December 2000 --&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+		</div>
+
+		<div class="examples">
+			<div class="example javascript plural">
+				<p>
+					Implementing a date column through the options requires the column's <a href="../options.html#column-type"><code>type</code></a> option be set to <code>"date"</code>
+					and that the <a href="../options.html#column-name"><code>name</code></a> of the column matches a date property in the row data.
+				</p>
+			</div>
+			<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;type&quot;: &quot;date&quot;,
+			&quot;name&quot;: &quot;started&quot;,
+			...
+		},{
+			...
+		}],
+		&quot;rows&quot;: [{
+			&quot;started&quot;: /* Can be a moment.js wrapper, a date object, a ticks value or a string that can be parsed into a date using the formatString option. */,
+			...
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+		</div>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../compiled/footable.min.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+	});
+</script>
+</body>
+</html>

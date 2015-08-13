@@ -5,54 +5,101 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		clean: {
-			files: ['dist']
+			pre: [
+				'compiled',
+				'releases/*.v<%= pkg.version %>.zip'
+			]
 		},
 		concat: {
-			js: {
+			core_js: {
 				src: [
-					"js/FooTable.js",
-					"js/FooTable.is.js",
-					"js/FooTable.strings.js",
-					"js/objects/FooTable.Class.js",
-					"js/objects/FooTable.Component.js",
-					"js/objects/FooTable.Defaults.js",
-					"js/objects/FooTable.Breakpoint.js",
-					"js/objects/FooTable.Cell.js",
-					"js/objects/FooTable.Column.js",
-					"js/objects/FooTable.Row.js",
-					"js/objects/FooTable.Filter.js",
-					"js/objects/FooTable.Sorter.js",
-					"js/objects/FooTable.Pager.js",
-					"js/components/FooTable.Instance.js",
-					"js/components/FooTable.Columns.js",
-					"js/components/FooTable.Rows.js",
-					"js/components/FooTable.Breakpoints.js",
-					"js/components/core/FooTable.Filtering.js",
-					"js/components/core/FooTable.Paging.js",
-					"js/components/core/FooTable.Sorting.js"
+					"src/js/FooTable.js",
+					"src/js/utils/core/*.js",
+					"src/js/utils/*.js",
+					"src/js/classes/*.js",
+					"src/js/classes/columns/*.js",
+					"src/js/components/FooTable.Component.js",
+					"src/js/components/internal/**/*.js"
 				],
-				dest: "dist/footable.js"
+				dest: "compiled/footable.core.js"
 			},
-			css: {
+			core_standalone_css: {
 				src: [
-					"css/FooTable.NoBootstrap.css",
-					"css/FooTable.css",
-					"css/FooTable.FontAwesome.css",
-					"css/components/FooTable.Sorting.css",
-					"css/components/FooTable.Paging.css",
-					"css/components/FooTable.Filtering.css"
+					"src/css/FooTable.NoBootstrap.css",
+					"src/css/FooTable.css",
+					"src/css/FooTable.FontAwesome.css"
 				],
-				dest: "dist/footable.css"
+				dest: "compiled/footable.core.standalone.css"
+			},
+			core_bootstrap_css: {
+				src: [
+					"src/css/FooTable.css",
+					"src/css/FooTable.Glyphicons.css"
+				],
+				dest: "compiled/footable.core.bootstrap.css"
+			},
+			filtering_js: {
+				src: [
+					"src/js/components/core/filtering/**/*.js"
+				],
+				dest: "compiled/footable.filtering.js"
+			},
+			filtering_css: {
+				src: [
+					"src/css/components/FooTable.Filtering.css"
+				],
+				dest: "compiled/footable.filtering.css"
+			},
+			sorting_js: {
+				src: [
+					"src/js/components/core/sorting/**/*.js"
+				],
+				dest: "compiled/footable.sorting.js"
+			},
+			sorting_css: {
+				src: [
+					"src/css/components/FooTable.Sorting.css"
+				],
+				dest: "compiled/footable.sorting.css"
+			},
+			paging_js: {
+				src: [
+					"src/js/components/core/paging/**/*.js"
+				],
+				dest: "compiled/footable.paging.js"
+			},
+			paging_css: {
+				src: [
+					"src/css/components/FooTable.Paging.css"
+				],
+				dest: "compiled/footable.paging.css"
+			},
+			all_js: {
+				src: [
+					"compiled/footable.core.js",
+					"compiled/footable.filtering.js",
+					"compiled/footable.sorting.js",
+					"compiled/footable.paging.js"
+				],
+				dest: "compiled/footable.js"
+			},
+			standalone_css: {
+				src: [
+					"compiled/footable.core.standalone.css",
+					"compiled/footable.filtering.css",
+					"compiled/footable.sorting.css",
+					"compiled/footable.paging.css"
+				],
+				dest: "compiled/footable.standalone.css"
 			},
 			bootstrap_css: {
 				src: [
-					"css/FooTable.css",
-					"css/FooTable.Glyphicons.css",
-					"css/components/FooTable.Sorting.css",
-					"css/components/FooTable.Paging.css",
-					"css/components/FooTable.Filtering.css"
+					"compiled/footable.core.bootstrap.css",
+					"compiled/footable.filtering.css",
+					"compiled/footable.sorting.css",
+					"compiled/footable.paging.css"
 				],
-				dest: "dist/footable.bootstrap.css"
+				dest: "compiled/footable.bootstrap.css"
 			}
 		},
 		uglify: {
@@ -64,16 +111,105 @@ module.exports = function (grunt) {
 					}
 				},
 				files: {
-					'dist/footable.min.js': [ "dist/footable.js" ]
+					'compiled/footable.min.js': [ "compiled/footable.js" ],
+					'compiled/footable.core.min.js': [ "compiled/footable.core.js" ],
+					'compiled/footable.filtering.min.js': [ "compiled/footable.filtering.js" ],
+					'compiled/footable.sorting.min.js': [ "compiled/footable.sorting.js" ],
+					'compiled/footable.paging.min.js': [ "compiled/footable.paging.js" ]
 				}
 			}
 		},
 		cssmin: {
 			minify: {
 				files: {
-					'dist/footable.min.css': [ "dist/footable.css" ],
-					'dist/footable.bootstrap.min.css': [ "dist/footable.bootstrap.css" ]
+					'compiled/footable.standalone.min.css': [ "compiled/footable.standalone.css" ],
+					'compiled/footable.bootstrap.min.css': [ "compiled/footable.bootstrap.css" ],
+					'compiled/footable.filtering.min.css': [ "compiled/footable.filtering.css" ],
+					'compiled/footable.sorting.min.css': [ "compiled/footable.sorting.css" ],
+					'compiled/footable.paging.min.css': [ "compiled/footable.paging.css" ]
 				}
+			}
+		},
+		compress: {
+			bootstrap: {
+				options: {
+					archive: 'releases/footable-bootstrap.v<%= pkg.version %>.zip'
+				},
+				files: [{
+					expand: true,
+					cwd: 'compiled/',
+					src: [
+						'footable.bootstrap.css',
+						'footable.bootstrap.min.css'
+					],
+					dest: 'css/'
+				},{
+					expand: true,
+					cwd: 'compiled/',
+					src: [
+						'footable.js',
+						'footable.min.js'
+					],
+					dest: 'js/'
+				}]
+			},
+			standalone: {
+				options: {
+					archive: 'releases/footable-standalone.v<%= pkg.version %>.zip'
+				},
+				files: [{
+					expand: true,
+					cwd: 'compiled/',
+					src: [
+						'footable.standalone.css',
+						'footable.standalone.min.css'
+					],
+					dest: 'css/'
+				},{
+					expand: true,
+					cwd: 'compiled/',
+					src: [
+						'footable.js',
+						'footable.min.js'
+					],
+					dest: 'js/'
+				}]
+			},
+			components: {
+				options: {
+					archive: 'releases/footable-components.v<%= pkg.version %>.zip'
+				},
+				files: [{
+					expand: true,
+					cwd: 'compiled/',
+					src: [
+						'footable.core.bootstrap.css',
+						'footable.core.bootstrap.min.css',
+						'footable.core.standalone.css',
+						'footable.core.standalone.min.css',
+						'footable.filtering.css',
+						'footable.filtering.min.css',
+						'footable.paging.css',
+						'footable.paging.min.css',
+						'footable.sorting.css',
+						'footable.sorting.min.css'
+					],
+					dest: 'css/'
+				},{
+					expand: true,
+					cwd: 'compiled/',
+					src: [
+						'footable.core.js',
+						'footable.core.min.js',
+						'footable.filtering.js',
+						'footable.filtering.min.js',
+						'footable.paging.js',
+						'footable.paging.min.js',
+						'footable.sorting.js',
+						'footable.sorting.min.js'
+					],
+					dest: 'js/'
+				}]
 			}
 		}
 	});
@@ -83,5 +219,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin']);
+	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'compress']);
 };

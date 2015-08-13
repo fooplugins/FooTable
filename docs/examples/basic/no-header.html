@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>No header tables - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>No Headers</h1>
+		<h2>How to create tables that have no header row.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+
+		<div class="callout callout-info">
+			<h4>Note</h4>
+			<p><strong>Certain components</strong> such as sorting <strong>require a header row</strong> to be functional. To continue to use sorting as an example, without a header row there is no UI to click to initiate the sort operation.</p>
+		</div>
+
+		<!-- Tab Header -->
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active"><a href="#no-header-static" aria-controls="static" role="tab" data-toggle="tab">Static Content</a></li>
+			<li role="presentation"><a href="#no-header-javascript" aria-controls="javascript-options" role="tab" data-toggle="tab">JavaScript Options</a></li>
+		</ul>
+
+		<!-- Tab Content -->
+		<div class="tab-content">
+
+			<!-- Static Content -->
+			<div role="tabpanel" class="tab-pane active" id="no-header-static">
+				<p>
+					Simply make sure the first <code>tr</code> in your <code>table</code> contains only <code>td</code> cells and supply
+					the <a href="../../getting-started.html#column">column option</a> attributes on them. If a header row is still being displayed you can explicitly set the
+					<a href="../../getting-started.html#showHeader"><code>showHeader</code></a> option to <code>false</code> to ensure it is hidden. As per all static tables the
+					<a href="../../getting-started.html#rows"><code>rows</code></a> are parsed directly from the <code>table</code>s <code>tr</code> elements using the current
+					<a href="../../getting-started.html#columns"><code>columns</code></a> and individual <a href="../../getting-started.html#cell">cell options</a>.
+				</p>
+
+				<div class="callout callout-info">
+					<h4>Notes</h4>
+					<ul>
+						<li>
+							The second and third columns do not need a <code>data-title</code> attribute as they are never hidden and displayed in a detail row.
+							All columns that could be displayed in a detail row should provide a title otherwise a simple one such as <code>"Column 1"</code>, <code>"Column 2"</code>, etc. is generated and displayed.
+						</li>
+						<li>
+							None of the columns supply a <code>data-name</code> attribute so a parsed row objects properties would be named <code>"col1"</code>, <code>"col2"</code>, etc.
+						</li>
+					</ul>
+				</div>
+				<div class="example">
+
+					<table id="no-header-example-1" class="table">
+						<tr data-expanded="true">
+							<td data-title="ID" data-breakpoints="xs">1</td>
+							<td>Dennise</td>
+							<td>Fuhrman</td>
+							<td data-title="Job Title" data-breakpoints="xs">High School History Teacher</td>
+							<td data-title="Started On" data-breakpoints="xs sm">November 8th 2011</td>
+							<td data-title="Date of Birth" data-breakpoints="xs sm md">July 25th 1960</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>Elodia</td>
+							<td>Weisz</td>
+							<td>Wallpaperer Helper</td>
+							<td>October 15th 2010</td>
+							<td>March 30th 1982</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>Raeann</td>
+							<td>Haner</td>
+							<td>Internal Medicine Nurse Practitioner</td>
+							<td>November 28th 2013</td>
+							<td>February 26th 1966</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>Junie</td>
+							<td>Landa</td>
+							<td>Offbearer</td>
+							<td>October 31st 2010</td>
+							<td>March 29th 1966</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>Solomon</td>
+							<td>Bittinger</td>
+							<td>Roller Skater</td>
+							<td>December 29th 2011</td>
+							<td>September 22nd 1964</td>
+						</tr>
+						<tr>
+							<td>6</td>
+							<td>Bar</td>
+							<td>Lewis</td>
+							<td>Clown</td>
+							<td>November 12th 2012</td>
+							<td>August 4th 1991</td>
+						</tr>
+						<tr>
+							<td>7</td>
+							<td>Usha</td>
+							<td>Leak</td>
+							<td>Ships Electronic Warfare Officer</td>
+							<td>August 14th 2012</td>
+							<td>November 20th 1979</td>
+						</tr>
+						<tr>
+							<td>8</td>
+							<td>Lorriane</td>
+							<td>Cooke</td>
+							<td>Technical Services Librarian</td>
+							<td>September 21st 2010</td>
+							<td>April 7th 1969</td>
+						</tr>
+					</table>
+
+				</div>
+				<pre class="language-javascript between" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable();
+});</code></pre>
+				<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot;&gt;
+	&lt;tr&gt;
+		&lt;td data-title=&quot;ID&quot; data-breakpoints=&quot;xs&quot;&gt;1&lt;/td&gt;
+		&lt;td&gt;Dennise&lt;/td&gt;
+		&lt;td&gt;Fuhrman&lt;/td&gt;
+		&lt;td data-title=&quot;Job Title&quot; data-breakpoints=&quot;xs&quot;&gt;High School History Teacher&lt;/td&gt;
+		&lt;td data-title=&quot;Started On&quot; data-breakpoints=&quot;xs sm&quot;&gt;November 8th 2011&lt;/td&gt;
+		&lt;td data-title=&quot;Date of Birth&quot; data-breakpoints=&quot;xs sm md&quot;&gt;July 25th 1960&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;2&lt;/td&gt;
+		&lt;td&gt;Elodia&lt;/td&gt;
+		&lt;td&gt;Weisz&lt;/td&gt;
+		&lt;td&gt;Wallpaperer Helper&lt;/td&gt;
+		&lt;td&gt;October 15th 2010&lt;/td&gt;
+		&lt;td&gt;March 30th 1982&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;3&lt;/td&gt;
+		&lt;td&gt;Raeann&lt;/td&gt;
+		&lt;td&gt;Haner&lt;/td&gt;
+		&lt;td&gt;Internal Medicine Nurse Practitioner&lt;/td&gt;
+		&lt;td&gt;November 28th 2013&lt;/td&gt;
+		&lt;td&gt;February 26th 1966&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;4&lt;/td&gt;
+		&lt;td&gt;Junie&lt;/td&gt;
+		&lt;td&gt;Landa&lt;/td&gt;
+		&lt;td&gt;Offbearer&lt;/td&gt;
+		&lt;td&gt;October 31st 2010&lt;/td&gt;
+		&lt;td&gt;March 29th 1966&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;5&lt;/td&gt;
+		&lt;td&gt;Solomon&lt;/td&gt;
+		&lt;td&gt;Bittinger&lt;/td&gt;
+		&lt;td&gt;Roller Skater&lt;/td&gt;
+		&lt;td&gt;December 29th 2011&lt;/td&gt;
+		&lt;td&gt;September 22nd 1964&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;6&lt;/td&gt;
+		&lt;td&gt;Bar&lt;/td&gt;
+		&lt;td&gt;Lewis&lt;/td&gt;
+		&lt;td&gt;Clown&lt;/td&gt;
+		&lt;td&gt;November 12th 2012&lt;/td&gt;
+		&lt;td&gt;August 4th 1991&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;7&lt;/td&gt;
+		&lt;td&gt;Usha&lt;/td&gt;
+		&lt;td&gt;Leak&lt;/td&gt;
+		&lt;td&gt;Ships Electronic Warfare Officer&lt;/td&gt;
+		&lt;td&gt;August 14th 2012&lt;/td&gt;
+		&lt;td&gt;November 20th 1979&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;8&lt;/td&gt;
+		&lt;td&gt;Lorriane&lt;/td&gt;
+		&lt;td&gt;Cooke&lt;/td&gt;
+		&lt;td&gt;Technical Services Librarian&lt;/td&gt;
+		&lt;td&gt;September 21st 2010&lt;/td&gt;
+		&lt;td&gt;April 7th 1969&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+
+			</div>
+
+			<!-- JavaScript Options -->
+			<div role="tabpanel" class="tab-pane" id="no-header-javascript">
+				<p>
+					You must set the <a href="../../getting-started.html#showHeader"><code>showHeader</code></a> option to <code>false</code>, by default this is <code>true</code>
+					and one would be generated and displayed in the <code>table</code>. You must also supply the <a href="../../getting-started.html#columns"><code>columns</code></a>
+					and <a href="../../getting-started.html#columns"><code>rows</code></a> options or else the plugin will not be able to generate the <code>table</code> correctly.
+				</p>
+
+				<div class="callout callout-info">
+					<h4>Notes</h4>
+					<ul>
+						<li>
+							The second and third columns do not need a <a href="../../getting-started.html#column-title"><code>title</code></a> value as they are never
+							hidden and displayed in a detail row. All columns that could be displayed in a detail row should provide a title otherwise a simple one such as
+							<code>"Column 1"</code>, <code>"Column 2"</code>, etc. is generated and displayed.
+						</li>
+						<li>
+							In the below example <a href="../../getting-started.html#row">row options</a> are supplied with the first row to specify that it should be
+							<a href="../../getting-started.html#row-expanded"><code>expanded</code></a> by default if any columns are hidden.
+						</li>
+					</ul>
+				</div>
+
+				<div class="example">
+
+					<table id="no-header-example-2" class="table"></table>
+
+				</div>
+				<pre class="language-javascript between" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;showHeader&quot;: false,
+		&quot;columns&quot;: [
+			{ &quot;name&quot;: &quot;id&quot;, &quot;title&quot;: &quot;ID&quot;, &quot;breakpoints&quot;: &quot;xs&quot; },
+			{ &quot;name&quot;: &quot;firstName&quot; },
+			{ &quot;name&quot;: &quot;lastName&quot; },
+			{ &quot;name&quot;: &quot;jobTitle&quot;, &quot;title&quot;: &quot;Job Title&quot;, &quot;breakpoints&quot;: &quot;xs&quot; },
+			{ &quot;name&quot;: &quot;started&quot;, &quot;title&quot;: &quot;Started On&quot;, &quot;breakpoints&quot;: &quot;xs sm&quot; },
+			{ &quot;name&quot;: &quot;dob&quot;, &quot;title&quot;: &quot;Date of Birth&quot;, &quot;breakpoints&quot;: &quot;xs sm md&quot; }
+		],
+		&quot;rows&quot;: [
+			{
+				&quot;options&quot;: {
+					&quot;expanded&quot;: true
+				},
+				&quot;value&quot;: { &quot;id&quot;: 1, &quot;firstName&quot;: &quot;Dennise&quot;, &quot;lastName&quot;: &quot;Fuhrman&quot;, &quot;jobTitle&quot;: &quot;High School History Teacher&quot;, &quot;started&quot;: &quot;November 8th 2011&quot;, &quot;dob&quot;: &quot;July 25th 1960&quot; }
+			},
+			{ &quot;id&quot;: 2, &quot;firstName&quot;: &quot;Elodia&quot;, &quot;lastName&quot;: &quot;Weisz&quot;, &quot;jobTitle&quot;: &quot;Wallpaperer Helper&quot;, &quot;started&quot;: &quot;October 15th 2010&quot;, &quot;dob&quot;: &quot;March 30th 1982&quot; },
+			{ &quot;id&quot;: 3, &quot;firstName&quot;: &quot;Raeann&quot;, &quot;lastName&quot;: &quot;Haner&quot;, &quot;jobTitle&quot;: &quot;Internal Medicine Nurse Practitioner&quot;, &quot;started&quot;: &quot;November 28th 2013&quot;, &quot;dob&quot;: &quot;February 26th 1966&quot; },
+			{ &quot;id&quot;: 4, &quot;firstName&quot;: &quot;Junie&quot;, &quot;lastName&quot;: &quot;Landa&quot;, &quot;jobTitle&quot;: &quot;Offbearer&quot;, &quot;started&quot;: &quot;October 31st 2010&quot;, &quot;dob&quot;: &quot;March 29th 1966&quot; },
+			{ &quot;id&quot;: 5, &quot;firstName&quot;: &quot;Solomon&quot;, &quot;lastName&quot;: &quot;Bittinger&quot;, &quot;jobTitle&quot;: &quot;Roller Skater&quot;, &quot;started&quot;: &quot;December 29th 2011&quot;, &quot;dob&quot;: &quot;September 22nd 1964&quot; },
+			{ &quot;id&quot;: 6, &quot;firstName&quot;: &quot;Bar&quot;, &quot;lastName&quot;: &quot;Lewis&quot;, &quot;jobTitle&quot;: &quot;Clown&quot;, &quot;started&quot;: &quot;November 12th 2012&quot;, &quot;dob&quot;: &quot;August 4th 1991&quot; },
+			{ &quot;id&quot;: 7, &quot;firstName&quot;: &quot;Usha&quot;, &quot;lastName&quot;: &quot;Leak&quot;, &quot;jobTitle&quot;: &quot;Ships Electronic Warfare Officer&quot;, &quot;started&quot;: &quot;August 14th 2012&quot;, &quot;dob&quot;: &quot;November 20th 1979&quot; },
+			{ &quot;id&quot;: 8, &quot;firstName&quot;: &quot;Lorriane&quot;, &quot;lastName&quot;: &quot;Cooke&quot;, &quot;jobTitle&quot;: &quot;Technical Services Librarian&quot;, &quot;started&quot;: &quot;September 21st 2010&quot;, &quot;dob&quot;: &quot;April 7th 1969&quot; }
+		]
+	});
+});</code></pre>
+				<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot;&gt;&lt;/table&gt;</code></pre>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		$('#no-header-example-1').footable();
+		$('#no-header-example-2').footable({
+			"showHeader": false,
+			"columns": [
+				{ "name": "id", "title": "ID", "breakpoints": "xs" },
+				{ "name": "firstName" },
+				{ "name": "lastName" },
+				{ "name": "jobTitle", "title": "Job Title", "breakpoints": "xs" },
+				{ "name": "started", "title": "Started On", "breakpoints": "xs sm" },
+				{ "name": "dob", "title": "Date of Birth", "breakpoints": "xs sm md" }
+			],
+			"rows": [
+				{
+					"options": {
+						"expanded": true
+					},
+					"value": { "id": 1, "firstName": "Dennise", "lastName": "Fuhrman", "jobTitle": "High School History Teacher", "started": "November 8th 2011", "dob": "July 25th 1960" }
+				},
+				{ "id": 2, "firstName": "Elodia", "lastName": "Weisz", "jobTitle": "Wallpaperer Helper", "started": "October 15th 2010", "dob": "March 30th 1982" },
+				{ "id": 3, "firstName": "Raeann", "lastName": "Haner", "jobTitle": "Internal Medicine Nurse Practitioner", "started": "November 28th 2013", "dob": "February 26th 1966" },
+				{ "id": 4, "firstName": "Junie", "lastName": "Landa", "jobTitle": "Offbearer", "started": "October 31st 2010", "dob": "March 29th 1966" },
+				{ "id": 5, "firstName": "Solomon", "lastName": "Bittinger", "jobTitle": "Roller Skater", "started": "December 29th 2011", "dob": "September 22nd 1964" },
+				{ "id": 6, "firstName": "Bar", "lastName": "Lewis", "jobTitle": "Clown", "started": "November 12th 2012", "dob": "August 4th 1991" },
+				{ "id": 7, "firstName": "Usha", "lastName": "Leak", "jobTitle": "Ships Electronic Warfare Officer", "started": "August 14th 2012", "dob": "November 20th 1979" },
+				{ "id": 8, "firstName": "Lorriane", "lastName": "Cooke", "jobTitle": "Technical Services Librarian", "started": "September 21st 2010", "dob": "April 7th 1969" }
+			]
+		});
+	});
+</script>
+</body>
+</html>

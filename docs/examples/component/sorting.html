@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Sorting columns - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>Sorting columns</h1>
+		<h2>How to create a table that uses the sorting component.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+
+		<div class="callout callout-info">
+			<h4>Notes</h4>
+			<ul>
+				<li>
+					As this example does not make use of the <a href="../../components/paging.html">paging component</a> only a limited number of rows are displayed. To see an example
+					containing thousands of rows that uses the <a href="../../components/sorting.html">sorting component</a> please take a look at the <a href="showcase.html">showcase example</a>.
+				</li>
+				<li>
+					Sorting requires a header row to be able to function correctly, without one there is no UI to click to initiate the sort operation.
+				</li>
+				<li>
+					The sorting component relies on a columns <a href="../../getting-started.html#column-type"><code>type</code></a> option being correctly set.
+				</li>
+			</ul>
+		</div>
+
+		<p>
+			To enable sorting on a table the only option that must be set is the <a href="../../components/sorting.html#enabled"><code>enabled</code></a> option with a value of <code>true</code>,
+			all other options for the component will fall back to there defaults if not supplied.
+			See the <a href="../../components/sorting.html#options">sorting component</a> documentation for a list of all available options.
+		</p>
+
+		<div class="example">
+			<table id="sorting-example-1" class="table" data-sorting="true">
+				<thead>
+				<tr>
+					<th data-breakpoints="xs" data-type="number">ID</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th data-breakpoints="xs">Job Title</th>
+					<th data-breakpoints="xs sm" data-type="date" data-format-string="MMMM Do YYYY">Started On</th>
+					<th data-breakpoints="xs sm md" data-type="date" data-format-string="MMMM Do YYYY">Date of Birth</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>1</td>
+					<td>Dennise</td>
+					<td>Fuhrman</td>
+					<td>High School History Teacher</td>
+					<td>November 8th 2011</td>
+					<td>July 25th 1960</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Elodia</td>
+					<td>Weisz</td>
+					<td>Wallpaperer Helper</td>
+					<td>October 15th 2010</td>
+					<td>March 30th 1982</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Raeann</td>
+					<td>Haner</td>
+					<td>Internal Medicine Nurse Practitioner</td>
+					<td>November 28th 2013</td>
+					<td>February 26th 1966</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Junie</td>
+					<td>Landa</td>
+					<td>Offbearer</td>
+					<td>October 31st 2010</td>
+					<td>March 29th 1966</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>Solomon</td>
+					<td>Bittinger</td>
+					<td>Roller Skater</td>
+					<td>December 29th 2011</td>
+					<td>September 22nd 1964</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>Bar</td>
+					<td>Lewis</td>
+					<td>Clown</td>
+					<td>November 12th 2012</td>
+					<td>August 4th 1991</td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>Usha</td>
+					<td>Leak</td>
+					<td>Ships Electronic Warfare Officer</td>
+					<td>August 14th 2012</td>
+					<td>November 20th 1979</td>
+				</tr>
+				<tr>
+					<td>8</td>
+					<td>Lorriane</td>
+					<td>Cooke</td>
+					<td>Technical Services Librarian</td>
+					<td>September 21st 2010</td>
+					<td>April 7th 1969</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<pre class="language-javascript between" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable();
+});</code></pre>
+		<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-sorting=&quot;true&quot;&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-breakpoints=&quot;xs&quot; data-type=&quot;number&quot;&gt;ID&lt;/th&gt;
+			&lt;th&gt;First Name&lt;/th&gt;
+			&lt;th&gt;Last Name&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;Job Title&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs sm&quot; data-type=&quot;date&quot; data-format-string=&quot;MMMM Do YYYY&quot;&gt;Started On&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs sm md&quot; data-type=&quot;date&quot; data-format-string=&quot;MMMM Do YYYY&quot;&gt;Date of Birth&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;1&lt;/td&gt;
+			&lt;td&gt;Dennise&lt;/td&gt;
+			&lt;td&gt;Fuhrman&lt;/td&gt;
+			&lt;td&gt;High School History Teacher&lt;/td&gt;
+			&lt;td&gt;November 8th 2011&lt;/td&gt;
+			&lt;td&gt;July 25th 1960&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;2&lt;/td&gt;
+			&lt;td&gt;Elodia&lt;/td&gt;
+			&lt;td&gt;Weisz&lt;/td&gt;
+			&lt;td&gt;Wallpaperer Helper&lt;/td&gt;
+			&lt;td&gt;October 15th 2010&lt;/td&gt;
+			&lt;td&gt;March 30th 1982&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;3&lt;/td&gt;
+			&lt;td&gt;Raeann&lt;/td&gt;
+			&lt;td&gt;Haner&lt;/td&gt;
+			&lt;td&gt;Internal Medicine Nurse Practitioner&lt;/td&gt;
+			&lt;td&gt;November 28th 2013&lt;/td&gt;
+			&lt;td&gt;February 26th 1966&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;4&lt;/td&gt;
+			&lt;td&gt;Junie&lt;/td&gt;
+			&lt;td&gt;Landa&lt;/td&gt;
+			&lt;td&gt;Offbearer&lt;/td&gt;
+			&lt;td&gt;October 31st 2010&lt;/td&gt;
+			&lt;td&gt;March 29th 1966&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;5&lt;/td&gt;
+			&lt;td&gt;Solomon&lt;/td&gt;
+			&lt;td&gt;Bittinger&lt;/td&gt;
+			&lt;td&gt;Roller Skater&lt;/td&gt;
+			&lt;td&gt;December 29th 2011&lt;/td&gt;
+			&lt;td&gt;September 22nd 1964&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;6&lt;/td&gt;
+			&lt;td&gt;Bar&lt;/td&gt;
+			&lt;td&gt;Lewis&lt;/td&gt;
+			&lt;td&gt;Clown&lt;/td&gt;
+			&lt;td&gt;November 12th 2012&lt;/td&gt;
+			&lt;td&gt;August 4th 1991&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;7&lt;/td&gt;
+			&lt;td&gt;Usha&lt;/td&gt;
+			&lt;td&gt;Leak&lt;/td&gt;
+			&lt;td&gt;Ships Electronic Warfare Officer&lt;/td&gt;
+			&lt;td&gt;August 14th 2012&lt;/td&gt;
+			&lt;td&gt;November 20th 1979&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;8&lt;/td&gt;
+			&lt;td&gt;Lorriane&lt;/td&gt;
+			&lt;td&gt;Cooke&lt;/td&gt;
+			&lt;td&gt;Technical Services Librarian&lt;/td&gt;
+			&lt;td&gt;September 21st 2010&lt;/td&gt;
+			&lt;td&gt;April 7th 1969&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		$('#sorting-example-1').footable();
+	});
+</script>
+</body>
+</html>

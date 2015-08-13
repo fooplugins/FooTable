@@ -92,14 +92,14 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
-# Mac crap
+#Mac crap
 .DS_Store
 
-# Grunt related
+#Grunt related
 /node_modules/
 
-# WebStorm IDE
+#WebStorm IDE
 /.idea
 
-# npm
+#npm
 npm-debug.log

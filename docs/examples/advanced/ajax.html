@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Ajax tables - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>Ajax tables</h1>
+		<h2>How to create tables that retrieve there columns and rows from a server.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+		<h1 class="page-header">General</h1>
+		<p class="lead">Ajax tables provide the ability to asynchronously load your table data into the page to avoid long load times when using a large collection of rows.</p>
+		<p>
+			To make use of this feature you will need to do some server side coding in the language of your choice to provide end points that supply the required data.
+			While the plugin is loading the data from the server a simple spinner is displayed to the user to indicate that something is happening. As this is meant to be used in
+			conjunction with a large number rows the below example loads ten thousand and makes use of the <a href="../../components/paging.html">paging component</a> to improve
+			performance.
+		</p>
+
+		<div class="callout callout-info">
+			<h4>Notes</h4>
+			<ul>
+				<li>
+					Any promise object can be supplied for the <a href="../../getting-started.html#columns"><code>columns</code></a> or <a href="../../getting-started.html#rows"><code>rows</code></a>
+					options as long as when resolved it returns the correct data.
+				</li>
+				<li>
+					We make use of two static files (<a href="columns.json" target="_blank">columns.json</a> and <a href="rows.json" target="_blank">rows.json</a>)
+					to supply our data and retrieve it in the same way you would call your own end point, using jQuery's ajax functionality, in this case the <code>jQuery.get</code> function.
+				</li>
+				<li>
+					In the below example <strong>we have placed a three second delay on the calls to the server</strong> so that you get a chance to see the loader before the data is returned.
+				</li>
+				<li>
+					Using the <a href="../../components/paging.html">paging component</a> drastically improves the performance of the plugin on large numbers of rows.
+				</li>
+			</ul>
+		</div>
+
+		<div class="example">
+			<table id="ajax-example-1" class="table" data-paging="true"></table>
+		</div>
+		<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-paging=&quot;true&quot;&gt;&lt;/table&gt;</code></pre>
+		<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: $.get(&#39;columns.json&#39;),
+		&quot;rows&quot;: $.get(&#39;rows.json&#39;)
+	});
+});</code></pre>
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		$('#ajax-example-1').footable({
+			"columns": $.Deferred(function(d){
+				setTimeout(function(){
+					$.get('columns.json').then(d.resolve, d.reject);
+				}, 3000);
+			}),
+			"rows": $.get('rows.json')
+		});
+	});
+</script>
+</body>
+</html>

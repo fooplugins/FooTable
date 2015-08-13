@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Getting started - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="css/docs.css" rel="stylesheet">
+
+	<script src="js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="docs">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a>Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="components/filtering.html">Filtering</a></li>
+						<li><a href="components/paging.html">Paging</a></li>
+						<li><a href="components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<!-- Header -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>Getting started</h1>
+		<h2>An overview of FooTable, how to download and use, and basic examples.</h2>
+	</div>
+</div>
+
+<div class="container">
+	<!-- Download -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="download" class="anchor">&nbsp;</span>Download</h1>
+		<p class="lead">
+			FooTable (currently v3.0.0) has a few easy and quick ways to get started.
+			There is a Bootstrap version which adheres to your current Bootstrap theme.
+			A standalone version for those of you who do not want to use Bootstrap,
+			and finally there is a download which contains each individual component
+			used to create both the Bootstrap and standalone versions.
+		</p>
+		<div class="row">
+			<div class="col-sm-4">
+				<h3>Bootstrap Version</h3>
+				<div class="well">
+					<p>Compiled and minified CSS and JavaScript for use with Bootstrap.</p>
+					<p class="align-center">
+						<a class="btn btn-default btn-lg btn-block" href="../releases/footable-bootstrap.v3.0.0.zip" role="button" download>Download</a>
+					</p>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<h3>Standalone Version</h3>
+				<div class="well">
+					<p>Compiled and minified CSS and JavaScript for standalone use (no Bootstrap).</p>
+					<p class="align-center">
+						<a class="btn btn-default btn-lg btn-block" href="../releases/footable-standalone.v3.0.0.zip" role="button" download>Download</a>
+					</p>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<h3>Individual Components</h3>
+				<div class="well">
+					<p>Compiled and minified CSS and JavaScript for all components of FooTable.</p>
+					<p class="align-center">
+						<a class="btn btn-default btn-lg btn-block" href="../releases/footable-components.v3.0.0.zip" role="button" download>Download</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- What's included -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="whats-included" class="anchor">&nbsp;</span>What's included</h1>
+		<p class="lead">FooTable is downloadable in three forms, within each you'll find the following directories and files, logically grouping common resources and providing both compiled and minified variations.</p>
+
+		<div class="callout callout-warning">
+			<h4>Required files</h4>
+			<ul>
+				<li>Please note that <strong>FooTable requires jQuery</strong> to be included.</li>
+				<li>For date support <strong>FooTable requires moment.js</strong> to be included.</li>
+			</ul>
+		</div>
+
+		<!-- Tab Headers -->
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active"><a href="#whats-included-bootstrap" aria-controls="bootstrap-version" role="tab" data-toggle="tab">Bootstrap Version</a></li>
+			<li role="presentation"><a href="#whats-included-standalone" aria-controls="standalone-version" role="tab" data-toggle="tab">Standalone Version</a></li>
+			<li role="presentation"><a href="#whats-included-components" aria-controls="individual-components" role="tab" data-toggle="tab">Individual Components</a></li>
+		</ul>
+		<!-- Tab Content -->
+		<div class="tab-content">
+			<!-- Bootstrap Version -->
+			<div role="tabpanel" class="tab-pane active" id="whats-included-bootstrap">
+				<p>Once downloaded, unzip the compressed folder to see the structure of the Bootstrap version. You'll see something like this:</p>
+				<pre><code class="language-text">footable/
+├── css/
+│   ├── footable.bootstrap.css
+│   └── footable.bootstrap.min.css
+└── js/
+    ├── footable.js
+    └── footable.min.js</code></pre>
+				<p>This is the easiest way to use FooTable; precompiled files for quick drop-in usage with Bootstrap. We provide compiled CSS and JS (<code>footable.*</code>), as well as compiled and minified CSS and JS (<code>footable.*.min.*</code>). This version will adhere to the Bootstrap theme that is currently loaded into the page on the condition that the theme supports tables, dropdowns, pagination and forms.</p>
+
+				<div class="callout callout-warning" id="bootstrap-required">
+					<h4>Bootstrap required</h4>
+					<p>Please note that when using this version <strong>FooTable requires Bootstrap</strong> to be included.</p>
+				</div>
+			</div>
+
+			<!-- Standalone Version -->
+			<div role="tabpanel" class="tab-pane" id="whats-included-standalone">
+				<p>Once downloaded, unzip the compressed folder to see the structure of the standalone version. You'll see something like this:</p>
+				<pre><code class="language-text">footable/
+├── css/
+│   ├── footable.standalone.css
+│   └── footable.standalone.min.css
+└── js/
+    ├── footable.js
+    └── footable.min.js</code></pre>
+				<p>This is the second easiest way to use FooTable; precompiled files for quick drop-in usage. We provide compiled CSS and JS (<code>footable.*</code>), as well as compiled and minified CSS and JS (<code>footable.*.min.*</code>). This version does not have theme support and will require custom CSS to override any styling.</p>
+			</div>
+
+			<!-- Individual Components -->
+			<div role="tabpanel" class="tab-pane" id="whats-included-components">
+				<p>Once downloaded, unzip the compressed folder to see the structure of the components version. You'll see something like this:</p>
+				<pre><code class="language-text">footable/
+├── css/
+│   ├── footable.core.bootstrap.css
+│   ├── footable.core.bootstrap.min.css
+│   ├── footable.core.standalone.css
+│   ├── footable.core.standalone.min.css
+│   ├── footable.filtering.css
+│   ├── footable.filtering.min.css
+│   ├── footable.paging.css
+│   ├── footable.paging.min.css
+│   ├── footable.sorting.css
+│   └── footable.sorting.min.css
+└── js/
+    ├── footable.core.js
+    ├── footable.core.min.js
+    ├── footable.filtering.js
+    ├── footable.filtering.min.js
+    ├── footable.paging.js
+    ├── footable.paging.min.js
+    ├── footable.sorting.js
+    └── footable.sorting.min.js</code></pre>
+				<p>This is the most complicated method of using FooTable, however it provides the ability to tailor the plugin to your needs by leaving out components that you will not use. We provide compiled CSS and JS (<code>footable.*</code>), as well as compiled and minified CSS and JS (<code>footable.*.min.*</code>) of all components that make up FooTable.</p>
+				<div class="callout callout-warning" id="components-required">
+					<h4>Required files</h4>
+					<p>When using the individual components <strong>FooTable requires <code>footable.core.js</code></strong> and then either the <strong><code>footable.core.bootstrap.css</code> OR <code>footable.core.standalone.css</code></strong> files or there minified equivalents to be included.</p>
+				</div>
+				<div class="callout callout-info" id="components-note">
+					<h4>Note</h4>
+					<p>When including components such as sorting its JavaScript and CSS files should be included after the core files mentioned above.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Options -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="options" class="anchor">&nbsp;</span>Options</h1>
+		<p class="lead">
+			FooTable is designed to work from an HTML first perspective meaning options parsed from the DOM take precedence over those supplied through JavaScript.
+			Check the individual components documentation for more information on there specific options.
+		</p>
+
+		<div class="list-group list-group-detailed">
+			<h3 class="list-group-header">General options</h3>
+
+			<!-- breakpoints -->
+			<a href="#breakpoints" class="list-group-item anchored">
+				<span id="breakpoints" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">breakpoints <small>object</small></h4>
+				<p class="list-group-item-text">The object that defines what the breakpoints are that columns use to determine there visibility.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<p>
+						This is a simple object containing a key value structure of breakpoint names and there associated widths. Apart from the breakpoints supplied via
+						this option there is also a built in one called <code>all</code> which will simply always hide a column and display it in the details row.
+					</p>
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>If no breakpoints are provided the plugin falls back to the below defaults.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>{
+	&quot;xs&quot;: 480, // extra small
+	&quot;sm&quot;: 768, // small
+	&quot;md&quot;: 992, // medium
+	&quot;lg&quot;: 1200 // large
+}</code></pre>
+						<p>The following table shows the default breakpoints and how they apply to a columns visibility at various widths.</p>
+						<table class="table table-bordered table-striped breakpoint-table">
+							<thead>
+							<tr>
+								<th></th>
+								<th>
+									Extra small devices
+									<small>Phones (&lt;768px)</small>
+								</th>
+								<th>
+									Small devices
+									<small>Tablets (≥768px)</small>
+								</th>
+								<th>
+									Medium devices
+									<small>Desktops (≥992px)</small>
+								</th>
+								<th>
+									Large devices
+									<small>Desktops (≥1200px)</small>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<th scope="row"><code>all</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>xs</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>sm</code></th>
+								<td class="is-visible">Visible</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>md</code></th>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>lg</code></th>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-hidden">Hidden</td>
+							</tr>
+							</tbody>
+						</table>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply custom breakpoints through data attributes you must follow <a href="http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example" target="_blank">valid JSON syntax</a> <i>including quoted property names</i>.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-breakpoints=&#39;{ &quot;x-small&quot;: 480, &quot;small&quot;: 768, &quot;medium&quot;: 992, &quot;large&quot;: 1200, &quot;x-large&quot;: 1400 }&#39;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply custom breakpoints directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>$(&#39;.table&#39;).footable({
+	&quot;breakpoints&quot;: {
+		&quot;x-small&quot;: 480,
+		&quot;small&quot;: 768,
+		&quot;medium&quot;: 992,
+		&quot;large&quot;: 1200,
+		&quot;x-large&quot;: 1400
+	}
+});</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<p>The following table shows the above custom breakpoints and how they would apply to a columns visibility at various widths.</p>
+						<table class="table table-bordered table-striped breakpoint-table">
+							<thead>
+							<tr>
+								<th></th>
+								<th>
+									Extra small devices
+									<small>Phones (&lt;480px)</small>
+								</th>
+								<th>
+									Small devices
+									<small>Tablets (≥768px)</small>
+								</th>
+								<th>
+									Medium devices
+									<small>Desktops (≥992px)</small>
+								</th>
+								<th>
+									Large devices
+									<small>Desktops (≥1200px)</small>
+								</th>
+								<th>
+									Extra large devices
+									<small>Wide Screen (≥1400px)</small>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<th scope="row"><code>all</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>x-small</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>small</code></th>
+								<td class="is-visible">Visible</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>medium</code></th>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>large</code></th>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>x-large</code></th>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-hidden">Hidden</td>
+							</tr>
+							</tbody>
+						</table>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Notes</h4>
+						<ul>
+							<li>The built in <code>all</code> breakpoint can not be overridden, it will always hide the column regardless of what is supplied through the options.</li>
+							<li>The <a href="#cascade"><code>cascade</code></a> option will also work with custom breakpoints.</li>
+						</ul>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- cascade -->
+			<a href="#cascade" class="list-group-item anchored">
+				<span id="cascade" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">cascade <small>boolean</small></h4>
+				<p class="list-group-item-text">Changes how breakpoints affect column visibility.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>When set to <code>true</code> this makes specifying a columns <a href="#column-breakpoints"><code>breakpoints</code></a> a bit simpler if you do not need to reshow the column again on a smaller device.</p>
+						</div>
+						<p>
+							How this option effects breakpoints can best be seen in the following table showing the default breakpoints.
+							However to put it simply, when the current breakpoints columns are hidden, all larger breakpoints columns will be hidden as well.
+							This means you would no longer need to specify <code>xs</code>, <code>sm</code> and <code>md</code> to hide a column at all three
+							breakpoints but could instead just specify <code>md</code>.
+						</p>
+						<table class="table table-bordered table-striped breakpoint-table">
+							<thead>
+							<tr>
+								<th></th>
+								<th>
+									Extra small devices
+									<small>Phones (&lt;768px)</small>
+								</th>
+								<th>
+									Small devices
+									<small>Tablets (≥768px)</small>
+								</th>
+								<th>
+									Medium devices
+									<small>Desktops (≥992px)</small>
+								</th>
+								<th>
+									Large devices
+									<small>Desktops (≥1200px)</small>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<th scope="row"><code>all</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>xs</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>sm</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>md</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-visible">Visible</td>
+							</tr>
+							<tr>
+								<th scope="row"><code>lg</code></th>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+								<td class="is-hidden">Hidden</td>
+							</tr>
+							</tbody>
+						</table>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-cascade=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;cascade&quot;: true
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- columns -->
+			<a href="#columns" class="list-group-item anchored">
+				<span id="columns" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">columns <small>array | promise</small></h4>
+				<p class="list-group-item-text">An array of simple objects containing the various column options supported by the plugin.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>[]</code></p>
+							<p>This is a required option, at the very least a single column must supply a <a href="#column-breakpoints"><code>breakpoints</code></a> value otherwise the table will be ignored by the plugin.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+						<div class="example static plural">
+							<p>
+								When using static content column options must be supplied as data attributes on the cells of one of the following rows.
+								The below is also the order in which the plugin checks the rows and if the first contains any options the second will be skipped.
+							</p>
+						</div>
+						<p>The last row of the <code>thead</code> element if one exists.</p>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		...
+		&lt;tr&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;ID&lt;/th&gt;
+			&lt;th&gt;First Name&lt;/th&gt;
+			&lt;th&gt;Last Name&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;Job Title&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs sm&quot;&gt;Started&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs sm md&quot;&gt;DOB&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+						<p>Or the first row of the <code>tbody</code> or <code>table</code> element.</p>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td data-breakpoints=&quot;xs&quot;&gt;1&lt;/td&gt;
+		&lt;td&gt;John&lt;/td&gt;
+		&lt;td&gt;Smith&lt;/td&gt;
+		&lt;td data-breakpoints=&quot;xs&quot;&gt;Salesman&lt;/td&gt;
+		&lt;td data-breakpoints=&quot;xs sm&quot;&gt;July 4th 2002&lt;/td&gt;
+		&lt;td data-breakpoints=&quot;xs sm md&quot;&gt;August 22nd 1982&lt;/td&gt;
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript plural">
+							<p>
+								The columns must be supplied as an array of objects where the index matches that of where each should appear in the table.
+								In the below the second and third columns have no options set so an empty object is supplied as a placeholder to maintain
+								the correct index for all columns that follow.
+							</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>$(&#39;.table&#39;).footable({
+	&#39;columns&#39;: [
+		{ &#39;breakpoints&#39;: &#39;xs&#39;, ... },
+		{ },
+		{ },
+		{ &#39;breakpoints&#39;: &#39;xs&#39;, ... },
+		{ &#39;breakpoints&#39;: &#39;xs sm&#39;, ... },
+		{ &#39;breakpoints&#39;: &#39;xs sm md&#39;, ... }
+	]
+});</code></pre>
+						<p>
+							The value for this option can also be a promise object that resolves supplying an array of the actual column options allowing you
+							to easily load configuration from the server asynchronously.
+						</p>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: jQuery.get(&quot;//example.com/columns.json&quot;)
+	});
+});</code></pre>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- empty -->
+			<a href="#empty" class="list-group-item anchored">
+				<span id="empty" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">empty <small>string</small></h4>
+				<p class="list-group-item-text">The text to display if the table contains no rows.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+						<div class="example default">
+							<p><code>"No Results"</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-empty=&quot;There are no rows&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;empty&quot;: &quot;There are no rows&quot;
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- expandFirst -->
+			<a href="#expandFirst" class="list-group-item anchored">
+				<span id="expandFirst" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">expandFirst <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to expand the first rows details.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>When set to <code>true</code> this will automatically expand the first row of the table when displayed on a device that hides any columns.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-expand-first=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;expandFirst&quot;: true
+	});
+});</code></pre>
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>If you want to have multiple rows expanded by default please take a look at the row <a href="#row-expanded"><code>expanded</code></a> option.</p>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- getWidth -->
+			<a href="#getWidth" class="list-group-item anchored">
+				<span id="getWidth" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">getWidth <small>function</small></h4>
+				<p class="list-group-item-text">The function used to retrieve the width used during breakpoint calculations.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>
+								If no function is supplied the plugin falls back to using it's own internal functions to calculate the width depending on the value of the <a href="#useParentWidth"><code>useParentWidth</code></a> option.
+								The below examples show what the internal function would look like implemented through this option.
+							</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply the function through data attributes it must be defined as a named JavaScript function with the name supplied as the attribute value.</p>
+						</div>
+						<pre class="language-javascript between"><code>function getWidth(ft){
+	if (ft.o.useParentWidth == true) return ft.breakpoints.getParentWidth();
+	return ft.breakpoints.getViewportWidth();
+}</code></pre>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-get-width=&quot;getWidth&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this function directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$('.table').footable({
+		"getWidth": function(ft){
+			if (ft.o.useParentWidth == true) return ft.breakpoints.getParentWidth();
+			return ft.breakpoints.getViewportWidth();
+		}
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>The first argument (<code>ft</code>) passed to this function is the current instance of the plugin requesting the width.</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- on -->
+			<a href="#" class="list-group-item anchored">
+				<span id="on" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">on <small>object</small></h4>
+				<p class="list-group-item-text">An object containing event names and handlers to bind to the table.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<p>
+						This simply binds events to the table ensuring that the various components start up events such as <code>preinit.ft.table</code> or <code>init.ft.table</code> are bound before they are raised.
+						This option is an object in which the keys represent one or more space separated events and the values represent a handler function to be called for those events.
+					</p>
+
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows supplying the object directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;on&quot;: {
+			&quot;init.ft.table&quot;: function(e, ft){
+				// bind to the plugin initialize event to do something
+			}
+		}
+	});
+});</code></pre>
+						<p>
+							Which is the equivalent to writing it like the below, the call to initialize <i>footable</i> occurs after binding the events or else you risk any start up event handlers not being called.
+						</p>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).on({
+		&quot;init.ft.table&quot;: function(e, ft){
+			// bind to the plugin initialize event to do something
+		}
+	}).footable();
+});</code></pre>
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>There is no static content equivalent to the this option, it must be supplied directly through the options.</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- rows -->
+			<a href="#rows" class="list-group-item anchored">
+				<span id="rows" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">rows <small>array | promise</small></h4>
+				<p class="list-group-item-text">An array of simple objects containing the row data and/or options.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>[]</code></p>
+							<p>This is a required option, row data must be supplied otherwise the table will be ignored by the plugin.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static plural">
+							<p>
+								When supplying rows through static content the <code>tr</code> elements of the <code>table</code> or <code>tbody</code> are parsed using the <a href="#column">column options</a>
+								into an array of row objects.
+							</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot;&gt;
+	...
+	&lt;tr&gt;
+		&lt;td&gt;1&lt;/td&gt;
+		&lt;td&gt;Dennise&lt;/td&gt;
+		&lt;td&gt;Fuhrman&lt;/td&gt;
+		&lt;td&gt;High School History Teacher&lt;/td&gt;
+		&lt;td&gt;November 8th 2011&lt;/td&gt;
+		&lt;td&gt;July 25th 1960&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;2&lt;/td&gt;
+		&lt;td&gt;Elodia&lt;/td&gt;
+		&lt;td&gt;Weisz&lt;/td&gt;
+		&lt;td&gt;Wallpaperer Helper&lt;/td&gt;
+		&lt;td&gt;October 15th 2010&lt;/td&gt;
+		&lt;td&gt;March 30th 1982&lt;/td&gt;
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+						<p>To supply <a href="#row">row options</a> simply apply the CSS classes or attributes directly to the <code>tr</code> element.</p>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot;&gt;
+	...
+	&lt;tr class=&quot;your-css-class&quot; data-expanded=&quot;true&quot;&gt;
+		&lt;td&gt;...&lt;/td&gt;
+		...
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+						<p>To supply <a href="#cell">cell options</a> simply apply the CSS classes or attributes directly to the <code>td</code> element.</p>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td class=&quot;your-css-class&quot;&gt;1&lt;/td&gt;
+		&lt;td&gt;John&lt;/td&gt;
+		&lt;td&gt;Smith&lt;/td&gt;
+		&lt;td&gt;Salesman&lt;/td&gt;
+		&lt;td data-value=&quot;1320727711718&quot;&gt;October 15th 2010&lt;/td&gt;
+		&lt;td data-value=&quot;-297779282564&quot;&gt;March 30th 1982&lt;/td&gt;
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>When supplying rows directly through the options the property names on the row object must match up to the names of the columns.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [
+			{ &quot;name&quot;: &quot;id&quot;, ... },
+			{ &quot;name&quot;: &quot;firstName&quot;, ... },
+			{ &quot;name&quot;: &quot;lastName&quot;, ... },
+			{ &quot;name&quot;: &quot;jobTitle&quot;, ... },
+			{ &quot;name&quot;: &quot;started&quot;, ... },
+			{ &quot;name&quot;: &quot;dob&quot;, ... }
+		],
+		&quot;rows&quot;: [
+			{ &quot;id&quot;: ..., &quot;firstName&quot;: ..., &quot;lastName&quot;: ..., &quot;jobTitle&quot;: ..., &quot;started&quot;: ..., &quot;dob&quot;: ... },
+			{ &quot;id&quot;: ..., ... },
+			...
+		]
+	});
+});</code></pre>
+
+						<p>
+							To supply <a href="#row">row options</a> through JavaScript you must define your row as a simple object containing two properties,
+							<code>options</code> and <code>value</code>, where the <code>value</code> property contains the actual row data.
+						</p>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;options&quot;: {
+				&quot;expanded&quot;: true,
+				&quot;classes&quot;: &quot;your-css-class&quot;
+			},
+			&quot;value&quot;: {
+				&quot;id&quot;: 1,
+				&quot;firstName&quot;: &quot;Dennise&quot;,
+				&quot;lastName&quot;: &quot;Fuhrman&quot;,
+				&quot;jobTitle&quot;: &quot;High School History Teacher&quot;,
+				&quot;started&quot;: &quot;November 8th 2011&quot;,
+				&quot;dob&quot;: &quot;July 25th 1960&quot;
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+						<p>
+							To supply <a href="#cell">cell options</a> through JavaScript you must define your cell as a simple object containing two properties,
+							<code>options</code> and <code>value</code>, where the <code>value</code> property contains the actual cell data.
+						</p>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;id&quot;: {
+				&quot;options&quot;: {
+					&quot;classes&quot;: &quot;your-css-class&quot;
+				},
+				&quot;value&quot;: 1
+			},
+			&quot;firstName&quot;: &quot;Dennise&quot;,
+			&quot;lastName&quot;: &quot;Fuhrman&quot;,
+			&quot;jobTitle&quot;: &quot;High School History Teacher&quot;,
+			&quot;started&quot;: &quot;November 8th 2011&quot;,
+			&quot;dob&quot;: &quot;July 25th 1960&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+						<p>Row and cell options may be used at the same time as seen below.</p>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;options&quot;: {
+				&quot;expanded&quot;: true,
+				&quot;classes&quot;: &quot;your-css-class&quot;
+			},
+			&quot;value&quot;: {
+				&quot;id&quot;: {
+					&quot;options&quot;: {
+						&quot;classes&quot;: &quot;your-css-class&quot;
+					},
+					&quot;value&quot;: 1
+				},
+				&quot;firstName&quot;: &quot;Dennise&quot;,
+				&quot;lastName&quot;: &quot;Fuhrman&quot;,
+				&quot;jobTitle&quot;: &quot;High School History Teacher&quot;,
+				&quot;started&quot;: &quot;November 8th 2011&quot;,
+				&quot;dob&quot;: &quot;July 25th 1960&quot;
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+						<p>
+							The value for this option can also be a promise object that resolves supplying an array of the actual row objects allowing you
+							to easily load data from the server asynchronously.
+						</p>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: jQuery.get(&quot;//example.com/rows.json&quot;)
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- showHeader -->
+			<a href="#showHeader" class="list-group-item anchored">
+				<span id="showHeader" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">showHeader <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to display a header row in the table.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>true</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-show-header=&quot;false&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;showHeader&quot;: false
+	});
+});</code></pre>
+
+					</div>
+
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>For more information on using this option please see the <a href="examples/basic/no-header.html">Table with no header</a> example.</p>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- showToggle -->
+			<a href="#showToggle" class="list-group-item anchored">
+				<span id="showToggle" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">showToggle <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to display the row toggle when a column is hidden.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>true</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-show-toggle=&quot;false&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;showToggle&quot;: false
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- stopPropagation -->
+			<a href="#stopPropagation" class="list-group-item anchored">
+				<span id="stopPropagation" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">stopPropagation <small>boolean</small></h4>
+				<p class="list-group-item-text">Stops all events raised by the plugin from bubbling up the DOM past the table.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>false</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-stop-propagation=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;stopPropagation&quot;: true
+	});
+});</code></pre>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- toggleColumn -->
+			<a href="#toggleColumn" class="list-group-item anchored">
+				<span id="toggleColumn" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">toggleColumn <small>string</small></h4>
+				<p class="list-group-item-text">A string specifying which column the toggle is appended to in a row.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>"first"</code></p>
+							<p>This option only supports two values; <code>"first"</code> and <code>"last"</code>.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-toggle-column=&quot;last&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;toggleColumn&quot;: &quot;last&quot;
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- useParentWidth -->
+			<a href="#useParentWidth" class="list-group-item anchored">
+				<span id="useParentWidth" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">useParentWidth <small>boolean</small></h4>
+				<p class="list-group-item-text">Changes breakpoints to rather calculate width based on the parent element instead of the viewport.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>false</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-use-parent-width=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;useParentWidth&quot;: true
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+		<!-- START - Column options -->
+		<div class="list-group list-group-detailed child">
+			<h3 class="list-group-header anchored"><span id="column" class="anchor">&nbsp;</span>Column options</h3>
+
+			<!-- breakpoints -->
+			<a href="#column-breakpoints" class="list-group-item anchored">
+				<span id="column-breakpoints" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">breakpoints <small>string</small></h4>
+				<p class="list-group-item-text">A space separated string of breakpoint names specifying when this columns cells should be hidden and displayed in a detail row.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default the column is displayed on all devices.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;breakpoints&quot;: &quot;xs&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- formatter -->
+			<a href="#column-formatter" class="list-group-item anchored">
+				<span id="column-formatter" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">formatter <small>function</small></h4>
+				<p class="list-group-item-text">The function used to turn this columns cell values into there contents.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default the column will use its <a href="#column-type"><code>type</code></a>s formatter.</p>
+						</div>
+
+						<div class="example returns">
+							<p><code>string</code>, <code>HTMLElement</code> or <code>jQuery object</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply the function through data attributes it must be defined as a named JavaScript function with the name supplied as the attribute value.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>function formatter(value){
+	return &quot;&lt;span&gt;&quot; + value + &quot;&lt;/span&gt;&quot;;
+}</code></pre>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-formatter=&quot;formatter&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply this function directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;formatter&quot;: function(value){
+				return &quot;&lt;span&gt;&quot; + value + &quot;&lt;/span&gt;&quot;;
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>The first argument (<code>value</code>) is the result returned from the <a href="#column-parser"><code>parser</code></a> function.</p>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- name -->
+			<a href="#column-name" class="list-group-item anchored">
+				<span id="column-name" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">name <small>string</small></h4>
+				<p class="list-group-item-text">The name of the property on a row object that contains this columns cell values.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>This is only required if the <a href="#rows"><code>rows</code></a> are supplied directly through the options or ajax.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-name=&quot;id&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;name&quot;: &quot;id&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- parser -->
+			<a href="#column-parser" class="list-group-item anchored">
+				<span id="column-parser" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">parser <small>function</small></h4>
+				<p class="list-group-item-text">The function used to retrieve the cells value from the DOM or another value.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default the column will use its <a href="#column-type"><code>type</code></a>s parser.</p>
+						</div>
+
+						<div class="example returns">
+							<p><code>*</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply the function through data attributes it must be defined as a named JavaScript function with the name supplied as the attribute value.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>function parser(valueOrElement){
+	if (F.is.jq(valueOrElement)) return valueOrElement.data(&#39;value&#39;) || valueOrElement.text();
+	if (F.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
+	return null;
+}</code></pre>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-parser=&quot;parser&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this function directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;parser&quot;: function(valueOrElement){
+				if (F.is.jq(valueOrElement)) return valueOrElement.data(&#39;value&#39;) || valueOrElement.text();
+				if (F.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
+				return null;
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>The first argument (<code>valueOrElement</code>) is either the jQuery wrapper around the <code>td</code> element to parse or a value that needs to be parsed into the correct type for the column.</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- style -->
+			<a href="#column-style" class="list-group-item anchored">
+				<span id="column-style" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">style <small>object</small></h4>
+				<p class="list-group-item-text">The object used to define any inline styles for all cells in this column.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>{}</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static plural">
+							<p>To supply this option you would use the standard <code>style</code> attribute on each cell.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table id=&quot;example&quot;&gt;
+	...
+		&lt;tr&gt;
+			&lt;td style=&quot;color: blue;&quot;&gt;...&lt;/td&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+						<p>However to make your code more maintainable as well as more efficient you should rather create a CSS class that specifies the column styles.</p>
+						<pre class="language-css" data-lang="css"><code>#example &gt; tbody &gt; tr &gt; td:nth-child(1) {
+	color: blue;
+}</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;style&quot;: {
+				&quot;color&quot;: &quot;blue&quot;
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- title -->
+			<a href="#column-title" class="list-group-item anchored">
+				<span id="column-title" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">title <small>string</small></h4>
+				<p class="list-group-item-text">The title of a column is a friendly name associated with the values of its cells.</p>
+			</a>
+			<div class="list-group-detail">
+
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>If no title is provided then one is auto generated and will appear as <code>"Column 1"</code>, <code>"Column 2"</code>, etc. depending on the columns index in the table</p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static plural">
+							<p>To supply this through static content a header row is required and the text value of the cell associated to this column is used.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th&gt;ID&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+						<p>Or to supply this through data attributes you must specify the attribute on the cell element.</p>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	...
+		&lt;tr&gt;
+			&lt;td data-title=&quot;ID&quot;&gt;...&lt;/td&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;title&quot;: &quot;ID&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+				</div>
+
+			</div>
+
+			<!-- type -->
+			<a href="#column-type" class="list-group-item anchored">
+				<span id="column-type" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">type <small>string</small></h4>
+				<p class="list-group-item-text">The type of data expected from this columns cell values.</p>
+			</a>
+			<div class="list-group-detail">
+
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+						<div class="example default">
+							<p><code>"text"</code></p>
+							<p>The plugin treats all columns as text columns by default as this is the most widely used column type.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;text&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;type&quot;: &quot;text&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example supports">
+							<p>The below lists all the column types supported by the plugin.</p>
+							<div class="list-group">
+								<a class="list-group-item">
+									<h4 class="list-group-item-heading">text</h4>
+									<p class="list-group-item-text">The default column type, used for all columns unless another type is specified overriding it.</p>
+								</a>
+								<a class="list-group-item">
+									<h4 class="list-group-item-heading">number</h4>
+									<p class="list-group-item-text">Used for columns that contain numeric data.</p>
+								</a>
+								<a href="columns/date.html" class="list-group-item">
+									<h4 class="list-group-item-heading">date</h4>
+									<p class="list-group-item-text">Used for columns that contain date data.</p>
+								</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- visible -->
+			<a href="#column-visible" class="list-group-item anchored">
+				<span id="column-visible" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">visible <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not this column and all cells are permanently hidden from view.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>true</code></p>
+							<p>Setting this option to <code>false</code> means the column will not appear in the row or details row in the table.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-visible=&quot;false&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;visible&quot;: false
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<!-- END - Column options -->
+
+		<!-- START - Row options -->
+		<div class="list-group list-group-detailed child">
+			<h3 class="list-group-header anchored"><span id="row" class="anchor">&nbsp;</span>Row options</h3>
+
+			<!-- classes -->
+			<a href="#row-classes" class="list-group-item anchored">
+				<span id="row-classes" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">classes <small>string</small></h4>
+				<p class="list-group-item-text">A space separated string of CSS classes to apply to the row.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option simply use the standard <code>class</code> attribute.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	..
+		&lt;tr classes=&quot;class1 class2&quot;&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;options&quot;: {
+				&quot;classes&quot;: &quot;class1 class2&quot;
+			},
+			&quot;value&quot;: ...
+		},{
+			...
+		}]
+	});
+});</code></pre>
+					</div>
+				</div>
+			</div>
+
+			<!-- expanded -->
+			<a href="#row-expanded" class="list-group-item anchored">
+				<span id="row-expanded" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">expanded <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether the row is expanded or collapsed when first viewed on a device where columns have been hidden by breakpoints.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>false</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the row element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	..
+		&lt;tr data-expanded=&quot;true&quot;&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;options&quot;: {
+				&quot;expanded&quot;: true
+			},
+			&quot;value&quot;: ...
+		},{
+			...
+		}]
+	});
+});</code></pre>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- style -->
+			<a href="#row-style" class="list-group-item anchored">
+				<span id="row-style" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">style <small>object</small></h4>
+				<p class="list-group-item-text">The object used to define any inline styles for the row.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>{}</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option simply use the standard <code>style</code> attribute.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	..
+		&lt;tr style=&quot;background-color: blue;&quot;&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;options&quot;: {
+				&quot;style&quot;: {
+					&quot;backgroundColor&quot;: &quot;blue&quot;
+				}
+			},
+			&quot;value&quot;: ...
+		}]
+	});
+});</code></pre>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- END - Row options -->
+
+		<!-- START - Cell options -->
+		<div class="list-group list-group-detailed grand-child">
+			<h3 class="list-group-header anchored"><span id="cell" class="anchor">&nbsp;</span>Cell options</h3>
+
+			<!-- classes -->
+			<a href="#cell-classes" class="list-group-item anchored">
+				<span id="cell-classes" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">classes <small>string</small></h4>
+				<p class="list-group-item-text">A space separated string of CSS classes to apply to the cell.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option simply use the standard <code>class</code> attribute.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	..
+		&lt;tr&gt;
+			&lt;td class=&quot;class1 class2&quot;&gt;...&lt;/td&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;id&quot;: {
+				&quot;options&quot;: {
+					&quot;classes&quot;: &quot;class1 class2&quot;
+				},
+				&quot;value&quot;: ...
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+					</div>
+				</div>
+			</div>
+
+			<!-- style -->
+			<a href="#cell-style" class="list-group-item anchored">
+				<span id="cell-style" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">style <small>object</small></h4>
+				<p class="list-group-item-text">The object used to define any inline styles for the row.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>{}</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option simply use the standard <code>style</code> attribute.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	..
+		&lt;tr&gt;
+			&lt;td style=&quot;background-color: blue;&quot;&gt;...&lt;/td&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;id&quot;: {
+				&quot;options&quot;: {
+					&quot;style&quot;: {
+						&quot;backgroundColor&quot;: &quot;blue&quot;
+					}
+				},
+				&quot;value&quot;: ...
+			},
+			&quot;firstName&quot;: ...
+		}]
+	});
+});</code></pre>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- value -->
+			<a href="#cell-value" class="list-group-item anchored">
+				<span id="cell-value" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">value <small>*</small></h4>
+				<p class="list-group-item-text">The cells underlying data value.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static plural">
+							<p>To supply basic values you simply provide the value as the contents of the cell and let the column <a href="#column-parser"><code>parser</code></a> retrieve it.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	..
+		&lt;tr&gt;
+			&lt;td&gt;1&lt;/td&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+						<p>
+							To be able to provide a different value to what is supplied in the cells contents you apply the <code>data-value</code> attribute directly on the cell and let the column
+							<a href="#column-formatter"><code>formatter</code></a> turn the value into the cell contents.
+						</p>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	..
+		&lt;tr&gt;
+			&lt;td data-value=&quot;1&quot;&gt;&lt;!-- the formatter result --&gt;&lt;/td&gt;
+			...
+		&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>This is supplied as a property value on a row object.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;id&quot;: 1
+		},{
+			...
+		}]
+	});
+});</code></pre>
+						<p>
+							To supply options through JavaScript you must define your cell as a simple object containing two properties, <code>options</code> and <code>value</code>,
+							where the <code>value</code> property contains the actual cell data.
+						</p>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;id&quot;: {
+				&quot;options&quot;: {
+					&quot;style&quot;: ...
+				},
+				&quot;value&quot;: 1
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- END - Cell options -->
+
+	</div>
+
+	<!-- Examples -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="examples" class="anchor">&nbsp;</span>Examples</h1>
+		<p class="lead">
+			The below lists various examples to help you get started using FooTable in your projects. Keep in mind FooTable is designed
+			to be extended and modified to suit your projects needs.
+		</p>
+
+		<div class="list-group">
+			<h3 class="list-group-header anchored"><span id="basic" class="anchor">&nbsp;</span>Basic Examples</h3>
+
+			<a href="examples/basic/no-header.html" class="list-group-item anchored">
+				<span id="basic-no-header" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Table with no header</h4>
+				<p class="list-group-item-text">Shows how to create a simple table with no header.</p>
+			</a>
+			<a href="examples/basic/single-header.html" class="list-group-item anchored">
+				<span id="basic-single-header" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Table with a single header</h4>
+				<p class="list-group-item-text">Shows how to create a simple table with a single header.</p>
+			</a>
+			<a href="examples/basic/row-toggle.html" class="list-group-item anchored">
+				<span id="basic-row-toggle" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Row toggle options</h4>
+				<p class="list-group-item-text">Shows how to disable the row toggle or change the position from the first to the last visible column.</p>
+			</a>
+			<a href="examples/basic/hiding-columns.html" class="list-group-item anchored">
+				<span id="basic-hiding-columns" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Hiding columns</h4>
+				<p class="list-group-item-text">Shows how to completely hide a column from both the normal and details rows.</p>
+			</a>
+		</div>
+
+		<div class="list-group">
+			<h3 class="list-group-header anchored"><span id="component" class="anchor">&nbsp;</span>Component Examples</h3>
+
+			<a href="examples/component/paging.html" class="list-group-item anchored">
+				<span id="component-paging" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Paging rows</h4>
+				<p class="list-group-item-text">Shows how to create a table that makes use of the paging component.</p>
+			</a>
+
+			<a href="examples/component/sorting.html" class="list-group-item anchored">
+				<span id="component-sorting" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Sorting columns</h4>
+				<p class="list-group-item-text">Shows how to create a table that makes use of the sorting component.</p>
+			</a>
+
+			<a href="examples/component/filtering.html" class="list-group-item anchored">
+				<span id="component-filtering" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Filtering rows</h4>
+				<p class="list-group-item-text">Shows how to create a table that makes use of the filtering component.</p>
+			</a>
+
+			<a href="examples/component/showcase.html" class="list-group-item anchored">
+				<span id="component-showcase" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Showcase</h4>
+				<p class="list-group-item-text">Shows how to create a table that makes use of all the components.</p>
+			</a>
+
+		</div>
+
+		<div class="list-group">
+			<h3 class="list-group-header anchored"><span id="advanced" class="anchor">&nbsp;</span>Advanced Examples</h3>
+
+			<a href="examples/advanced/ajax.html" class="list-group-item anchored">
+				<span id="basic-ajax" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Ajax loading data</h4>
+				<p class="list-group-item-text">Shows how to create a table providing the columns and/or rows through ajax.</p>
+			</a>
+
+		</div>
+	</div>
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+<script src="js/docs.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../compiled/footable.min.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+	});
+</script>
+</body>
+</html>

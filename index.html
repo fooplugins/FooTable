@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>FooTable - A jQuery Responsive Table</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="docs/css/docs.css" rel="stylesheet">
+
+	<script src="docs/js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand active">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="docs/getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="docs/components/filtering.html">Filtering</a></li>
+						<li><a href="docs/components/paging.html">Paging</a></li>
+						<li><a href="docs/components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="docs/jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>FooTable</h1>
+		<h2>A responsive table plugin built on jQuery and made for Bootstrap.</h2>
+		<p>Fear not, it also works without Bootstrap!</p>
+		<p class="align-center">
+			<a class="btn btn-primary btn-lg" href="docs/getting-started.html#download" role="button">Download FooTable</a>
+		</p>
+	</div>
+
+</div>
+
+<div class="container">
+
+	<table class="example-1 table table-striped footable-pagination-right" data-cascade="true">
+		<thead>
+		<tr>
+			<th data-breakpoints="xs" data-type="number">ID</th>
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th data-breakpoints="xs">Job Title</th>
+			<th data-breakpoints="sm" data-type="date">Started</th>
+			<th data-breakpoints="md" data-type="date">DOB</th>
+		</tr>
+		</thead>
+		<tbody>
+		<!-- For consistency across demos and avoid copying large amounts of row HTML across demos we generate the rows from the DemoRows.rows array. -->
+		<script>
+			DemoRows.write();
+		</script>
+		</tbody>
+	</table>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="docs/js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="compiled/footable.min.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.example-1').footable({
+			paging: {
+				enabled: true
+			},
+			filtering: {
+				enabled: true
+			},
+			sorting: {
+				enabled: true
+			}
+		});
+	});
+</script>
+</body>
+</html>

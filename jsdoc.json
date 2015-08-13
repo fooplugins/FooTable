@@ -3,7 +3,7 @@
     "allowUnknownTags": true
   },
   "source": {
-    "include": ["./js"],
+    "include": ["./src/js"],
     "includePattern": ".+\\.js(doc)?$",
     "excludePattern": "docs|lib"
   },
@@ -17,7 +17,6 @@
     "monospaceLinks": true
   },
   "opts": {
-    "template": "templates/fooplugins",
     "destination": "docs/jsdocs",
     "readme": "README.md",
     "mainpagetitle": "FooTable Developer Documentation",

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Row toggle - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JsDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>Row Toggle</h1>
+		<h2>How to disable the row toggle or change its position.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="callout callout-info">
+		<h4>Notes</h4>
+		<ul>
+			<li>
+				In the below examples the first row is expanded by default using the <a href="../../getting-started.html#expandFirst"><code>expandFirst</code></a> option to better
+				illustrate how disabling the row toggle has no effect on the actual functionality and that details are still created for hidden columns.
+			</li>
+			<li>
+				In the below examples the <code>"Date of Birth"</code> column is always hidden using the <a href="../../getting-started.html#breakpoints"><code>all</code></a> breakpoint.
+				This is done so the toggle is always displayed regardless of the screen size unless it is disabled.
+			</li>
+		</ul>
+	</div>
+
+	<div class="docs-section">
+
+		<h2>Disable the toggle</h2>
+		<p>
+			To hide the row toggle entirely simply use the <a href="../../getting-started.html#showToggle"><code>showToggle</code></a> option and set its value to <code>false</code>.
+		</p>
+		<div class="example static">
+			<p>This example shows a table with the <a href="../../getting-started.html#showToggle"><code>data-show-toggle</code></a> attribute applied and set to <code>false</code>.</p>
+			<table id="toggle-example-1" class="table" data-show-toggle="false" data-expand-first="true">
+				<thead>
+				<tr>
+					<th data-breakpoints="xs">ID</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th data-breakpoints="xs">Job Title</th>
+					<th data-breakpoints="xs sm">Started On</th>
+					<th data-breakpoints="all" data-title="DOB">Date of Birth</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>1</td>
+					<td>Dennise</td>
+					<td>Fuhrman</td>
+					<td>High School History Teacher</td>
+					<td>November 8th 2011</td>
+					<td>July 25th 1960</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Elodia</td>
+					<td>Weisz</td>
+					<td>Wallpaperer Helper</td>
+					<td>October 15th 2010</td>
+					<td>March 30th 1982</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Raeann</td>
+					<td>Haner</td>
+					<td>Internal Medicine Nurse Practitioner</td>
+					<td>November 28th 2013</td>
+					<td>February 26th 1966</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Junie</td>
+					<td>Landa</td>
+					<td>Offbearer</td>
+					<td>October 31st 2010</td>
+					<td>March 29th 1966</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>Solomon</td>
+					<td>Bittinger</td>
+					<td>Roller Skater</td>
+					<td>December 29th 2011</td>
+					<td>September 22nd 1964</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>Bar</td>
+					<td>Lewis</td>
+					<td>Clown</td>
+					<td>November 12th 2012</td>
+					<td>August 4th 1991</td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>Usha</td>
+					<td>Leak</td>
+					<td>Ships Electronic Warfare Officer</td>
+					<td>August 14th 2012</td>
+					<td>November 20th 1979</td>
+				</tr>
+				<tr>
+					<td>8</td>
+					<td>Lorriane</td>
+					<td>Cooke</td>
+					<td>Technical Services Librarian</td>
+					<td>September 21st 2010</td>
+					<td>April 7th 1969</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<pre class="language-javascript between" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable();
+});</code></pre>
+		<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-show-toggle=&quot;false&quot;&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;ID&lt;/th&gt;
+			&lt;th&gt;First Name&lt;/th&gt;
+			&lt;th&gt;Last Name&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;Job Title&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs sm&quot;&gt;Started On&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;all&quot; data-title=&quot;DOB&quot;&gt;Date of Birth&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+		&lt;tr data-expanded=&quot;true&quot;&gt;
+			&lt;td&gt;1&lt;/td&gt;
+			&lt;td&gt;Dennise&lt;/td&gt;
+			&lt;td&gt;Fuhrman&lt;/td&gt;
+			&lt;td&gt;High School History Teacher&lt;/td&gt;
+			&lt;td&gt;November 8th 2011&lt;/td&gt;
+			&lt;td&gt;July 25th 1960&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;2&lt;/td&gt;
+			&lt;td&gt;Elodia&lt;/td&gt;
+			&lt;td&gt;Weisz&lt;/td&gt;
+			&lt;td&gt;Wallpaperer Helper&lt;/td&gt;
+			&lt;td&gt;October 15th 2010&lt;/td&gt;
+			&lt;td&gt;March 30th 1982&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;3&lt;/td&gt;
+			&lt;td&gt;Raeann&lt;/td&gt;
+			&lt;td&gt;Haner&lt;/td&gt;
+			&lt;td&gt;Internal Medicine Nurse Practitioner&lt;/td&gt;
+			&lt;td&gt;November 28th 2013&lt;/td&gt;
+			&lt;td&gt;February 26th 1966&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;4&lt;/td&gt;
+			&lt;td&gt;Junie&lt;/td&gt;
+			&lt;td&gt;Landa&lt;/td&gt;
+			&lt;td&gt;Offbearer&lt;/td&gt;
+			&lt;td&gt;October 31st 2010&lt;/td&gt;
+			&lt;td&gt;March 29th 1966&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;5&lt;/td&gt;
+			&lt;td&gt;Solomon&lt;/td&gt;
+			&lt;td&gt;Bittinger&lt;/td&gt;
+			&lt;td&gt;Roller Skater&lt;/td&gt;
+			&lt;td&gt;December 29th 2011&lt;/td&gt;
+			&lt;td&gt;September 22nd 1964&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;6&lt;/td&gt;
+			&lt;td&gt;Bar&lt;/td&gt;
+			&lt;td&gt;Lewis&lt;/td&gt;
+			&lt;td&gt;Clown&lt;/td&gt;
+			&lt;td&gt;November 12th 2012&lt;/td&gt;
+			&lt;td&gt;August 4th 1991&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;7&lt;/td&gt;
+			&lt;td&gt;Usha&lt;/td&gt;
+			&lt;td&gt;Leak&lt;/td&gt;
+			&lt;td&gt;Ships Electronic Warfare Officer&lt;/td&gt;
+			&lt;td&gt;August 14th 2012&lt;/td&gt;
+			&lt;td&gt;November 20th 1979&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;8&lt;/td&gt;
+			&lt;td&gt;Lorriane&lt;/td&gt;
+			&lt;td&gt;Cooke&lt;/td&gt;
+			&lt;td&gt;Technical Services Librarian&lt;/td&gt;
+			&lt;td&gt;September 21st 2010&lt;/td&gt;
+			&lt;td&gt;April 7th 1969&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+
+		<div class="example javascript">
+			<p>This example shows a table with the <a href="../../getting-started.html#showToggle"><code>showToggle</code></a> option set to <code>false</code>.</p>
+			<table id="toggle-example-2" class="table"></table>
+		</div>
+		<pre class="language-javascript between" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;showToggle&quot;: false
+		&quot;columns&quot;: [
+			{ &quot;name&quot;: &quot;id&quot;, &quot;title&quot;: &quot;ID&quot;, &quot;breakpoints&quot;: &quot;xs&quot; },
+			{ &quot;name&quot;: &quot;firstName&quot;, &quot;title&quot;: &quot;First Name&quot; },
+			{ &quot;name&quot;: &quot;lastName&quot;, &quot;title&quot;: &quot;Last Name&quot; },
+			{ &quot;name&quot;: &quot;jobTitle&quot;, &quot;title&quot;: &quot;Job Title&quot;, &quot;breakpoints&quot;: &quot;xs&quot; },
+			{ &quot;name&quot;: &quot;started&quot;, &quot;title&quot;: &quot;Started On&quot;, &quot;breakpoints&quot;: &quot;xs sm&quot; },
+			{ &quot;name&quot;: &quot;dob&quot;, &quot;title&quot;: &quot;DOB&quot;, &quot;breakpoints&quot;: &quot;xs sm md&quot; }
+		],
+		&quot;rows&quot;: [
+			{
+				&quot;options&quot;: {
+					&quot;expanded&quot;: true
+				},
+				&quot;value&quot;: { &quot;id&quot;: 1, &quot;firstName&quot;: &quot;Dennise&quot;, &quot;lastName&quot;: &quot;Fuhrman&quot;, &quot;jobTitle&quot;: &quot;High School History Teacher&quot;, &quot;started&quot;: &quot;November 8th 2011&quot;, &quot;dob&quot;: &quot;July 25th 1960&quot; }
+			},
+			{ &quot;id&quot;: 2, &quot;firstName&quot;: &quot;Elodia&quot;, &quot;lastName&quot;: &quot;Weisz&quot;, &quot;jobTitle&quot;: &quot;Wallpaperer Helper&quot;, &quot;started&quot;: &quot;October 15th 2010&quot;, &quot;dob&quot;: &quot;March 30th 1982&quot; },
+			{ &quot;id&quot;: 3, &quot;firstName&quot;: &quot;Raeann&quot;, &quot;lastName&quot;: &quot;Haner&quot;, &quot;jobTitle&quot;: &quot;Internal Medicine Nurse Practitioner&quot;, &quot;started&quot;: &quot;November 28th 2013&quot;, &quot;dob&quot;: &quot;February 26th 1966&quot; },
+			{ &quot;id&quot;: 4, &quot;firstName&quot;: &quot;Junie&quot;, &quot;lastName&quot;: &quot;Landa&quot;, &quot;jobTitle&quot;: &quot;Offbearer&quot;, &quot;started&quot;: &quot;October 31st 2010&quot;, &quot;dob&quot;: &quot;March 29th 1966&quot; },
+			{ &quot;id&quot;: 5, &quot;firstName&quot;: &quot;Solomon&quot;, &quot;lastName&quot;: &quot;Bittinger&quot;, &quot;jobTitle&quot;: &quot;Roller Skater&quot;, &quot;started&quot;: &quot;December 29th 2011&quot;, &quot;dob&quot;: &quot;September 22nd 1964&quot; },
+			{ &quot;id&quot;: 6, &quot;firstName&quot;: &quot;Bar&quot;, &quot;lastName&quot;: &quot;Lewis&quot;, &quot;jobTitle&quot;: &quot;Clown&quot;, &quot;started&quot;: &quot;November 12th 2012&quot;, &quot;dob&quot;: &quot;August 4th 1991&quot; },
+			{ &quot;id&quot;: 7, &quot;firstName&quot;: &quot;Usha&quot;, &quot;lastName&quot;: &quot;Leak&quot;, &quot;jobTitle&quot;: &quot;Ships Electronic Warfare Officer&quot;, &quot;started&quot;: &quot;August 14th 2012&quot;, &quot;dob&quot;: &quot;November 20th 1979&quot; },
+			{ &quot;id&quot;: 8, &quot;firstName&quot;: &quot;Lorriane&quot;, &quot;lastName&quot;: &quot;Cooke&quot;, &quot;jobTitle&quot;: &quot;Technical Services Librarian&quot;, &quot;started&quot;: &quot;September 21st 2010&quot;, &quot;dob&quot;: &quot;April 7th 1969&quot; }
+		]
+	});
+});</code></pre>
+		<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot;&gt;&lt;/table&gt;</code></pre>
+
+		<h2>Position the toggle</h2>
+		<p>
+			To change where the toggle is positioned you can use the <a href="../../getting-started.html#toggleColumn"><code>toggleColumn</code></a> option.
+			This option currently only supports two values; <code>"first"</code> and <code>"last"</code> where <code>"first"</code>
+			will append the toggle to the first <strong>visible</strong> column in the table while <code>"last"</code> will append it to the last <strong>visible</strong> column.
+		</p>
+		<div class="example">
+			<p>This example shows a table with the <a href="../../getting-started.html#toggleColumn"><code>data-toggle-column</code></a> attribute applied and set to <code>"last"</code>.</p>
+			<table id="toggle-example-3" class="table" data-toggle-column="last" data-expand-first="true">
+				<thead>
+				<tr>
+					<th data-breakpoints="xs">ID</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th data-breakpoints="xs">Job Title</th>
+					<th data-breakpoints="xs sm">Started On</th>
+					<th data-breakpoints="all" data-title="DOB">Date of Birth</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>1</td>
+					<td>Dennise</td>
+					<td>Fuhrman</td>
+					<td>High School History Teacher</td>
+					<td>November 8th 2011</td>
+					<td>July 25th 1960</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Elodia</td>
+					<td>Weisz</td>
+					<td>Wallpaperer Helper</td>
+					<td>October 15th 2010</td>
+					<td>March 30th 1982</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Raeann</td>
+					<td>Haner</td>
+					<td>Internal Medicine Nurse Practitioner</td>
+					<td>November 28th 2013</td>
+					<td>February 26th 1966</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Junie</td>
+					<td>Landa</td>
+					<td>Offbearer</td>
+					<td>October 31st 2010</td>
+					<td>March 29th 1966</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>Solomon</td>
+					<td>Bittinger</td>
+					<td>Roller Skater</td>
+					<td>December 29th 2011</td>
+					<td>September 22nd 1964</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>Bar</td>
+					<td>Lewis</td>
+					<td>Clown</td>
+					<td>November 12th 2012</td>
+					<td>August 4th 1991</td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>Usha</td>
+					<td>Leak</td>
+					<td>Ships Electronic Warfare Officer</td>
+					<td>August 14th 2012</td>
+					<td>November 20th 1979</td>
+				</tr>
+				<tr>
+					<td>8</td>
+					<td>Lorriane</td>
+					<td>Cooke</td>
+					<td>Technical Services Librarian</td>
+					<td>September 21st 2010</td>
+					<td>April 7th 1969</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<pre class="language-javascript between" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable();
+});</code></pre>
+		<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-toggle-column=&quot;last&quot;&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;ID&lt;/th&gt;
+			&lt;th&gt;First Name&lt;/th&gt;
+			&lt;th&gt;Last Name&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs&quot;&gt;Job Title&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;xs sm&quot;&gt;Started On&lt;/th&gt;
+			&lt;th data-breakpoints=&quot;all&quot; data-title=&quot;DOB&quot;&gt;Date of Birth&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+		&lt;tr data-expanded=&quot;true&quot;&gt;
+			&lt;td&gt;1&lt;/td&gt;
+			&lt;td&gt;Dennise&lt;/td&gt;
+			&lt;td&gt;Fuhrman&lt;/td&gt;
+			&lt;td&gt;High School History Teacher&lt;/td&gt;
+			&lt;td&gt;November 8th 2011&lt;/td&gt;
+			&lt;td&gt;July 25th 1960&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;2&lt;/td&gt;
+			&lt;td&gt;Elodia&lt;/td&gt;
+			&lt;td&gt;Weisz&lt;/td&gt;
+			&lt;td&gt;Wallpaperer Helper&lt;/td&gt;
+			&lt;td&gt;October 15th 2010&lt;/td&gt;
+			&lt;td&gt;March 30th 1982&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;3&lt;/td&gt;
+			&lt;td&gt;Raeann&lt;/td&gt;
+			&lt;td&gt;Haner&lt;/td&gt;
+			&lt;td&gt;Internal Medicine Nurse Practitioner&lt;/td&gt;
+			&lt;td&gt;November 28th 2013&lt;/td&gt;
+			&lt;td&gt;February 26th 1966&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;4&lt;/td&gt;
+			&lt;td&gt;Junie&lt;/td&gt;
+			&lt;td&gt;Landa&lt;/td&gt;
+			&lt;td&gt;Offbearer&lt;/td&gt;
+			&lt;td&gt;October 31st 2010&lt;/td&gt;
+			&lt;td&gt;March 29th 1966&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;5&lt;/td&gt;
+			&lt;td&gt;Solomon&lt;/td&gt;
+			&lt;td&gt;Bittinger&lt;/td&gt;
+			&lt;td&gt;Roller Skater&lt;/td&gt;
+			&lt;td&gt;December 29th 2011&lt;/td&gt;
+			&lt;td&gt;September 22nd 1964&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;6&lt;/td&gt;
+			&lt;td&gt;Bar&lt;/td&gt;
+			&lt;td&gt;Lewis&lt;/td&gt;
+			&lt;td&gt;Clown&lt;/td&gt;
+			&lt;td&gt;November 12th 2012&lt;/td&gt;
+			&lt;td&gt;August 4th 1991&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;7&lt;/td&gt;
+			&lt;td&gt;Usha&lt;/td&gt;
+			&lt;td&gt;Leak&lt;/td&gt;
+			&lt;td&gt;Ships Electronic Warfare Officer&lt;/td&gt;
+			&lt;td&gt;August 14th 2012&lt;/td&gt;
+			&lt;td&gt;November 20th 1979&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;8&lt;/td&gt;
+			&lt;td&gt;Lorriane&lt;/td&gt;
+			&lt;td&gt;Cooke&lt;/td&gt;
+			&lt;td&gt;Technical Services Librarian&lt;/td&gt;
+			&lt;td&gt;September 21st 2010&lt;/td&gt;
+			&lt;td&gt;April 7th 1969&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+
+		<div class="example javascript">
+			<p>This example shows a table with the <a href="../../getting-started.html#toggleColumn"><code>toggleColumn</code></a> option set to <code>"last"</code>.</p>
+			<table id="toggle-example-4" class="table"></table>
+		</div>
+		<pre class="language-javascript between" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;toggleColumn&quot;: &quot;last&quot;
+		&quot;expandFirst&quot;: true,
+		&quot;columns&quot;: [
+			{ &quot;name&quot;: &quot;id&quot;, &quot;title&quot;: &quot;ID&quot;, &quot;breakpoints&quot;: &quot;xs&quot; },
+			{ &quot;name&quot;: &quot;firstName&quot;, &quot;title&quot;: &quot;First Name&quot; },
+			{ &quot;name&quot;: &quot;lastName&quot;, &quot;title&quot;: &quot;Last Name&quot; },
+			{ &quot;name&quot;: &quot;jobTitle&quot;, &quot;title&quot;: &quot;Job Title&quot;, &quot;breakpoints&quot;: &quot;xs&quot; },
+			{ &quot;name&quot;: &quot;started&quot;, &quot;title&quot;: &quot;Started On&quot;, &quot;breakpoints&quot;: &quot;xs sm&quot; },
+			{ &quot;name&quot;: &quot;dob&quot;, &quot;title&quot;: &quot;DOB&quot;, &quot;breakpoints&quot;: &quot;xs sm md&quot; }
+		],
+		&quot;rows&quot;: [
+			{ &quot;id&quot;: 1, &quot;firstName&quot;: &quot;Dennise&quot;, &quot;lastName&quot;: &quot;Fuhrman&quot;, &quot;jobTitle&quot;: &quot;High School History Teacher&quot;, &quot;started&quot;: &quot;November 8th 2011&quot;, &quot;dob&quot;: &quot;July 25th 1960&quot; },
+			{ &quot;id&quot;: 2, &quot;firstName&quot;: &quot;Elodia&quot;, &quot;lastName&quot;: &quot;Weisz&quot;, &quot;jobTitle&quot;: &quot;Wallpaperer Helper&quot;, &quot;started&quot;: &quot;October 15th 2010&quot;, &quot;dob&quot;: &quot;March 30th 1982&quot; },
+			{ &quot;id&quot;: 3, &quot;firstName&quot;: &quot;Raeann&quot;, &quot;lastName&quot;: &quot;Haner&quot;, &quot;jobTitle&quot;: &quot;Internal Medicine Nurse Practitioner&quot;, &quot;started&quot;: &quot;November 28th 2013&quot;, &quot;dob&quot;: &quot;February 26th 1966&quot; },
+			{ &quot;id&quot;: 4, &quot;firstName&quot;: &quot;Junie&quot;, &quot;lastName&quot;: &quot;Landa&quot;, &quot;jobTitle&quot;: &quot;Offbearer&quot;, &quot;started&quot;: &quot;October 31st 2010&quot;, &quot;dob&quot;: &quot;March 29th 1966&quot; },
+			{ &quot;id&quot;: 5, &quot;firstName&quot;: &quot;Solomon&quot;, &quot;lastName&quot;: &quot;Bittinger&quot;, &quot;jobTitle&quot;: &quot;Roller Skater&quot;, &quot;started&quot;: &quot;December 29th 2011&quot;, &quot;dob&quot;: &quot;September 22nd 1964&quot; },
+			{ &quot;id&quot;: 6, &quot;firstName&quot;: &quot;Bar&quot;, &quot;lastName&quot;: &quot;Lewis&quot;, &quot;jobTitle&quot;: &quot;Clown&quot;, &quot;started&quot;: &quot;November 12th 2012&quot;, &quot;dob&quot;: &quot;August 4th 1991&quot; },
+			{ &quot;id&quot;: 7, &quot;firstName&quot;: &quot;Usha&quot;, &quot;lastName&quot;: &quot;Leak&quot;, &quot;jobTitle&quot;: &quot;Ships Electronic Warfare Officer&quot;, &quot;started&quot;: &quot;August 14th 2012&quot;, &quot;dob&quot;: &quot;November 20th 1979&quot; },
+			{ &quot;id&quot;: 8, &quot;firstName&quot;: &quot;Lorriane&quot;, &quot;lastName&quot;: &quot;Cooke&quot;, &quot;jobTitle&quot;: &quot;Technical Services Librarian&quot;, &quot;started&quot;: &quot;September 21st 2010&quot;, &quot;dob&quot;: &quot;April 7th 1969&quot; }
+		]
+	});
+});</code></pre>
+		<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot;&gt;&lt;/table&gt;</code></pre>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		$('#toggle-example-1').footable();
+		$('#toggle-example-2').footable({
+			"showToggle": false,
+			"expandFirst": true,
+			"columns": [
+				{ "name": "id", "title": "ID", "breakpoints": "xs" },
+				{ "name": "firstName", "title": "First Name" },
+				{ "name": "lastName", "title": "Last Name" },
+				{ "name": "jobTitle", "title": "Job Title", "breakpoints": "xs" },
+				{ "name": "started", "title": "Started On", "breakpoints": "xs sm" },
+				{ "name": "dob", "title": "DOB", "breakpoints": "all" }
+			],
+			"rows": [
+				{ "id": 1, "firstName": "Dennise", "lastName": "Fuhrman", "jobTitle": "High School History Teacher", "started": "November 8th 2011", "dob": "July 25th 1960" },
+				{ "id": 2, "firstName": "Elodia", "lastName": "Weisz", "jobTitle": "Wallpaperer Helper", "started": "October 15th 2010", "dob": "March 30th 1982" },
+				{ "id": 3, "firstName": "Raeann", "lastName": "Haner", "jobTitle": "Internal Medicine Nurse Practitioner", "started": "November 28th 2013", "dob": "February 26th 1966" },
+				{ "id": 4, "firstName": "Junie", "lastName": "Landa", "jobTitle": "Offbearer", "started": "October 31st 2010", "dob": "March 29th 1966" },
+				{ "id": 5, "firstName": "Solomon", "lastName": "Bittinger", "jobTitle": "Roller Skater", "started": "December 29th 2011", "dob": "September 22nd 1964" },
+				{ "id": 6, "firstName": "Bar", "lastName": "Lewis", "jobTitle": "Clown", "started": "November 12th 2012", "dob": "August 4th 1991" },
+				{ "id": 7, "firstName": "Usha", "lastName": "Leak", "jobTitle": "Ships Electronic Warfare Officer", "started": "August 14th 2012", "dob": "November 20th 1979" },
+				{ "id": 8, "firstName": "Lorriane", "lastName": "Cooke", "jobTitle": "Technical Services Librarian", "started": "September 21st 2010", "dob": "April 7th 1969" }
+			]
+		});
+		$('#toggle-example-3').footable();
+		$('#toggle-example-4').footable({
+			"toggleColumn": "last",
+			"expandFirst": true,
+			"columns": [
+				{ "name": "id", "title": "ID", "breakpoints": "xs" },
+				{ "name": "firstName", "title": "First Name" },
+				{ "name": "lastName", "title": "Last Name" },
+				{ "name": "jobTitle", "title": "Job Title", "breakpoints": "xs" },
+				{ "name": "started", "title": "Started On", "breakpoints": "xs sm" },
+				{ "name": "dob", "title": "DOB", "breakpoints": "all" }
+			],
+			"rows": [
+				{ "id": 1, "firstName": "Dennise", "lastName": "Fuhrman", "jobTitle": "High School History Teacher", "started": "November 8th 2011", "dob": "July 25th 1960" },
+				{ "id": 2, "firstName": "Elodia", "lastName": "Weisz", "jobTitle": "Wallpaperer Helper", "started": "October 15th 2010", "dob": "March 30th 1982" },
+				{ "id": 3, "firstName": "Raeann", "lastName": "Haner", "jobTitle": "Internal Medicine Nurse Practitioner", "started": "November 28th 2013", "dob": "February 26th 1966" },
+				{ "id": 4, "firstName": "Junie", "lastName": "Landa", "jobTitle": "Offbearer", "started": "October 31st 2010", "dob": "March 29th 1966" },
+				{ "id": 5, "firstName": "Solomon", "lastName": "Bittinger", "jobTitle": "Roller Skater", "started": "December 29th 2011", "dob": "September 22nd 1964" },
+				{ "id": 6, "firstName": "Bar", "lastName": "Lewis", "jobTitle": "Clown", "started": "November 12th 2012", "dob": "August 4th 1991" },
+				{ "id": 7, "firstName": "Usha", "lastName": "Leak", "jobTitle": "Ships Electronic Warfare Officer", "started": "August 14th 2012", "dob": "November 20th 1979" },
+				{ "id": 8, "firstName": "Lorriane", "lastName": "Cooke", "jobTitle": "Technical Services Librarian", "started": "September 21st 2010", "dob": "April 7th 1969" }
+			]
+		});
+	});
+</script>
+</body>
+</html>
