@@ -141,6 +141,64 @@
 
 			</div>
 
+			<!-- countFormat -->
+			<a href="#current" class="list-group-item anchored">
+				<span id="countFormat" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">countFormat <small>string</small></h4>
+				<p class="list-group-item-text">The string used as a format to generate the count text.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"{CP} of {TP}"</code></p>
+							<p>
+								The default format uses the current page and total pages placeholders which are substituted at run time for the actual values.
+								The below lists all available placeholders that you can use when supplying your own format.
+							</p>
+							<ul>
+								<li><strong>{CP}</strong> - The current page.</li>
+								<li><strong>{TP}</strong> - The total number of pages available.</li>
+								<li><strong>{PF}</strong> - The first row number of the current page.</li>
+								<li><strong>{PL}</strong> - The last row number of the current page.</li>
+								<li><strong>{TR}</strong> - The total number of rows available.</li>
+							</ul>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-paging-count-format=&quot;{CP} of {TP}&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;paging&quot;: {
+			&quot;countFormat&quot;: &quot;{CP} of {TP}&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
 			<!-- current -->
 			<a href="#current" class="list-group-item anchored">
 				<span id="current" class="anchor">&nbsp;</span>
