@@ -231,5 +231,5 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-jsdoc');
-	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'compress', 'jsdoc']);
+	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'compress']);
 };
