@@ -3,6 +3,7 @@
 	 * An object containing the paging options for the plugin. Added by the {@link FooTable.Paging} component.
 	 * @type {object}
 	 * @prop {boolean} enabled=false - Whether or not to allow paging on the table.
+	 * @prop {string} countFormat="{CP} of {TP}" - A string format used to generate the page count text.
 	 * @prop {number} current=1 - The page number to display.
 	 * @prop {number} limit=5 - The maximum number of page links to display at once.
 	 * @prop {string} position="center" - The string used to specify the alignment of the pagination control.
@@ -17,6 +18,7 @@
 	 */
 	F.Defaults.prototype.paging = {
 		enabled: false,
+		countFormat: '{CP} of {TP}',
 		current: 1,
 		limit: 5,
 		position: 'center',

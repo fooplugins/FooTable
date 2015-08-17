@@ -42,6 +42,11 @@
 			 */
 			this.position = table.o.paging.position;
 			/**
+			 * The format string used to generate the text displayed under the pagination control.
+			 * @type {string}
+			 */
+			this.countFormat = table.o.paging.countFormat;
+			/**
 			 * The total number of pages.
 			 * @instance
 			 * @type {number}
@@ -77,6 +82,13 @@
 			 * @type {number}
 			 */
 			this._previous = 1;
+
+			/**
+			 * Used to hold the number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * @type {number}
+			 * @private
+			 */
+			this._total = 0;
 		},
 
 		/* PROTECTED */
@@ -128,6 +140,10 @@
 				self.position = F.is.string(data.pagingPosition)
 					? data.pagingPosition
 					: self.position;
+
+				self.countFormat = F.is.string(data.pagingCountFormat)
+					? data.pagingCountFormat
+					: self.countFormat;
 
 				self.total = Math.ceil(self.ft.rows.array.length / self.size);
 				self._total = self.total;
@@ -184,6 +200,7 @@
 		predraw: function(){
 			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
+			this._total = this.ft.rows.array.length;
 			if (this.ft.rows.array.length > this.size)
 				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
 		},
@@ -373,9 +390,6 @@
 		 * @param {boolean} active - Whether or not to set the active class state on the individual page links.
 		 */
 		_setNavigation: function(active){
-			if (this.total == 0 || this.total == 1) this.$count.text(this.total + ' of ' + this.total);
-			else this.$count.text(this.current + ' of ' + this.total);
-
 			if (this.current == 1) {
 				this.$pagination.children('li[data-page="first"],li[data-page="prev"]').addClass('disabled');
 			} else {
@@ -419,27 +433,53 @@
 		 */
 		_setVisible: function(page, right){
 			if (this.limit > 0 && this.total > this.limit){
-				if (this.$pagination.children('li.footable-page[data-page="'+page+'"]').hasClass('visible')) return;
-				var start = 0, end = 0;
-				if (right == true){
-					end = page > this.total ? this.total : page;
-					start = end - this.limit;
-				} else {
-					start = page < 1 ? 0 : page - 1;
-					end = start + this.limit;
+				if (!this.$pagination.children('li.footable-page[data-page="'+page+'"]').hasClass('visible')){
+					var start = 0, end = 0;
+					if (right == true){
+						end = page > this.total ? this.total : page;
+						start = end - this.limit;
+					} else {
+						start = page < 1 ? 0 : page - 1;
+						end = start + this.limit;
+					}
+					if (start < 0){
+						start = 0;
+						end = this.limit > this.total ? this.total : this.limit;
+					}
+					if (end > this.total){
+						end = this.total;
+						start = this.total - this.limit < 0 ? 0 : this.total - this.limit;
+					}
+					this.$pagination.children('li.footable-page').removeClass('visible').slice(start, end).addClass('visible');
 				}
-				if (start < 0){
-					start = 0;
-					end = this.limit > this.total ? this.total : this.limit;
-				}
-				if (end > this.total){
-					end = this.total;
-					start = this.total - this.limit < 0 ? 0 : this.total - this.limit;
-				}
-				this.$pagination.children('li.footable-page').removeClass('visible').slice(start, end).addClass('visible');
 			} else {
 				this.$pagination.children('li.footable-page').removeClass('visible').slice(0, this.total).addClass('visible');
 			}
+			var first = (this.size * (page - 1)) + 1,
+				last = this.size * page;
+			if (this.ft.rows.array.length == 0){
+				first = 0;
+				last = 0;
+			} else {
+				last = last > this._total ? this._total : last;
+			}
+			this._setCount(page, this.total, first, last, this._total);
+		},
+		/**
+		 * Uses the countFormat option to generate the text using the supplied parameters.
+		 * @param {number} currentPage - The current page.
+		 * @param {number} totalPages - The total number of pages.
+		 * @param {number} pageFirst - The first row number of the current page.
+		 * @param {number} pageLast - The last row number of the current page.
+		 * @param {number} totalRows - The total number of rows.
+		 * @private
+		 */
+		_setCount: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
+			this.$count.text(this.countFormat.replace(/\{CP}/g, currentPage)
+				.replace(/\{TP}/g, totalPages)
+				.replace(/\{PF}/g, pageFirst)
+				.replace(/\{PL}/g, pageLast)
+				.replace(/\{TR}/g, totalRows));
 		},
 		/**
 		 * Handles the click event for all links in the pagination control.
