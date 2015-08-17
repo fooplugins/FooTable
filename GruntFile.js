@@ -7,9 +7,9 @@ module.exports = function (grunt) {
 		clean: {
 			pre: [
 				'compiled',
-				'releases/*.v<%= pkg.version %>.zip',
-				'docs/jsdocs'
-			]
+				'releases/*.v<%= pkg.version %>.zip'
+			],
+			jsdoc: ['docs/jsdocs']
 		},
 		concat: {
 			core_js: {
@@ -231,5 +231,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-jsdoc');
-	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'compress']);
+	grunt.registerTask('default', ['clean:pre', 'concat', 'uglify', 'cssmin', 'compress']);
+	grunt.registerTask('jsdocs', ['clean:jsdoc','jsdoc']);
 };
