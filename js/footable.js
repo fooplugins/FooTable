@@ -210,6 +210,9 @@
         ///</param>
 
         options = options || {};
+        if (options.breakpoints) {  // clear the default breakpoints if the user specifies one
+          w.footable.options.breakpoints = {};
+        }
         var o = $.extend(true, {}, w.footable.options, options); //merge user and default options
         return this.each(function () {
             instanceCount++;
