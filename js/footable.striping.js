@@ -32,23 +32,9 @@
     };
 
     p.setupStriping = function (ft) {
-
-      var rowIndex = 0;
-      $(ft.table).find('> tbody > tr:not(.footable-row-detail)').each(function () {
-
-        var $row = $(this);
-
-        //Clean off old classes
-        $row.removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
-
-        if (rowIndex % 2 === 0) {
-          $row.addClass(ft.options.classes.striping.even);
-        } else {
-          $row.addClass(ft.options.classes.striping.odd);
-        }
-
-        rowIndex++;
-      });
+        $('tbody tr',ft.table).removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
+        $('tbody tr:visible:even',ft.table).addClass(ft.options.classes.striping.even)
+        $('tbody tr:visible:odd',ft.table).addClass(ft.options.classes.striping.odd)
     };
   }
 
