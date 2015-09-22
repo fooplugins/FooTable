@@ -32,9 +32,9 @@
     };
 
     p.setupStriping = function (ft) {
-        $('tbody tr',ft.table).removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
-        $('tbody tr:visible:even',ft.table).addClass(ft.options.classes.striping.even)
-        $('tbody tr:visible:odd',ft.table).addClass(ft.options.classes.striping.odd)
+        $('tbody tr:not(.footable-row-detail):not(.footable-filtered)').removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
+        $('tbody tr:not(.footable-row-detail):not(.footable-filtered):visible:even').addClass(ft.options.classes.striping.even);
+        $('tbody tr:not(.footable-row-detail):not(.footable-filtered):visible:odd').addClass(ft.options.classes.striping.odd);
     };
   }
 
