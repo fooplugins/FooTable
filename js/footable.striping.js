@@ -22,7 +22,7 @@
       $(ft.table)
         .unbind('striping')
         .bind({
-          'footable_initialized.striping footable_row_removed.striping footable_redrawn.striping footable_sorted.striping footable_filtered.striping': function () {
+          'footable_initialized.striping footable_row_removed.striping footable_redrawn.striping footable_sorted.striping footable_filtered.striping  footable_page_filled.striping': function () {
             
             if ($(this).data('striping') === false) return;
 
