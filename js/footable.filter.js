@@ -24,6 +24,7 @@
                         text += $(this).data('value');
                     });
                 }
+
                 return text.toUpperCase().indexOf(filter) >= 0;
             }
         }
@@ -103,16 +104,14 @@
           if (event.clear) {
                 p.clearFilter();
             } else {
-                var filters = event.filter.split(' ');
+                //event.filter; //filters on multiple words appearing, not a single string
 
                 $table.find('> tbody > tr').hide().addClass('footable-filtered');
                 var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
-                $.each(filters, function (i, f) {
-                    if (f && f.length > 0) {
-                        $table.data('current-filter', f);
+                    if (event.filter && event.filter.length > 0) {
+                        $table.data('current-filter', event.filter);
                         rows = rows.filter(ft.options.filter.filterFunction);
                     }
-                });
                 rows.each(function () {
                     p.showRow(this, ft);
                     $(this).removeClass('footable-filtered');
