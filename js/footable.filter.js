@@ -62,7 +62,7 @@
                                 p.clearFilter();
                             });
                             $table.bind('footable_filter', function (event, args) {
-                                p.filter(args.filter);
+                                p.filter($(data.input).val());
                             });
                             $(data.input).keyup(function (eve) {
                                 ft.timers.filter.stop();
