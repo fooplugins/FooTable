@@ -104,6 +104,8 @@
           if (event.clear) {
                 p.clearFilter();
             } else {
+                //event.filter; //filters on multiple words appearing, not a single string
+
                 $table.find('> tbody > tr').hide().addClass('footable-filtered');
                 var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
                     if (event.filter && event.filter.length > 0) {
