@@ -150,10 +150,15 @@
 		predraw: function () {
 			if (!this.column) return;
 			var self = this, col = self.column;
+			//self.ft.rows.array.sort(function (a, b) {
+			//	return col.direction == 'ASC'
+			//			? col.sorter(a.cells[col.index].value, b.cells[col.index].value)
+			//			: col.sorter(b.cells[col.index].value, a.cells[col.index].value);
+			//});
 			self.ft.rows.array.sort(function (a, b) {
 				return col.direction == 'ASC'
-					? col.sorter(a.cells[col.index].value, b.cells[col.index].value)
-					: col.sorter(b.cells[col.index].value, a.cells[col.index].value);
+						? col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue)
+						: col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue);
 			});
 		},
 		/**
@@ -255,6 +260,41 @@
 	F.components.core.register('sorting', F.Sorting, 5);
 
 })(jQuery, FooTable);
+(function(F){
+
+	/**
+	 * The value used by the sorting component during sort operations. Can be set using the data-sort-value attribute on the cell itself.
+	 * If this is not supplied it is set to the result of the toString method called on the value for the cell. Added by the {@link FooTable.Sorting} component.
+	 * @type {string}
+	 * @default null
+	 */
+	F.Cell.prototype.sortValue = null;
+
+	// this is used to define the sorting specific properties on cell creation
+	F.Cell.prototype.__sorting_define__ = function(valueOrElement){
+		this.sortValue = this.column.sortValue.call(this.column, valueOrElement);
+	};
+
+	// this is used to update the sortValue property whenever the cell value is changed
+	F.Cell.prototype.__sorting_val__ = function(value){
+		if (F.is.defined(value)){
+			// set only
+			this.sortValue = this.column.sortValue.call(this.column, value);
+		}
+	};
+
+	// overrides the public define method and replaces it with our own
+	F.Cell.extend('define', function(valueOrElement){
+		this._super(valueOrElement);
+		this.__sorting_define__(valueOrElement);
+	});
+	// overrides the public val method and replaces it with our own
+	F.Cell.extend('val', function(value){
+		var val = this._super(value);
+		this.__sorting_val__(value);
+		return val;
+	});
+})(FooTable);
 (function($, F){
 	/**
 	 * The direction to sort if the {@link FooTable.Column#sorted} property is set to true. Can be "ASC", "DESC" or NULL. Added by the {@link FooTable.Sorting} component.
@@ -300,6 +340,24 @@
 		return 1;
 	};
 
+	/**
+	 * This is supplied either the cell value or jQuery object to parse. A value must be returned from this method and will be used during sorting operations.
+	 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+	 * @returns {*}
+	 * @this FooTable.Column
+	 */
+	F.Column.prototype.sortValue = function(valueOrElement){
+		// if we have an element or a jQuery object use jQuery to get the value
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('sortValue') || this.parser(valueOrElement);
+		// if options are supplied with the value
+		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
+			if (F.is.string(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
+			if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+		}
+		if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement;
+		return null;
+	};
+
 	// this is used to define the sorting specific properties on column creation
 	F.Column.prototype.__sorting_define__ = function(definition){
 		this.sorter = F.checkFnValue(this, definition.sorter, this.sorter);
@@ -325,6 +383,15 @@
 		enabled: false
 	};
 })(FooTable);
+(function($, F){
+
+	// overrides the public define method and replaces it with our own
+	//F.HTMLColumn.extend('construct', function(instance, definition){
+	//	definition.sortable = false;
+	//	this._super(instance, definition);
+	//});
+
+})(jQuery, FooTable);
 (function(F){
 	/**
 	 * Sort the table using the specified column and direction. Added by the {@link FooTable.Sorting} component.

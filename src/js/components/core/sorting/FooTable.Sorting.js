@@ -124,10 +124,15 @@
 		predraw: function () {
 			if (!this.column) return;
 			var self = this, col = self.column;
+			//self.ft.rows.array.sort(function (a, b) {
+			//	return col.direction == 'ASC'
+			//			? col.sorter(a.cells[col.index].value, b.cells[col.index].value)
+			//			: col.sorter(b.cells[col.index].value, a.cells[col.index].value);
+			//});
 			self.ft.rows.array.sort(function (a, b) {
 				return col.direction == 'ASC'
-					? col.sorter(a.cells[col.index].value, b.cells[col.index].value)
-					: col.sorter(b.cells[col.index].value, a.cells[col.index].value);
+						? col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue)
+						: col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue);
 			});
 		},
 		/**

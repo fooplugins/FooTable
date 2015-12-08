@@ -106,8 +106,9 @@
 			this._setClasses(this.$el);
 			this._setStyle(this.$el);
 
-			this.$detail = $('<tr/>').addClass(this.row.classes.join(' ')).data('__FooTableCell__', this)
-				.append($('<th/>', { text: this.column.title }))
+			this.$detail = $('<tr/>').addClass(this.row.classes.join(' '))
+				.data('__FooTableCell__', this)
+				.append($('<th/>'))
 				.append($('<td/>'));
 
 			this.created = true;
@@ -119,6 +120,7 @@
 		 */
 		collapse: function(){
 			if (!this.created) return;
+			this.$detail.children('th').html(this.column.title);
 			this.$detail.children('td').first()
 				.attr('class', this.$el.attr('class'))
 				.attr('style', this.$el.attr('style'))

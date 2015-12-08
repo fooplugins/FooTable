@@ -38,3 +38,18 @@
 .fooicon-sort-desc:before {
 	content: "\f161";
 }
+.fooicon-pencil:before {
+	content: "\f040";
+}
+.fooicon-trash:before {
+	content: "\f1f8";
+}
+.fooicon-eye-close:before {
+	content: "\f070";
+}
+.fooicon-flash:before {
+	content: "\f0e7";
+}
+.fooicon-cog:before {
+	content: "\f013";
+}

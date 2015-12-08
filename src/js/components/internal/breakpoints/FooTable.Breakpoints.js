@@ -36,6 +36,11 @@
 			 */
 			this.cascade = this.o.cascade;
 			/**
+			 * Whether or not to calculate breakpoints on the width of the parent element rather than the viewport.
+			 * @type {boolean}
+			 */
+			this.useParentWidth = this.o.useParentWidth;
+			/**
 			 * This value is updated each time the current breakpoint changes and contains a space delimited string of the names of the current breakpoint and all those smaller than it.
 			 * @type {string}
 			 */
@@ -215,7 +220,7 @@
 		 */
 		getWidth: function(){
 			if (F.is.fn(this.o.getWidth)) return this.o.getWidth(this.ft);
-			if (this.o.useParentWidth == true) return this.getParentWidth();
+			if (this.useParentWidth == true) return this.getParentWidth();
 			return this.getViewportWidth();
 		},
 		/**

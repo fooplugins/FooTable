@@ -15,8 +15,7 @@
 		 * @returns {FooTable.DateColumn}
 		 */
 		construct: function(instance, definition){
-			this._super(instance, definition);
-			this.type = 'date';
+			this._super(instance, definition, 'date');
 			/**
 			 * The format string to use when parsing and formatting dates.
 			 * @instance
@@ -34,8 +33,8 @@
 		 * @this FooTable.DateColumn
 		 */
 		parser: function(valueOrElement){
-			if (F.is.jq(valueOrElement)){
-				valueOrElement = valueOrElement.data('value') || valueOrElement.text();
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text();
 				if (F.is.string(valueOrElement)) valueOrElement = isNaN(valueOrElement) ? valueOrElement : +valueOrElement;
 			}
 			if (F.is.date(valueOrElement)) return moment(valueOrElement);

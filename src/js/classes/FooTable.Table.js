@@ -321,6 +321,10 @@
 					args.unshift(reverse ? internal.reverse() : custom);
 					return self._execute.apply(self, args);
 				});
+			}, function(err){
+				if (F.is.error(err)){
+					console.error('FooTable: unhandled error thrown while executing "'+methodName+'".', err);
+				}
 			});
 		},
 		/**

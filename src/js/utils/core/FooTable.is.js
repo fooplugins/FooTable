@@ -64,6 +64,8 @@
 
 	/**
 	 * Checks if the value is a boolean.
+	 * @memberof FooTable.is
+	 * @function boolean
 	 * @param {*} value - The value to check.
 	 * @returns {boolean}
 	 */
@@ -90,7 +92,7 @@
 	 * @returns {boolean}
 	 */
 	F.is.number = function (value) {
-		return '[object Number]' === Object.prototype.toString.call(value);
+		return '[object Number]' === Object.prototype.toString.call(value) && !isNaN(value);
 	};
 
 	/**
@@ -172,7 +174,18 @@
 	 * @returns {boolean}
 	 */
 	F.is.jq = function(obj){
-		return F.is.defined(jQuery) && obj instanceof jQuery && obj.length > 0;
+		return F.is.defined(window.jQuery) && obj instanceof jQuery && obj.length > 0;
+	};
+
+	/**
+	 * Checks if the supplied object is a moment.js date object.
+	 * @memberof FooTable.is
+	 * @function moment
+	 * @param {object} obj - The object to check.
+	 * @returns {boolean}
+	 */
+	F.is.moment = function(obj){
+		return F.is.defined(window.moment) && F.is.object(obj) && F.is.boolean(obj._isAMomentObject)
 	};
 
 	/**

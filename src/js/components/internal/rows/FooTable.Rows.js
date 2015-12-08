@@ -84,19 +84,38 @@
 					}
 				}
 				if (F.is.jq($rows)){
-					complete($rows);
+					self.parseFinalize(d, $rows);
+					$rows.detach();
 				} else if (F.is.array(self.o.rows) && self.o.rows.length > 0){
-					complete(self.o.rows);
+					self.parseFinalize(d, self.o.rows);
 				} else if (F.is.promise(self.o.rows)){
 					self.o.rows.then(function(rows){
-						complete(rows);
+						self.parseFinalize(d, rows);
 					}, function(xhr){
 						d.reject(Error('Rows ajax request error: ' + xhr.status + ' (' + xhr.statusText + ')'));
 					});
 				} else {
-					complete([]);
+					self.parseFinalize(d, []);
 				}
 			});
+		},
+		/**
+		 * Used to finalize the parsing of rows it is supplied the parse deferred object which must be resolved with an array of {@link FooTable.Row} objects
+		 * or rejected with an error.
+		 * @instance
+		 * @protected
+		 * @param {jQuery.Deferred} deferred - The deferred object used for parsing.
+		 * @param {(Array.<object>|jQuery)} rows - An array of row values and options or the jQuery object containing all rows.
+		 */
+		parseFinalize: function(deferred, rows){
+			var self = this, result = $.map(rows, function(r){
+				return new F.Row(self.ft, self.ft.columns.array, r);
+			});
+			if (F.is.emptyArray(result)){
+				deferred.reject(Error("No rows supplied."));
+			} else {
+				deferred.resolve(result);
+			}
 		},
 		/**
 		 * The columns preinit method is used to parse and check the column options supplied from both static content and through the constructor.
@@ -144,7 +163,7 @@
 			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the DOM or the options.
 			 */
 			return self.ft.raise('init.ft.rows', [self.all]).then(function(){
-				self.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(self.emptyString));
+				self.$create();
 			});
 		},
 		/**
@@ -157,6 +176,9 @@
 				row.predraw();
 			});
 			this.array = this.all.slice(0);
+		},
+		$create: function(){
+			this.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(this.emptyString));
 		},
 		/**
 		 * Performs the actual drawing of the table rows.

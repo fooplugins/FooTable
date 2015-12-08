@@ -160,6 +160,20 @@
 			return F.is.defined(this.registered[name]);
 		},
 		/**
+		 * Gets an array of all registered names.
+		 * @instance
+		 * @returns {Array.<string>}
+		 * @this FooTable.ClassFactory
+		 */
+		names: function(){
+			var names = [], name;
+			for (name in this.registered){
+				if (!this.registered.hasOwnProperty(name)) continue;
+				names.push(name);
+			}
+			return names;
+		},
+		/**
 		 * Registers a class object using the supplied friendly name and priority. The priority is only taken into account when loading all registered classes
 		 * using the {@link FooTable.ClassFactory#load} method.
 		 * @instance

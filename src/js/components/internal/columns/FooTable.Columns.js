@@ -83,22 +83,6 @@
 					}
 					return merged;
 				}
-				function complete(cols){
-					// we now have a merged array of all column definitions supplied to the plugin, time to make the objects.
-					var columns = [], column;
-					F.arr.each(cols, function(def){
-						// if we have a column registered using the definition type then create an instance of that column otherwise just create a default text column.
-						if (column = F.columns.contains(def.type) ? F.columns.make(def.type, self.ft, def) : new F.Column(self.ft, def))
-							columns.push(column);
-					});
-					if (F.is.emptyArray(columns)){
-						d.reject(Error("No columns supplied."));
-					} else {
-						// make sure to sort by the column index as the merge process may have mixed them up
-						columns.sort(function(a, b){ return a.index - b.index; });
-						d.resolve(columns);
-					}
-				}
 
 				var json = [], html = [];
 				// get the column options from the content
@@ -124,21 +108,45 @@
 						c.index = i;
 						json.push(c);
 					});
-					complete(merge(json, html));
+					self.parseFinalize(d, merge(json, html));
 				} else if (F.is.promise(self.o.columns)){
 					self.o.columns.then(function(cols){
 						F.arr.each(cols, function(c, i){
 							c.index = i;
 							json.push(c);
 						});
-						complete(merge(json, html));
+						self.parseFinalize(d, merge(json, html));
 					}, function(xhr){
 						d.reject(Error('Columns ajax request error: ' + xhr.status + ' (' + xhr.statusText + ')'));
 					});
 				} else {
-					complete(merge(json, html));
+					self.parseFinalize(d, merge(json, html));
 				}
 			});
+		},
+		/**
+		 * Used to finalize the parsing of columns it is supplied the parse deferred object which must be resolved with an array of {@link FooTable.Column} objects
+		 * or rejected with an error.
+		 * @instance
+		 * @protected
+		 * @param {jQuery.Deferred} deferred - The deferred object used for parsing.
+		 * @param {Array.<object>} cols - An array of all merged column definitions.
+		 */
+		parseFinalize: function(deferred, cols){
+			// we now have a merged array of all column definitions supplied to the plugin, time to make the objects.
+			var self = this, columns = [], column;
+			F.arr.each(cols, function(def){
+				// if we have a column registered using the definition type then create an instance of that column otherwise just create a default text column.
+				if (column = F.columns.contains(def.type) ? F.columns.make(def.type, self.ft, def) : new F.Column(self.ft, def))
+					columns.push(column);
+			});
+			if (F.is.emptyArray(columns)){
+				deferred.reject(Error("No columns supplied."));
+			} else {
+				// make sure to sort by the column index as the merge process may have mixed them up
+				columns.sort(function(a, b){ return a.index - b.index; });
+				deferred.resolve(columns);
+			}
 		},
 		/**
 		 * The columns preinit method is used to parse and check the column options supplied from both static content and through the constructor.
@@ -198,7 +206,7 @@
 			self.hasHidden = false;
 			F.arr.each(self.array, function(col){
 				col.hidden = !self.ft.breakpoints.visible(col.breakpoints);
-				if (!col.hidden){
+				if (!col.hidden && col.visible){
 					if (first){
 						self.firstVisibleIndex = col.index;
 						first = false;
@@ -206,7 +214,7 @@
 					self.lastVisibleIndex = col.index;
 					self.visibleColspan++;
 				}
-				if (col.hidden && col.visible) self.hasHidden = true;
+				if (col.hidden) self.hasHidden = true;
 			});
 		},
 		/**
@@ -219,6 +227,9 @@
 			F.arr.each(this.array, function(col){
 				col.$el.css('display', (col.hidden || !col.visible  ? 'none' : 'table-cell'));
 			});
+			if (!this.showHeader && F.is.jq(this.$header.parent())){
+				this.$header.detach();
+			}
 		},
 		/**
 		 * Creates the header row for the table from the parsed column definitions.

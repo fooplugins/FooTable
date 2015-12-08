@@ -5,10 +5,8 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		clean: {
-			pre: [
-				'compiled',
-				'releases/*.v<%= pkg.version %>.zip'
-			],
+			compiled: ['compiled'],
+			releases: ['releases/*.v<%= pkg.version %>.zip'],
 			jsdoc: ['docs/jsdocs']
 		},
 		concat: {
@@ -231,6 +229,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-jsdoc');
-	grunt.registerTask('default', ['clean:pre', 'concat', 'uglify', 'cssmin', 'compress']);
+	grunt.registerTask('default', ['clean:compiled', 'concat', 'uglify', 'cssmin']);
+	grunt.registerTask('package', ['default', 'clean:releases', 'compress']);
 	grunt.registerTask('jsdocs', ['clean:jsdoc','jsdoc']);
 };

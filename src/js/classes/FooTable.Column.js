@@ -7,10 +7,11 @@
 		 * @extends FooTable.Class
 		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this component belongs to.
 		 * @param {object} definition - An object containing all the properties to set for the column.
+		 * @param {string} [type] - The type of column, "text" by default.
 		 * @returns {FooTable.Column}
 		 * @this FooTable.Column
 		 */
-		construct: function(instance, definition){
+		construct: function(instance, definition, type){
 			/**
 			 * The root {@link FooTable.Table} for the column.
 			 * @instance
@@ -24,7 +25,7 @@
 			 * @readonly
 			 * @type {string}
 			 */
-			this.type = 'text';
+			this.type = F.is.emptyString(type) ? 'text' : type;
 			/**
 			 * Whether or not the column was parsed from a standard table row containing data instead of from an actual header row.
 			 * @instance
@@ -120,7 +121,7 @@
 		 * @this FooTable.Column
 		 */
 		parser: function(valueOrElement){
-			if (F.is.jq(valueOrElement)) return valueOrElement.data('value') || valueOrElement.text(); // use jQuery to get the value
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('value') || $(valueOrElement).text(); // use jQuery to get the value
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
 		},
@@ -152,5 +153,7 @@
 	});
 
 	F.columns = new F.ClassFactory();
+
+	F.columns.register('text', F.Column);
 
 })(jQuery, FooTable);
