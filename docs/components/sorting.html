@@ -320,6 +320,74 @@
 
 		</div>
 
+		<div class="list-group list-group-detailed grand-child">
+			<h3 class="list-group-header">Cell options</h3>
+
+			<!-- sortValue -->
+			<a href="#cell-sortValue" class="list-group-item anchored">
+				<span id="cell-sortValue" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">sortValue <small>*</small></h4>
+				<p class="list-group-item-text">The value used by the component to perform sorting operations.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>""</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>td</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td data-sort-value=&quot;My Sort Value&quot;&gt;...&lt;/td&gt;
+		...
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;rows&quot;: [{
+			&quot;id&quot;: {
+				&quot;options&quot;: {
+					&quot;sortValue&quot;: &quot;My Sort Value&quot;
+				},
+				&quot;value&quot;: ...
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>If no sort value is supplied for a cell the result of the cells default <code>parse</code> method will be used.</p>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
 	</div>
 
 </div> <!-- /container -->

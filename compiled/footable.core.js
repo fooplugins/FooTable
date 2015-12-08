@@ -2201,7 +2201,7 @@
 			if (F.is.element(valueOrElement)) valueOrElement = $(valueOrElement);
 			if (F.is.jq(valueOrElement)){
 				var tagName = valueOrElement.prop('tagName').toLowerCase();
-				if (tagName == 'td' || tagName == 'th') return valueOrElement.data('value') || valueOrElement.children();
+				if (tagName == 'td' || tagName == 'th') return valueOrElement.data('value') || valueOrElement.contents();
 				return valueOrElement;
 			}
 			return null;
