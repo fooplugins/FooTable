@@ -78,4 +78,16 @@
 		});
 	};
 
+	/**
+	 * Generates a random string 9 characters long using the optional prefix if supplied.
+	 * @memberof FooTable.str
+	 * @function random
+	 * @param {string} [prefix] - The prefix to append to the 9 random characters.
+	 * @returns {string}
+	 */
+	F.str.random = function(prefix){
+		prefix = F.is.emptyString(prefix) ? '' : prefix;
+		return prefix + Math.random().toString(36).substr(2, 9);
+	};
+
 })(FooTable);

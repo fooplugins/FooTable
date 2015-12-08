@@ -135,4 +135,40 @@
 		return removed;
 	};
 
+	/**
+	 * Deletes a single item from the array. The item if removed is returned.
+	 * @memberof FooTable.arr
+	 * @function delete
+	 * @param {Array} array - The array to iterate and delete the item from.
+	 * @param {*} item - The item to find and delete.
+	 * @returns {(*|null)}
+	 */
+	F.arr.delete = function(array, item){
+		var remove = -1, removed = null;
+		if (!F.is.array(array) || F.is.undef(item)) return removed;
+		var i = 0, len = array.length;
+		for (; i < len; i++) {
+			if (array[i] == item){
+				remove = i;
+				removed = array[i];
+				break;
+			}
+		}
+		if (remove != -1) array.splice(remove, 1);
+		return removed;
+	};
+
+	/**
+	 * Replaces a single item in the array with a new one.
+	 * @memberof FooTable.arr
+	 * @function replace
+	 * @param {Array} array - The array to iterate and replace the item in.
+	 * @param {*} oldItem - The item to be replaced.
+	 * @param {*} newItem - The item to be inserted.
+	 */
+	F.arr.replace = function(array, oldItem, newItem){
+		var index = array.indexOf(oldItem);
+		if (index !== -1) array[index] = newItem;
+	};
+
 })(FooTable);

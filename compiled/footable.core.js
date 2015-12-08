@@ -257,6 +257,42 @@
 		return removed;
 	};
 
+	/**
+	 * Deletes a single item from the array. The item if removed is returned.
+	 * @memberof FooTable.arr
+	 * @function delete
+	 * @param {Array} array - The array to iterate and delete the item from.
+	 * @param {*} item - The item to find and delete.
+	 * @returns {(*|null)}
+	 */
+	F.arr.delete = function(array, item){
+		var remove = -1, removed = null;
+		if (!F.is.array(array) || F.is.undef(item)) return removed;
+		var i = 0, len = array.length;
+		for (; i < len; i++) {
+			if (array[i] == item){
+				remove = i;
+				removed = array[i];
+				break;
+			}
+		}
+		if (remove != -1) array.splice(remove, 1);
+		return removed;
+	};
+
+	/**
+	 * Replaces a single item in the array with a new one.
+	 * @memberof FooTable.arr
+	 * @function replace
+	 * @param {Array} array - The array to iterate and replace the item in.
+	 * @param {*} oldItem - The item to be replaced.
+	 * @param {*} newItem - The item to be inserted.
+	 */
+	F.arr.replace = function(array, oldItem, newItem){
+		var index = array.indexOf(oldItem);
+		if (index !== -1) array[index] = newItem;
+	};
+
 })(FooTable);
 (function (F) {
 
@@ -324,6 +360,8 @@
 
 	/**
 	 * Checks if the value is a boolean.
+	 * @memberof FooTable.is
+	 * @function boolean
 	 * @param {*} value - The value to check.
 	 * @returns {boolean}
 	 */
@@ -350,7 +388,7 @@
 	 * @returns {boolean}
 	 */
 	F.is.number = function (value) {
-		return '[object Number]' === Object.prototype.toString.call(value);
+		return '[object Number]' === Object.prototype.toString.call(value) && !isNaN(value);
 	};
 
 	/**
@@ -432,7 +470,18 @@
 	 * @returns {boolean}
 	 */
 	F.is.jq = function(obj){
-		return F.is.defined(jQuery) && obj instanceof jQuery && obj.length > 0;
+		return F.is.defined(window.jQuery) && obj instanceof jQuery && obj.length > 0;
+	};
+
+	/**
+	 * Checks if the supplied object is a moment.js date object.
+	 * @memberof FooTable.is
+	 * @function moment
+	 * @param {object} obj - The object to check.
+	 * @returns {boolean}
+	 */
+	F.is.moment = function(obj){
+		return F.is.defined(window.moment) && F.is.object(obj) && F.is.boolean(obj._isAMomentObject)
 	};
 
 	/**
@@ -552,6 +601,18 @@
 			if (p2) return p2.toUpperCase();
 			return p1.toLowerCase();
 		});
+	};
+
+	/**
+	 * Generates a random string 9 characters long using the optional prefix if supplied.
+	 * @memberof FooTable.str
+	 * @function random
+	 * @param {string} [prefix] - The prefix to append to the 9 random characters.
+	 * @returns {string}
+	 */
+	F.str.random = function(prefix){
+		prefix = F.is.emptyString(prefix) ? '' : prefix;
+		return prefix + Math.random().toString(36).substr(2, 9);
 	};
 
 })(FooTable);
@@ -715,6 +776,20 @@
 		 */
 		contains: function(name){
 			return F.is.defined(this.registered[name]);
+		},
+		/**
+		 * Gets an array of all registered names.
+		 * @instance
+		 * @returns {Array.<string>}
+		 * @this FooTable.ClassFactory
+		 */
+		names: function(){
+			var names = [], name;
+			for (name in this.registered){
+				if (!this.registered.hasOwnProperty(name)) continue;
+				names.push(name);
+			}
+			return names;
 		},
 		/**
 		 * Registers a class object using the supplied friendly name and priority. The priority is only taken into account when loading all registered classes
@@ -952,8 +1027,9 @@
 			this._setClasses(this.$el);
 			this._setStyle(this.$el);
 
-			this.$detail = $('<tr/>').addClass(this.row.classes.join(' ')).data('__FooTableCell__', this)
-				.append($('<th/>', { text: this.column.title }))
+			this.$detail = $('<tr/>').addClass(this.row.classes.join(' '))
+				.data('__FooTableCell__', this)
+				.append($('<th/>'))
 				.append($('<td/>'));
 
 			this.created = true;
@@ -965,6 +1041,7 @@
 		 */
 		collapse: function(){
 			if (!this.created) return;
+			this.$detail.children('th').html(this.column.title);
 			this.$detail.children('td').first()
 				.attr('class', this.$el.attr('class'))
 				.attr('style', this.$el.attr('style'))
@@ -1099,10 +1176,11 @@
 		 * @extends FooTable.Class
 		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this component belongs to.
 		 * @param {object} definition - An object containing all the properties to set for the column.
+		 * @param {string} [type] - The type of column, "text" by default.
 		 * @returns {FooTable.Column}
 		 * @this FooTable.Column
 		 */
-		construct: function(instance, definition){
+		construct: function(instance, definition, type){
 			/**
 			 * The root {@link FooTable.Table} for the column.
 			 * @instance
@@ -1116,7 +1194,7 @@
 			 * @readonly
 			 * @type {string}
 			 */
-			this.type = 'text';
+			this.type = F.is.emptyString(type) ? 'text' : type;
 			/**
 			 * Whether or not the column was parsed from a standard table row containing data instead of from an actual header row.
 			 * @instance
@@ -1212,7 +1290,7 @@
 		 * @this FooTable.Column
 		 */
 		parser: function(valueOrElement){
-			if (F.is.jq(valueOrElement)) return valueOrElement.data('value') || valueOrElement.text(); // use jQuery to get the value
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('value') || $(valueOrElement).text(); // use jQuery to get the value
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
 		},
@@ -1244,6 +1322,8 @@
 	});
 
 	F.columns = new F.ClassFactory();
+
+	F.columns.register('text', F.Column);
 
 })(jQuery, FooTable);
 (function ($, F) {
@@ -1313,6 +1393,7 @@
 
 			this.created = false;
 			this.define(dataOrElement);
+			this.val();
 		},
 		/**
 		 * This is supplied either the object containing the values for the row or the row element/jQuery object if it exists.
@@ -1380,20 +1461,11 @@
 			this.style = F.is.jq(this.$el) && this.$el.attr('style') ? F.css2json(this.$el.attr('style')) : (F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {}));
 
 			/**
-			 * The cells array. This is populated before the call to the {@link FooTable.Row#createElement} method.
+			 * The cells array. This is populated before the call to the {@link FooTable.Row#$create} method.
 			 * @instance
 			 * @type {Array.<FooTable.Cell>}
 			 */
 			this.cells = this.createCells();
-
-			// check the value property and build it from the cells if required.
-			if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
-				var val = {};
-				F.arr.each(self.cells, function(cell){
-					val[cell.column.name] = cell.val();
-				});
-				this.value = val;
-			}
 		},
 		/**
 		 * After the row has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.
@@ -1443,17 +1515,22 @@
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
 		 * @returns {(*|undefined)}
-		 * @this FooTable.Row
 		 */
 		val: function(data){
+			var self = this;
 			if (!F.is.hash(data)){
-				// get
+				// get - check the value property and build it from the cells if required.
+				if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
+					this.value = {};
+					F.arr.each(this.cells, function(cell){
+						self.value[cell.column.name] = cell.val();
+					});
+				}
 				return this.value;
 			}
 			// set
 			this.collapse(false);
-			var self = this,
-				isObj = F.is.hash(data),
+			var isObj = F.is.hash(data),
 				hasOptions = isObj && F.is.hash(data.options) && F.is.hash(data.value);
 
 			this.o = $.extend(true, {
@@ -1465,10 +1542,10 @@
 			this.expanded = this.o.expanded;
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.split(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
+			this.value = isObj ? (hasOptions ? data.value : data) : null;
 
-			var value = hasOptions ? data.value : data;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(value[cell.column.name])) cell.val(value[cell.column.name], false);
+				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
 			});
 
 			if (this.created){
@@ -1557,7 +1634,7 @@
 		 */
 		draw: function($parent){
 			if (!this.created) this.$create();
-			$parent.append(this.$el);
+			if (F.is.jq($parent)) $parent.append(this.$el);
 			var self = this;
 			F.arr.each(self.cells, function(cell){
 				cell.$el.css('display', (cell.column.hidden || !cell.column.visible  ? 'none' : 'table-cell'));
@@ -1923,6 +2000,10 @@
 					args.unshift(reverse ? internal.reverse() : custom);
 					return self._execute.apply(self, args);
 				});
+			}, function(err){
+				if (F.is.error(err)){
+					console.error('FooTable: unhandled error thrown while executing "'+methodName+'".', err);
+				}
 			});
 		},
 		/**
@@ -2005,8 +2086,7 @@
 		 * @returns {FooTable.DateColumn}
 		 */
 		construct: function(instance, definition){
-			this._super(instance, definition);
-			this.type = 'date';
+			this._super(instance, definition, 'date');
 			/**
 			 * The format string to use when parsing and formatting dates.
 			 * @instance
@@ -2024,8 +2104,8 @@
 		 * @this FooTable.DateColumn
 		 */
 		parser: function(valueOrElement){
-			if (F.is.jq(valueOrElement)){
-				valueOrElement = valueOrElement.data('value') || valueOrElement.text();
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text();
 				if (F.is.string(valueOrElement)) valueOrElement = isNaN(valueOrElement) ? valueOrElement : +valueOrElement;
 			}
 			if (F.is.date(valueOrElement)) return moment(valueOrElement);
@@ -2095,6 +2175,44 @@
 })(jQuery, FooTable);
 (function($, F){
 
+	F.HTMLColumn = F.Column.extend(/** @lends FooTable.HTMLColumn */{
+		/**
+		 * The HTML column class is used to handle any raw HTML columns.
+		 * @constructs
+		 * @extends FooTable.Column
+		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
+		 * @param {object} definition - An object containing all the properties to set for the column.
+		 * @returns {FooTable.HTMLColumn}
+		 */
+		construct: function(instance, definition){
+			this._super(instance, definition, 'html');
+		},
+		/**
+		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.HTMLColumn#format} function
+		 * to generate the cell contents.
+		 * @instance
+		 * @protected
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+		 * @returns {(number|null)}
+		 * @this FooTable.HTMLColumn
+		 */
+		parser: function(valueOrElement){
+			if (F.is.string(valueOrElement)) valueOrElement = $($.trim(valueOrElement));
+			if (F.is.element(valueOrElement)) valueOrElement = $(valueOrElement);
+			if (F.is.jq(valueOrElement)){
+				var tagName = valueOrElement.prop('tagName').toLowerCase();
+				if (tagName == 'td' || tagName == 'th') return valueOrElement.data('value') || valueOrElement.children();
+				return valueOrElement;
+			}
+			return null;
+		}
+	});
+
+	F.columns.register('html', F.HTMLColumn);
+
+})(jQuery, FooTable);
+(function($, F){
+
 	F.NumberColumn = F.Column.extend(/** @lends FooTable.NumberColumn */{
 		/**
 		 * The number column class is used to handle simple number columns.
@@ -2102,11 +2220,10 @@
 		 * @extends FooTable.Column
 		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
 		 * @param {object} definition - An object containing all the properties to set for the column.
-		 * @returns {FooTable.TextColumn}
+		 * @returns {FooTable.NumberColumn}
 		 */
 		construct: function(instance, definition){
-			this._super(instance, definition);
-			this.type = 'number';
+			this._super(instance, definition, 'number');
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.DateColumn#format} function
@@ -2118,8 +2235,8 @@
 		 * @this FooTable.NumberColumn
 		 */
 		parser: function(valueOrElement){
-			if (F.is.jq(valueOrElement)){
-				valueOrElement = valueOrElement.data('value') || valueOrElement.text().replace(/[^0-9.\-]/g, '');
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text().replace(/[^0-9.\-]/g, '');
 			}
 			if (F.is.string(valueOrElement)) valueOrElement = parseFloat(valueOrElement);
 			if (F.is.number(valueOrElement)) return valueOrElement;
@@ -2138,6 +2255,7 @@
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {FooTable.Table} instance - The parent {@link FooTable.Table} object for the component.
+		 * @param {boolean} enabled - Whether or not the component is enabled.
 		 * @throws {TypeError} The instance parameter must be an instance of {@link FooTable.Table}.
 		 * @returns {FooTable.Component}
 		 */
@@ -2268,6 +2386,11 @@
 			 * @type {boolean}
 			 */
 			this.cascade = this.o.cascade;
+			/**
+			 * Whether or not to calculate breakpoints on the width of the parent element rather than the viewport.
+			 * @type {boolean}
+			 */
+			this.useParentWidth = this.o.useParentWidth;
 			/**
 			 * This value is updated each time the current breakpoint changes and contains a space delimited string of the names of the current breakpoint and all those smaller than it.
 			 * @type {string}
@@ -2448,7 +2571,7 @@
 		 */
 		getWidth: function(){
 			if (F.is.fn(this.o.getWidth)) return this.o.getWidth(this.ft);
-			if (this.o.useParentWidth == true) return this.getParentWidth();
+			if (this.useParentWidth == true) return this.getParentWidth();
 			return this.getViewportWidth();
 		},
 		/**
@@ -2611,22 +2734,6 @@
 					}
 					return merged;
 				}
-				function complete(cols){
-					// we now have a merged array of all column definitions supplied to the plugin, time to make the objects.
-					var columns = [], column;
-					F.arr.each(cols, function(def){
-						// if we have a column registered using the definition type then create an instance of that column otherwise just create a default text column.
-						if (column = F.columns.contains(def.type) ? F.columns.make(def.type, self.ft, def) : new F.Column(self.ft, def))
-							columns.push(column);
-					});
-					if (F.is.emptyArray(columns)){
-						d.reject(Error("No columns supplied."));
-					} else {
-						// make sure to sort by the column index as the merge process may have mixed them up
-						columns.sort(function(a, b){ return a.index - b.index; });
-						d.resolve(columns);
-					}
-				}
 
 				var json = [], html = [];
 				// get the column options from the content
@@ -2652,21 +2759,45 @@
 						c.index = i;
 						json.push(c);
 					});
-					complete(merge(json, html));
+					self.parseFinalize(d, merge(json, html));
 				} else if (F.is.promise(self.o.columns)){
 					self.o.columns.then(function(cols){
 						F.arr.each(cols, function(c, i){
 							c.index = i;
 							json.push(c);
 						});
-						complete(merge(json, html));
+						self.parseFinalize(d, merge(json, html));
 					}, function(xhr){
 						d.reject(Error('Columns ajax request error: ' + xhr.status + ' (' + xhr.statusText + ')'));
 					});
 				} else {
-					complete(merge(json, html));
+					self.parseFinalize(d, merge(json, html));
 				}
 			});
+		},
+		/**
+		 * Used to finalize the parsing of columns it is supplied the parse deferred object which must be resolved with an array of {@link FooTable.Column} objects
+		 * or rejected with an error.
+		 * @instance
+		 * @protected
+		 * @param {jQuery.Deferred} deferred - The deferred object used for parsing.
+		 * @param {Array.<object>} cols - An array of all merged column definitions.
+		 */
+		parseFinalize: function(deferred, cols){
+			// we now have a merged array of all column definitions supplied to the plugin, time to make the objects.
+			var self = this, columns = [], column;
+			F.arr.each(cols, function(def){
+				// if we have a column registered using the definition type then create an instance of that column otherwise just create a default text column.
+				if (column = F.columns.contains(def.type) ? F.columns.make(def.type, self.ft, def) : new F.Column(self.ft, def))
+					columns.push(column);
+			});
+			if (F.is.emptyArray(columns)){
+				deferred.reject(Error("No columns supplied."));
+			} else {
+				// make sure to sort by the column index as the merge process may have mixed them up
+				columns.sort(function(a, b){ return a.index - b.index; });
+				deferred.resolve(columns);
+			}
 		},
 		/**
 		 * The columns preinit method is used to parse and check the column options supplied from both static content and through the constructor.
@@ -2726,7 +2857,7 @@
 			self.hasHidden = false;
 			F.arr.each(self.array, function(col){
 				col.hidden = !self.ft.breakpoints.visible(col.breakpoints);
-				if (!col.hidden){
+				if (!col.hidden && col.visible){
 					if (first){
 						self.firstVisibleIndex = col.index;
 						first = false;
@@ -2734,7 +2865,7 @@
 					self.lastVisibleIndex = col.index;
 					self.visibleColspan++;
 				}
-				if (col.hidden && col.visible) self.hasHidden = true;
+				if (col.hidden) self.hasHidden = true;
 			});
 		},
 		/**
@@ -2747,6 +2878,9 @@
 			F.arr.each(this.array, function(col){
 				col.$el.css('display', (col.hidden || !col.visible  ? 'none' : 'table-cell'));
 			});
+			if (!this.showHeader && F.is.jq(this.$header.parent())){
+				this.$header.detach();
+			}
 		},
 		/**
 		 * Creates the header row for the table from the parsed column definitions.
@@ -2917,19 +3051,38 @@
 					}
 				}
 				if (F.is.jq($rows)){
-					complete($rows);
+					self.parseFinalize(d, $rows);
+					$rows.detach();
 				} else if (F.is.array(self.o.rows) && self.o.rows.length > 0){
-					complete(self.o.rows);
+					self.parseFinalize(d, self.o.rows);
 				} else if (F.is.promise(self.o.rows)){
 					self.o.rows.then(function(rows){
-						complete(rows);
+						self.parseFinalize(d, rows);
 					}, function(xhr){
 						d.reject(Error('Rows ajax request error: ' + xhr.status + ' (' + xhr.statusText + ')'));
 					});
 				} else {
-					complete([]);
+					self.parseFinalize(d, []);
 				}
 			});
+		},
+		/**
+		 * Used to finalize the parsing of rows it is supplied the parse deferred object which must be resolved with an array of {@link FooTable.Row} objects
+		 * or rejected with an error.
+		 * @instance
+		 * @protected
+		 * @param {jQuery.Deferred} deferred - The deferred object used for parsing.
+		 * @param {(Array.<object>|jQuery)} rows - An array of row values and options or the jQuery object containing all rows.
+		 */
+		parseFinalize: function(deferred, rows){
+			var self = this, result = $.map(rows, function(r){
+				return new F.Row(self.ft, self.ft.columns.array, r);
+			});
+			if (F.is.emptyArray(result)){
+				deferred.reject(Error("No rows supplied."));
+			} else {
+				deferred.resolve(result);
+			}
 		},
 		/**
 		 * The columns preinit method is used to parse and check the column options supplied from both static content and through the constructor.
@@ -2977,7 +3130,7 @@
 			 * @param {Array.<FooTable.Row>} rows - The array of {@link FooTable.Row} objects parsed from the DOM or the options.
 			 */
 			return self.ft.raise('init.ft.rows', [self.all]).then(function(){
-				self.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(self.emptyString));
+				self.$create();
 			});
 		},
 		/**
@@ -2990,6 +3143,9 @@
 				row.predraw();
 			});
 			this.array = this.all.slice(0);
+		},
+		$create: function(){
+			this.$empty = $('<tr/>', { 'class': 'footable-empty' }).append($('<td/>').text(this.emptyString));
 		},
 		/**
 		 * Performs the actual drawing of the table rows.

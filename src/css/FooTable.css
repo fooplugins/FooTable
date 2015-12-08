@@ -5,6 +5,9 @@ table.footable-details {
 	border-spacing: 0;
 	border-collapse: collapse;
 }
+table.footable-details {
+	margin-bottom: 0;
+}
 table > tbody > tr > td > span.footable-toggle {
 	margin-right: 8px;
 	opacity: 0.3;
@@ -23,6 +26,24 @@ table.footable-details > tbody > tr > th:nth-child(1) {
 table.footable-details > tbody > tr > td:nth-child(2) {
 	word-break: break-all;
 }
+
+table.footable-details > thead > tr:first-child > th,
+table.footable-details > thead > tr:first-child > td,
+table.footable-details > tbody > tr:first-child > th,
+table.footable-details > tbody > tr:first-child > td,
+table.footable-details > tfoot > tr:first-child > th,
+table.footable-details > tfoot > tr:first-child > td {
+	border-top-width: 0;
+}
+table.footable-details.table-bordered > thead > tr:first-child > th,
+table.footable-details.table-bordered > thead > tr:first-child > td,
+table.footable-details.table-bordered > tbody > tr:first-child > th,
+table.footable-details.table-bordered > tbody > tr:first-child > td,
+table.footable-details.table-bordered > tfoot > tr:first-child > th,
+table.footable-details.table-bordered > tfoot > tr:first-child > td {
+	border-top-width: 1px;
+}
+
 div.footable-loader {
 	vertical-align: middle;
 	text-align: center;
@@ -49,7 +70,10 @@ table.footable > tbody > tr.footable-empty > td {
 	text-align: center;
 	font-size: 30px;
 }
-
+table.footable > tbody > tr > td,
+table.footable > tbody > tr > th {
+	display: none;
+}
 @-webkit-keyframes fooicon-spin-r {
 	0% {
 		-webkit-transform: rotate(0deg);

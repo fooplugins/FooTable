@@ -6,6 +6,7 @@
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {FooTable.Table} instance - The parent {@link FooTable.Table} object for the component.
+		 * @param {boolean} enabled - Whether or not the component is enabled.
 		 * @throws {TypeError} The instance parameter must be an instance of {@link FooTable.Table}.
 		 * @returns {FooTable.Component}
 		 */

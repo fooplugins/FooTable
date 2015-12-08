@@ -24,6 +24,7 @@
 
 			this.created = false;
 			this.define(dataOrElement);
+			this.val();
 		},
 		/**
 		 * This is supplied either the object containing the values for the row or the row element/jQuery object if it exists.
@@ -91,20 +92,11 @@
 			this.style = F.is.jq(this.$el) && this.$el.attr('style') ? F.css2json(this.$el.attr('style')) : (F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {}));
 
 			/**
-			 * The cells array. This is populated before the call to the {@link FooTable.Row#createElement} method.
+			 * The cells array. This is populated before the call to the {@link FooTable.Row#$create} method.
 			 * @instance
 			 * @type {Array.<FooTable.Cell>}
 			 */
 			this.cells = this.createCells();
-
-			// check the value property and build it from the cells if required.
-			if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
-				var val = {};
-				F.arr.each(self.cells, function(cell){
-					val[cell.column.name] = cell.val();
-				});
-				this.value = val;
-			}
 		},
 		/**
 		 * After the row has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.
@@ -154,17 +146,22 @@
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
 		 * @returns {(*|undefined)}
-		 * @this FooTable.Row
 		 */
 		val: function(data){
+			var self = this;
 			if (!F.is.hash(data)){
-				// get
+				// get - check the value property and build it from the cells if required.
+				if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
+					this.value = {};
+					F.arr.each(this.cells, function(cell){
+						self.value[cell.column.name] = cell.val();
+					});
+				}
 				return this.value;
 			}
 			// set
 			this.collapse(false);
-			var self = this,
-				isObj = F.is.hash(data),
+			var isObj = F.is.hash(data),
 				hasOptions = isObj && F.is.hash(data.options) && F.is.hash(data.value);
 
 			this.o = $.extend(true, {
@@ -176,10 +173,10 @@
 			this.expanded = this.o.expanded;
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.split(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
+			this.value = isObj ? (hasOptions ? data.value : data) : null;
 
-			var value = hasOptions ? data.value : data;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(value[cell.column.name])) cell.val(value[cell.column.name], false);
+				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
 			});
 
 			if (this.created){
@@ -268,7 +265,7 @@
 		 */
 		draw: function($parent){
 			if (!this.created) this.$create();
-			$parent.append(this.$el);
+			if (F.is.jq($parent)) $parent.append(this.$el);
 			var self = this;
 			F.arr.each(self.cells, function(cell){
 				cell.$el.css('display', (cell.column.hidden || !cell.column.visible  ? 'none' : 'table-cell'));
