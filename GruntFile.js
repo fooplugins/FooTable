@@ -6,7 +6,10 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		clean: {
 			compiled: ['compiled'],
-			releases: ['releases/*.v<%= pkg.version %>.zip'],
+			releases: [
+				'releases/*.v<%= pkg.version %>.zip',
+				'releases/latest.zip'
+			],
 			jsdoc: ['docs/jsdocs']
 		},
 		concat: {
@@ -211,6 +214,35 @@ module.exports = function (grunt) {
 				}]
 			}
 		},
+		copy: {
+			latest: {
+				files: [{
+					expand: true,
+					cwd: 'releases/',
+					src: ['footable-bootstrap.v<%= pkg.version %>.zip'],
+					dest: 'releases/',
+					rename: function(dest, src){
+						return dest + src.replace('v'+grunt.config('pkg.version'), 'latest');
+					}
+				},{
+					expand: true,
+					cwd: 'releases/',
+					src: ['footable-components.v<%= pkg.version %>.zip'],
+					dest: 'releases/',
+					rename: function(dest, src){
+						return dest + src.replace('v'+grunt.config('pkg.version'), 'latest');
+					}
+				},{
+					expand: true,
+					cwd: 'releases/',
+					src: ['footable-standalone.v<%= pkg.version %>.zip'],
+					dest: 'releases/',
+					rename: function(dest, src){
+						return dest + src.replace('v'+grunt.config('pkg.version'), 'latest');
+					}
+				}]
+			}
+		},
 		jsdoc: {
 			dist: {
 				src: ['src/js/**/*.js'],
@@ -228,8 +260,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-jsdoc');
 	grunt.registerTask('default', ['clean:compiled', 'concat', 'uglify', 'cssmin']);
-	grunt.registerTask('package', ['default', 'clean:releases', 'compress']);
+	grunt.registerTask('package', ['default', 'clean:releases', 'compress', 'copy']);
 	grunt.registerTask('jsdocs', ['clean:jsdoc','jsdoc']);
 };

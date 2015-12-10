@@ -82,7 +82,7 @@
 			 * @protected
 			 * @type {Array.<string>}
 			 */
-			this.classes = F.is.jq(this.$el) && this.$el.attr('class') ? this.$el.attr('class').split(/\S+/g) : (F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.split(/\S+/g) : []));
+			this.classes = F.is.jq(this.$el) && this.$el.attr('class') ? this.$el.attr('class').match(/\S+/g) : (F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []));
 			/**
 			 * The inline styles for the row.
 			 * @instance
@@ -171,7 +171,7 @@
 			}, hasOptions ? data.options : {});
 
 			this.expanded = this.o.expanded;
-			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.split(/\S+/g) : []);
+			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
 			this.value = isObj ? (hasOptions ? data.value : data) : null;
 
