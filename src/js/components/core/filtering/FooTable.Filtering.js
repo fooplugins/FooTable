@@ -416,6 +416,7 @@
 
 			// if alphanumeric characters or specific control characters
 			if(alpha || ctrl) {
+				if (e.which == 13) e.preventDefault();
 				if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 				self._filterTimeout = setTimeout(function(){
 					self._filterTimeout = null;
