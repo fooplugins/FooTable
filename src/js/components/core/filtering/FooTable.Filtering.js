@@ -243,7 +243,7 @@
 
 			if (self.delay > 0){
 				self.$input.on('keypress keyup', { self: self }, self._onSearchInputChanged);
-				self.$dropdown.on('click', 'input[type="checkbox"]', self._onSearchColumnClicked);
+				self.$dropdown.on('click', 'input[type="checkbox"]', {self: self}, self._onSearchColumnClicked);
 			}
 
 			$input_grp_btn.append(self.$button, $dropdown_toggle, self.$dropdown);
