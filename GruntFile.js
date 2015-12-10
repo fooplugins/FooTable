@@ -13,6 +13,16 @@ module.exports = function (grunt) {
 			jsdoc: ['docs/jsdocs']
 		},
 		concat: {
+			options: {
+				stripBanners: true,
+				banner: '/*\n' +
+				'* <%= pkg.title %> - <%= pkg.description %>\n' +
+				'* @version <%= pkg.version %>\n' +
+				'* @link <%= pkg.homepage %>\n' +
+				'* @copyright Steven Usher & Brad Vincent 2015\n' +
+				'* @license Released under the GPLv3 license.\n' +
+				'*/\n'
+			},
 			core_js: {
 				src: [
 					"src/js/FooTable.js",
@@ -107,10 +117,14 @@ module.exports = function (grunt) {
 		uglify: {
 			prod: {
 				options: {
-					preserveComments: 'some',
-					mangle: {
-						except: [ "undefined" ]
-					}
+					preserveComments: false,
+					banner: '/*\n' +
+					'* <%= pkg.title %> - <%= pkg.description %>\n' +
+					'* @version <%= pkg.version %>\n' +
+					'* @link <%= pkg.homepage %>\n' +
+					'* @copyright Steven Usher & Brad Vincent 2015\n' +
+					'* @license Released under the GPLv3 license.\n' +
+					'*/\n'
 				},
 				files: {
 					'compiled/footable.min.js': [ "compiled/footable.js" ],
@@ -123,6 +137,9 @@ module.exports = function (grunt) {
 		},
 		cssmin: {
 			minify: {
+				options: {
+					keepSpecialComments: 1
+				},
 				files: {
 					'compiled/footable.standalone.min.css': [ "compiled/footable.standalone.css" ],
 					'compiled/footable.bootstrap.min.css': [ "compiled/footable.bootstrap.css" ],

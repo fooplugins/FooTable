@@ -1,3 +1,10 @@
+/*
+* FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
+* @version 3.0.5
+* @link http://fooplugins.com
+* @copyright Steven Usher & Brad Vincent 2015
+* @license Released under the GPLv3 license.
+*/
 table.footable,
 table.footable-details {
 	position: relative;
@@ -102,7 +109,6 @@ table.footable > tbody > tr.footable-detail-row > th {
 	}
 }
 
-/* Glyphicons Icons - We're not actually using Glyphicons classes but instead provide a simple mapping from Glyphicons to FooTable class names. */
 .fooicon {
 	position: relative;
 	top: 1px;

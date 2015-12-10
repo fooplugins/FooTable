@@ -1,9 +1,9 @@
 /*
-	This file replaces Bootstrap for FooTable if you do not want to include it in your site.
-	It is basically a trimmed down version of Bootstrap that includes only what is actually used in FooTable.
-	By doing this we make sure FooTable is compatible with Bootstrap as that is what it is actually built on.
-	The only difference between this and Bootstrap will be the font icons. This contains no font icons and you
-	will need to include either the FooTable.FontAwesome.css file or your own custom icons file in the build.
+* FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
+* @version 3.0.5
+* @link http://fooplugins.com
+* @copyright Steven Usher & Brad Vincent 2015
+* @license Released under the GPLv3 license.
 */
 /* globals - instead we house them under the .footable.table class as the root of FooTable is always the table itself. */
 .footable.table, .footable.table *,
@@ -569,7 +569,6 @@ table.footable > tbody > tr.footable-detail-row > th {
 	}
 }
 
-/* FontAwesome Icons - We're not actually using FontAwesome classes but instead provide a simple mapping from FontAwesome to FooTable class names. */
 .fooicon {
 	display: inline-block;
 	font: normal normal normal 14px/1 FontAwesome;
