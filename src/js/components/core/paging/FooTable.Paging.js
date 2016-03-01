@@ -233,6 +233,8 @@
 				},
 				position;
 
+			if (!multiple) return;
+
 			switch (self.position){
 				case 'left': position = 'footable-paging-left'; break;
 				case 'right': position = 'footable-paging-right'; break;
@@ -240,16 +242,15 @@
 			}
 			self.ft.$el.addClass('footable-paging').addClass(position);
 			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan);
-			self.$row = $('<tr/>', { 'class': 'footable-paging' }).append(self.$cell).appendTo(self.ft.$el.children('tfoot'));
+			var $tfoot = self.ft.$el.children('tfoot');
+			if ($tfoot.length == 0){
+				$tfoot = $('<tfoot/>');
+				self.ft.$el.append($tfoot);
+			}
+			self.$row = $('<tr/>', { 'class': 'footable-paging' }).append(self.$cell).appendTo($tfoot);
 			self.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: self }, self._onPageClicked);
 			self.$count = $('<span/>', { 'class': 'label label-default' });
 
-			if (self.total == 0 || self.total == 1){
-				self.$pagination.empty();
-				self.$count.text(self.total + ' of ' + self.total);
-				self._total = self.total;
-				return;
-			}
 			self.$pagination.empty();
 			if (multiple) {
 				self.$pagination.append(link('first', self.strings.first, 'footable-page-nav'));
@@ -343,6 +344,22 @@
 			var page = this.$pagination.children('li.footable-page.visible:last').data('page') + 1;
 			this._setVisible(page, false);
 			this._setNavigation(false);
+		},
+		/**
+		 * Gets or sets the current page size
+		 * @instance
+		 * @param {number} [value] - The new page size to use.
+		 * @returns {(number|undefined)}
+		 */
+		pageSize: function(value){
+			if (!F.is.number(value)){
+				return this.size;
+			}
+			this.size = value;
+			this.total = Math.ceil(this.ft.rows.all.length / this.size);
+			if (F.is.jq(this.$row)) this.$row.remove();
+			this.$create();
+			this.ft.draw();
 		},
 
 		/* PRIVATE */
