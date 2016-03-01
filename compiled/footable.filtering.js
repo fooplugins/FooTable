@@ -1,3 +1,10 @@
+/*
+* FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
+* @version 3.0.6
+* @link http://fooplugins.com
+* @copyright Steven Usher & Brad Vincent 2015
+* @license Released under the GPLv3 license.
+*/
 (function(F){
 	F.Filter = F.Class.extend(/** @lends FooTable.Filter */{
 		/**
@@ -8,9 +15,10 @@
 		 * @param {string} query - The query for the filter.
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space){
+		construct: function(name, query, columns, space, connectors){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -24,11 +32,17 @@
 			 */
 			this.space = F.is.string(space) && (space == 'OR' || space == 'AND') ? space : 'AND';
 			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = F.is.boolean(connectors) ? connectors : true;
+			/**
 			 * The query for the filter.
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space);
+			this.query = new F.Query(query, this.space, this.connectors);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -46,7 +60,7 @@
 		match: function(str){
 			if (!F.is.string(str)) return false;
 			if (F.is.string(this.query)){
-				this.query = new F.Query(this.query, this.space);
+				this.query = new F.Query(this.query, this.space, this.connectors);
 			}
 			return this.query instanceof F.Query ? this.query.match(str) : false;
 		},
@@ -103,6 +117,12 @@
 			 * @type {string}
 			 */
 			this.space = table.o.filtering.space;
+			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = table.o.filtering.connectors;
 			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
@@ -186,23 +206,27 @@
 				if (!self.enabled) return;
 
 				self.space = F.is.string(data.filterSpace)
-					? data.filteringSpace
+					? data.filterSpace
 					: self.space;
 
 				self.min = F.is.number(data.filterMin)
-					? data.filteringMin
+					? data.filterMin
 					: self.min;
 
+				self.connectors = F.is.number(data.filterConnectors)
+					? data.filterConnectors
+					: self.connectors;
+
 				self.delay = F.is.number(data.filterDelay)
-					? data.filteringDelay
+					? data.filterDelay
 					: self.delay;
 
 				self.placeholder = F.is.number(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
 
-				self.filters = F.is.array(data.filters)
-					? self.ensure(data.filters)
+				self.filters = F.is.array(data.filterFilters)
+					? self.ensure(data.filterFilters)
 					: self.ensure(self.filters);
 
 				if (self.ft.$el.hasClass('footable-filtering-left'))
@@ -430,7 +454,7 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space));
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors));
 					}
 				});
 			}
@@ -564,9 +588,10 @@
 		 * @extends FooTable.Class
 		 * @param {string} query - The string value of the query.
 		 * @param {string} [space="AND"] - How the query treats whitespace.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @returns {FooTable.Query}
 		 */
-		construct: function(query, space){
+		construct: function(query, space, connectors){
 			/* PRIVATE */
 			/**
 			 * Holds the previous value of the query and is used internally in the {@link FooTable.Query#val} method.
@@ -586,6 +611,12 @@
 			 * @type {string}
 			 */
 			this.space = F.is.string(space) && (space == 'OR' || space == 'AND') ? space : 'AND';
+			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = F.is.boolean(connectors) ? connectors : true;
 			/**
 			 * The left side of the query if one exists. OR takes precedence over AND.
 			 * @type {FooTable.Query}
@@ -704,17 +735,20 @@
 				// we have an OR so split the value on the first occurrence of OR to get the left and right sides of the statement
 				this.operator = 'OR';
 				var or = this._value.split(/(?:\sOR\s)(.*)?/);
-				this.left = new F.Query(or[0], this.space);
-				this.right = new F.Query(or[1], this.space);
+				this.left = new F.Query(or[0], this.space, this.connectors);
+				this.right = new F.Query(or[1], this.space, this.connectors);
 			} else if (/\sAND\s/.test(this._value)) {
 				// there are no more OR's so start with AND
 				this.operator = 'AND';
 				var and = this._value.split(/(?:\sAND\s)(.*)?/);
-				this.left = new F.Query(and[0], this.space);
-				this.right = new F.Query(and[1], this.space);
+				this.left = new F.Query(and[0], this.space, this.connectors);
+				this.right = new F.Query(and[1], this.space, this.connectors);
 			} else {
 				// we have no more statements to parse so set the parts array by parsing each part of the remaining query
-				this.parts = F.arr.map(this._value.match(/(?:[^\s"]+|"[^"]*")+/g), this._part);
+				var self = this;
+				this.parts = F.arr.map(this._value.match(/(?:[^\s"]+|"[^"]*")+/g), function(str){
+					return self._part(str);
+				});
 			}
 		},
 		/**
@@ -740,7 +774,7 @@
 				p.query = p.query.replace(/^"(.*?)"$/, '$1');
 				p.phrase = true;
 				p.exact = true;
-			} else if (/(?:\w)+?([-_\+\.])(?:\w)+?/.test(p.query)) { // otherwise replace supported phrase connectors (-_+.) with spaces
+			} else if (this.connectors && /(?:\w)+?([-_\+\.])(?:\w)+?/.test(p.query)) { // otherwise replace supported phrase connectors (-_+.) with spaces
 				p.query = p.query.replace(/(?:\w)+?([-_\+\.])(?:\w)+?/g, function(match, p1){
 					return match.replace(p1, ' ');
 				});
@@ -834,6 +868,7 @@
 	 * @prop {string} space="AND" - Specifies how whitespace in a filter query is handled.
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
+	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -842,7 +877,8 @@
 		min: 3,
 		space: 'AND',
 		placeholder: 'Search',
-		position: 'right'
+		position: 'right',
+		connectors: true
 	};
 })(FooTable);
 (function(F){

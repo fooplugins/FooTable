@@ -8,9 +8,10 @@
 		 * @param {string} query - The query for the filter.
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space){
+		construct: function(name, query, columns, space, connectors){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -24,11 +25,17 @@
 			 */
 			this.space = F.is.string(space) && (space == 'OR' || space == 'AND') ? space : 'AND';
 			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = F.is.boolean(connectors) ? connectors : true;
+			/**
 			 * The query for the filter.
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space);
+			this.query = new F.Query(query, this.space, this.connectors);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -46,7 +53,7 @@
 		match: function(str){
 			if (!F.is.string(str)) return false;
 			if (F.is.string(this.query)){
-				this.query = new F.Query(this.query, this.space);
+				this.query = new F.Query(this.query, this.space, this.connectors);
 			}
 			return this.query instanceof F.Query ? this.query.match(str) : false;
 		},

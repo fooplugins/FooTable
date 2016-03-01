@@ -77,4 +77,15 @@
 	F.Table.prototype.prevPages = function(){
 		return this.use(F.Paging).prevPages();
 	};
+
+	/**
+	 * Gets or sets the current page size
+	 * @instance
+	 * @param {number} [value] - The new page size to use.
+	 * @returns {(number|undefined)}
+	 * @see FooTable.Paging#pageSize
+	 */
+	F.Table.prototype.pageSize = function(value){
+		return this.use(F.Paging).pageSize(value);
+	};
 })(FooTable);

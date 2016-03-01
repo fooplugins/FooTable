@@ -1,8 +1,11 @@
 /* FontAwesome Icons - We're not actually using FontAwesome classes but instead provide a simple mapping from FontAwesome to FooTable class names. */
 .fooicon {
 	display: inline-block;
-	font: normal normal normal 14px/1 FontAwesome;
 	font-size: inherit;
+	font-family: FontAwesome !important;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
 	text-rendering: auto;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;

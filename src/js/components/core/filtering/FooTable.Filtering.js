@@ -37,6 +37,12 @@
 			 */
 			this.space = table.o.filtering.space;
 			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = table.o.filtering.connectors;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
@@ -119,23 +125,27 @@
 				if (!self.enabled) return;
 
 				self.space = F.is.string(data.filterSpace)
-					? data.filteringSpace
+					? data.filterSpace
 					: self.space;
 
 				self.min = F.is.number(data.filterMin)
-					? data.filteringMin
+					? data.filterMin
 					: self.min;
 
+				self.connectors = F.is.number(data.filterConnectors)
+					? data.filterConnectors
+					: self.connectors;
+
 				self.delay = F.is.number(data.filterDelay)
-					? data.filteringDelay
+					? data.filterDelay
 					: self.delay;
 
 				self.placeholder = F.is.number(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
 
-				self.filters = F.is.array(data.filters)
-					? self.ensure(data.filters)
+				self.filters = F.is.array(data.filterFilters)
+					? self.ensure(data.filterFilters)
 					: self.ensure(self.filters);
 
 				if (self.ft.$el.hasClass('footable-filtering-left'))
@@ -363,7 +373,7 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space));
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors));
 					}
 				});
 			}

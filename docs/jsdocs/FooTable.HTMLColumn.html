@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: NumberColumn</title>
+    <title>JSDoc: Class: HTMLColumn</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: NumberColumn</h1>
+    <h1 class="page-title">Class: HTMLColumn</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="FooTable.html">FooTable</a>.</span>NumberColumn</h2>
+            <span class="ancestors"><a href="FooTable.html">FooTable</a>.</span>HTMLColumn</h2>
         
     
 </header>
@@ -41,14 +41,14 @@
 
     
 
-    <h4 class="name" id="NumberColumn"><span class="type-signature"></span>new NumberColumn<span class="signature">(instance, definition)</span><span class="type-signature"> &rarr; {<a href="FooTable.NumberColumn.html">FooTable.NumberColumn</a>}</span></h4>
+    <h4 class="name" id="HTMLColumn"><span class="type-signature"></span>new HTMLColumn<span class="signature">(instance, definition)</span><span class="type-signature"> &rarr; {<a href="FooTable.HTMLColumn.html">FooTable.HTMLColumn</a>}</span></h4>
 
     
 
 
 
 <div class="description">
-    The number column class is used to handle simple number columns.
+    The HTML column class is used to handle any raw HTML columns.
 </div>
 
 
@@ -193,7 +193,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="FooTable.NumberColumn.html">FooTable.NumberColumn</a></span>
+<span class="param-type"><a href="FooTable.HTMLColumn.html">FooTable.HTMLColumn</a></span>
 
 
     </dd>
@@ -1436,7 +1436,7 @@
 
 
 <div class="description">
-    This is supplied the value retrieved from the <code>FooTable.NumberColumn#parse</code> function and must return a string, HTMLElement or jQuery object.The return value from this function is what is displayed in the cell in the table.
+    This is supplied the value retrieved from the <code>FooTable.Column#parse</code> function and must return a string, HTMLElement or jQuery object.The return value from this function is what is displayed in the cell in the table.
 </div>
 
 
@@ -1446,7 +1446,7 @@
 
 
     <h5>This:</h5>
-    <ul><li><a href="FooTable.NumberColumn.html">FooTable.NumberColumn</a></li></ul>
+    <ul><li><a href="FooTable.Column.html">FooTable.Column</a></li></ul>
 
 
 
@@ -1481,7 +1481,7 @@
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
@@ -1510,12 +1510,12 @@
     
 
     
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
         <a href="FooTable.Column.html#formatter">FooTable.Column#formatter</a>
     </li></ul></dd>
+    
+
     
 
     
@@ -1594,7 +1594,7 @@
 
 
 <div class="description">
-    This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the <a href="FooTable.Column.html#formatter"><code>FooTable.Column#formatter</code></a> functionto generate the cell contents.
+    This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the <code>FooTable.HTMLColumn#format</code> functionto generate the cell contents.
 </div>
 
 
@@ -1604,7 +1604,7 @@
 
 
     <h5>This:</h5>
-    <ul><li><a href="FooTable.NumberColumn.html">FooTable.NumberColumn</a></li></ul>
+    <ul><li><a href="FooTable.HTMLColumn.html">FooTable.HTMLColumn</a></li></ul>
 
 
 
