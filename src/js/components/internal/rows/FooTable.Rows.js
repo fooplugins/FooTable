@@ -73,16 +73,6 @@
 			var self = this;
 			return $.Deferred(function(d){
 				var $rows = self.ft.$el.children('tbody').children('tr');
-				function complete(rows){
-					var result = $.map(rows, function(r){
-						return new F.Row(self.ft, self.ft.columns.array, r);
-					});
-					if (F.is.emptyArray(result)){
-						d.reject(Error("No rows supplied."));
-					} else {
-						d.resolve(result);
-					}
-				}
 				if (F.is.jq($rows)){
 					self.parseFinalize(d, $rows);
 					$rows.detach();
