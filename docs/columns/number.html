@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Number columns - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../css/docs.css" rel="stylesheet">
+
+	<script src="../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="docs">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a class="active">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../components/filtering.html">Filtering</a></li>
+						<li><a href="../components/paging.html">Paging</a></li>
+						<li><a href="../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+				<li><a href="../licensing.html">Licensing</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>Number Columns</h1>
+		<h2>Options, how to use, and basic examples for number columns.</h2>
+	</div>
+</div>
+
+<div class="container">
+
+	<p class="lead">
+		When specifying a number column the default decimal separator is a period (.) and the default thousand separator is a comma (,). You can change these values using
+		the options specified below.
+	</p>
+
+	<!-- Options -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="options" class="anchor">&nbsp;</span>Options</h1>
+		<p class="lead">Apart from the default <a href="../getting-started.html#column">column options</a> using the number type allows you to use the below additional options.</p>
+
+		<div class="list-group list-group-detailed">
+			<h3 class="list-group-header">Column options</h3>
+
+			<!-- decimalSeparator -->
+			<a href="#decimalSeparator" class="list-group-item anchored">
+				<span id="decimalSeparator" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">decimalSeparator <small>string</small></h4>
+				<p class="list-group-item-text">The decimal separator used when parsing or displaying number values from cells (<code>td</code>'s).</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"."</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;number&quot; data-decimal-separator=&quot;.&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;type&quot;: &quot;number&quot;,
+			&quot;decimalSeparator&quot;: &quot;.&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- thousandSeparator -->
+			<a href="#thousandSeparator" class="list-group-item anchored">
+				<span id="thousandSeparator" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">thousandSeparator <small>string</small></h4>
+				<p class="list-group-item-text">The thousand separator used when parsing or displaying number values from cells (<code>td</code>'s).</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>","</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;number&quot; data-thousand-separator=&quot;,&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;type&quot;: &quot;number&quot;,
+			&quot;thousandSeparator&quot;: &quot;,&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+<script src="../js/docs.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+	});
+</script>
+</body>
+</html>
