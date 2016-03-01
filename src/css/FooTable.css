@@ -74,6 +74,8 @@ table.footable > tbody > tr > td,
 table.footable > tbody > tr > th {
 	display: none;
 }
+table.footable > tbody > tr.footable-empty > td,
+table.footable > tbody > tr.footable-empty > th,
 table.footable > tbody > tr.footable-detail-row > td,
 table.footable > tbody > tr.footable-detail-row > th {
 	display: table-cell;

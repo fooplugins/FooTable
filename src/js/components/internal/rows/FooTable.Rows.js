@@ -101,11 +101,7 @@
 			var self = this, result = $.map(rows, function(r){
 				return new F.Row(self.ft, self.ft.columns.array, r);
 			});
-			if (F.is.emptyArray(result)){
-				deferred.reject(Error("No rows supplied."));
-			} else {
-				deferred.resolve(result);
-			}
+			deferred.resolve(result);
 		},
 		/**
 		 * The columns preinit method is used to parse and check the column options supplied from both static content and through the constructor.
