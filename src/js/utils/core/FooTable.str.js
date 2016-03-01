@@ -90,4 +90,13 @@
 		return prefix + Math.random().toString(36).substr(2, 9);
 	};
 
+	/**
+	 * Escapes a string for use in a regular expression.
+	 * @param {string} str - The string to escape.
+	 * @returns {string}
+	 */
+	F.str.escapeRegExp = function(str){
+		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	};
+
 })(FooTable);
