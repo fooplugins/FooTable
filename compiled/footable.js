@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.5
+* @version 3.0.6
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -529,6 +529,14 @@
 		return F.is.string(value) ? value.length === 0 : true;
 	};
 
+	/**
+	 * Whether or not we are on a mobile device.
+	 */
+	F.is.mobile = (function(a){
+		return (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)
+		||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)));
+	})(navigator.userAgent||navigator.vendor||window.opera);
+
 })(FooTable);
 (function (F) {
 	/**
@@ -620,6 +628,15 @@
 	F.str.random = function(prefix){
 		prefix = F.is.emptyString(prefix) ? '' : prefix;
 		return prefix + Math.random().toString(36).substr(2, 9);
+	};
+
+	/**
+	 * Escapes a string for use in a regular expression.
+	 * @param {string} str - The string to escape.
+	 * @returns {string}
+	 */
+	F.str.escapeRegExp = function(str){
+		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	};
 
 })(FooTable);
@@ -2231,9 +2248,14 @@
 		 */
 		construct: function(instance, definition){
 			this._super(instance, definition, 'number');
+			this.decimalSeparator = F.is.string(definition.decimalSeparator) ? definition.decimalSeparator : '.';
+			this.thousandSeparator = F.is.string(definition.thousandSeparator) ? definition.thousandSeparator : '.';
+			this.decimalSeparatorRegex = new RegExp(F.str.escapeRegExp(this.decimalSeparator), 'g');
+			this.thousandSeparatorRegex = new RegExp(F.str.escapeRegExp(this.thousandSeparator), 'g');
+			this.cleanRegex = new RegExp('[^0-9' + F.str.escapeRegExp(this.decimalSeparator) + ']', 'g');
 		},
 		/**
-		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.DateColumn#format} function
+		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.Column#formatter} function
 		 * to generate the cell contents.
 		 * @instance
 		 * @protected
@@ -2243,11 +2265,31 @@
 		 */
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text().replace(/[^0-9.\-]/g, '');
+				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text().replace(this.cleanRegex, '');
 			}
-			if (F.is.string(valueOrElement)) valueOrElement = parseFloat(valueOrElement);
+			if (F.is.string(valueOrElement)){
+				valueOrElement = valueOrElement.replace(this.thousandSeparatorRegex, '').replace(this.decimalSeparatorRegex, '.');
+				valueOrElement = parseFloat(valueOrElement);
+			}
 			if (F.is.number(valueOrElement)) return valueOrElement;
 			return null;
+		},
+		/**
+		 * This is supplied the value retrieved from the {@link FooTable.NumberColumn#parse} function and must return a string, HTMLElement or jQuery object.
+		 * The return value from this function is what is displayed in the cell in the table.
+		 * @instance
+		 * @protected
+		 * @param {number} value - The value to format.
+		 * @returns {(string|HTMLElement|jQuery)}
+		 * @this FooTable.NumberColumn
+		 */
+		formatter: function(value){
+			if (value == null) return '';
+			var s = (value + '').split('.');
+			if (s.length == 2 && s[0].length > 3) {
+				s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, this.thousandSeparator);
+			}
+			return s.join(this.decimalSeparator);
 		}
 	});
 
@@ -2595,8 +2637,8 @@
 		 * @returns {number}
 		 */
 		getViewportWidth: function(){
-			var ratio = F.is.defined(window.devicePixelRatio) ? window.devicePixelRatio : 1;
-			return (window.innerWidth || (document.body ? document.body.offsetWidth : 0)) / ratio;
+			var ratio = F.is.defined(window.devicePixelRatio) && F.is.mobile ? window.devicePixelRatio : 1;
+			return Math.max(document.documentElement.clientWidth, window.innerWidth, 0) / ratio;
 		}
 	});
 
@@ -3047,16 +3089,6 @@
 			var self = this;
 			return $.Deferred(function(d){
 				var $rows = self.ft.$el.children('tbody').children('tr');
-				function complete(rows){
-					var result = $.map(rows, function(r){
-						return new F.Row(self.ft, self.ft.columns.array, r);
-					});
-					if (F.is.emptyArray(result)){
-						d.reject(Error("No rows supplied."));
-					} else {
-						d.resolve(result);
-					}
-				}
 				if (F.is.jq($rows)){
 					self.parseFinalize(d, $rows);
 					$rows.detach();
@@ -3085,11 +3117,7 @@
 			var self = this, result = $.map(rows, function(r){
 				return new F.Row(self.ft, self.ft.columns.array, r);
 			});
-			if (F.is.emptyArray(result)){
-				deferred.reject(Error("No rows supplied."));
-			} else {
-				deferred.resolve(result);
-			}
+			deferred.resolve(result);
 		},
 		/**
 		 * The columns preinit method is used to parse and check the column options supplied from both static content and through the constructor.
@@ -3228,9 +3256,10 @@
 		 * @param {string} query - The query for the filter.
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space){
+		construct: function(name, query, columns, space, connectors){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -3244,11 +3273,17 @@
 			 */
 			this.space = F.is.string(space) && (space == 'OR' || space == 'AND') ? space : 'AND';
 			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = F.is.boolean(connectors) ? connectors : true;
+			/**
 			 * The query for the filter.
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space);
+			this.query = new F.Query(query, this.space, this.connectors);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -3266,7 +3301,7 @@
 		match: function(str){
 			if (!F.is.string(str)) return false;
 			if (F.is.string(this.query)){
-				this.query = new F.Query(this.query, this.space);
+				this.query = new F.Query(this.query, this.space, this.connectors);
 			}
 			return this.query instanceof F.Query ? this.query.match(str) : false;
 		},
@@ -3323,6 +3358,12 @@
 			 * @type {string}
 			 */
 			this.space = table.o.filtering.space;
+			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = table.o.filtering.connectors;
 			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
@@ -3406,23 +3447,27 @@
 				if (!self.enabled) return;
 
 				self.space = F.is.string(data.filterSpace)
-					? data.filteringSpace
+					? data.filterSpace
 					: self.space;
 
 				self.min = F.is.number(data.filterMin)
-					? data.filteringMin
+					? data.filterMin
 					: self.min;
 
+				self.connectors = F.is.number(data.filterConnectors)
+					? data.filterConnectors
+					: self.connectors;
+
 				self.delay = F.is.number(data.filterDelay)
-					? data.filteringDelay
+					? data.filterDelay
 					: self.delay;
 
 				self.placeholder = F.is.number(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
 
-				self.filters = F.is.array(data.filters)
-					? self.ensure(data.filters)
+				self.filters = F.is.array(data.filterFilters)
+					? self.ensure(data.filterFilters)
 					: self.ensure(self.filters);
 
 				if (self.ft.$el.hasClass('footable-filtering-left'))
@@ -3650,7 +3695,7 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space));
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors));
 					}
 				});
 			}
@@ -3784,9 +3829,10 @@
 		 * @extends FooTable.Class
 		 * @param {string} query - The string value of the query.
 		 * @param {string} [space="AND"] - How the query treats whitespace.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @returns {FooTable.Query}
 		 */
-		construct: function(query, space){
+		construct: function(query, space, connectors){
 			/* PRIVATE */
 			/**
 			 * Holds the previous value of the query and is used internally in the {@link FooTable.Query#val} method.
@@ -3806,6 +3852,12 @@
 			 * @type {string}
 			 */
 			this.space = F.is.string(space) && (space == 'OR' || space == 'AND') ? space : 'AND';
+			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = F.is.boolean(connectors) ? connectors : true;
 			/**
 			 * The left side of the query if one exists. OR takes precedence over AND.
 			 * @type {FooTable.Query}
@@ -3924,17 +3976,20 @@
 				// we have an OR so split the value on the first occurrence of OR to get the left and right sides of the statement
 				this.operator = 'OR';
 				var or = this._value.split(/(?:\sOR\s)(.*)?/);
-				this.left = new F.Query(or[0], this.space);
-				this.right = new F.Query(or[1], this.space);
+				this.left = new F.Query(or[0], this.space, this.connectors);
+				this.right = new F.Query(or[1], this.space, this.connectors);
 			} else if (/\sAND\s/.test(this._value)) {
 				// there are no more OR's so start with AND
 				this.operator = 'AND';
 				var and = this._value.split(/(?:\sAND\s)(.*)?/);
-				this.left = new F.Query(and[0], this.space);
-				this.right = new F.Query(and[1], this.space);
+				this.left = new F.Query(and[0], this.space, this.connectors);
+				this.right = new F.Query(and[1], this.space, this.connectors);
 			} else {
 				// we have no more statements to parse so set the parts array by parsing each part of the remaining query
-				this.parts = F.arr.map(this._value.match(/(?:[^\s"]+|"[^"]*")+/g), this._part);
+				var self = this;
+				this.parts = F.arr.map(this._value.match(/(?:[^\s"]+|"[^"]*")+/g), function(str){
+					return self._part(str);
+				});
 			}
 		},
 		/**
@@ -3960,7 +4015,7 @@
 				p.query = p.query.replace(/^"(.*?)"$/, '$1');
 				p.phrase = true;
 				p.exact = true;
-			} else if (/(?:\w)+?([-_\+\.])(?:\w)+?/.test(p.query)) { // otherwise replace supported phrase connectors (-_+.) with spaces
+			} else if (this.connectors && /(?:\w)+?([-_\+\.])(?:\w)+?/.test(p.query)) { // otherwise replace supported phrase connectors (-_+.) with spaces
 				p.query = p.query.replace(/(?:\w)+?([-_\+\.])(?:\w)+?/g, function(match, p1){
 					return match.replace(p1, ' ');
 				});
@@ -4054,6 +4109,7 @@
 	 * @prop {string} space="AND" - Specifies how whitespace in a filter query is handled.
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
+	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -4062,7 +4118,8 @@
 		min: 3,
 		space: 'AND',
 		placeholder: 'Search',
-		position: 'right'
+		position: 'right',
+		connectors: true
 	};
 })(FooTable);
 (function(F){
@@ -4814,6 +4871,8 @@
 				},
 				position;
 
+			if (!multiple) return;
+
 			switch (self.position){
 				case 'left': position = 'footable-paging-left'; break;
 				case 'right': position = 'footable-paging-right'; break;
@@ -4821,16 +4880,15 @@
 			}
 			self.ft.$el.addClass('footable-paging').addClass(position);
 			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan);
-			self.$row = $('<tr/>', { 'class': 'footable-paging' }).append(self.$cell).appendTo(self.ft.$el.children('tfoot'));
+			var $tfoot = self.ft.$el.children('tfoot');
+			if ($tfoot.length == 0){
+				$tfoot = $('<tfoot/>');
+				self.ft.$el.append($tfoot);
+			}
+			self.$row = $('<tr/>', { 'class': 'footable-paging' }).append(self.$cell).appendTo($tfoot);
 			self.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: self }, self._onPageClicked);
 			self.$count = $('<span/>', { 'class': 'label label-default' });
 
-			if (self.total == 0 || self.total == 1){
-				self.$pagination.empty();
-				self.$count.text(self.total + ' of ' + self.total);
-				self._total = self.total;
-				return;
-			}
 			self.$pagination.empty();
 			if (multiple) {
 				self.$pagination.append(link('first', self.strings.first, 'footable-page-nav'));
@@ -4924,6 +4982,22 @@
 			var page = this.$pagination.children('li.footable-page.visible:last').data('page') + 1;
 			this._setVisible(page, false);
 			this._setNavigation(false);
+		},
+		/**
+		 * Gets or sets the current page size
+		 * @instance
+		 * @param {number} [value] - The new page size to use.
+		 * @returns {(number|undefined)}
+		 */
+		pageSize: function(value){
+			if (!F.is.number(value)){
+				return this.size;
+			}
+			this.size = value;
+			this.total = Math.ceil(this.ft.rows.all.length / this.size);
+			if (F.is.jq(this.$row)) this.$row.remove();
+			this.$create();
+			this.ft.draw();
 		},
 
 		/* PRIVATE */
@@ -5208,5 +5282,16 @@
 	 */
 	F.Table.prototype.prevPages = function(){
 		return this.use(F.Paging).prevPages();
+	};
+
+	/**
+	 * Gets or sets the current page size
+	 * @instance
+	 * @param {number} [value] - The new page size to use.
+	 * @returns {(number|undefined)}
+	 * @see FooTable.Paging#pageSize
+	 */
+	F.Table.prototype.pageSize = function(value){
+		return this.use(F.Paging).pageSize(value);
 	};
 })(FooTable);
