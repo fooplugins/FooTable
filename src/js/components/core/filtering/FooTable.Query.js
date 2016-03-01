@@ -6,9 +6,10 @@
 		 * @extends FooTable.Class
 		 * @param {string} query - The string value of the query.
 		 * @param {string} [space="AND"] - How the query treats whitespace.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @returns {FooTable.Query}
 		 */
-		construct: function(query, space){
+		construct: function(query, space, connectors){
 			/* PRIVATE */
 			/**
 			 * Holds the previous value of the query and is used internally in the {@link FooTable.Query#val} method.
@@ -28,6 +29,12 @@
 			 * @type {string}
 			 */
 			this.space = F.is.string(space) && (space == 'OR' || space == 'AND') ? space : 'AND';
+			/**
+			 * Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.connectors = F.is.boolean(connectors) ? connectors : true;
 			/**
 			 * The left side of the query if one exists. OR takes precedence over AND.
 			 * @type {FooTable.Query}
@@ -146,17 +153,20 @@
 				// we have an OR so split the value on the first occurrence of OR to get the left and right sides of the statement
 				this.operator = 'OR';
 				var or = this._value.split(/(?:\sOR\s)(.*)?/);
-				this.left = new F.Query(or[0], this.space);
-				this.right = new F.Query(or[1], this.space);
+				this.left = new F.Query(or[0], this.space, this.connectors);
+				this.right = new F.Query(or[1], this.space, this.connectors);
 			} else if (/\sAND\s/.test(this._value)) {
 				// there are no more OR's so start with AND
 				this.operator = 'AND';
 				var and = this._value.split(/(?:\sAND\s)(.*)?/);
-				this.left = new F.Query(and[0], this.space);
-				this.right = new F.Query(and[1], this.space);
+				this.left = new F.Query(and[0], this.space, this.connectors);
+				this.right = new F.Query(and[1], this.space, this.connectors);
 			} else {
 				// we have no more statements to parse so set the parts array by parsing each part of the remaining query
-				this.parts = F.arr.map(this._value.match(/(?:[^\s"]+|"[^"]*")+/g), this._part);
+				var self = this;
+				this.parts = F.arr.map(this._value.match(/(?:[^\s"]+|"[^"]*")+/g), function(str){
+					return self._part(str);
+				});
 			}
 		},
 		/**
@@ -182,7 +192,7 @@
 				p.query = p.query.replace(/^"(.*?)"$/, '$1');
 				p.phrase = true;
 				p.exact = true;
-			} else if (/(?:\w)+?([-_\+\.])(?:\w)+?/.test(p.query)) { // otherwise replace supported phrase connectors (-_+.) with spaces
+			} else if (this.connectors && /(?:\w)+?([-_\+\.])(?:\w)+?/.test(p.query)) { // otherwise replace supported phrase connectors (-_+.) with spaces
 				p.query = p.query.replace(/(?:\w)+?([-_\+\.])(?:\w)+?/g, function(match, p1){
 					return match.replace(p1, ' ');
 				});
