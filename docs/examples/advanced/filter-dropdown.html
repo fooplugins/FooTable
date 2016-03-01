@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Filter dropdown - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>Filter dropdown</h1>
+		<h2>How to create a custom dropdown filter for your table.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+
+		<div class="callout callout-info">
+			<h4>Note</h4>
+			<p>
+				The base table in the example below is a clone of the <a href="../component/showcase.html">showcase example</a> to demonstrate that the dropdown keeps the filter state across
+				various table operations such as filtering, sorting, paging.
+			</p>
+		</div>
+
+		<div class="example">
+			<table id="filter-dropdown-example" class="table" data-paging="true" data-filtering="true" data-sorting="true"></table>
+		</div>
+
+		<h3>Step 1: Inheriting from the base filtering component</h3>
+		<p>
+			All core objects or "classes" in FooTable are derived from the <a href="../../jsdocs/FooTable.Class.html">FooTable.Class</a> object. This object exposes a single
+			method called <code>extend</code> which allows you to create a whole new class from a base class (inherit) or to simply override a single method on an existing class.
+			In this example we will be inheriting the base <a href="../../jsdocs/FooTable.Filtering.html">FooTable.Filtering</a> component, modifying it and then replacing, it
+			with our modified version.
+		</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>FooTable.MyFiltering = FooTable.Filtering.extend({ // inherit the base class
+	construct: function(instance){ // override the default constructor
+		this._super(instance); // call the base constructor
+	}
+});
+
+// replace the existing component with our custom one
+FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</code></pre>
+
+		<h3>Step 2: Add custom properties for the dropdown</h3>
+		<p>
+			To make the code more maintainable going forward and easier to understand we will add some properties to our custom filtering component to hold the available options,
+			the default option, and the jQuery wrapper around our dropdown.
+		</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>FooTable.MyFiltering = FooTable.Filtering.extend({
+	construct: function(instance){
+		this._super(instance);
+		this.statuses = [&#39;Active&#39;,&#39;Disabled&#39;,&#39;Suspended&#39;]; // the options available in the dropdown
+		this.def = &#39;Any Status&#39;; // the default/unselected value for the dropdown (this would clear the filter when selected)
+		this.$status = null; // a placeholder for our jQuery wrapper around the dropdown
+	}
+});</code></pre>
+
+		<h3>Step 3: Create the dropdown and append it to the table</h3>
+		<p>
+			To create the actual dropdown element and append it to the table we will override the <code>$create</code> method and generate our markup as required. The base filtering
+			component exposes the property <code>$form</code> which is the jQuery wrapper for the form that contains the default search input. Using this we can simply create our
+			dropdown and append it as required.
+		</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>$create: function(){
+	this._super(); // call the base $create method, this populates the $form property
+	var self = this, // hold a reference to my self for use later
+		// create the bootstrap form group and append it to the form
+		$form_grp = $(&#39;&lt;div/&gt;&#39;, {&#39;class&#39;: &#39;form-group&#39;})
+			.append($(&#39;&lt;label/&gt;&#39;, {&#39;class&#39;: &#39;sr-only&#39;, text: &#39;Status&#39;}))
+			.prependTo(self.$form);
+
+	// create the select element with the default value and append it to the form group
+	self.$status = $(&#39;&lt;select/&gt;&#39;, { &#39;class&#39;: &#39;form-control&#39; })
+		.on(&#39;change&#39;, function(){
+			self.filter(); // when ever the dropdown value changes trigger the filter operation
+		})
+		.append($(&#39;&lt;option/&gt;&#39;, {text: self.def}))
+		.appendTo($form_grp);
+
+	// add each of the statuses to the dropdown element
+	$.each(self.statuses, function(i, status){
+		self.$status.append($(&#39;&lt;option/&gt;&#39;).text(status));
+	});
+}</code></pre>
+
+		<h3>Step 4: Hooking into the filter operation</h3>
+		<p>
+			At this point we have the dropdown appearing next to the search input and it triggers a filter operation whenever it is changed however we need to hook into the
+			filter operation to actually apply our custom filter. To do this we will override the base filtering components' <code>filter</code> method and use the
+			<code>addFilter</code> and <code>removeFilter</code> methods to implement the status filter.
+		</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>filter: function(query, columns){
+	var val = this.$status.val(); // get the current dropdown value
+	if (val != this.def) this.addFilter(&#39;status&#39;, val, [&#39;status&#39;]); // if it's not the default value add a new filter
+	else this.removeFilter(&#39;status&#39;); // otherwise remove the filter
+	return this._super(query, columns); // call the base filter method
+}</code></pre>
+
+		<h3>Step 5: Hooking into the clear filter operation</h3>
+		<p>
+			So now we have the dropdown, it's applying the filter as required but we also need it to clear itself when we click the [X] button on the search input. To do this
+			we will override the base filtering components' <code>clear</code> method and use the <code>removeFilter</code> method to remove the status filter.
+		</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>clear: function(){
+	this.$status.val(this.def); // reset the dropdown to the default value
+	this.removeFilter(&#39;status&#39;); // remove the filter
+	return this._super(); // call the base clear method
+}</code></pre>
+
+		<h3>Finished!</h3>
+		<p>That's it! We now have a custom filter dropdown that is fully integrated with the rest of the filter functionality. The full code can be seen below.</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>FooTable.MyFiltering = FooTable.Filtering.extend({
+	construct: function(instance){
+		this._super(instance);
+		this.statuses = [&#39;Active&#39;,&#39;Disabled&#39;,&#39;Suspended&#39;];
+		this.def = &#39;Any Status&#39;;
+		this.$status = null;
+	},
+	$create: function(){
+		this._super();
+		var self = this,
+			$form_grp = $(&#39;&lt;div/&gt;&#39;, {&#39;class&#39;: &#39;form-group&#39;})
+				.append($(&#39;&lt;label/&gt;&#39;, {&#39;class&#39;: &#39;sr-only&#39;, text: &#39;Status&#39;}))
+				.prependTo(self.$form);
+
+		self.$status = $(&#39;&lt;select/&gt;&#39;, { &#39;class&#39;: &#39;form-control&#39; })
+			.on(&#39;change&#39;, function(){
+				self.filter();
+			})
+			.append($(&#39;&lt;option/&gt;&#39;, {text: self.def}))
+			.appendTo($form_grp);
+
+		$.each(self.statuses, function(i, status){
+			self.$status.append($(&#39;&lt;option/&gt;&#39;).text(status));
+		});
+	},
+	filter: function(query, columns){
+		var val = this.$status.val();
+		if (val != this.def) this.addFilter(&#39;status&#39;, val, [&#39;status&#39;]);
+		else this.removeFilter(&#39;status&#39;);
+		return this._super(query, columns);
+	},
+	clear: function(){
+		this.$status.val(this.def);
+		this.removeFilter(&#39;status&#39;);
+		return this._super();
+	}
+});
+
+FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</code></pre>
+
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	FooTable.MyFiltering = FooTable.Filtering.extend({
+		construct: function(instance){
+			this._super(instance);
+			this.statuses = ['Active','Disabled','Suspended'];
+			this.def = 'Any Status';
+			this.$status = null;
+		},
+		$create: function(){
+			this._super();
+			var self = this,
+				$form_grp = $('<div/>', {'class': 'form-group'})
+					.append($('<label/>', {'class': 'sr-only', text: 'Status'}))
+					.prependTo(self.$form);
+
+			self.$status = $('<select/>', { 'class': 'form-control' })
+				.on('change', function(){
+					self.filter();
+				})
+				.append($('<option/>', {text: self.def}))
+				.appendTo($form_grp);
+
+			$.each(self.statuses, function(i, status){
+				self.$status.append($('<option/>').text(status));
+			});
+		},
+		filter: function(query, columns){
+			var val = this.$status.val();
+			if (val != this.def) this.addFilter('status', val, ['status']);
+			else this.removeFilter('status');
+			return this._super(query, columns);
+		},
+		clear: function(){
+			this.$status.val(this.def);
+			this.removeFilter('status');
+			return this._super();
+		}
+	});
+
+	FooTable.components.core.register('filtering', FooTable.MyFiltering);
+
+	jQuery(function($){
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		$('#filter-dropdown-example').footable({
+			"columns": $.get("../../content/columns.json"),
+			"rows": $.get("../../content/rows.json")
+		});
+	});
+</script>
+</body>
+</html>
