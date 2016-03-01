@@ -68,7 +68,7 @@
 <div class="jumbotron">
 	<div class="container">
 		<h1>Date Columns</h1>
-		<h2>Options, how to use, and basic examples for dates.</h2>
+		<h2>Options, how to use, and basic examples for date columns.</h2>
 	</div>
 </div>
 
@@ -83,42 +83,54 @@
 		<p>If you need to use the <code>date</code> column type you must include <a href="http://momentjs.com/" target="_blank">moment.js</a> in your page.</p>
 	</div>
 
+	<!-- Options -->
 	<div class="docs-section">
-		<h1 id="options" class="page-header">Options</h1>
-		<p class="lead">Apart from the default <a href="../options.html#column">column options</a> using the date type allows you to use the below additional options.</p>
-		<div class="docs-option">
-			<h2 id="formatString">formatString</h2>
-			<p>This option allows you to change how dates are display or parsed from cells (<code>td</code>) in the column.</p>
+		<h1 class="page-header anchored"><span id="options" class="anchor">&nbsp;</span>Options</h1>
+		<p class="lead">Apart from the default <a href="../getting-started.html#column">column options</a> using the date type allows you to use the below additional options.</p>
 
-			<div class="callout callout-info">
-				<h4>Note</h4>
-				<p>Please see the <a href="http://momentjs.com/docs/#/parsing/string-format/">moment.js</a> documentation for more information on format strings.</p>
-			</div>
+		<div class="list-group list-group-detailed">
+			<h3 class="list-group-header">Column options</h3>
 
-			<div class="examples">
-				<div class="example default">
-					<p><code>"MM-DD-YYYY"</code></p>
-				</div>
-			</div>
+			<!-- formatString -->
+			<a href="#formatString" class="list-group-item anchored">
+				<span id="formatString" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">formatString <small>string</small></h4>
+				<p class="list-group-item-text">The format used to display and parse dates from cells (<code>td</code>'s).</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
 
-			<div class="examples">
-				<div class="example static">
-					<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
-				</div>
-				<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"MM-DD-YYYY"</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
 	&lt;thead&gt;
 		&lt;tr&gt;
-			&lt;th data-type=&quot;date&quot; data-formatString=&quot;Do MMMM YYYY&quot;&gt;...&lt;/th&gt;
+			&lt;th data-type=&quot;date&quot; data-format-string=&quot;Do MMMM YYYY&quot;&gt;...&lt;/th&gt;
 			...
 		&lt;/tr&gt;
 	&lt;/thead&gt;
 	...
 &lt;/table&gt;</code></pre>
 
-				<div class="example javascript">
-					<p>The below shows how to supply this value directly through the options.</p>
-				</div>
-				<pre class="language-javascript javascript" data-lang="javascript"><code>jQuery(function($){
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript javascript" data-lang="javascript"><code>jQuery(function($){
 	$(&#39;.table&#39;).footable({
 		&quot;columns&quot;: [{
 			&quot;type&quot;: &quot;date&quot;,
@@ -128,8 +140,15 @@
 		}]
 	});
 });</code></pre>
+
+					</div>
+
+				</div>
+
 			</div>
+
 		</div>
+
 	</div>
 
 	<div class="docs-section">
@@ -228,10 +247,11 @@
 <script src="../js/prism.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../js/ie10-viewport-bug-workaround.js"></script>
+<script src="../js/docs.js"></script>
 <!-- Add in any FooTable dependencies we may need -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 <!-- Add in FooTable itself -->
-<script src="../../compiled/footable.min.js"></script>
+<script src="../../compiled/footable.js"></script>
 <!-- Initialize FooTable -->
 <script>
 	jQuery(function($){
