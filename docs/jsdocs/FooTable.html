@@ -1,0 +1,5096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Namespace: FooTable</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Namespace: FooTable</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>FooTable</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">The core FooTable namespace containing all the plugin code.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="FooTable.Breakpoint.html">Breakpoint</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Breakpoints.html">Breakpoints</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Cell.html">Cell</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Class.html">Class</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.ClassFactory.html">ClassFactory</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Column.html">Column</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Columns.html">Columns</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Component.html">Component</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.DateColumn.html">DateColumn</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Defaults.html">Defaults</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Filter.html">Filter</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Filtering.html">Filtering</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.HTMLColumn.html">HTMLColumn</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.NumberColumn.html">NumberColumn</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Pager.html">Pager</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Paging.html">Paging</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Query.html">Query</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Row.html">Row</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Rows.html">Rows</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Sorter.html">Sorter</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Sorting.html">Sorting</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.Table.html">Table</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+     
+
+    
+        <h3 class="subsection-title">Namespaces</h3>
+
+        <dl>
+            <dt><a href="FooTable.arr.html">arr</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.is.html">is</a></dt>
+            <dd></dd>
+        
+            <dt><a href="FooTable.str.html">str</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Events</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Breakpoints%22after.ft.breakpoints%22">Breakpoints"after.ft.breakpoints"</h4>
+
+    
+
+
+
+<div class="description">
+    The after.ft.breakpoints event is raised after the breakpoint has changed and the UI is redrawn and is supplied both the "new" current breakpointand the previous one that was replaced.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>current</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Breakpoint.html">FooTable.Breakpoint</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current breakpoint.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>previous</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Breakpoint.html">FooTable.Breakpoint</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The breakpoint that was just replaced.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Breakpoints%22before.ft.breakpoints%22">Breakpoints"before.ft.breakpoints"</h4>
+
+    
+
+
+
+<div class="description">
+    The before.ft.breakpoints event is raised if the breakpoint has changed but before the UI is redrawn and is supplied both the current breakpointand the next "new" one that is about to be applied.Calling preventDefault on this event will prevent the next breakpoint from being applied.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>current</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Breakpoint.html">FooTable.Breakpoint</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current breakpoint.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Breakpoint.html">FooTable.Breakpoint</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The breakpoint that is about to be applied.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Breakpoints%22init.ft.breakpoints%22">Breakpoints"init.ft.breakpoints"</h4>
+
+    
+
+
+
+<div class="description">
+    The init.ft.breakpoints event is raised before any UI is generated.Calling preventDefault on this event will disable the entire plugin.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Breakpoints%22preinit.ft.breakpoints%22">Breakpoints"preinit.ft.breakpoints"</h4>
+
+    
+
+
+
+<div class="description">
+    The preinit.ft.breakpoints event is raised before any UI is created and provides the tables jQuery data object for additional options parsing.Calling preventDefault on this event will disable the entire plugin.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery data object of the table raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Columns%22init.ft.columns%22">Columns"init.ft.columns"</h4>
+
+    
+
+
+
+<div class="description">
+    The init.ft.columns event is raised after the header row is created/parsed for column data.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>columns</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of <a href="FooTable.Column.html"><code>FooTable.Column</code></a> objects parsed from the options and/or DOM.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Columns%22preinit.ft.columns%22">Columns"preinit.ft.columns"</h4>
+
+    
+
+
+
+<div class="description">
+    The preinit.ft.columns event is raised before any UI is created and provides the tables jQuery data object for additional options parsing.Calling preventDefault on this event will disable the entire plugin.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery data object of the table raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Filtering%22after.ft.filtering%22">Filtering"after.ft.filtering"</h4>
+
+    
+
+
+
+<div class="description">
+    The after.ft.filtering event is raised after a filter has been applied.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Filter.html">FooTable.Filter</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The filters that were applied.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Filtering%22before.ft.filtering%22">Filtering"before.ft.filtering"</h4>
+
+    
+
+
+
+<div class="description">
+    The before.ft.filtering event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="FooTable.Filter.html">FooTable.Filter</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The filters that are about to be applied.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Filtering%22destroy.ft.filtering%22">Filtering"destroy.ft.filtering"</h4>
+
+    
+
+
+
+<div class="description">
+    The destroy.ft.filtering event is raised before its UI is removed.Calling preventDefault on this event will prevent the component from being destroyed.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Filtering%22init.ft.filtering%22">Filtering"init.ft.filtering"</h4>
+
+    
+
+
+
+<div class="description">
+    The init.ft.filtering event is raised before its UI is generated.Calling preventDefault on this event will disable the component.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Filtering%22preinit.ft.filtering%22">Filtering"preinit.ft.filtering"</h4>
+
+    
+
+
+
+<div class="description">
+    The preinit.ft.filtering event is raised before the UI is created and provides the tables jQuery data object for additional options parsing.Calling preventDefault on this event will disable the component.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery data object of the table raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Paging%22after.ft.paging%22">Paging"after.ft.paging"</h4>
+
+    
+
+
+
+<div class="description">
+    The after.ft.paging event is raised after a pager has been applied.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pager</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Pager.html">FooTable.Pager</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The pager that has been applied.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Paging%22before.ft.paging%22">Paging"before.ft.paging"</h4>
+
+    
+
+
+
+<div class="description">
+    The before.ft.paging event is raised before a sort is applied and allows listeners to modify the pager or cancel it completely by calling preventDefault on the jQuery.Event object.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pager</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Pager.html">FooTable.Pager</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The pager that is about to be applied.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Paging%22destroy.ft.paging%22">Paging"destroy.ft.paging"</h4>
+
+    
+
+
+
+<div class="description">
+    The destroy.ft.paging event is raised before its UI is removed.Calling preventDefault on this event will prevent the component from being destroyed.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Paging%22init.ft.paging%22">Paging"init.ft.paging"</h4>
+
+    
+
+
+
+<div class="description">
+    The init.ft.paging event is raised before its UI is generated.Calling preventDefault on this event will disable the component.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Paging%22preinit.ft.paging%22">Paging"preinit.ft.paging"</h4>
+
+    
+
+
+
+<div class="description">
+    The preinit.ft.paging event is raised before the UI is created and provides the tables jQuery data object for additional options parsing.Calling preventDefault on this event will disable the component.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery data object of the table raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Rows%22init.ft.rows%22">Rows"init.ft.rows"</h4>
+
+    
+
+
+
+<div class="description">
+    The init.ft.rows event is raised after the the rows are parsed from either the DOM or the options.Calling preventDefault on this event will disable the entire plugin.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>instance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="FooTable.Row.html">FooTable.Row</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of <a href="FooTable.Row.html"><code>FooTable.Row</code></a> objects parsed from the DOM or the options.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Rows%22preinit.ft.rows%22">Rows"preinit.ft.rows"</h4>
+
+    
+
+
+
+<div class="description">
+    The preinit.ft.rows event is raised before any UI is created and provides the tables jQuery data object for additional options parsing.Calling preventDefault on this event will disable the entire plugin.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery data object of the table raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Sorting%22after.ft.sorting%22">Sorting"after.ft.sorting"</h4>
+
+    
+
+
+
+<div class="description">
+    The after.ft.sorting event is raised after a sorter has been applied.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sorter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Sorter.html">FooTable.Sorter</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The sorter that has been applied.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Sorting%22before.ft.sorting%22">Sorting"before.ft.sorting"</h4>
+
+    
+
+
+
+<div class="description">
+    The before.ft.sorting event is raised before a sort is applied and allows listeners to modify the sorter or cancel it completely by calling preventDefault on the jQuery.Event object.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sorter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Sorter.html">FooTable.Sorter</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The sorter that is about to be applied.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Sorting%22destroy.ft.sorting%22">Sorting"destroy.ft.sorting"</h4>
+
+    
+
+
+
+<div class="description">
+    The destroy.ft.sorting event is raised before its UI is removed.Calling preventDefault on this event will prevent the component from being destroyed.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Sorting%22init.ft.sorting%22">Sorting"init.ft.sorting"</h4>
+
+    
+
+
+
+<div class="description">
+    The init.ft.sorting event is raised before its UI is generated.Calling preventDefault on this event will disable the component.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Sorting%22preinit.ft.sorting%22">Sorting"preinit.ft.sorting"</h4>
+
+    
+
+
+
+<div class="description">
+    The preinit.ft.sorting event is raised before the UI is created and provides the tables jQuery data object for additional options parsing.Calling preventDefault on this event will disable the component.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery data object of the table raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Table%22destroy.ft.table%22">Table"destroy.ft.table"</h4>
+
+    
+
+
+
+<div class="description">
+    The destroy.ft.table event is called before all core components.Calling preventDefault on this event will prevent the entire plugin from being destroyed.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Table%22draw.ft.table%22">Table"draw.ft.table"</h4>
+
+    
+
+
+
+<div class="description">
+    The draw.ft.table event is raised after all core components and add-ons have executed there draw functions.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Table%22init.ft.table%22">Table"init.ft.table"</h4>
+
+    
+
+
+
+<div class="description">
+    The init.ft.table event is raised before any components are initialized.Calling preventDefault on this event will disable the entire plugin.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Table%22postdraw.ft.table%22">Table"postdraw.ft.table"</h4>
+
+    
+
+
+
+<div class="description">
+    The postdraw.ft.table event is raised after all core components and add-ons have executed there postdraw functions.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Table%22predraw.ft.table%22">Table"predraw.ft.table"</h4>
+
+    
+
+
+
+<div class="description">
+    The predraw.ft.table event is raised after all core components and add-ons have executed there predraw functions but before they execute there draw functions.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Table%22preinit.ft.table%22">Table"preinit.ft.table"</h4>
+
+    
+
+
+
+<div class="description">
+    The preinit.ft.table event is raised before any components.Calling preventDefault on this event will disable the entire plugin.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".event:Table%22resize.ft.table%22">Table"resize.ft.table"</h4>
+
+    
+
+
+
+<div class="description">
+    The resize event is raised a short time after window resize operations cease.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The instance of the plugin raising the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FooTable.Breakpoint.html">Breakpoint</a></li><li><a href="FooTable.Breakpoints.html">Breakpoints</a></li><li><a href="FooTable.Cell.html">Cell</a></li><li><a href="FooTable.Class.html">Class</a></li><li><a href="FooTable.ClassFactory.html">ClassFactory</a></li><li><a href="FooTable.Column.html">Column</a></li><li><a href="FooTable.Columns.html">Columns</a></li><li><a href="FooTable.Component.html">Component</a></li><li><a href="FooTable.DateColumn.html">DateColumn</a></li><li><a href="FooTable.Defaults.html">Defaults</a></li><li><a href="FooTable.Filter.html">Filter</a></li><li><a href="FooTable.Filtering.html">Filtering</a></li><li><a href="FooTable.HTMLColumn.html">HTMLColumn</a></li><li><a href="FooTable.NumberColumn.html">NumberColumn</a></li><li><a href="FooTable.Pager.html">Pager</a></li><li><a href="FooTable.Paging.html">Paging</a></li><li><a href="FooTable.Query.html">Query</a></li><li><a href="FooTable.Row.html">Row</a></li><li><a href="FooTable.Rows.html">Rows</a></li><li><a href="FooTable.Sorter.html">Sorter</a></li><li><a href="FooTable.Sorting.html">Sorting</a></li><li><a href="FooTable.Table.html">Table</a></li><li><a href="jQuery.html">jQuery</a></li></ul><h3>Events</h3><ul><li><a href="FooTable.html#.event:Breakpoints%2522after.ft.breakpoints%2522">Breakpoints"after.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Breakpoints%2522before.ft.breakpoints%2522">Breakpoints"before.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Breakpoints%2522init.ft.breakpoints%2522">Breakpoints"init.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Breakpoints%2522preinit.ft.breakpoints%2522">Breakpoints"preinit.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Columns%2522init.ft.columns%2522">Columns"init.ft.columns"</a></li><li><a href="FooTable.html#.event:Columns%2522preinit.ft.columns%2522">Columns"preinit.ft.columns"</a></li><li><a href="FooTable.html#.event:Filtering%2522after.ft.filtering%2522">Filtering"after.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522before.ft.filtering%2522">Filtering"before.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522destroy.ft.filtering%2522">Filtering"destroy.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522init.ft.filtering%2522">Filtering"init.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522preinit.ft.filtering%2522">Filtering"preinit.ft.filtering"</a></li><li><a href="FooTable.html#.event:Paging%2522after.ft.paging%2522">Paging"after.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522before.ft.paging%2522">Paging"before.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522destroy.ft.paging%2522">Paging"destroy.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522init.ft.paging%2522">Paging"init.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522preinit.ft.paging%2522">Paging"preinit.ft.paging"</a></li><li><a href="FooTable.html#.event:Rows%2522init.ft.rows%2522">Rows"init.ft.rows"</a></li><li><a href="FooTable.html#.event:Rows%2522preinit.ft.rows%2522">Rows"preinit.ft.rows"</a></li><li><a href="FooTable.html#.event:Sorting%2522after.ft.sorting%2522">Sorting"after.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522before.ft.sorting%2522">Sorting"before.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522destroy.ft.sorting%2522">Sorting"destroy.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522init.ft.sorting%2522">Sorting"init.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522preinit.ft.sorting%2522">Sorting"preinit.ft.sorting"</a></li><li><a href="FooTable.html#.event:Table%2522destroy.ft.table%2522">Table"destroy.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522draw.ft.table%2522">Table"draw.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522init.ft.table%2522">Table"init.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522postdraw.ft.table%2522">Table"postdraw.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522predraw.ft.table%2522">Table"predraw.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522preinit.ft.table%2522">Table"preinit.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522resize.ft.table%2522">Table"resize.ft.table"</a></li></ul><h3>Namespaces</h3><ul><li><a href="FooTable.html">FooTable</a></li><li><a href="FooTable.arr.html">arr</a></li><li><a href="FooTable.is.html">is</a></li><li><a href="FooTable.str.html">str</a></li><li><a href="jQuery.fn.html">fn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 01 2016 22:39:35 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
