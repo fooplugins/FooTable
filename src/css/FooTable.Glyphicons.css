@@ -3,7 +3,7 @@
 	position: relative;
 	top: 1px;
 	display: inline-block;
-	font-family: 'Glyphicons Halflings';
+	font-family: 'Glyphicons Halflings' !important;
 	font-style: normal;
 	font-weight: 400;
 	line-height: 1;
