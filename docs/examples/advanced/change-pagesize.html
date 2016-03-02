@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Change page size - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>Change page size</h1>
+		<h2>How to dynamically change the page size of the table</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+
+		<div class="callout callout-info">
+			<h4>Note</h4>
+			<p>
+				The base table in the example below is a clone of the <a href="../component/showcase.html">showcase example</a> to demonstrate that changing the page size will correctly
+				update the pagination buttons whether you increase or decrease the page size.
+			</p>
+		</div>
+
+		<div class="example">
+			<h4>Select the page size</h4>
+<button type="button" data-page-size="10">10</button>
+<button type="button" data-page-size="20">20</button>
+<button type="button" data-page-size="50">50</button>
+<button type="button" data-page-size="100">100</button>
+<button type="button" data-page-size="200">200</button>
+			<table id="page-size-example" class="table" data-paging="true" data-filtering="true" data-sorting="true"></table>
+		</div>
+
+		<p>
+			To dynamically change the page size of the table when a user clicks a button or selects a value from a dropdown is quite simple. All you need to do is
+			get the instance of FooTable you want to alter and execute the <code>pageSize</code> method passing in the new size you want the table to use.
+		</p>
+		<pre class="language-javascript" data-lang="javascript"><code>FooTable.get(&#39;#table-id&#39;).pageSize(newSize);</code></pre>
+
+		<p>
+			On this page the buttons are created using the below markup. The size is simply stored in a data attribute on the button to make it simpler to bind the click event
+			and retrieve the page size value.
+		</p>
+		<pre class="language-markup" data-lang="markup"><code>&lt;button type=&quot;button&quot; data-page-size=&quot;10&quot;&gt;10&lt;/button&gt;
+&lt;button type=&quot;button&quot; data-page-size=&quot;20&quot;&gt;20&lt;/button&gt;
+&lt;button type=&quot;button&quot; data-page-size=&quot;50&quot;&gt;50&lt;/button&gt;
+&lt;button type=&quot;button&quot; data-page-size=&quot;100&quot;&gt;100&lt;/button&gt;
+&lt;button type=&quot;button&quot; data-page-size=&quot;200&quot;&gt;200&lt;/button&gt;</code></pre>
+
+		<p>And then the Javascript to make it all work is as below.</p>
+		<pre class="language-javascript" data-lang="javascript"><code>$(&#39;[data-page-size]&#39;).on(&#39;click&#39;, function(e){
+	e.preventDefault();
+	var newSize = $(this).data(&#39;pageSize&#39;);
+	FooTable.get(&#39;#page-size-example&#39;).pageSize(newSize);
+});</code></pre>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('[data-page-size]').on('click', function(e){
+			e.preventDefault();
+			var newSize = $(this).data('pageSize');
+			FooTable.get('#page-size-example').pageSize(newSize);
+		});
+		$('#page-size-example').footable({
+			"columns": $.get("../../content/columns.json"),
+			"rows": $.get("../../content/rows.json")
+		});
+	});
+</script>
+</body>
+</html>
