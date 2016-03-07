@@ -12,8 +12,8 @@
 	<title>Date columns - FooTable</title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
 
 	<!-- Prism -->
 	<link href="../css/prism.css" rel="stylesheet">
@@ -160,7 +160,7 @@
 		<div class="examples">
 			<div class="example static plural">
 				<p>
-					The below shows the simplest way a date column could be implemented however this only works as the cell <a href="../options.html#cell-value"><code>value</code></a>
+					The below shows the simplest way a date column could be implemented however this only works as the cell <a href="../getting-started.html#cell-value"><code>value</code></a>
 					matches the default value of the <a href="#formatString"><code>formatString</code></a>.
 				</p>
 			</div>
@@ -192,7 +192,7 @@
 &lt;/table&gt;</code></pre>
 
 			<p>
-				To be able to change how a date is displayed when supplied as a ticks value use the cells <a href="../options.html#cell-value"><code>data-value</code></a>
+				To be able to change how a date is displayed when supplied as a ticks value use the cells <a href="../getting-started.html#cell-value"><code>data-value</code></a>
 				attribute to supply the value and the column's <a href="#formatString"><code>formatString</code></a> option to specify how it is displayed.
 			</p>
 			<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
@@ -213,8 +213,8 @@
 		<div class="examples">
 			<div class="example javascript plural">
 				<p>
-					Implementing a date column through the options requires the column's <a href="../options.html#column-type"><code>type</code></a> option be set to <code>"date"</code>
-					and that the <a href="../options.html#column-name"><code>name</code></a> of the column matches a date property in the row data.
+					Implementing a date column through the options requires the column's <a href="../getting-started.html#column-type"><code>type</code></a> option be set to <code>"date"</code>
+					and that the <a href="../getting-started.html#column-name"><code>name</code></a> of the column matches a date property in the row data.
 				</p>
 			</div>
 			<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
@@ -243,7 +243,7 @@
 
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="../js/prism.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../js/ie10-viewport-bug-workaround.js"></script>
@@ -255,10 +255,6 @@
 <!-- Initialize FooTable -->
 <script>
 	jQuery(function($){
-		$('.nav-tabs a').click(function (e) {
-			e.preventDefault();
-			$(this).tab('show');
-		});
 	});
 </script>
 </body>

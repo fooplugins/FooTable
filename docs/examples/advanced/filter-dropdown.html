@@ -12,8 +12,8 @@
 	<title>Filter dropdown - FooTable</title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
 
 	<!-- Prism -->
 	<link href="../../css/prism.css" rel="stylesheet">
@@ -221,7 +221,7 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="../../js/prism.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../../js/ie10-viewport-bug-workaround.js"></script>
@@ -272,10 +272,6 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 	FooTable.components.core.register('filtering', FooTable.MyFiltering);
 
 	jQuery(function($){
-		$('.nav-tabs a').click(function (e) {
-			e.preventDefault();
-			$(this).tab('show');
-		});
 		$('#filter-dropdown-example').footable({
 			"columns": $.get("../../content/columns.json"),
 			"rows": $.get("../../content/rows.json")
