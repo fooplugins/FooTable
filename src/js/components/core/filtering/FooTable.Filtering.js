@@ -132,7 +132,7 @@
 					? data.filterMin
 					: self.min;
 
-				self.connectors = F.is.number(data.filterConnectors)
+				self.connectors = F.is.boolean(data.filterConnectors)
 					? data.filterConnectors
 					: self.connectors;
 
@@ -140,7 +140,7 @@
 					? data.filterDelay
 					: self.delay;
 
-				self.placeholder = F.is.number(data.filterPlaceholder)
+				self.placeholder = F.is.string(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
 
