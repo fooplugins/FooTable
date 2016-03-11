@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Custom filter UI - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS to hide the default filtering component -->
+	<style type="text/css">
+		.footable-filtering {
+			display:none;
+		}
+	</style>
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>Custom filter UI</h1>
+		<h2>How to create a custom filter UI for your table.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+
+		<div class="callout callout-info">
+			<h4>Note</h4>
+			<p>
+				The base table in the example below is a clone of the <a href="../component/showcase.html">showcase example</a> to demonstrate that the filter state from a custom UI is kept
+				across various table operations such as filtering, sorting, paging.
+			</p>
+		</div>
+
+		<div class="example">
+		<div class="well">
+			<form class="form-inline">
+				<label class="radio-inline">
+					<input type="radio" name="status" id="status_none" value="none" checked>
+					None
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="status" id="status_active" value="active">
+					Active
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="status" id="status_disabled" value="disabled">
+					Disabled
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="status" id="status_suspended" value="suspended">
+					Suspended
+				</label>
+			</form>
+		</div>
+
+			<table id="custom-ui-example" class="table" data-paging="true" data-filtering="true" data-sorting="true"></table>
+		</div>
+
+		<h3>Step 1: Hide the default filtering component</h3>
+		<p>
+			Seeing as you want to create a fully custom UI for filtering the first step is to simply hide the built in one using the below CSS. This CSS should be included in your
+			page after the FooTable CSS is included.
+		</p>
+		<pre class="language-css" data-lang="css"><code>.footable-filtering {
+	display:none;
+}</code></pre>
+
+		<h3>Step 2: Create your custom UI</h3>
+		<p>
+			In the above example the UI created is simply a radio list of statuses a user can choose from. The below is the HTML markup used to create them using Bootstrap.
+		</p>
+		<pre class="language-markup" data-lang="markup"><code>&lt;div class=&quot;well&quot;&gt;
+	&lt;form class=&quot;form-inline&quot;&gt;
+		&lt;label class=&quot;radio-inline&quot;&gt;
+			&lt;input type=&quot;radio&quot; name=&quot;status&quot; id=&quot;status_none&quot; value=&quot;none&quot; checked&gt;
+			None
+		&lt;/label&gt;
+		&lt;label class=&quot;radio-inline&quot;&gt;
+			&lt;input type=&quot;radio&quot; name=&quot;status&quot; id=&quot;status_active&quot; value=&quot;active&quot;&gt;
+			Active
+		&lt;/label&gt;
+		&lt;label class=&quot;radio-inline&quot;&gt;
+			&lt;input type=&quot;radio&quot; name=&quot;status&quot; id=&quot;status_disabled&quot; value=&quot;disabled&quot;&gt;
+			Disabled
+		&lt;/label&gt;
+		&lt;label class=&quot;radio-inline&quot;&gt;
+			&lt;input type=&quot;radio&quot; name=&quot;status&quot; id=&quot;status_suspended&quot; value=&quot;suspended&quot;&gt;
+			Suspended
+		&lt;/label&gt;
+	&lt;/form&gt;
+&lt;/div&gt;</code></pre>
+
+		<h3>Step 3: Hooking up the UI</h3>
+		<p>
+			Now that we have our custom UI we need to hook it into FooTable so that when a user interacts with it it will filter the table as expected. To do this we bind to the
+			<code>change</code> event of each radio and then add/remove and apply the filter as necessary. This JavaScript should be included within a jQuery ready function on the page,
+			preferably within the same one calling FooTable, but after the call to FooTable's constructor.
+		</p>
+		<p>
+			For more information on the <code>addFilter</code>, <code>removeFilter</code> and other filtering methods please look at the
+			<a href="../../jsdocs/FooTable.Filtering.html" target="_blank">JSDocs for the component</a>.
+		</p>
+		<pre class="language-javascript" data-lang="javascript"><code>$(&#39;[name=status]&#39;).on(&#39;change&#39;, function(){
+	var filtering = FooTable.get(&#39;#showcase-example-1&#39;).use(FooTable.Filtering), // get the filtering component for the table
+		filter = $(this).val(); // get the value to filter by
+	if (filter === &#39;none&#39;){ // if the value is "none" remove the filter
+		filtering.removeFilter(&#39;status&#39;);
+		filtering.clear();
+	} else { // otherwise add/update the filter.
+		filtering.addFilter(&#39;status&#39;, filter, [&#39;status&#39;]);
+		filtering.filter();
+	}
+});</code></pre>
+
+		<h3>Finished!</h3>
+		<p>That's it! We now have a custom filter UI that is fully integrated with the rest of the tables' functionality.</p>
+
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('#custom-ui-example').footable({
+			"columns": $.get("../../content/columns.json"),
+			"rows": $.get("../../content/rows.json")
+		});
+		$('[name=status]').on('change', function(){
+			var filtering = FooTable.get('#custom-ui-example').use(FooTable.Filtering),
+				filter = $(this).val();
+			if (filter === 'none'){
+				filtering.removeFilter('status');
+				filtering.clear();
+			} else {
+				filtering.addFilter('status', filter, ['status']);
+				filtering.filter();
+			}
+		});
+	});
+</script>
+</body>
+</html>
