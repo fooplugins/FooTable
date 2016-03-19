@@ -22,7 +22,7 @@
       $(ft.table)
         .unbind('striping')
         .bind({
-          'footable_initialized.striping footable_row_removed.striping footable_redrawn.striping footable_sorted.striping footable_filtered.striping': function () {
+          'footable_initialized.striping footable_row_removed.striping footable_redrawn.striping footable_sorted.striping footable_filtered.striping  footable_page_filled.striping': function () {
             
             if ($(this).data('striping') === false) return;
 
@@ -32,23 +32,9 @@
     };
 
     p.setupStriping = function (ft) {
-
-      var rowIndex = 0;
-      $(ft.table).find('> tbody > tr:not(.footable-row-detail)').each(function () {
-
-        var $row = $(this);
-
-        //Clean off old classes
-        $row.removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
-
-        if (rowIndex % 2 === 0) {
-          $row.addClass(ft.options.classes.striping.even);
-        } else {
-          $row.addClass(ft.options.classes.striping.odd);
-        }
-
-        rowIndex++;
-      });
+        $('tbody tr:not(.footable-row-detail):not(.footable-filtered)').removeClass(ft.options.classes.striping.even).removeClass(ft.options.classes.striping.odd);
+        $('tbody tr:not(.footable-row-detail):not(.footable-filtered):visible:even').addClass(ft.options.classes.striping.even);
+        $('tbody tr:not(.footable-row-detail):not(.footable-filtered):visible:odd').addClass(ft.options.classes.striping.odd);
     };
   }
 

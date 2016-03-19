@@ -12,13 +12,19 @@
             filterFunction: function(index) {
                 var $t = $(this),
                     $table = $t.parents('table:first'),
-                    filter = $table.data('current-filter').toUpperCase(),
-                    text = $t.find('td').text();
+                    filter = $table.data('current-filter').toUpperCase();
+                    var text = "";
+                    $t.find('td').each(function(){
+                    text = text + " " + $(this).text();
+                });
+
+
                 if (!$table.data('filter-text-only')) {
                     $t.find('td[data-value]').each(function () {
                         text += $(this).data('value');
                     });
                 }
+
                 return text.toUpperCase().indexOf(filter) >= 0;
             }
         }
@@ -56,7 +62,7 @@
                                 p.clearFilter();
                             });
                             $table.bind('footable_filter', function (event, args) {
-                                p.filter(args.filter);
+                                p.filter($(data.input).val());
                             });
                             $(data.input).keyup(function (eve) {
                                 ft.timers.filter.stop();
@@ -98,16 +104,12 @@
           if (event.clear) {
                 p.clearFilter();
             } else {
-                var filters = event.filter.split(' ');
-
                 $table.find('> tbody > tr').hide().addClass('footable-filtered');
                 var rows = $table.find('> tbody > tr:not(.footable-row-detail)');
-                $.each(filters, function (i, f) {
-                    if (f && f.length > 0) {
-                        $table.data('current-filter', f);
+                    if (event.filter && event.filter.length > 0) {
+                        $table.data('current-filter', event.filter);
                         rows = rows.filter(ft.options.filter.filterFunction);
                     }
-                });
                 rows.each(function () {
                     p.showRow(this, ft);
                     $(this).removeClass('footable-filtered');
