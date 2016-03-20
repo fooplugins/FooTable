@@ -9,10 +9,10 @@
     "main": [
         "js/footable.js",
         "css/footable.core.css",
-        "css/fonts/footable.eot",
-        "css/fonts/footable.svg",
-        "css/fonts/footable.ttf",
-        "css/fonts/footable.woff"
+        "fonts/footable.eot",
+        "fonts/footable.svg",
+        "fonts/footable.ttf",
+        "fonts/footable.woff"
     ],
     
     "dependencies": {
