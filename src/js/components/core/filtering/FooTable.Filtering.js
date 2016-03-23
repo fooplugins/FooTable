@@ -241,7 +241,7 @@
 
 			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
 				F.arr.map(self.ft.columns.array, function (col) {
-					return col.filterable && col.visible ? $('<li/>').append(
+					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
 							$('<label/>', {text: col.title}).prepend(
 								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)

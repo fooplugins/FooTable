@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.6
+* @version 3.0.7
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -213,7 +213,7 @@
 					? data.filterMin
 					: self.min;
 
-				self.connectors = F.is.number(data.filterConnectors)
+				self.connectors = F.is.boolean(data.filterConnectors)
 					? data.filterConnectors
 					: self.connectors;
 
@@ -221,7 +221,7 @@
 					? data.filterDelay
 					: self.delay;
 
-				self.placeholder = F.is.number(data.filterPlaceholder)
+				self.placeholder = F.is.string(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
 
@@ -322,7 +322,7 @@
 
 			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
 				F.arr.map(self.ft.columns.array, function (col) {
-					return col.filterable && col.visible ? $('<li/>').append(
+					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
 							$('<label/>', {text: col.title}).prepend(
 								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
