@@ -60,24 +60,6 @@
 			 */
 			this.classes = [];
 			/**
-			 * The breakpoints component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Breakpoints}
-			 */
-			this.breakpoints = F.components.internal.make('breakpoints', this);
-			/**
-			 * The columns component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Columns}
-			 */
-			this.columns = F.components.internal.make('columns', this);
-			/**
-			 * The rows component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Rows}
-			 */
-			this.rows = F.components.internal.make('rows', this);
-			/**
 			 * All components for this instance of the plugin. These are executed in the order they appear in the array for the initialize phase and in reverse order for the destroy phase of the plugin.
 			 * @instance
 			 * @protected
@@ -87,10 +69,28 @@
 			 * @prop {Array.<FooTable.Component>} custom - The custom components for the plugin. These are executed either after the core components in the initialize phase or before them in the destroy phase of the plugin.
 			 */
 			this.components = {
-				internal: [this.breakpoints, this.columns, this.rows],
+				internal: F.components.internal.load(this),//[this.breakpoints, this.columns, this.editor, this.rows],
 				core: F.components.core.load(this),
 				custom: F.components.load(this)
 			};
+			/**
+			 * The breakpoints component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Breakpoints}
+			 */
+			this.breakpoints = this.use(FooTable.Breakpoints);
+			/**
+			 * The columns component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Columns}
+			 */
+			this.columns = this.use(FooTable.Columns);
+			/**
+			 * The rows component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Rows}
+			 */
+			this.rows = this.use(FooTable.Rows);
 
 			//END MEMBERS
 			var self = this;
