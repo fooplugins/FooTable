@@ -210,6 +210,7 @@
 		 * @protected
 		 */
 		draw: function(){
+			if (this.total <= 1) return;
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 			this._setVisible(this.current, this.current > this._previous);
 			this._setNavigation(true);
