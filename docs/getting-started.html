@@ -1163,6 +1163,46 @@
 
 			</div>
 
+			<!-- toggleSelector -->
+			<a href="#toggleSelector" class="list-group-item anchored">
+				<span id="toggleSelector" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">toggleSelector <small>string</small></h4>
+				<p class="list-group-item-text">A string specifying the CSS selector used to filter row click events.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>"tr,td,.footable-toggle"</code></p>
+							<p>If the <code>event.target</code> property matches the selector the row will be toggled. With the default selector any clicks directly on the row, a cell in the row or the FooTable toggle element will trigger the toggling of the row.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-toggle-selector=&quot;.footable-toggle&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;toggleSelector&quot;: &quot;.footable-toggle&quot;
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
 			<!-- useParentWidth -->
 			<a href="#useParentWidth" class="list-group-item anchored">
 				<span id="useParentWidth" class="anchor">&nbsp;</span>

@@ -301,7 +301,7 @@
 		_onToggle: function (e) {
 			var self = e.data.self;
 			// only execute the toggle if the event.target is one of the approved initiators
-			if ($(e.target).is('tr,td,.footable-toggle')){
+			if ($(e.target).is(self.ft.rows.toggleSelector)){
 				self.toggle();
 			}
 		}

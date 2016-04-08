@@ -43,6 +43,12 @@
 			 */
 			this.showToggle = table.o.showToggle;
 			/**
+			 * The CSS selector used to filter row click events. If the event.target property matches the selector the row will be toggled.
+			 * @type {string}
+			 * @default "tr,td,.footable-toggle"
+			 */
+			this.toggleSelector = table.o.toggleSelector;
+			/**
 			 * Specifies which column the row toggle is appended to. Supports only two values; "first" and "last"
 			 * @type {string}
 			 */
@@ -125,6 +131,7 @@
 					self.all = rows;
 					self.array = self.all.slice(0);
 					self.showToggle = F.is.boolean(data.showToggle) ? data.showToggle : self.showToggle;
+					self.toggleSelector = F.is.string(data.toggleSelector) ? data.toggleSelector : self.toggleSelector;
 					self.toggleColumn = F.is.string(data.toggleColumn) ? data.toggleColumn : self.toggleColumn;
 					if (self.toggleColumn != "first" && self.toggleColumn != "last") self.toggleColumn = "first";
 					self.emptyString = F.is.string(data.empty) ? data.empty : self.emptyString;

@@ -21,6 +21,13 @@
 	F.Defaults.prototype.showToggle = true;
 
 	/**
+	 * The CSS selector used to filter row click events. If the event.target property matches the selector the row will be toggled.
+	 * @type {string}
+	 * @default "tr,td,.footable-toggle"
+	 */
+	F.Defaults.prototype.toggleSelector = 'tr,td,.footable-toggle';
+
+	/**
 	 * Specifies which column to display the row toggle in. The only supported values are "first" or "last".
 	 * @type {string}
 	 * @default "first"
