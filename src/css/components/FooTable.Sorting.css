@@ -1,5 +1,9 @@
-td.footable-sortable,
-th.footable-sortable {
+table.footable > thead > tr > td.footable-sortable,
+table.footable > thead > tr > th.footable-sortable,
+table.footable > tbody > tr > td.footable-sortable,
+table.footable > tbody > tr > th.footable-sortable,
+table.footable > tfoot > tr > td.footable-sortable,
+table.footable > tfoot > tr > th.footable-sortable {
 	position: relative;
 	padding-right: 30px;
 	cursor: pointer;

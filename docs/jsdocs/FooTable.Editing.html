@@ -1,0 +1,3303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: Editing</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: Editing</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="FooTable.html">FooTable</a>.</span>Editing</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    <h4 class="name" id="Editing"><span class="type-signature"></span>new Editing<span class="signature">(table)</span><span class="type-signature"> &rarr; {<a href="FooTable.Editing.html">FooTable.Editing</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    The editing component adds a column with edit and delete buttons to each row as well as a single add row button in the footer.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>table</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The parent <a href="FooTable.Table.html"><code>FooTable.Table</code></a> object for the component.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="FooTable.Editing.html">FooTable.Editing</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="FooTable.Component.html">FooTable.Component</a></li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="addText"><span class="type-signature"></span>addText<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The text that appears in the add button. This can contain HTML.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="alwaysShow"><span class="type-signature"></span>alwaysShow<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    Whether or not the editing column and add row button are always visible.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="callbacks"><span class="type-signature"></span>callbacks<span class="type-signature"> :object</span></h4>
+
+
+
+
+<div class="description">
+    This object is used to contain the callbacks for the add, edit and delete row buttons.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>addRow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>editRow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>deleteRow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="column"><span class="type-signature"></span>column<span class="type-signature"> :object</span></h4>
+
+
+
+
+<div class="description">
+    The options for the editing column. @see <a href="FooTable.EditingColumn.html"><code>FooTable.EditingColumn</code></a> for more info.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>classes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    "footable-editing"
+                
+                </td>
+            
+
+            <td class="description last">A space separated string of class names to apply to all cells in the column.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    "editing"
+                
+                </td>
+            
+
+            <td class="description last">The name of the column.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    ""
+                
+                </td>
+            
+
+            <td class="description last">The title displayed in the header row of the table for the column.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filterable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Whether or not the column should be filterable when using the filtering component.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sortable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Whether or not the column should be sortable when using the sorting component.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="deleteText"><span class="type-signature"></span>deleteText<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The text that appears in the delete button. This can contain HTML.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="editText"><span class="type-signature"></span>editText<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The text that appears in the edit button. This can contain HTML.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="enabled"><span class="type-signature"></span>enabled<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    Whether or not this component is enabled. Disabled components only have there preinit method called allowing for this value to be overridden.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#enabled">FooTable.Component#enabled</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="ft"><span class="type-signature"></span>ft<span class="type-signature"> :<a href="FooTable.Table.html">FooTable.Table</a></span></h4>
+
+
+
+
+<div class="description">
+    The parent <a href="FooTable.Table.html"><code>FooTable.Table</code></a> for the component.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#ft">FooTable.Component#ft</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="hideText"><span class="type-signature"></span>hideText<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The text that appears in the hide button. This can contain HTML.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="pageToNew"><span class="type-signature"></span>pageToNew<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    Whether or not to automatically page to a new row when it is added to the table.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="position"><span class="type-signature"></span>position<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The position of the editing column in the table as well as the alignment of the buttons.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="showText"><span class="type-signature"></span>showText<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The text that appears in the show button. This can contain HTML.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".draw"><span class="type-signature">(static) </span>draw<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Performs the drawing of the component.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="$buttonAdd"><span class="type-signature">(protected) </span>$buttonAdd<span class="signature">()</span><span class="type-signature"> &rarr; {string|HTMLElement|<a href="jQuery.html">jQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates the add button for the editing component.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="$buttonDelete"><span class="type-signature">(protected) </span>$buttonDelete<span class="signature">()</span><span class="type-signature"> &rarr; {string|HTMLElement|<a href="jQuery.html">jQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates the delete button for the editing component.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="$buttonEdit"><span class="type-signature">(protected) </span>$buttonEdit<span class="signature">()</span><span class="type-signature"> &rarr; {string|HTMLElement|<a href="jQuery.html">jQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates the edit button for the editing component.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="$buttonHide"><span class="type-signature">(protected) </span>$buttonHide<span class="signature">()</span><span class="type-signature"> &rarr; {string|HTMLElement|<a href="jQuery.html">jQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates the hide button for the editing component.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="$buttonShow"><span class="type-signature">(protected) </span>$buttonShow<span class="signature">()</span><span class="type-signature"> &rarr; {string|HTMLElement|<a href="jQuery.html">jQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates the show button for the editing component.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="$create"><span class="type-signature">(protected) </span>$create<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates the editing UI from the current options setting the various jQuery properties of this component.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="$rowButtons"><span class="type-signature">(protected) </span>$rowButtons<span class="signature">()</span><span class="type-signature"> &rarr; {string|HTMLElement|<a href="jQuery.html">jQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates the button group for the row buttons.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_onAddClick"><span class="type-signature">(private) </span>_onAddClick<span class="signature">(e)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Handles the add button click event.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522add.ft.editing%2522">FooTable.event:Editing"add.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_onDeleteClick"><span class="type-signature">(private) </span>_onDeleteClick<span class="signature">(e)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Handles the delete button click event.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522delete.ft.editing%2522">FooTable.event:Editing"delete.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_onEditClick"><span class="type-signature">(private) </span>_onEditClick<span class="signature">(e)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Handles the edit button click event.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522edit.ft.editing%2522">FooTable.event:Editing"edit.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_onHideClick"><span class="type-signature">(private) </span>_onHideClick<span class="signature">(e)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Handles the hide button click event.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522show.ft.editing%2522">FooTable.event:Editing"show.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_onShowClick"><span class="type-signature">(private) </span>_onShowClick<span class="signature">(e)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Handles the show button click event.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="jQuery.html#.Event">jQuery.Event</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery.Event object for the event.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522show.ft.editing%2522">FooTable.event:Editing"show.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="destroy"><span class="type-signature">(protected) </span>destroy<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Destroys the editing component removing any UI generated from the table.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#destroy">FooTable.Component#destroy</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522destroy.ft.editing%2522">FooTable.event:Editing"destroy.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="draw"><span class="type-signature">(protected) </span>draw<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    This method is called from the <a href="FooTable.Table.html#draw"><code>FooTable.Table#draw</code></a> method.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#draw">FooTable.Component#draw</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="init"><span class="type-signature">(protected) </span>init<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Initializes the editing component for the plugin using the supplied table and options.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#init">FooTable.Component#init</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522init.ft.editing%2522">FooTable.event:Editing"init.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="postdraw"><span class="type-signature">(protected) </span>postdraw<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    This method is called from the <a href="FooTable.Table.html#draw"><code>FooTable.Table#draw</code></a> method.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#postdraw">FooTable.Component#postdraw</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="predraw"><span class="type-signature">(protected) </span>predraw<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    This method is called from the <a href="FooTable.Table.html#draw"><code>FooTable.Table#draw</code></a> method.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#predraw">FooTable.Component#predraw</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="preinit"><span class="type-signature">(protected) </span>preinit<span class="signature">(data)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Checks the supplied data and options for the editing component.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The jQuery data object from the parent table.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="FooTable.Component.html#preinit">FooTable.Component#preinit</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="FooTable.html#.event:Editing%2522preinit.ft.editing%2522">FooTable.event:Editing"preinit.ft.editing"</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FooTable.Breakpoint.html">Breakpoint</a></li><li><a href="FooTable.Breakpoints.html">Breakpoints</a></li><li><a href="FooTable.Cell.html">Cell</a></li><li><a href="FooTable.Class.html">Class</a></li><li><a href="FooTable.ClassFactory.html">ClassFactory</a></li><li><a href="FooTable.Column.html">Column</a></li><li><a href="FooTable.Columns.html">Columns</a></li><li><a href="FooTable.Component.html">Component</a></li><li><a href="FooTable.DateColumn.html">DateColumn</a></li><li><a href="FooTable.Defaults.html">Defaults</a></li><li><a href="FooTable.Editing.html">Editing</a></li><li><a href="FooTable.EditingColumn.html">EditingColumn</a></li><li><a href="FooTable.Filter.html">Filter</a></li><li><a href="FooTable.Filtering.html">Filtering</a></li><li><a href="FooTable.HTMLColumn.html">HTMLColumn</a></li><li><a href="FooTable.NumberColumn.html">NumberColumn</a></li><li><a href="FooTable.Pager.html">Pager</a></li><li><a href="FooTable.Paging.html">Paging</a></li><li><a href="FooTable.Query.html">Query</a></li><li><a href="FooTable.Row.html">Row</a></li><li><a href="FooTable.Rows.html">Rows</a></li><li><a href="FooTable.Sorter.html">Sorter</a></li><li><a href="FooTable.Sorting.html">Sorting</a></li><li><a href="FooTable.Table.html">Table</a></li><li><a href="jQuery.html">jQuery</a></li></ul><h3>Events</h3><ul><li><a href="FooTable.html#.event:Breakpoints%2522after.ft.breakpoints%2522">Breakpoints"after.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Breakpoints%2522before.ft.breakpoints%2522">Breakpoints"before.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Breakpoints%2522init.ft.breakpoints%2522">Breakpoints"init.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Breakpoints%2522preinit.ft.breakpoints%2522">Breakpoints"preinit.ft.breakpoints"</a></li><li><a href="FooTable.html#.event:Columns%2522init.ft.columns%2522">Columns"init.ft.columns"</a></li><li><a href="FooTable.html#.event:Columns%2522preinit.ft.columns%2522">Columns"preinit.ft.columns"</a></li><li><a href="FooTable.html#.event:Editing%2522add.ft.editing%2522">Editing"add.ft.editing"</a></li><li><a href="FooTable.html#.event:Editing%2522delete.ft.editing%2522">Editing"delete.ft.editing"</a></li><li><a href="FooTable.html#.event:Editing%2522destroy.ft.editing%2522">Editing"destroy.ft.editing"</a></li><li><a href="FooTable.html#.event:Editing%2522edit.ft.editing%2522">Editing"edit.ft.editing"</a></li><li><a href="FooTable.html#.event:Editing%2522hide.ft.editing%2522">Editing"hide.ft.editing"</a></li><li><a href="FooTable.html#.event:Editing%2522init.ft.editing%2522">Editing"init.ft.editing"</a></li><li><a href="FooTable.html#.event:Editing%2522preinit.ft.editing%2522">Editing"preinit.ft.editing"</a></li><li><a href="FooTable.html#.event:Editing%2522show.ft.editing%2522">Editing"show.ft.editing"</a></li><li><a href="FooTable.html#.event:Filtering%2522after.ft.filtering%2522">Filtering"after.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522before.ft.filtering%2522">Filtering"before.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522destroy.ft.filtering%2522">Filtering"destroy.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522init.ft.filtering%2522">Filtering"init.ft.filtering"</a></li><li><a href="FooTable.html#.event:Filtering%2522preinit.ft.filtering%2522">Filtering"preinit.ft.filtering"</a></li><li><a href="FooTable.html#.event:Paging%2522after.ft.paging%2522">Paging"after.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522before.ft.paging%2522">Paging"before.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522destroy.ft.paging%2522">Paging"destroy.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522init.ft.paging%2522">Paging"init.ft.paging"</a></li><li><a href="FooTable.html#.event:Paging%2522preinit.ft.paging%2522">Paging"preinit.ft.paging"</a></li><li><a href="FooTable.html#.event:Row%2522expand.ft.row%2522">Row"expand.ft.row"</a></li><li><a href="FooTable.html#.event:Rows%2522init.ft.rows%2522">Rows"init.ft.rows"</a></li><li><a href="FooTable.html#.event:Rows%2522preinit.ft.rows%2522">Rows"preinit.ft.rows"</a></li><li><a href="FooTable.html#.event:Sorting%2522after.ft.sorting%2522">Sorting"after.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522before.ft.sorting%2522">Sorting"before.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522destroy.ft.sorting%2522">Sorting"destroy.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522init.ft.sorting%2522">Sorting"init.ft.sorting"</a></li><li><a href="FooTable.html#.event:Sorting%2522preinit.ft.sorting%2522">Sorting"preinit.ft.sorting"</a></li><li><a href="FooTable.html#.event:Table%2522destroy.ft.table%2522">Table"destroy.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522draw.ft.table%2522">Table"draw.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522init.ft.table%2522">Table"init.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522postdraw.ft.table%2522">Table"postdraw.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522predraw.ft.table%2522">Table"predraw.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522preinit.ft.table%2522">Table"preinit.ft.table"</a></li><li><a href="FooTable.html#.event:Table%2522resize.ft.table%2522">Table"resize.ft.table"</a></li></ul><h3>Namespaces</h3><ul><li><a href="FooTable.html">FooTable</a></li><li><a href="FooTable.arr.html">arr</a></li><li><a href="FooTable.is.html">is</a></li><li><a href="FooTable.str.html">str</a></li><li><a href="jQuery.fn.html">fn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Apr 11 2016 23:33:26 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -60,24 +60,6 @@
 			 */
 			this.classes = [];
 			/**
-			 * The breakpoints component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Breakpoints}
-			 */
-			this.breakpoints = F.components.internal.make('breakpoints', this);
-			/**
-			 * The columns component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Columns}
-			 */
-			this.columns = F.components.internal.make('columns', this);
-			/**
-			 * The rows component for this instance of the plugin.
-			 * @instance
-			 * @type {FooTable.Rows}
-			 */
-			this.rows = F.components.internal.make('rows', this);
-			/**
 			 * All components for this instance of the plugin. These are executed in the order they appear in the array for the initialize phase and in reverse order for the destroy phase of the plugin.
 			 * @instance
 			 * @protected
@@ -87,10 +69,28 @@
 			 * @prop {Array.<FooTable.Component>} custom - The custom components for the plugin. These are executed either after the core components in the initialize phase or before them in the destroy phase of the plugin.
 			 */
 			this.components = {
-				internal: [this.breakpoints, this.columns, this.rows],
+				internal: F.components.internal.load(this),//[this.breakpoints, this.columns, this.editor, this.rows],
 				core: F.components.core.load(this),
 				custom: F.components.load(this)
 			};
+			/**
+			 * The breakpoints component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Breakpoints}
+			 */
+			this.breakpoints = this.use(FooTable.Breakpoints);
+			/**
+			 * The columns component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Columns}
+			 */
+			this.columns = this.use(FooTable.Columns);
+			/**
+			 * The rows component for this instance of the plugin.
+			 * @instance
+			 * @type {FooTable.Rows}
+			 */
+			this.rows = this.use(FooTable.Rows);
 
 			//END MEMBERS
 			var self = this;
@@ -98,7 +98,7 @@
 				return self._init().then(function(){
 					if (F.is.fn(ready)) ready.call(self, self);
 				});
-			}, function (err) {
+			}).fail(function(err){
 				if (F.is.error(err)){
 					console.error('FooTable: unhandled error thrown during initialization.', err);
 				}
@@ -199,7 +199,7 @@
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
 					self.initialized = false;
 				});
-			},function(err){
+			}).fail(function(err){
 				if (F.is.error(err)){
 					console.error('FooTable: unhandled error thrown while destroying the plugin.', err);
 				}
@@ -281,12 +281,12 @@
 								 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 								 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 								 */
-								self.raise('postdraw.ft.table');
+								return self.raise('postdraw.ft.table');
 							});
 						});
 					});
 				});
-			}, function(err){
+			}).fail(function(err){
 				if (F.is.error(err)){
 					console.error('FooTable: unhandled error thrown during a draw operation.', err);
 				}
@@ -308,7 +308,7 @@
 			var self = this, args = Array.prototype.slice.call(arguments);
 			reverse = args.shift();
 			enabled = args.shift();
-			var internal = self.components.internal.slice(0),
+			var internal = enabled ? F.arr.get(self.components.internal, function(c){ return c.enabled; }) : self.components.internal.slice(0),
 				core = enabled ? F.arr.get(self.components.core, function(c){ return c.enabled; }) : self.components.core.slice(0),
 				custom = enabled ? F.arr.get(self.components.custom, function(c){ return c.enabled; }) : self.components.custom.slice(0);
 
@@ -321,10 +321,6 @@
 					args.unshift(reverse ? internal.reverse() : custom);
 					return self._execute.apply(self, args);
 				});
-			}, function(err){
-				if (F.is.error(err)){
-					console.error('FooTable: unhandled error thrown while executing "'+methodName+'".', err);
-				}
 			});
 		},
 		/**

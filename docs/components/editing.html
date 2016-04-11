@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Editing Component - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../css/docs.css" rel="stylesheet">
+
+	<script src="../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="docs">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../getting-started.html">Getting started</a></li>
+				<li class="dropdown active">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a>Editing</a></li>
+						<li><a href="filtering.html">Filtering</a></li>
+						<li><a href="paging.html">Paging</a></li>
+						<li><a href="sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>Editing</h1>
+		<h2>Enable row editing for the table.</h2>
+	</div>
+</div>
+
+<div class="container">
+	<!-- General -->
+	<div class="docs-section">
+		<p class="lead">The editing component is the first step to providing a simple but effective row editing interface.</p>
+		<div class="callout callout-info">
+			<h4>Notes</h4>
+			<ul>
+				<li>This component requires you to create your own method for editing a rows data, it simply exposes methods and events to make interacting with FooTable simpler.</li>
+				<li>See the <a href="../getting-started.html#examples">Getting started - Examples</a> section for examples of this component.</li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Options -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="options" class="anchor">&nbsp;</span>Options</h1>
+		<p class="lead">The below lists all the options for the editing component, these are available in addition to the <a href="../getting-started.html#options">core options</a>.</p>
+
+		<div class="list-group list-group-detailed">
+			<h3 class="list-group-header">General options</h3>
+
+			<!-- enabled -->
+			<a href="#enabled" class="list-group-item anchored">
+				<span id="enabled" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">enabled <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not the component is enabled.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>By default this component is disabled, no UI or features of this component will be available.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;enabled&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- pageToNew -->
+			<a href="#pageToNew" class="list-group-item anchored">
+				<span id="pageToNew" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">pageToNew <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to automatically page to a new row when it is added to the table.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>true</code></p>
+							<p>By default the plugin will automatically navigate to a new row's page so it is visible to the user.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-page-to-new=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;pageToNew&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- position -->
+			<a href="#position" class="list-group-item anchored">
+				<span id="position" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">position <small>string</small></h4>
+				<p class="list-group-item-text">The position of the editing column in the table as well as the alignment of the buttons.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"right"</code></p>
+							<p>The only other supported value for this option is <code>"left"</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-position=&quot;right&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;position&quot;: &quot;right&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- alwaysShow -->
+			<a href="#alwaysShow" class="list-group-item anchored">
+				<span id="alwaysShow" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">alwaysShow <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not the editing column and add row button are always visible.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>By default the editing column and add button are hidden requiring the user to click an edit button to make them visible.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-always-show=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;alwaysShow&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- showText -->
+			<a href="#showText" class="list-group-item anchored">
+				<span id="showText" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">showText <small>string</small></h4>
+				<p class="list-group-item-text">The text that appears in the show button. This can contain HTML.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>'&lt;span class=&quot;fooicon fooicon-pencil&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt; Edit rows'</code></p>
+							<p>The default button will look like this:  <button type="button" class="btn btn-primary"><span class="fooicon fooicon-pencil" aria-hidden="true"></span> Edit rows</button></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-show-text=&#39;&lt;span class=&quot;fooicon fooicon-pencil&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt; Edit rows&#39;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;showText&quot;: &#39;&lt;span class=&quot;fooicon fooicon-pencil&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt; Edit rows&#39;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- hideText -->
+			<a href="#hideText" class="list-group-item anchored">
+				<span id="hideText" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">hideText <small>string</small></h4>
+				<p class="list-group-item-text">The text that appears in the hide button. This can contain HTML.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"Cancel"</code></p>
+							<p>The default button will look like this:  <button type="button" class="btn btn-default">Cancel</button></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-hide-text=&quot;Cancel&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;hideText&quot;: &quot;Cancel&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- addText -->
+			<a href="#addText" class="list-group-item anchored">
+				<span id="addText" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">addText <small>string</small></h4>
+				<p class="list-group-item-text">The text that appears in the add button. This can contain HTML.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>"New row"</code></p>
+							<p>The default button will look like this:  <button type="button" class="btn btn-primary">New row</button></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-add-text=&quot;New row&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;addText&quot;: &quot;New row&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- editText -->
+			<a href="#editText" class="list-group-item anchored">
+				<span id="editText" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">editText <small>string</small></h4>
+				<p class="list-group-item-text">The text that appears in the edit button. This can contain HTML.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>'&lt;span class=&quot;fooicon fooicon-pencil&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;'</code></p>
+							<p>The default button will look like this:  <button type="button" class="btn btn-default btn-xs"><span class="fooicon fooicon-pencil" aria-hidden="true"></span></button></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-edit-text=&#39;&lt;span class=&quot;fooicon fooicon-pencil&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;editText&quot;: &#39;&lt;span class=&quot;fooicon fooicon-pencil&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- deleteText -->
+			<a href="#deleteText" class="list-group-item anchored">
+				<span id="deleteText" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">deleteText <small>string</small></h4>
+				<p class="list-group-item-text">The text that appears in the delete button. This can contain HTML.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>'&lt;span class=&quot;fooicon fooicon-trash&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;'</code></p>
+							<p>The default button will look like this:  <button type="button" class="btn btn-default btn-xs"><span class="fooicon fooicon-trash" aria-hidden="true"></span></button></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-delete-text=&#39;&lt;span class=&quot;fooicon fooicon-trash&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;deleteText&quot;: &#39;&lt;span class=&quot;fooicon fooicon-trash&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- column -->
+			<a href="#column" class="list-group-item anchored">
+				<span id="column" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">column <small>object</small></h4>
+				<p class="list-group-item-text">The options for the editing column.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<pre class="language-javascript" data-lang="javascript"><code>{
+	&quot;classes&quot;: &quot;footable-editing&quot;,
+	&quot;name&quot;: &quot;editing&quot;,
+	&quot;title&quot;: &quot;&quot;,
+	&quot;filterable&quot;: false,
+	&quot;sortable&quot;: false
+}</code></pre>
+							<p>
+								By default the editing column has no title, is not filterable or sortable, and all cells have the class <code>footable-editing</code> appended to them.
+								This object can contain any of the available <a href="../getting-started.html#column">column options</a> from the plugin and it's components.
+							</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must follow <a href="http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example" target="_blank">valid JSON syntax</a> <i>including quoted property names</i>.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-editing-column=&#39;{&quot;classes&quot;:&quot;footable-editing&quot;,&quot;name&quot;:&quot;editing&quot;,&quot;title&quot;:&quot;&quot;,&quot;filterable&quot;:false,&quot;sortable&quot;:false}&#39;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;editing&quot;: {
+			&quot;column&quot;: {
+				&quot;classes&quot;: &quot;footable-editing&quot;,
+				&quot;name&quot;: &quot;editing&quot;,
+				&quot;title&quot;: &quot;&quot;,
+				&quot;filterable&quot;: false,
+				&quot;sortable&quot;: false
+			}
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+<script src="../js/docs.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('#sorting-example-1').footable();
+	});
+</script>
+</body>
+</html>

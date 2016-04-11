@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Editing rows - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/editing.html">Editing</a></li>
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>Editing rows</h1>
+		<h2>How to create a table that uses the editing component.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+		<p class="lead">The editing component is half of the solution to providing a simple but effective row editing interface. It provides the table UI and logic while you provide the editor UI and logic.</p>
+
+		<p>
+			To enable editing on a table the only option that must be set is the <code>enabled</code> option with a value of <code>true</code>. Once enabled an edit button is displayed in the footer of the table,
+			when clicked it enables the editing UI showing the add, edit and delete buttons for rows. This behavior can be changed using the <code>alwaysShow</code> option that removes the first
+			step and makes the add, edit and delete row buttons permanently visible.
+		</p>
+
+		<div class="example">
+			<table id="editing-example" class="table" data-paging="true" data-filtering="true" data-sorting="true">
+				<thead>
+				<tr>
+					<th data-name="id" data-breakpoints="xs" data-type="number">ID</th>
+					<th data-name="firstName">First Name</th>
+					<th data-name="lastName">Last Name</th>
+					<th data-name="jobTitle" data-breakpoints="xs">Job Title</th>
+					<th data-name="startedOn" data-breakpoints="xs sm" data-type="date" data-format-string="MMMM Do YYYY">Started On</th>
+					<th data-name="dob" data-breakpoints="xs sm md" data-type="date" data-format-string="MMMM Do YYYY">Date of Birth</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr data-expanded="true">
+					<td>1</td>
+					<td>Dennise</td>
+					<td>Fuhrman</td>
+					<td>High School History Teacher</td>
+					<td>November 8th 2011</td>
+					<td>July 25th 1960</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Elodia</td>
+					<td>Weisz</td>
+					<td>Wallpaperer Helper</td>
+					<td>October 15th 2010</td>
+					<td>March 30th 1982</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Raeann</td>
+					<td>Haner</td>
+					<td>Internal Medicine Nurse Practitioner</td>
+					<td>November 28th 2013</td>
+					<td>February 26th 1966</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Junie</td>
+					<td>Landa</td>
+					<td>Offbearer</td>
+					<td>October 31st 2010</td>
+					<td>March 29th 1966</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>Solomon</td>
+					<td>Bittinger</td>
+					<td>Roller Skater</td>
+					<td>December 29th 2011</td>
+					<td>September 22nd 1964</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>Bar</td>
+					<td>Lewis</td>
+					<td>Clown</td>
+					<td>November 12th 2012</td>
+					<td>August 4th 1991</td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>Usha</td>
+					<td>Leak</td>
+					<td>Ships Electronic Warfare Officer</td>
+					<td>August 14th 2012</td>
+					<td>November 20th 1979</td>
+				</tr>
+				<tr>
+					<td>8</td>
+					<td>Lorriane</td>
+					<td>Cooke</td>
+					<td>Technical Services Librarian</td>
+					<td>September 21st 2010</td>
+					<td>April 7th 1969</td>
+				</tr>
+				<tr>
+					<td>9</td>
+					<td>Nelly</td>
+					<td>Lusher</td>
+					<td>Broadcast Maintenance Engineer</td>
+					<td>October 21st 2013</td>
+					<td>February 16th 1983</td>
+				</tr>
+				</tbody>
+			</table>
+
+			<!-- Modal -->
+			<div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+				<style scoped>
+					/* provides a red astrix to denote required fields */
+					.form-group.required .control-label:after {
+						content:"*";
+						color:red;
+						margin-left: 4px;
+					}
+				</style>
+				<div class="modal-dialog" role="document">
+					<form class="modal-content form-horizontal" id="editor">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="editor-title">Add Row</h4>
+						</div>
+						<div class="modal-body">
+							<input type="number" id="id" name="id" class="hidden"/>
+							<div class="form-group required">
+								<label for="firstName" class="col-sm-3 control-label">First Name</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required>
+								</div>
+							</div>
+							<div class="form-group required">
+								<label for="lastName" class="col-sm-3 control-label">Last Name</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="jobTitle" class="col-sm-3 control-label">Job Title</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="Job Title">
+								</div>
+							</div>
+							<div class="form-group required">
+								<label for="startedOn" class="col-sm-3 control-label">Started On</label>
+								<div class="col-sm-9">
+									<input type="date" class="form-control" id="startedOn" name="startedOn" placeholder="Started On" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="dob" class="col-sm-3 control-label">Date of Birth</label>
+								<div class="col-sm-9">
+									<input type="date" class="form-control" id="dob" name="dob" placeholder="Date of Birth">
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Save changes</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+		</div>
+
+		<h3>Step 1: Create your editor UI</h3>
+		<p>
+			In the above example the editor is simply a Bootstrap modal with a form containing inputs matching our row. The below is the HTML markup to create it, if you are not using
+			Bootstrap you will need to create this yourself. If you are using Bootstrap you can copy the below and simply change the form inputs to match your row data.
+		</p>
+		<pre class="language-markup" data-lang="markup"><code>&lt;div class=&quot;modal fade&quot; id=&quot;editor-modal&quot; tabindex=&quot;-1&quot; role=&quot;dialog&quot; aria-labelledby=&quot;editor-title&quot;&gt;
+	&lt;style scoped&gt;
+		/* provides a red astrix to denote required fields - this should be included in common stylesheet */
+		.form-group.required .control-label:after {
+			content:&quot;*&quot;;
+			color:red;
+			margin-left: 4px;
+		}
+	&lt;/style&gt;
+	&lt;div class=&quot;modal-dialog&quot; role=&quot;document&quot;&gt;
+		&lt;form class=&quot;modal-content form-horizontal&quot; id=&quot;editor&quot;&gt;
+			&lt;div class=&quot;modal-header&quot;&gt;
+				&lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;&times;&lt;/span&gt;&lt;/button&gt;
+				&lt;h4 class=&quot;modal-title&quot; id=&quot;editor-title&quot;&gt;Add Row&lt;/h4&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;modal-body&quot;&gt;
+				&lt;input type=&quot;number&quot; id=&quot;id&quot; name=&quot;id&quot; class=&quot;hidden&quot;/&gt;
+				&lt;div class=&quot;form-group required&quot;&gt;
+					&lt;label for=&quot;firstName&quot; class=&quot;col-sm-3 control-label&quot;&gt;First Name&lt;/label&gt;
+					&lt;div class=&quot;col-sm-9&quot;&gt;
+						&lt;input type=&quot;text&quot; class=&quot;form-control&quot; id=&quot;firstName&quot; name=&quot;firstName&quot; placeholder=&quot;First Name&quot; required&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-group required&quot;&gt;
+					&lt;label for=&quot;lastName&quot; class=&quot;col-sm-3 control-label&quot;&gt;Last Name&lt;/label&gt;
+					&lt;div class=&quot;col-sm-9&quot;&gt;
+						&lt;input type=&quot;text&quot; class=&quot;form-control&quot; id=&quot;lastName&quot; name=&quot;lastName&quot; placeholder=&quot;Last Name&quot; required&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-group&quot;&gt;
+					&lt;label for=&quot;jobTitle&quot; class=&quot;col-sm-3 control-label&quot;&gt;Job Title&lt;/label&gt;
+					&lt;div class=&quot;col-sm-9&quot;&gt;
+						&lt;input type=&quot;text&quot; class=&quot;form-control&quot; id=&quot;jobTitle&quot; name=&quot;jobTitle&quot; placeholder=&quot;Job Title&quot;&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-group required&quot;&gt;
+					&lt;label for=&quot;startedOn&quot; class=&quot;col-sm-3 control-label&quot;&gt;Started On&lt;/label&gt;
+					&lt;div class=&quot;col-sm-9&quot;&gt;
+						&lt;input type=&quot;date&quot; class=&quot;form-control&quot; id=&quot;startedOn&quot; name=&quot;startedOn&quot; placeholder=&quot;Started On&quot; required&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-group&quot;&gt;
+					&lt;label for=&quot;dob&quot; class=&quot;col-sm-3 control-label&quot;&gt;Date of Birth&lt;/label&gt;
+					&lt;div class=&quot;col-sm-9&quot;&gt;
+						&lt;input type=&quot;date&quot; class=&quot;form-control&quot; id=&quot;dob&quot; name=&quot;dob&quot; placeholder=&quot;Date of Birth&quot;&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;modal-footer&quot;&gt;
+				&lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Save changes&lt;/button&gt;
+				&lt;button type=&quot;button&quot; class=&quot;btn btn-default&quot; data-dismiss=&quot;modal&quot;&gt;Cancel&lt;/button&gt;
+			&lt;/div&gt;
+		&lt;/form&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+		<h3>Step 2: Hooking up the editor</h3>
+		<p>
+			Now that we have our editor we need to hook it into the plugin using the editing callbacks and/or events. You can use the editing options <code>addRow</code>,
+			<code>editRow</code> and <code>deleteRow</code> to provide callbacks to execute when the associated button is clicked. These callbacks can also be prevented
+			from executing by calling <code>e.preventDefault()</code> in the corresponding <code>add.ft.editing</code>, <code>edit.ft.editing</code> and <code>delete.ft.editing</code>
+			events.
+		</p>
+		<p>In this example I've created some variables to cache various objects which are used in the callbacks.</p>
+		<pre class="language-javascript" data-lang="javascript"><code>var $modal = $(&#39;#editor-modal&#39;),
+	$editor = $(&#39;#editor&#39;),
+	$editorTitle = $(&#39;#editor-title&#39;),
+	// the below initializes FooTable and returns the created instance for later use
+	ft = FooTable.init(&#39;#editing-example&#39;, {
+		editing: {
+			enabled: true,
+			addRow: ...,
+			editRow: ...,
+			deleteRow: ...
+		}
+	}),
+	// this example does not send data to the server so this variable holds the integer to use as an id for newly
+	// generated rows. In production this value would be returned from the server upon a successful ajax call.
+	uid = 10;</code></pre>
+
+		<h4>Step 2a: Adding a new row</h4>
+		<p>
+			First we will hook up the new row button so that our modal is displayed and the form cleared whenever a user clicks it.
+		</p>
+		<pre class="language-javascript" data-lang="javascript"><code>addRow: function(){
+	$modal.removeData(&#39;row&#39;); // remove any previous row data
+	$editor[0].reset(); // reset the form to clear any previous row data
+	$editorTitle.text(&#39;Add a new row&#39;); // set the modal title
+	$modal.modal(&#39;show&#39;); // display the modal
+}</code></pre>
+
+		<h4>Step 2b: Editing a row</h4>
+		<p>
+			Next we will hook up the row edit buttons so that our modal is populated with the correct row data and then displayed.
+		</p>
+		<pre class="language-javascript" data-lang="javascript"><code>// the editRow callback is supplied the FooTable.Row object for editing as the first argument.
+editRow: function(row){
+	var values = row.val();
+	// we need to find and set the initial value for the editor inputs
+	$editor.find(&#39;#id&#39;).val(values.id);
+	$editor.find(&#39;#firstName&#39;).val(values.firstName);
+	$editor.find(&#39;#lastName&#39;).val(values.lastName);
+	$editor.find(&#39;#jobTitle&#39;).val(values.jobTitle);
+	$editor.find(&#39;#startedOn&#39;).val(values.startedOn.format(&#39;YYYY-MM-DD&#39;));
+	$editor.find(&#39;#dob&#39;).val(values.dob.format(&#39;YYYY-MM-DD&#39;));
+
+	$modal.data(&#39;row&#39;, row); // set the row data value for use later
+	$editorTitle.text(&#39;Edit row #&#39; + values.id); // set the modal title
+	$modal.modal(&#39;show&#39;); // display the modal
+}</code></pre>
+
+		<h4>Step 2c: Deleting a row</h4>
+		<p>
+			Next we will hook up the row delete buttons so that a confirm dialog is displayed and then the row removed.
+		</p>
+		<pre class="language-javascript" data-lang="javascript"><code>// the deleteRow callback is supplied the FooTable.Row object for deleting as the first argument.
+deleteRow: function(row){
+	// This example displays a confirm popup and then simply removes the row but you could just
+	// as easily make an ajax call and then only remove the row once you retrieve a response.
+	if (confirm(&#39;Are you sure you want to delete the row?&#39;)){
+		row.delete();
+	}
+}</code></pre>
+
+		<h4>Step 2d: Saving a row</h4>
+		<p>
+			Lastly we will hook up the editor's submit button to save our row data.
+		</p>
+		<pre class="language-javascript" data-lang="javascript"><code>$editor.on(&#39;submit&#39;, function(e){
+	if (this.checkValidity &amp;&amp; !this.checkValidity()) return; // if validation fails exit early and do nothing.
+	e.preventDefault(); // stop the default post back from a form submit
+	var row = $modal.data(&#39;row&#39;), // get any previously stored row object
+		values = { // create a hash of the editor row values
+			id: $editor.find(&#39;#id&#39;).val(),
+			firstName: $editor.find(&#39;#firstName&#39;).val(),
+			lastName: $editor.find(&#39;#lastName&#39;).val(),
+			jobTitle: $editor.find(&#39;#jobTitle&#39;).val(),
+			startedOn: moment($editor.find(&#39;#startedOn&#39;).val(), &#39;YYYY-MM-DD&#39;),
+			dob: moment($editor.find(&#39;#dob&#39;).val(), &#39;YYYY-MM-DD&#39;)
+		};
+
+	if (row instanceof FooTable.Row){ // if we have a row object then this is an edit operation
+		// here you can execute an ajax call to the server and then only update the row once the result is
+		// retrieved. This example simply updates the row straight away.
+		row.val(values);
+	} else { // otherwise this is an add operation
+		// here you can execute an ajax call to the server to save the values and get the new row id and then
+		// only add the row once the result is retrieved. This example simply adds the row straight away using
+		// a basic integer id.
+		values.id = uid++;
+		ft.rows.add(values);
+	}
+	$modal.modal(&#39;hide&#39;);
+});</code></pre>
+
+		<h3>Finished!</h3>
+		<p>That's it! Once the above has been implemented you should have a functioning editor for your table. The below shows the complete JavaScript code with all comments removed.</p>
+		<pre class="language-javascript" data-lang="javascript"><code>var $modal = $(&#39;#editor-modal&#39;),
+	$editor = $(&#39;#editor&#39;),
+	$editorTitle = $(&#39;#editor-title&#39;),
+	ft = FooTable.init(&#39;#editing-example&#39;, {
+		editing: {
+			enabled: true,
+			addRow: function(){
+				$modal.removeData(&#39;row&#39;);
+				$editor[0].reset();
+				$editorTitle.text(&#39;Add a new row&#39;);
+				$modal.modal(&#39;show&#39;);
+			},
+			editRow: function(row){
+				var values = row.val();
+				$editor.find(&#39;#id&#39;).val(values.id);
+				$editor.find(&#39;#firstName&#39;).val(values.firstName);
+				$editor.find(&#39;#lastName&#39;).val(values.lastName);
+				$editor.find(&#39;#jobTitle&#39;).val(values.jobTitle);
+				$editor.find(&#39;#startedOn&#39;).val(values.startedOn);
+				$editor.find(&#39;#dob&#39;).val(values.dob);
+
+				$modal.data(&#39;row&#39;, row);
+				$editorTitle.text(&#39;Edit row #&#39; + values.id);
+				$modal.modal(&#39;show&#39;);
+			},
+			deleteRow: function(row){
+				if (confirm(&#39;Are you sure you want to delete the row?&#39;)){
+					row.delete();
+				}
+			}
+		}
+	}),
+	uid = 10;
+
+$editor.on(&#39;submit&#39;, function(e){
+	if (this.checkValidity &amp;&amp; !this.checkValidity()) return;
+	e.preventDefault();
+	var row = $modal.data(&#39;row&#39;),
+		values = {
+			id: $editor.find(&#39;#id&#39;).val(),
+			firstName: $editor.find(&#39;#firstName&#39;).val(),
+			lastName: $editor.find(&#39;#lastName&#39;).val(),
+			jobTitle: $editor.find(&#39;#jobTitle&#39;).val(),
+			startedOn: moment($editor.find(&#39;#startedOn&#39;).val(), &#39;YYYY-MM-DD&#39;),
+			dob: moment($editor.find(&#39;#dob&#39;).val(), &#39;YYYY-MM-DD&#39;)
+		};
+
+	if (row instanceof FooTable.Row){
+		row.val(values);
+	} else {
+		values.id = uid++;
+		ft.rows.add(values);
+	}
+	$modal.modal(&#39;hide&#39;);
+});</code></pre>
+
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		var $modal = $('#editor-modal'),
+			$editor = $('#editor'),
+			$editorTitle = $('#editor-title'),
+			ft = FooTable.init('#editing-example', {
+				editing: {
+					enabled: true,
+					addRow: function(){
+						$modal.removeData('row');
+						$editor[0].reset();
+						$editorTitle.text('Add a new row');
+						$modal.modal('show');
+					},
+					editRow: function(row){
+						var values = row.val();
+						$editor.find('#id').val(values.id);
+						$editor.find('#firstName').val(values.firstName);
+						$editor.find('#lastName').val(values.lastName);
+						$editor.find('#jobTitle').val(values.jobTitle);
+						$editor.find('#startedOn').val(values.startedOn.format('YYYY-MM-DD'));
+						$editor.find('#dob').val(values.dob.format('YYYY-MM-DD'));
+
+						$modal.data('row', row);
+						$editorTitle.text('Edit row #' + values.id);
+						$modal.modal('show');
+					},
+					deleteRow: function(row){
+						if (confirm('Are you sure you want to delete the row?')){
+							row.delete();
+						}
+					}
+				}
+			}),
+			uid = 10;
+
+		$editor.on('submit', function(e){
+			if (this.checkValidity && !this.checkValidity()) return;
+			e.preventDefault();
+			var row = $modal.data('row'),
+				values = {
+					id: $editor.find('#id').val(),
+					firstName: $editor.find('#firstName').val(),
+					lastName: $editor.find('#lastName').val(),
+					jobTitle: $editor.find('#jobTitle').val(),
+					startedOn: moment($editor.find('#startedOn').val(), 'YYYY-MM-DD'),
+					dob: moment($editor.find('#dob').val(), 'YYYY-MM-DD')
+				};
+
+			if (row instanceof FooTable.Row){
+				row.val(values);
+			} else {
+				values.id = uid++;
+				ft.rows.add(values);
+			}
+			$modal.modal('hide');
+		});
+	});
+</script>
+</body>
+</html>

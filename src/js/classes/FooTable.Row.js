@@ -24,7 +24,6 @@
 
 			this.created = false;
 			this.define(dataOrElement);
-			this.val();
 		},
 		/**
 		 * This is supplied either the object containing the values for the row or the row element/jQuery object if it exists.
@@ -97,6 +96,13 @@
 			 * @type {Array.<FooTable.Cell>}
 			 */
 			this.cells = this.createCells();
+
+			// this ensures the value contains the parsed cell values and not the supplied values
+			var self = this;
+			self.value = {};
+			F.arr.each(self.cells, function(cell){
+				self.value[cell.column.name] = cell.val();
+			});
 		},
 		/**
 		 * After the row has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.
@@ -208,26 +214,37 @@
 		/**
 		 * Sets the current row to an expanded state displaying any hidden columns in a detail row just below it.
 		 * @instance
-		 * @this FooTable.Row
+		 * @fires FooTable.Row#"expand.ft.row"
 		 */
 		expand: function(){
 			if (!this.created) return;
-			this.__hidden__ = F.arr.map(this.cells, function(cell){
-				return cell.column.hidden && cell.column.visible ? cell : null;
-			});
-
-			if (this.__hidden__.length > 0){
-				this.$details.insertAfter(this.$el)
-					.children('td').first()
-					.attr('colspan', this.ft.columns.visibleColspan);
-
-				F.arr.each(this.__hidden__, function(cell){
-					cell.collapse();
+			var self = this;
+			/**
+			 * The expand.ft.row event is raised before the the row is expanded.
+			 * Calling preventDefault on this event will stop the row being expanded.
+			 * @event FooTable.Row#"expand.ft.row"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {FooTable.Row} row - The row about to be expanded.
+			 */
+			self.ft.raise('expand.ft.row').then(function(){
+				self.__hidden__ = F.arr.map(self.cells, function(cell){
+					return cell.column.hidden && cell.column.visible ? cell : null;
 				});
-			}
-			this.$el.attr('data-expanded', true);
-			this.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
-			this.expanded = true;
+
+				if (self.__hidden__.length > 0){
+					self.$details.insertAfter(self.$el)
+						.children('td').first()
+						.attr('colspan', self.ft.columns.visibleColspan);
+
+					F.arr.each(self.__hidden__, function(cell){
+						cell.collapse();
+					});
+				}
+				self.$el.attr('data-expanded', true);
+				self.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
+				self.expanded = true;
+			});
 		},
 		/**
 		 * Sets the current row to a collapsed state removing the detail row if it exists.
@@ -236,13 +253,24 @@
 		 */
 		collapse: function(setExpanded){
 			if (!this.created) return;
-			F.arr.each(this.__hidden__, function(cell){
-				cell.restore();
+			var self = this;
+			/**
+			 * The expand.ft.row event is raised before the the row is expanded.
+			 * Calling preventDefault on this event will stop the row being expanded.
+			 * @event FooTable.Row#"expand.ft.row"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {FooTable.Row} row - The row about to be expanded.
+			 */
+			self.ft.raise('collapse.ft.row').then(function(){
+				F.arr.each(self.__hidden__, function(cell){
+					cell.restore();
+				});
+				self.$details.detach();
+				self.$el.removeAttr('data-expanded');
+				self.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
+				if (F.is.boolean(setExpanded) ? setExpanded : true) self.expanded = false;
 			});
-			this.$details.detach();
-			this.$el.removeAttr('data-expanded');
-			this.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
-			if (F.is.boolean(setExpanded) ? setExpanded : true) this.expanded = false;
 		},
 		/**
 		 * Prior to drawing this moves the details contents back to there original cells and detaches the toggle element from the row.
@@ -301,7 +329,7 @@
 		_onToggle: function (e) {
 			var self = e.data.self;
 			// only execute the toggle if the event.target is one of the approved initiators
-			if ($(e.target).is('tr,td,.footable-toggle')){
+			if ($(e.target).is(self.ft.rows.toggleSelector)){
 				self.toggle();
 			}
 		}
