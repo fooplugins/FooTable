@@ -136,7 +136,7 @@
 				// otherwise if the width is somewhere in between check all breakpoints testing if the width
 				// is greater than the current but smaller than the previous.
 				if ((!current && i == len -1)
-					|| (width >= breakpoint.width && (prev instanceof F.Breakpoint ? width <= prev.width : true))) {
+					|| (width >= breakpoint.width && (prev instanceof F.Breakpoint ? width < prev.width : true))) {
 					current = breakpoint;
 				}
 				if (!current) hidden.push(breakpoint.name);
