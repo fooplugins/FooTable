@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.7
+* @version 3.0.8
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -215,8 +215,12 @@ table.footable > thead > tr.footable-filtering > th ul.dropdown-menu > li > a.ch
 		margin-top: 0;
 	}
 }
-td.footable-sortable,
-th.footable-sortable {
+table.footable > thead > tr > td.footable-sortable,
+table.footable > thead > tr > th.footable-sortable,
+table.footable > tbody > tr > td.footable-sortable,
+table.footable > tbody > tr > th.footable-sortable,
+table.footable > tfoot > tr > td.footable-sortable,
+table.footable > tfoot > tr > th.footable-sortable {
 	position: relative;
 	padding-right: 30px;
 	cursor: pointer;
@@ -263,4 +267,28 @@ ul.pagination > li.footable-page {
 }
 ul.pagination > li.footable-page.visible {
 	display: inline;
+}
+td.footable-editing {
+	width: 70px;
+	max-width: 70px;
+}
+table.footable-editing-right td.footable-editing,
+table.footable-editing-right tr.footable-editing {
+	text-align: right;
+}
+table.footable-editing-left td.footable-editing,
+table.footable-editing-left tr.footable-editing {
+	text-align: left;
+}
+table.footable-editing button.footable-add,
+table.footable-editing button.footable-hide,
+table.footable-editing-show button.footable-show,
+table.footable-editing.footable-editing-always-show button.footable-show,
+table.footable-editing.footable-editing-always-show button.footable-hide {
+	display: none;
+}
+table.footable-editing.footable-editing-show button.footable-add,
+table.footable-editing.footable-editing-show button.footable-hide,
+table.footable-editing.footable-editing-always-show button.footable-add {
+	display: inline-block;
 }

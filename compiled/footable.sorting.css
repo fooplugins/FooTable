@@ -1,12 +1,16 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.7
+* @version 3.0.8
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
 */
-td.footable-sortable,
-th.footable-sortable {
+table.footable > thead > tr > td.footable-sortable,
+table.footable > thead > tr > th.footable-sortable,
+table.footable > tbody > tr > td.footable-sortable,
+table.footable > tbody > tr > th.footable-sortable,
+table.footable > tfoot > tr > td.footable-sortable,
+table.footable > tfoot > tr > th.footable-sortable {
 	position: relative;
 	padding-right: 30px;
 	cursor: pointer;
