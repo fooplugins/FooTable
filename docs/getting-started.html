@@ -50,6 +50,7 @@
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
 					<ul class="dropdown-menu">
+						<li><a href="components/editing.html">Editing</a></li>
 						<li><a href="components/filtering.html">Filtering</a></li>
 						<li><a href="components/paging.html">Paging</a></li>
 						<li><a href="components/sorting.html">Sorting</a></li>
@@ -164,6 +165,11 @@
     ├── footable.js
     └── footable.min.js</code></pre>
 				<p>This is the second easiest way to use FooTable; precompiled files for quick drop-in usage. We provide compiled CSS and JS (<code>footable.*</code>), as well as compiled and minified CSS and JS (<code>footable.*.min.*</code>). This version does not have theme support and will require custom CSS to override any styling.</p>
+
+				<div class="callout callout-warning" id="fontawesome-required">
+					<h4>FontAwesome required</h4>
+					<p>Please note that when using this version <strong>FooTable requires FontAwesome</strong> to be included for icons. If you need a truly stand alone version with no dependencies then you should take a look at the <code>FooTable.FontAwesome.css</code> and <code>FooTable.Glyphicons.css</code> files in the <a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a> repo and create your own custom icons.</p>
+				</div>
 			</div>
 
 			<!-- Individual Components -->
@@ -2117,6 +2123,12 @@
 				<span id="component-filtering" class="anchor">&nbsp;</span>
 				<h4 class="list-group-item-heading">Filtering rows</h4>
 				<p class="list-group-item-text">Shows how to create a table that makes use of the filtering component.</p>
+			</a>
+
+			<a href="examples/component/editing.html" class="list-group-item anchored">
+				<span id="component-editing" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">Editing rows</h4>
+				<p class="list-group-item-text">Shows how to create a table that makes use of the editing component.</p>
 			</a>
 
 			<a href="examples/component/showcase.html" class="list-group-item anchored">
