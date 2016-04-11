@@ -202,7 +202,7 @@
 		 * @protected
 		 */
 		predraw: function(){
-			this.total = Math.ceil(this.ft.rows.all.length / this.size);
+			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
 			if (this.ft.rows.array.length > this.size){
 				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
