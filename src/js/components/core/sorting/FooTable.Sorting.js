@@ -25,15 +25,18 @@
 			 * @type {FooTable.Column}
 			 */
 			this.column = null;
-
-			/* PRIVATE */
 			/**
-			 * Sets a flag indicating whether or not the sorting has changed. When set to true the {@link FooTable.Sorting#sorting_changing} and {@link FooTable.Sorting#sorting_changed} events
-			 * will be raised during the drawing operation.
-			 * @private
+			 * Whether or not to allow sorting to occur, should be set using the {@link FooTable.Sorting#toggleAllowed} method.
+			 * @instance
 			 * @type {boolean}
 			 */
-			this._changed = false;
+			this.allowed = true;
+			/**
+			 * The initial sort state of the table, this value is used for determining if the sorting has occurred or to reset the state to default.
+			 * @instance
+			 * @type {{isset: boolean, rows: Array.<FooTable.Row>, column: string, direction: ?string}}
+			 */
+			this.initial = null;
 		},
 
 		/* PROTECTED */
@@ -84,6 +87,17 @@
 			 */
 			var self = this;
 			this.ft.raise('init.ft.sorting').then(function(){
+				if (!self.initial){
+					var isset = !!self.column;
+					self.initial = {
+						isset: isset,
+						// grab a shallow copy of the rows array prior to sorting - allows us to reset without an initial sort
+						rows: self.ft.rows.all.slice(0),
+						// if there is a sorted column store its name and direction
+						column: isset ? self.column.name : null,
+						direction: isset ? self.column.direction : null
+					}
+				}
 				F.arr.each(self.ft.columns.array, function(col){
 					if (col.sortable){
 						col.$el.addClass('footable-sortable').append($('<span/>', {'class': 'fooicon fooicon-sort'}));
@@ -160,6 +174,47 @@
 		sort: function(column, direction){
 			return this._sort(column, direction);
 		},
+		/**
+		 * Toggles whether or not sorting is currently allowed.
+		 * @param {boolean} [state] - You can optionally specify the state you want it to be, if not supplied the current value is flipped.
+		 */
+		toggleAllowed: function(state){
+			state = F.is.boolean(state) ? state : !this.allowed;
+			this.allowed = state;
+			this.ft.$el.toggleClass('footable-sorting-disabled', !this.allowed);
+		},
+		/**
+		 * Checks whether any sorting has occurred for the table.
+		 * @returns {boolean}
+		 */
+		hasChanged: function(){
+			return !(!this.initial || !this.column ||
+				(this.column.name === this.initial.column &&
+					(this.column.direction === this.initial.direction || (this.initial.direction === null && this.column.direction === 'ASC')))
+			);
+		},
+		/**
+		 * Resets the table sorting to the initial state recorded in the components init method.
+		 */
+		reset: function(){
+			if (!!this.initial){
+				if (this.initial.isset){
+					// if the initial value specified a column, sort by it
+					this.sort(this.initial.column, this.initial.direction);
+				} else {
+					// if there was no initial column then we need to reset the rows to there original order
+					if (!!this.column){
+						// if there is a currently sorted column remove the asc/desc classes and set it to null.
+						this.column.$el.removeClass('footable-asc footable-desc');
+						this.column = null;
+					}
+					// replace the current all rows array with the one stored in the initial value
+					this.ft.rows.all = this.initial.rows;
+					// force the table to redraw itself using the updated rows array
+					this.ft.draw();
+				}
+			}
+		},
 
 		/* PRIVATE */
 		/**
@@ -173,6 +228,7 @@
 		 * @fires FooTable.Sorting#"after.ft.sorting"
 		 */
 		_sort: function(column, direction){
+			if (!this.allowed) return $.Deferred().reject('sorting disabled');
 			var self = this;
 			var sorter = new F.Sorter(self.ft.columns.get(column), F.Sorting.dir(direction));
 			/**
