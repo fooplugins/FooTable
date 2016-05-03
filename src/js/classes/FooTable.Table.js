@@ -93,14 +93,36 @@
 			this.rows = this.use(FooTable.Rows);
 
 			//END MEMBERS
+			this._construct(ready);
+		},
+		/**
+		 * Once all properties are set this performs the actual initialization of the plugin calling the {@link FooTable.Table#_preinit} and
+		 * {@link FooTable.Table#_init} methods as well as raising the {@link FooTable.Table#"ready.ft.table"} event.
+		 * @this FooTable.Table
+		 * @instance
+		 * @param {function} [ready] - A callback function to execute once the plugin is initialized.
+		 * @private
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Table#"ready.ft.table"
+		 */
+		_construct: function(ready){
 			var self = this;
-			self._preinit().then(function(){
-				return self._init().then(function(){
-					if (F.is.fn(ready)) ready.call(self, self);
-				});
-			}).fail(function(err){
-				if (F.is.error(err)){
-					console.error('FooTable: unhandled error thrown during initialization.', err);
+			this._preinit().then(function(){
+				return self._init();
+			}).always(function(arg){
+				if (F.is.error(arg)){
+					console.error('FooTable: unhandled error thrown during initialization.', arg);
+				} else {
+					/**
+					 * The postinit.ft.table event is raised after the plugin has been initialized and the table drawn.
+					 * Calling preventDefault on this event will stop the ready callback being executed.
+					 * @event FooTable.Table#"postinit.ft.table"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 */
+					return self.raise('ready.ft.table').then(function(){
+						if (F.is.fn(ready)) ready.call(self, self);
+					});
 				}
 			});
 		},
@@ -170,7 +192,18 @@
 					self.$el.data('__FooTable__', self);
 					if ($tfoot.children('tr').length == 0) $tfoot.remove();
 					if ($thead.children('tr').length == 0) $thead.remove();
-					return self.draw().then(function(){
+
+					/**
+					 * The postinit.ft.table event is raised after any components are initialized but before the table is
+					 * drawn for the first time.
+					 * Calling preventDefault on this event will disable the initial drawing of the table.
+					 * @event FooTable.Table#"postinit.ft.table"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 */
+					return self.raise('postinit.ft.table').then(function(){
+						return self.draw();
+					}).always(function(){
 						$(window).off('resize.ft'+self.id, self._onWindowResize)
 							.on('resize.ft'+self.id, { self: self }, self._onWindowResize);
 						self.initialized = true;
