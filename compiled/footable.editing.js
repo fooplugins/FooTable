@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.8
+* @version 3.0.9
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -652,7 +652,8 @@
 	 * @param {object} data - A hash containing the new row values.
 	 */
 	F.Rows.prototype.update = function(indexOrRow, data){
-		var len = this.ft.rows.all, row;
+		var len = this.ft.rows.all.length, 
+			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}
@@ -666,7 +667,8 @@
 	 * @param {(number|FooTable.Row)} indexOrRow - The index to delete or the actual {@link FooTable.Row} object.
 	 */
 	F.Rows.prototype.delete = function(indexOrRow){
-		var len = this.ft.rows.all, row;
+		var len = this.ft.rows.all.length, 
+			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}
