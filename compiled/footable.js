@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.8
+* @version 3.0.9
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -1824,14 +1824,36 @@
 			this.rows = this.use(FooTable.Rows);
 
 			//END MEMBERS
+			this._construct(ready);
+		},
+		/**
+		 * Once all properties are set this performs the actual initialization of the plugin calling the {@link FooTable.Table#_preinit} and
+		 * {@link FooTable.Table#_init} methods as well as raising the {@link FooTable.Table#"ready.ft.table"} event.
+		 * @this FooTable.Table
+		 * @instance
+		 * @param {function} [ready] - A callback function to execute once the plugin is initialized.
+		 * @private
+		 * @returns {jQuery.Promise}
+		 * @fires FooTable.Table#"ready.ft.table"
+		 */
+		_construct: function(ready){
 			var self = this;
-			self._preinit().then(function(){
-				return self._init().then(function(){
-					if (F.is.fn(ready)) ready.call(self, self);
-				});
-			}).fail(function(err){
-				if (F.is.error(err)){
-					console.error('FooTable: unhandled error thrown during initialization.', err);
+			this._preinit().then(function(){
+				return self._init();
+			}).always(function(arg){
+				if (F.is.error(arg)){
+					console.error('FooTable: unhandled error thrown during initialization.', arg);
+				} else {
+					/**
+					 * The postinit.ft.table event is raised after the plugin has been initialized and the table drawn.
+					 * Calling preventDefault on this event will stop the ready callback being executed.
+					 * @event FooTable.Table#"postinit.ft.table"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 */
+					return self.raise('ready.ft.table').then(function(){
+						if (F.is.fn(ready)) ready.call(self, self);
+					});
 				}
 			});
 		},
@@ -1901,7 +1923,18 @@
 					self.$el.data('__FooTable__', self);
 					if ($tfoot.children('tr').length == 0) $tfoot.remove();
 					if ($thead.children('tr').length == 0) $thead.remove();
-					return self.draw().then(function(){
+
+					/**
+					 * The postinit.ft.table event is raised after any components are initialized but before the table is
+					 * drawn for the first time.
+					 * Calling preventDefault on this event will disable the initial drawing of the table.
+					 * @event FooTable.Table#"postinit.ft.table"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 */
+					return self.raise('postinit.ft.table').then(function(){
+						return self.draw();
+					}).always(function(){
 						$(window).off('resize.ft'+self.id, self._onWindowResize)
 							.on('resize.ft'+self.id, { self: self }, self._onWindowResize);
 						self.initialized = true;
@@ -4255,15 +4288,18 @@
 			 * @type {FooTable.Column}
 			 */
 			this.column = null;
-
-			/* PRIVATE */
 			/**
-			 * Sets a flag indicating whether or not the sorting has changed. When set to true the {@link FooTable.Sorting#sorting_changing} and {@link FooTable.Sorting#sorting_changed} events
-			 * will be raised during the drawing operation.
-			 * @private
+			 * Whether or not to allow sorting to occur, should be set using the {@link FooTable.Sorting#toggleAllowed} method.
+			 * @instance
 			 * @type {boolean}
 			 */
-			this._changed = false;
+			this.allowed = true;
+			/**
+			 * The initial sort state of the table, this value is used for determining if the sorting has occurred or to reset the state to default.
+			 * @instance
+			 * @type {{isset: boolean, rows: Array.<FooTable.Row>, column: string, direction: ?string}}
+			 */
+			this.initial = null;
 		},
 
 		/* PROTECTED */
@@ -4314,6 +4350,17 @@
 			 */
 			var self = this;
 			this.ft.raise('init.ft.sorting').then(function(){
+				if (!self.initial){
+					var isset = !!self.column;
+					self.initial = {
+						isset: isset,
+						// grab a shallow copy of the rows array prior to sorting - allows us to reset without an initial sort
+						rows: self.ft.rows.all.slice(0),
+						// if there is a sorted column store its name and direction
+						column: isset ? self.column.name : null,
+						direction: isset ? self.column.direction : null
+					}
+				}
 				F.arr.each(self.ft.columns.array, function(col){
 					if (col.sortable){
 						col.$el.addClass('footable-sortable').append($('<span/>', {'class': 'fooicon fooicon-sort'}));
@@ -4354,15 +4401,10 @@
 		predraw: function () {
 			if (!this.column) return;
 			var self = this, col = self.column;
-			//self.ft.rows.array.sort(function (a, b) {
-			//	return col.direction == 'ASC'
-			//			? col.sorter(a.cells[col.index].value, b.cells[col.index].value)
-			//			: col.sorter(b.cells[col.index].value, a.cells[col.index].value);
-			//});
 			self.ft.rows.array.sort(function (a, b) {
-				return col.direction == 'ASC'
-						? col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue)
-						: col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue);
+				return col.direction == 'DESC'
+						? col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue)
+						: col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue);
 			});
 		},
 		/**
@@ -4395,6 +4437,47 @@
 		sort: function(column, direction){
 			return this._sort(column, direction);
 		},
+		/**
+		 * Toggles whether or not sorting is currently allowed.
+		 * @param {boolean} [state] - You can optionally specify the state you want it to be, if not supplied the current value is flipped.
+		 */
+		toggleAllowed: function(state){
+			state = F.is.boolean(state) ? state : !this.allowed;
+			this.allowed = state;
+			this.ft.$el.toggleClass('footable-sorting-disabled', !this.allowed);
+		},
+		/**
+		 * Checks whether any sorting has occurred for the table.
+		 * @returns {boolean}
+		 */
+		hasChanged: function(){
+			return !(!this.initial || !this.column ||
+				(this.column.name === this.initial.column &&
+					(this.column.direction === this.initial.direction || (this.initial.direction === null && this.column.direction === 'ASC')))
+			);
+		},
+		/**
+		 * Resets the table sorting to the initial state recorded in the components init method.
+		 */
+		reset: function(){
+			if (!!this.initial){
+				if (this.initial.isset){
+					// if the initial value specified a column, sort by it
+					this.sort(this.initial.column, this.initial.direction);
+				} else {
+					// if there was no initial column then we need to reset the rows to there original order
+					if (!!this.column){
+						// if there is a currently sorted column remove the asc/desc classes and set it to null.
+						this.column.$el.removeClass('footable-asc footable-desc');
+						this.column = null;
+					}
+					// replace the current all rows array with the one stored in the initial value
+					this.ft.rows.all = this.initial.rows;
+					// force the table to redraw itself using the updated rows array
+					this.ft.draw();
+				}
+			}
+		},
 
 		/* PRIVATE */
 		/**
@@ -4408,6 +4491,7 @@
 		 * @fires FooTable.Sorting#"after.ft.sorting"
 		 */
 		_sort: function(column, direction){
+			if (!this.allowed) return $.Deferred().reject('sorting disabled');
 			var self = this;
 			var sorter = new F.Sorter(self.ft.columns.get(column), F.Sorting.dir(direction));
 			/**
@@ -6007,7 +6091,8 @@
 	 * @param {object} data - A hash containing the new row values.
 	 */
 	F.Rows.prototype.update = function(indexOrRow, data){
-		var len = this.ft.rows.all, row;
+		var len = this.ft.rows.all.length, 
+			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}
@@ -6021,7 +6106,8 @@
 	 * @param {(number|FooTable.Row)} indexOrRow - The index to delete or the actual {@link FooTable.Row} object.
 	 */
 	F.Rows.prototype.delete = function(indexOrRow){
-		var len = this.ft.rows.all, row;
+		var len = this.ft.rows.all.length, 
+			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}

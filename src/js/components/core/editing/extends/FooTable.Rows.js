@@ -20,7 +20,8 @@
 	 * @param {object} data - A hash containing the new row values.
 	 */
 	F.Rows.prototype.update = function(indexOrRow, data){
-		var len = this.ft.rows.all, row;
+		var len = this.ft.rows.all.length, 
+			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}
@@ -34,7 +35,8 @@
 	 * @param {(number|FooTable.Row)} indexOrRow - The index to delete or the actual {@link FooTable.Row} object.
 	 */
 	F.Rows.prototype.delete = function(indexOrRow){
-		var len = this.ft.rows.all, row;
+		var len = this.ft.rows.all.length, 
+			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}

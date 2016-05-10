@@ -27,3 +27,13 @@ td.footable-sortable.footable-desc > span.fooicon,
 th.footable-sortable.footable-desc > span.fooicon {
 	opacity: 1;
 }
+/* hides the sort icons when sorting is not allowed */
+table.footable-sorting-disabled td.footable-sortable.footable-asc > span.fooicon,
+table.footable-sorting-disabled td.footable-sortable.footable-desc > span.fooicon,
+table.footable-sorting-disabled td.footable-sortable:hover > span.fooicon,
+table.footable-sorting-disabled th.footable-sortable.footable-asc > span.fooicon,
+table.footable-sorting-disabled th.footable-sortable.footable-desc > span.fooicon,
+table.footable-sorting-disabled th.footable-sortable:hover > span.fooicon {
+	opacity: 0;
+	visibility: hidden;
+}
