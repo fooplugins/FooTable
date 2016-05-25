@@ -228,7 +228,7 @@
 			 */
 			return self.raise('destroy.ft.table').then(function(){
 				return self.execute(true, true, 'destroy').then(function () {
-					self.$el.removeData('__FooTable__');
+					self.$el.removeData('__FooTable__').removeClass('footable-' + self.id);
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
 					self.initialized = false;
 				});
