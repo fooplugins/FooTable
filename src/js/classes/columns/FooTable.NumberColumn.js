@@ -12,7 +12,7 @@
 		construct: function(instance, definition){
 			this._super(instance, definition, 'number');
 			this.decimalSeparator = F.is.string(definition.decimalSeparator) ? definition.decimalSeparator : '.';
-			this.thousandSeparator = F.is.string(definition.thousandSeparator) ? definition.thousandSeparator : '.';
+			this.thousandSeparator = F.is.string(definition.thousandSeparator) ? definition.thousandSeparator : ',';
 			this.decimalSeparatorRegex = new RegExp(F.str.escapeRegExp(this.decimalSeparator), 'g');
 			this.thousandSeparatorRegex = new RegExp(F.str.escapeRegExp(this.thousandSeparator), 'g');
 			this.cleanRegex = new RegExp('[^0-9' + F.str.escapeRegExp(this.decimalSeparator) + ']', 'g');

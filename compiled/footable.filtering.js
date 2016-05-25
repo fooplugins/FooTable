@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.9
+* @version 3.0.10
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -680,26 +680,39 @@
 		 * @private
 		 */
 		_match: function(str, def){
-			var self = this, result = false;
+			var self = this, result = false, empty = F.is.emptyString(str);
 			if (F.is.emptyArray(self.parts) && self.left instanceof F.Query) return def;
 			if (F.is.emptyArray(self.parts)) return result;
 			if (self.space === 'OR'){
 				// with OR we give the str every part to test and if any match it is a success, we do exit early if a negated match occurs
 				F.arr.each(self.parts, function(p){
-					var match = F.str.contains(str, p.query, true);
-					if (match && !p.negate) result = true;
-					if (match && p.negate) {
-						result = false;
-						return result;
+					if (p.empty && empty){
+						result = true;
+						if (p.negate){
+							result = false;
+							return result;
+						}
+					} else {
+						var match = F.str.contains(str, p.query, true);
+						if (match && !p.negate) result = true;
+						if (match && p.negate) {
+							result = false;
+							return result;
+						}
 					}
 				});
 			} else {
 				// otherwise with AND we check until the first failure and then exit
 				result = true;
 				F.arr.each(self.parts, function(p){
-					var match = F.str.contains(str, p.query, true);
-					if ((!match && !p.negate) || (match && p.negate)) result = false;
-					return result;
+					if (p.empty){
+						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
+						return result;
+					} else {
+						var match = F.str.contains(str, p.query, true);
+						if ((!match && !p.negate) || (match && p.negate)) result = false;
+						return result;
+					}
 				});
 			}
 			return result;
@@ -762,7 +775,8 @@
 				query: str,
 				negate: false,
 				phrase: false,
-				exact: false
+				exact: false,
+				empty: false
 			};
 			// support for NEGATE operand - (minus sign). Remove this first so we can get onto phrase checking
 			if (F.str.startsWith(p.query, '-')){
@@ -780,6 +794,7 @@
 				});
 				p.phrase = true;
 			}
+			p.empty = p.phrase && F.is.emptyString(p.query);
 			return p;
 		}
 	});

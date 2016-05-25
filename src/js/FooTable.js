@@ -13,8 +13,6 @@
 		options = options || {};
 		// make sure we only work with tables
 		return this.filter('table').each(function (i, tbl) {
-			var ft = F.get(tbl);
-			if (ft instanceof F.Table) ft.destroy();
 			F.init(tbl, options, ready);
 		});
 	};
@@ -64,6 +62,8 @@
 	 * @returns {FooTable.Table}
 	 */
 	F.init = function(table, options, ready){
+		var ft = F.get(table);
+		if (ft instanceof F.Table) ft.destroy();
 		return new F.Table(table, options, ready);
 	};
 
