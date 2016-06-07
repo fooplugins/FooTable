@@ -227,7 +227,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.
 			 */
-			self.ft.raise('expand.ft.row').then(function(){
+			self.ft.raise('expand.ft.row',[self]).then(function(){
 				self.__hidden__ = F.arr.map(self.cells, function(cell){
 					return cell.column.hidden && cell.column.visible ? cell : null;
 				});
@@ -255,14 +255,14 @@
 			if (!this.created) return;
 			var self = this;
 			/**
-			 * The expand.ft.row event is raised before the the row is expanded.
+			 * The collapse.ft.row event is raised before the the row is expanded.
 			 * Calling preventDefault on this event will stop the row being expanded.
 			 * @event FooTable.Row#"expand.ft.row"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.
 			 */
-			self.ft.raise('collapse.ft.row').then(function(){
+			self.ft.raise('collapse.ft.row',[self]).then(function(){
 				F.arr.each(self.__hidden__, function(cell){
 					cell.restore();
 				});
