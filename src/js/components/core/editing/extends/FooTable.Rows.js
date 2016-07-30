@@ -4,13 +4,13 @@
 	 * Adds a row to the underlying {@link FooTable.Rows#all} array.
 	 * @param {(object|FooTable.Row)} dataOrRow - A hash containing the row values or an actual {@link FooTable.Row} object.
 	 */
-	F.Rows.prototype.add = function(dataOrRow){
+	F.Rows.prototype.add = function(dataOrRow, redraw){
 		var row = dataOrRow;
 		if (F.is.hash(dataOrRow)){
 			row = new FooTable.Row(this.ft, this.ft.columns.array, dataOrRow);
 		}
 		if (row instanceof FooTable.Row){
-			row.add();
+			row.add(redraw);
 		}
 	};
 
