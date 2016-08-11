@@ -64,6 +64,11 @@
 			 */
 			this.expandFirst = table.o.expandFirst;
 			/**
+			 * Whether or not all row details are expanded by default when displayed on a device that hides any columns.
+			 * @type {boolean}
+			 */
+			this.expandAll = table.o.expandAll;
+			/**
 			 * The jQuery object that contains the empty row control.
 			 * @type {jQuery}
 			 */
@@ -136,6 +141,7 @@
 					if (self.toggleColumn != "first" && self.toggleColumn != "last") self.toggleColumn = "first";
 					self.emptyString = F.is.string(data.empty) ? data.empty : self.emptyString;
 					self.expandFirst = F.is.boolean(data.expandFirst) ? data.expandFirst : self.expandFirst;
+					self.expandAll = F.is.boolean(data.expandAll) ? data.expandAll : self.expandAll;
 				});
 			});
 		},
@@ -185,7 +191,7 @@
 				self.$empty.detach();
 				// loop through them appending to the tbody and then drawing
 				F.arr.each(self.array, function(row){
-					if (self.expandFirst && first){
+					if ((self.expandFirst && first) || self.expandAll){
 						row.expanded = true;
 						first = false;
 					}

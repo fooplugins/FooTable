@@ -39,4 +39,10 @@
 	 * @type {boolean}
 	 */
 	F.Defaults.prototype.expandFirst = false;
+
+	/**
+	 * Whether or not all row details are expanded by default when displayed on a device that hides any columns.
+	 * @type {boolean}
+	 */
+	F.Defaults.prototype.expandAll = false;
 })(FooTable);
