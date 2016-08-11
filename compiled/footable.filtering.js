@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.10
+* @version 3.0.11
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -16,9 +16,10 @@
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space, connectors){
+		construct: function(name, query, columns, space, connectors, ignoreCase){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -38,11 +39,17 @@
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
 			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
+			/**
 			 * The query for the filter.
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space, this.connectors);
+			this.query = new F.Query(query, this.space, this.connectors, this.ignoreCase);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -60,7 +67,7 @@
 		match: function(str){
 			if (!F.is.string(str)) return false;
 			if (F.is.string(this.query)){
-				this.query = new F.Query(this.query, this.space, this.connectors);
+				this.query = new F.Query(this.query, this.space, this.connectors, this.ignoreCase);
 			}
 			return this.query instanceof F.Query ? this.query.match(str) : false;
 		},
@@ -123,6 +130,12 @@
 			 * @type {boolean}
 			 */
 			this.connectors = table.o.filtering.connectors;
+			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = table.o.filtering.ignoreCase;
 			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
@@ -216,6 +229,10 @@
 				self.connectors = F.is.boolean(data.filterConnectors)
 					? data.filterConnectors
 					: self.connectors;
+
+				self.ignoreCase = F.is.boolean(data.filterIgnoreCase)
+					? data.filterIgnoreCase
+					: self.ignoreCase;
 
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
@@ -454,7 +471,7 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors));
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors, self.ignoreCase));
 					}
 				});
 			}
@@ -589,9 +606,10 @@
 		 * @param {string} query - The string value of the query.
 		 * @param {string} [space="AND"] - How the query treats whitespace.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @returns {FooTable.Query}
 		 */
-		construct: function(query, space, connectors){
+		construct: function(query, space, connectors, ignoreCase){
 			/* PRIVATE */
 			/**
 			 * Holds the previous value of the query and is used internally in the {@link FooTable.Query#val} method.
@@ -617,6 +635,12 @@
 			 * @type {boolean}
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
+			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
 			/**
 			 * The left side of the query if one exists. OR takes precedence over AND.
 			 * @type {FooTable.Query}
@@ -693,7 +717,7 @@
 							return result;
 						}
 					} else {
-						var match = F.str.contains(str, p.query, true);
+						var match = F.str.contains(str, p.query, self.ignoreCase);
 						if (match && !p.negate) result = true;
 						if (match && p.negate) {
 							result = false;
@@ -709,7 +733,7 @@
 						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
 						return result;
 					} else {
-						var match = F.str.contains(str, p.query, true);
+						var match = F.str.contains(str, p.query, self.ignoreCase);
 						if ((!match && !p.negate) || (match && p.negate)) result = false;
 						return result;
 					}
@@ -748,14 +772,14 @@
 				// we have an OR so split the value on the first occurrence of OR to get the left and right sides of the statement
 				this.operator = 'OR';
 				var or = this._value.split(/(?:\sOR\s)(.*)?/);
-				this.left = new F.Query(or[0], this.space, this.connectors);
-				this.right = new F.Query(or[1], this.space, this.connectors);
+				this.left = new F.Query(or[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(or[1], this.space, this.connectors, this.ignoreCase);
 			} else if (/\sAND\s/.test(this._value)) {
 				// there are no more OR's so start with AND
 				this.operator = 'AND';
 				var and = this._value.split(/(?:\sAND\s)(.*)?/);
-				this.left = new F.Query(and[0], this.space, this.connectors);
-				this.right = new F.Query(and[1], this.space, this.connectors);
+				this.left = new F.Query(and[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(and[1], this.space, this.connectors, this.ignoreCase);
 			} else {
 				// we have no more statements to parse so set the parts array by parsing each part of the remaining query
 				var self = this;
@@ -884,6 +908,7 @@
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
+	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -893,7 +918,8 @@
 		space: 'AND',
 		placeholder: 'Search',
 		position: 'right',
-		connectors: true
+		connectors: true,
+		ignoreCase: true
 	};
 })(FooTable);
 (function(F){
