@@ -151,9 +151,10 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data){
+		val: function(data, redraw){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
@@ -188,7 +189,7 @@
 			if (this.created){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
-				this.draw();
+				if (F.is.boolean(redraw) ? redraw : true) this.draw();
 			}
 		},
 		_setClasses: function($el){
