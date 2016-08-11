@@ -7,9 +7,10 @@
 		 * @param {string} query - The string value of the query.
 		 * @param {string} [space="AND"] - How the query treats whitespace.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @returns {FooTable.Query}
 		 */
-		construct: function(query, space, connectors){
+		construct: function(query, space, connectors, ignoreCase){
 			/* PRIVATE */
 			/**
 			 * Holds the previous value of the query and is used internally in the {@link FooTable.Query#val} method.
@@ -35,6 +36,12 @@
 			 * @type {boolean}
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
+			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
 			/**
 			 * The left side of the query if one exists. OR takes precedence over AND.
 			 * @type {FooTable.Query}
@@ -111,7 +118,7 @@
 							return result;
 						}
 					} else {
-						var match = F.str.contains(str, p.query, true);
+						var match = F.str.contains(str, p.query, self.ignoreCase);
 						if (match && !p.negate) result = true;
 						if (match && p.negate) {
 							result = false;
@@ -127,7 +134,7 @@
 						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
 						return result;
 					} else {
-						var match = F.str.contains(str, p.query, true);
+						var match = F.str.contains(str, p.query, self.ignoreCase);
 						if ((!match && !p.negate) || (match && p.negate)) result = false;
 						return result;
 					}
@@ -166,14 +173,14 @@
 				// we have an OR so split the value on the first occurrence of OR to get the left and right sides of the statement
 				this.operator = 'OR';
 				var or = this._value.split(/(?:\sOR\s)(.*)?/);
-				this.left = new F.Query(or[0], this.space, this.connectors);
-				this.right = new F.Query(or[1], this.space, this.connectors);
+				this.left = new F.Query(or[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(or[1], this.space, this.connectors, this.ignoreCase);
 			} else if (/\sAND\s/.test(this._value)) {
 				// there are no more OR's so start with AND
 				this.operator = 'AND';
 				var and = this._value.split(/(?:\sAND\s)(.*)?/);
-				this.left = new F.Query(and[0], this.space, this.connectors);
-				this.right = new F.Query(and[1], this.space, this.connectors);
+				this.left = new F.Query(and[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(and[1], this.space, this.connectors, this.ignoreCase);
 			} else {
 				// we have no more statements to parse so set the parts array by parsing each part of the remaining query
 				var self = this;

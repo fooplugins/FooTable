@@ -237,8 +237,7 @@
 		 * @returns {number}
 		 */
 		getViewportWidth: function(){
-			var ratio = F.is.defined(window.devicePixelRatio) && F.is.mobile ? window.devicePixelRatio : 1;
-			return Math.max(document.documentElement.clientWidth, window.innerWidth, 0) / ratio;
+			return Math.max(document.documentElement.clientWidth, window.innerWidth, 0);
 		}
 	});
 

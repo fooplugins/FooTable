@@ -263,7 +263,6 @@
 		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onSortClicked: function (e) {
-			e.preventDefault();
 			var self = e.data.self, $header = $(this).closest('th,td'),
 				direction = $header.is('.footable-asc, .footable-desc')
 					? ($header.hasClass('footable-desc') ? 'ASC' : 'DESC')

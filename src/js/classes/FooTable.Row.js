@@ -151,9 +151,10 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data){
+		val: function(data, redraw){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
@@ -188,7 +189,7 @@
 			if (this.created){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
-				this.draw();
+				if (F.is.boolean(redraw) ? redraw : true) this.draw();
 			}
 		},
 		_setClasses: function($el){
@@ -227,7 +228,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.
 			 */
-			self.ft.raise('expand.ft.row').then(function(){
+			self.ft.raise('expand.ft.row',[self]).then(function(){
 				self.__hidden__ = F.arr.map(self.cells, function(cell){
 					return cell.column.hidden && cell.column.visible ? cell : null;
 				});
@@ -255,14 +256,14 @@
 			if (!this.created) return;
 			var self = this;
 			/**
-			 * The expand.ft.row event is raised before the the row is expanded.
+			 * The collapse.ft.row event is raised before the the row is expanded.
 			 * Calling preventDefault on this event will stop the row being expanded.
 			 * @event FooTable.Row#"expand.ft.row"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.
 			 */
-			self.ft.raise('collapse.ft.row').then(function(){
+			self.ft.raise('collapse.ft.row',[self]).then(function(){
 				F.arr.each(self.__hidden__, function(cell){
 					cell.restore();
 				});

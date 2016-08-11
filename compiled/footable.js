@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.10
+* @version 3.0.11
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -528,14 +528,6 @@
 	F.is.emptyString = function(value){
 		return F.is.string(value) ? value.length === 0 : true;
 	};
-
-	/**
-	 * Whether or not we are on a mobile device.
-	 */
-	F.is.mobile = (function(a){
-		return (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)
-		||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)));
-	})(navigator.userAgent||navigator.vendor||window.opera);
 
 })(FooTable);
 (function (F) {
@@ -1544,9 +1536,10 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data){
+		val: function(data, redraw){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
@@ -1581,7 +1574,7 @@
 			if (this.created){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
-				this.draw();
+				if (F.is.boolean(redraw) ? redraw : true) this.draw();
 			}
 		},
 		_setClasses: function($el){
@@ -1620,7 +1613,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.
 			 */
-			self.ft.raise('expand.ft.row').then(function(){
+			self.ft.raise('expand.ft.row',[self]).then(function(){
 				self.__hidden__ = F.arr.map(self.cells, function(cell){
 					return cell.column.hidden && cell.column.visible ? cell : null;
 				});
@@ -1648,14 +1641,14 @@
 			if (!this.created) return;
 			var self = this;
 			/**
-			 * The expand.ft.row event is raised before the the row is expanded.
+			 * The collapse.ft.row event is raised before the the row is expanded.
 			 * Calling preventDefault on this event will stop the row being expanded.
 			 * @event FooTable.Row#"expand.ft.row"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.
 			 */
-			self.ft.raise('collapse.ft.row').then(function(){
+			self.ft.raise('collapse.ft.row',[self]).then(function(){
 				F.arr.each(self.__hidden__, function(cell){
 					cell.restore();
 				});
@@ -2694,8 +2687,7 @@
 		 * @returns {number}
 		 */
 		getViewportWidth: function(){
-			var ratio = F.is.defined(window.devicePixelRatio) && F.is.mobile ? window.devicePixelRatio : 1;
-			return Math.max(document.documentElement.clientWidth, window.innerWidth, 0) / ratio;
+			return Math.max(document.documentElement.clientWidth, window.innerWidth, 0);
 		}
 	});
 
@@ -3137,6 +3129,11 @@
 			 */
 			this.expandFirst = table.o.expandFirst;
 			/**
+			 * Whether or not all row details are expanded by default when displayed on a device that hides any columns.
+			 * @type {boolean}
+			 */
+			this.expandAll = table.o.expandAll;
+			/**
 			 * The jQuery object that contains the empty row control.
 			 * @type {jQuery}
 			 */
@@ -3209,6 +3206,7 @@
 					if (self.toggleColumn != "first" && self.toggleColumn != "last") self.toggleColumn = "first";
 					self.emptyString = F.is.string(data.empty) ? data.empty : self.emptyString;
 					self.expandFirst = F.is.boolean(data.expandFirst) ? data.expandFirst : self.expandFirst;
+					self.expandAll = F.is.boolean(data.expandAll) ? data.expandAll : self.expandAll;
 				});
 			});
 		},
@@ -3258,7 +3256,7 @@
 				self.$empty.detach();
 				// loop through them appending to the tbody and then drawing
 				F.arr.each(self.array, function(row){
-					if (self.expandFirst && first){
+					if ((self.expandFirst && first) || self.expandAll){
 						row.expanded = true;
 						first = false;
 					}
@@ -3269,6 +3267,22 @@
 				self.$empty.children('td').attr('colspan', self.ft.columns.visibleColspan);
 				$tbody.append(self.$empty);
 			}
+		},
+		/**
+		 * Loads a JSON array of row objects into the table
+		 * @param {Array.<object>} data - An array of row objects to load.
+		 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
+		 */
+		load: function(data, append){
+			var self = this, rows = $.map(data, function(r){
+				return new F.Row(self.ft, self.ft.columns.array, r);
+			});
+			F.arr.each(this.array, function(row){
+				row.predraw();
+			});
+			this.all = (F.is.boolean(append) ? append : false) ? this.all.concat(rows) : rows;
+			this.array = this.all.slice(0);
+			this.ft.draw();
 		}
 	});
 
@@ -3316,6 +3330,22 @@
 	 * @type {boolean}
 	 */
 	F.Defaults.prototype.expandFirst = false;
+
+	/**
+	 * Whether or not all row details are expanded by default when displayed on a device that hides any columns.
+	 * @type {boolean}
+	 */
+	F.Defaults.prototype.expandAll = false;
+})(FooTable);
+(function(F){
+	/**
+	 * Loads a JSON array of row objects into the table
+	 * @param {Array.<object>} data - An array of row objects to load.
+	 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
+	 */
+	F.Table.prototype.loadRows = function(data, append){
+		this.rows.load(data, append);
+	};
 })(FooTable);
 (function(F){
 	F.Filter = F.Class.extend(/** @lends FooTable.Filter */{
@@ -3328,9 +3358,10 @@
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space, connectors){
+		construct: function(name, query, columns, space, connectors, ignoreCase){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -3350,11 +3381,17 @@
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
 			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
+			/**
 			 * The query for the filter.
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space, this.connectors);
+			this.query = new F.Query(query, this.space, this.connectors, this.ignoreCase);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -3372,7 +3409,7 @@
 		match: function(str){
 			if (!F.is.string(str)) return false;
 			if (F.is.string(this.query)){
-				this.query = new F.Query(this.query, this.space, this.connectors);
+				this.query = new F.Query(this.query, this.space, this.connectors, this.ignoreCase);
 			}
 			return this.query instanceof F.Query ? this.query.match(str) : false;
 		},
@@ -3435,6 +3472,12 @@
 			 * @type {boolean}
 			 */
 			this.connectors = table.o.filtering.connectors;
+			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = table.o.filtering.ignoreCase;
 			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
@@ -3528,6 +3571,10 @@
 				self.connectors = F.is.boolean(data.filterConnectors)
 					? data.filterConnectors
 					: self.connectors;
+
+				self.ignoreCase = F.is.boolean(data.filterIgnoreCase)
+					? data.filterIgnoreCase
+					: self.ignoreCase;
 
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
@@ -3766,7 +3813,7 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors));
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors, self.ignoreCase));
 					}
 				});
 			}
@@ -3901,9 +3948,10 @@
 		 * @param {string} query - The string value of the query.
 		 * @param {string} [space="AND"] - How the query treats whitespace.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @returns {FooTable.Query}
 		 */
-		construct: function(query, space, connectors){
+		construct: function(query, space, connectors, ignoreCase){
 			/* PRIVATE */
 			/**
 			 * Holds the previous value of the query and is used internally in the {@link FooTable.Query#val} method.
@@ -3929,6 +3977,12 @@
 			 * @type {boolean}
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
+			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
 			/**
 			 * The left side of the query if one exists. OR takes precedence over AND.
 			 * @type {FooTable.Query}
@@ -4005,7 +4059,7 @@
 							return result;
 						}
 					} else {
-						var match = F.str.contains(str, p.query, true);
+						var match = F.str.contains(str, p.query, self.ignoreCase);
 						if (match && !p.negate) result = true;
 						if (match && p.negate) {
 							result = false;
@@ -4021,7 +4075,7 @@
 						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
 						return result;
 					} else {
-						var match = F.str.contains(str, p.query, true);
+						var match = F.str.contains(str, p.query, self.ignoreCase);
 						if ((!match && !p.negate) || (match && p.negate)) result = false;
 						return result;
 					}
@@ -4060,14 +4114,14 @@
 				// we have an OR so split the value on the first occurrence of OR to get the left and right sides of the statement
 				this.operator = 'OR';
 				var or = this._value.split(/(?:\sOR\s)(.*)?/);
-				this.left = new F.Query(or[0], this.space, this.connectors);
-				this.right = new F.Query(or[1], this.space, this.connectors);
+				this.left = new F.Query(or[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(or[1], this.space, this.connectors, this.ignoreCase);
 			} else if (/\sAND\s/.test(this._value)) {
 				// there are no more OR's so start with AND
 				this.operator = 'AND';
 				var and = this._value.split(/(?:\sAND\s)(.*)?/);
-				this.left = new F.Query(and[0], this.space, this.connectors);
-				this.right = new F.Query(and[1], this.space, this.connectors);
+				this.left = new F.Query(and[0], this.space, this.connectors, this.ignoreCase);
+				this.right = new F.Query(and[1], this.space, this.connectors, this.ignoreCase);
 			} else {
 				// we have no more statements to parse so set the parts array by parsing each part of the remaining query
 				var self = this;
@@ -4196,6 +4250,7 @@
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
+	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -4205,7 +4260,8 @@
 		space: 'AND',
 		placeholder: 'Search',
 		position: 'right',
-		connectors: true
+		connectors: true,
+		ignoreCase: true
 	};
 })(FooTable);
 (function(F){
@@ -4541,7 +4597,6 @@
 		 * @param {jQuery.Event} e - The event object for the event.
 		 */
 		_onSortClicked: function (e) {
-			e.preventDefault();
 			var self = e.data.self, $header = $(this).closest('th,td'),
 				direction = $header.is('.footable-asc, .footable-desc')
 					? ($header.hasClass('footable-desc') ? 'ASC' : 'DESC')
@@ -6089,14 +6144,16 @@
 	/**
 	 * Adds a row to the underlying {@link FooTable.Rows#all} array.
 	 * @param {(object|FooTable.Row)} dataOrRow - A hash containing the row values or an actual {@link FooTable.Row} object.
+	 * @param {boolean} [redraw=true] - Whether or not to redraw the table, defaults to true but for bulk operations this
+	 * can be set to false and then followed by a call to the {@link FooTable.Table#draw} method.
 	 */
-	F.Rows.prototype.add = function(dataOrRow){
+	F.Rows.prototype.add = function(dataOrRow, redraw){
 		var row = dataOrRow;
 		if (F.is.hash(dataOrRow)){
 			row = new FooTable.Row(this.ft, this.ft.columns.array, dataOrRow);
 		}
 		if (row instanceof FooTable.Row){
-			row.add();
+			row.add(redraw);
 		}
 	};
 
@@ -6104,30 +6161,34 @@
 	 * Updates a row in the underlying {@link FooTable.Rows#all} array.
 	 * @param {(number|FooTable.Row)} indexOrRow - The index to update or the actual {@link FooTable.Row} object.
 	 * @param {object} data - A hash containing the new row values.
+	 * @param {boolean} [redraw=true] - Whether or not to redraw the table, defaults to true but for bulk operations this
+	 * can be set to false and then followed by a call to the {@link FooTable.Table#draw} method.
 	 */
-	F.Rows.prototype.update = function(indexOrRow, data){
+	F.Rows.prototype.update = function(indexOrRow, data, redraw){
 		var len = this.ft.rows.all.length, 
 			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}
 		if (row instanceof FooTable.Row && F.is.hash(data)){
-			row.val(data);
+			row.val(data, redraw);
 		}
 	};
 
 	/**
 	 * Deletes a row from the underlying {@link FooTable.Rows#all} array.
 	 * @param {(number|FooTable.Row)} indexOrRow - The index to delete or the actual {@link FooTable.Row} object.
+	 * @param {boolean} [redraw=true] - Whether or not to redraw the table, defaults to true but for bulk operations this
+	 * can be set to false and then followed by a call to the {@link FooTable.Table#draw} method.
 	 */
-	F.Rows.prototype.delete = function(indexOrRow){
+	F.Rows.prototype.delete = function(indexOrRow, redraw){
 		var len = this.ft.rows.all.length, 
 			row = indexOrRow;
 		if (F.is.number(indexOrRow) && indexOrRow >= 0 && indexOrRow < len){
 			row = this.ft.rows.all[indexOrRow];
 		}
 		if (row instanceof FooTable.Row){
-			row.delete();
+			row.delete(redraw);
 		}
 	};
 

@@ -9,9 +9,10 @@
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space, connectors){
+		construct: function(name, query, columns, space, connectors, ignoreCase){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -31,11 +32,17 @@
 			 */
 			this.connectors = F.is.boolean(connectors) ? connectors : true;
 			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
+			/**
 			 * The query for the filter.
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space, this.connectors);
+			this.query = new F.Query(query, this.space, this.connectors, this.ignoreCase);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -53,7 +60,7 @@
 		match: function(str){
 			if (!F.is.string(str)) return false;
 			if (F.is.string(this.query)){
-				this.query = new F.Query(this.query, this.space, this.connectors);
+				this.query = new F.Query(this.query, this.space, this.connectors, this.ignoreCase);
 			}
 			return this.query instanceof F.Query ? this.query.match(str) : false;
 		},

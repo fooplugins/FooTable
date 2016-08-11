@@ -716,6 +716,49 @@
 				</div>
 			</div>
 
+			<!-- expandAll -->
+			<a href="#expandAll" class="list-group-item anchored">
+				<span id="expandAll" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">expandAll <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to all rows details.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>When set to <code>true</code> this will automatically expand all rows of the table when displayed on a device that hides any columns.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-expand-all=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+					</div>
+
+					<div class="examples">
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;expandAll&quot;: true
+	});
+});</code></pre>
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>If you want to have multiple rows expanded by default please take a look at the row <a href="#row-expanded"><code>expanded</code></a> option.</p>
+					</div>
+
+				</div>
+			</div>
+
 			<!-- getWidth -->
 			<a href="#getWidth" class="list-group-item anchored">
 				<span id="getWidth" class="anchor">&nbsp;</span>
@@ -1304,6 +1347,56 @@
 				</div>
 			</div>
 
+			<!-- classes -->
+			<a href="#column-classes" class="list-group-item anchored">
+				<span id="column-classes" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">classes <small>string</small></h4>
+				<p class="list-group-item-text">A space separated string of CSS classes to apply to the row.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+						<div class="example default">
+							<p><code>null</code></p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the cell element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-classes=&quot;class1 class2&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply this value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;classes&quot;: &quot;class1 class2&quot;
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+				</div>
+			</div>
+
 			<!-- formatter -->
 			<a href="#column-formatter" class="list-group-item anchored">
 				<span id="column-formatter" class="anchor">&nbsp;</span>
@@ -1758,7 +1851,7 @@
 						</div>
 						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
 	..
-		&lt;tr classes=&quot;class1 class2&quot;&gt;
+		&lt;tr class=&quot;class1 class2&quot;&gt;
 			...
 		&lt;/tr&gt;
 	...

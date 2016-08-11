@@ -64,6 +64,11 @@
 			 */
 			this.expandFirst = table.o.expandFirst;
 			/**
+			 * Whether or not all row details are expanded by default when displayed on a device that hides any columns.
+			 * @type {boolean}
+			 */
+			this.expandAll = table.o.expandAll;
+			/**
 			 * The jQuery object that contains the empty row control.
 			 * @type {jQuery}
 			 */
@@ -136,6 +141,7 @@
 					if (self.toggleColumn != "first" && self.toggleColumn != "last") self.toggleColumn = "first";
 					self.emptyString = F.is.string(data.empty) ? data.empty : self.emptyString;
 					self.expandFirst = F.is.boolean(data.expandFirst) ? data.expandFirst : self.expandFirst;
+					self.expandAll = F.is.boolean(data.expandAll) ? data.expandAll : self.expandAll;
 				});
 			});
 		},
@@ -185,7 +191,7 @@
 				self.$empty.detach();
 				// loop through them appending to the tbody and then drawing
 				F.arr.each(self.array, function(row){
-					if (self.expandFirst && first){
+					if ((self.expandFirst && first) || self.expandAll){
 						row.expanded = true;
 						first = false;
 					}
@@ -196,6 +202,22 @@
 				self.$empty.children('td').attr('colspan', self.ft.columns.visibleColspan);
 				$tbody.append(self.$empty);
 			}
+		},
+		/**
+		 * Loads a JSON array of row objects into the table
+		 * @param {Array.<object>} data - An array of row objects to load.
+		 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
+		 */
+		load: function(data, append){
+			var self = this, rows = $.map(data, function(r){
+				return new F.Row(self.ft, self.ft.columns.array, r);
+			});
+			F.arr.each(this.array, function(row){
+				row.predraw();
+			});
+			this.all = (F.is.boolean(append) ? append : false) ? this.all.concat(rows) : rows;
+			this.array = this.all.slice(0);
+			this.ft.draw();
 		}
 	});
 
