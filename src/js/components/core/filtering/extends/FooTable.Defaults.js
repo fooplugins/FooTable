@@ -10,6 +10,7 @@
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
+	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -19,6 +20,7 @@
 		space: 'AND',
 		placeholder: 'Search',
 		position: 'right',
-		connectors: true
+		connectors: true,
+		ignoreCase: true
 	};
 })(FooTable);

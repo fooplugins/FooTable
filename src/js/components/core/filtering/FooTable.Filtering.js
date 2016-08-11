@@ -43,6 +43,12 @@
 			 */
 			this.connectors = table.o.filtering.connectors;
 			/**
+			 * Whether or not ignore case when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.ignoreCase = table.o.filtering.ignoreCase;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
@@ -135,6 +141,10 @@
 				self.connectors = F.is.boolean(data.filterConnectors)
 					? data.filterConnectors
 					: self.connectors;
+
+				self.ignoreCase = F.is.boolean(data.filterIgnoreCase)
+					? data.filterIgnoreCase
+					: self.ignoreCase;
 
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
@@ -373,7 +383,7 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors));
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors, self.ignoreCase));
 					}
 				});
 			}
