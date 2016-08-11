@@ -3,6 +3,8 @@
 	/**
 	 * Adds a row to the underlying {@link FooTable.Rows#all} array.
 	 * @param {(object|FooTable.Row)} dataOrRow - A hash containing the row values or an actual {@link FooTable.Row} object.
+	 * @param {boolean} [redraw=true] - Whether or not to redraw the table, defaults to true but for bulk operations this
+	 * can be set to false and then followed by a call to the {@link FooTable.Table#draw} method.
 	 */
 	F.Rows.prototype.add = function(dataOrRow, redraw){
 		var row = dataOrRow;
