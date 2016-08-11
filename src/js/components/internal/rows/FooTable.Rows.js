@@ -196,6 +196,22 @@
 				self.$empty.children('td').attr('colspan', self.ft.columns.visibleColspan);
 				$tbody.append(self.$empty);
 			}
+		},
+		/**
+		 * Loads a JSON array of row objects into the table
+		 * @param {Array.<object>} data - An array of row objects to load.
+		 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
+		 */
+		load: function(data, append){
+			var self = this, rows = $.map(data, function(r){
+				return new F.Row(self.ft, self.ft.columns.array, r);
+			});
+			F.arr.each(this.array, function(row){
+				row.predraw();
+			});
+			this.all = (F.is.boolean(append) ? append : false) ? this.all.concat(rows) : rows;
+			this.array = this.all.slice(0);
+			this.ft.draw();
 		}
 	});
 
