@@ -79,11 +79,43 @@
 			this.viewText = table.o.editing.viewText;
 
 			/**
+			 * Whether or not to show the Add Row button.
+			 * @type {boolean}
+			 */
+			this.allowAdd = table.o.editing.allowAdd;
+
+			/**
+			 * Whether or not to show the Edit Row button.
+			 * @type {boolean}
+			 */
+			this.allowEdit = table.o.editing.allowEdit;
+
+			/**
+			 * Whether or not to show the Delete Row button.
+			 * @type {boolean}
+			 */
+			this.allowDelete = table.o.editing.allowDelete;
+
+			/**
+			 * Whether or not to show the View Row button.
+			 * @type {boolean}
+			 */
+			this.allowView = table.o.editing.allowView;
+
+			/**
+			 * Caches the row button elements to help with performance.
+			 * @type {(null|jQuery)}
+			 * @private
+			 */
+			this._$buttons = null;
+
+			/**
 			 * This object is used to contain the callbacks for the add, edit and delete row buttons.
 			 * @type {object}
 			 * @prop {function} addRow
 			 * @prop {function} editRow
 			 * @prop {function} deleteRow
+			 * @prop {function} viewRow
 			 */
 			this.callbacks = {
 				addRow: F.checkFnValue(this, table.o.editing.addRow),
@@ -137,7 +169,15 @@
 				self.deleteText = F.is.string(data.editingDeleteText) ? data.editingDeleteText : self.deleteText;
 
 				self.viewText = F.is.string(data.editingViewText) ? data.editingViewText : self.viewText;
-				
+
+				self.allowAdd = F.is.boolean(data.editingAllowAdd) ? data.editingAllowAdd : self.allowAdd;
+
+				self.allowEdit = F.is.boolean(data.editingAllowEdit) ? data.editingAllowEdit : self.allowEdit;
+
+				self.allowDelete = F.is.boolean(data.editingAllowDelete) ? data.editingAllowDelete : self.allowDelete;
+
+				self.allowView = F.is.boolean(data.editingAllowView) ? data.editingAllowView : self.allowView;
+
 				self.column = new F.EditingColumn(self.ft, self, $.extend(true, {}, self.column, data.editingColumn, {visible: self.alwaysShow}));
 
 				if (self.ft.$el.hasClass('footable-editing-left'))
@@ -202,8 +242,8 @@
 			 */
 			var self = this;
 			this.ft.raise('destroy.ft.editing').then(function(){
-				self.ft.$el.removeClass('footable-editing').off('click.ft.editing')
-					.find('tfoot > tr.footable-editing').remove();
+				self.ft.$el.removeClass('footable-editing footable-editing-always-show footable-editing-no-add footable-editing-no-edit footable-editing-no-delete footable-editing-no-view')
+					.off('click.ft.editing').find('tfoot > tr.footable-editing').remove();
 			});
 		},
 		/**
@@ -221,14 +261,20 @@
 				.on('click.ft.editing', '.footable-view', {self: self}, self._onViewClick)
 				.on('click.ft.editing', '.footable-add', {self: self}, self._onAddClick);
 
-			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan)
-				.append(self.$buttonShow())
-				.append(self.$buttonAdd())
-				.append(self.$buttonHide());
+			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan).append(self.$buttonShow());
+			if (self.allowAdd){
+				self.$cell.append(self.$buttonAdd());
+			}
+			self.$cell.append(self.$buttonHide());
 
 			if (self.alwaysShow){
 				self.ft.$el.addClass('footable-editing-always-show');
 			}
+
+			if (!self.allowAdd) self.ft.$el.addClass('footable-editing-no-add');
+			if (!self.allowEdit) self.ft.$el.addClass('footable-editing-no-edit');
+			if (!self.allowDelete) self.ft.$el.addClass('footable-editing-no-delete');
+			if (!self.allowView) self.ft.$el.addClass('footable-editing-no-view');
 
 			var $tfoot = self.ft.$el.children('tfoot');
 			if ($tfoot.length == 0){
@@ -298,10 +344,12 @@
 		 * @returns {(string|HTMLElement|jQuery)}
 		 */
 		$rowButtons: function(){
-			return $('<div class="btn-group btn-group-xs" role="group"></div>')
-				.append(this.$buttonView())
-				.append(this.$buttonEdit())
-				.append(this.$buttonDelete());
+			if (F.is.jq(this._$buttons)) return this._$buttons.clone();
+			this._$buttons = $('<div class="btn-group btn-group-xs" role="group"></div>');
+			if (this.allowView) this._$buttons.append(this.$buttonView());
+			if (this.allowEdit) this._$buttons.append(this.$buttonEdit());
+			if (this.allowDelete) this._$buttons.append(this.$buttonDelete());
+			return this._$buttons;
 		},
 		/**
 		 * Performs the drawing of the component.
