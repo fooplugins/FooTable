@@ -126,7 +126,7 @@
 			this.ft.raise('destroy.ft.paging').then(function(){
 				self.ft.$el.off('click.footable', '.footable-sortable', self._onSortClicked);
 				self.ft.$el.children('thead').children('tr.footable-header')
-					.children('.footable-sortable').removeClass('footable-sortable')
+					.children('.footable-sortable').removeClass('footable-sortable footable-asc footable-desc')
 					.find('span.fooicon').remove();
 			});
 		},
