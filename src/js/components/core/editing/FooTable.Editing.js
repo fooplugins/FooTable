@@ -71,6 +71,12 @@
 			 * @type {string}
 			 */
 			this.deleteText = table.o.editing.deleteText;
+			
+			/**
+			 * The text that appears in the view button. This can contain HTML.
+			 * @type {string}
+			 */
+			this.viewText = table.o.editing.viewText;
 
 			/**
 			 * This object is used to contain the callbacks for the add, edit and delete row buttons.
@@ -82,7 +88,8 @@
 			this.callbacks = {
 				addRow: F.checkFnValue(this, table.o.editing.addRow),
 				editRow: F.checkFnValue(this, table.o.editing.editRow),
-				deleteRow: F.checkFnValue(this, table.o.editing.deleteRow)
+				deleteRow: F.checkFnValue(this, table.o.editing.deleteRow),
+				viewRow: F.checkFnValue(this, table.o.editing.viewRow)
 			};
 		},
 		/* PROTECTED */
@@ -129,6 +136,8 @@
 
 				self.deleteText = F.is.string(data.editingDeleteText) ? data.editingDeleteText : self.deleteText;
 
+				self.viewText = F.is.string(data.editingViewText) ? data.editingViewText : self.viewText;
+				
 				self.column = new F.EditingColumn(self.ft, self, $.extend(true, {}, self.column, data.editingColumn, {visible: self.alwaysShow}));
 
 				if (self.ft.$el.hasClass('footable-editing-left'))
@@ -151,6 +160,7 @@
 				self.callbacks.addRow = F.checkFnValue(self, data.editingAddRow, self.callbacks.addRow);
 				self.callbacks.editRow = F.checkFnValue(self, data.editingEditRow, self.callbacks.editRow);
 				self.callbacks.deleteRow = F.checkFnValue(self, data.editingDeleteRow, self.callbacks.deleteRow);
+				self.callbacks.viewRow = F.checkFnValue(self, data.editingViewRow, self.callbacks.viewRow);
 			}, function(){
 				self.enabled = false;
 			});
@@ -208,6 +218,7 @@
 				.on('click.ft.editing', '.footable-hide', {self: self}, self._onHideClick)
 				.on('click.ft.editing', '.footable-edit', {self: self}, self._onEditClick)
 				.on('click.ft.editing', '.footable-delete', {self: self}, self._onDeleteClick)
+				.on('click.ft.editing', '.footable-view', {self: self}, self._onViewClick)
 				.on('click.ft.editing', '.footable-add', {self: self}, self._onAddClick);
 
 			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan)
@@ -272,6 +283,15 @@
 			return '<button type="button" class="btn btn-default footable-delete">' + this.deleteText + '</button>';
 		},
 		/**
+		 * Creates the view button for the editing component.
+		 * @instance
+		 * @protected
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		$buttonView: function(){
+			return '<button type="button" class="btn btn-default footable-view">' + this.viewText + '</button> ';
+		},
+		/**
 		 * Creates the button group for the row buttons.
 		 * @instance
 		 * @protected
@@ -279,6 +299,7 @@
 		 */
 		$rowButtons: function(){
 			return $('<div class="btn-group btn-group-xs" role="group"></div>')
+				.append(this.$buttonView())
 				.append(this.$buttonEdit())
 				.append(this.$buttonDelete());
 		},
@@ -333,6 +354,30 @@
 				 */
 				self.ft.raise('delete.ft.editing', [row]).then(function(){
 					self.callbacks.deleteRow.call(self.ft, row);
+				});
+			}
+		},
+		/**
+		 * Handles the view button click event.
+		 * @instance
+		 * @private
+		 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+		 * @fires FooTable.Editing#"view.ft.editing"
+		 */
+		_onViewClick: function(e){
+			e.preventDefault();
+			var self = e.data.self, row = $(this).closest('tr').data('__FooTableRow__');
+			if (row instanceof F.Row){
+				/**
+				 * The view.ft.editing event is raised before its callback is executed.
+				 * Calling preventDefault on this event will prevent the callback from being executed.
+				 * @event FooTable.Editing#"view.ft.editing"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+				 * @param {FooTable.Row} row - The row to be viewed.
+				 */
+				self.ft.raise('view.ft.editing', [row]).then(function(){
+					self.callbacks.viewRow.call(self.ft, row);
 				});
 			}
 		},
