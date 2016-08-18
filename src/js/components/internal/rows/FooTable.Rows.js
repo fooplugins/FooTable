@@ -239,6 +239,22 @@
 			this.all = (F.is.boolean(append) ? append : false) ? this.all.concat(rows) : rows;
 			this.array = this.all.slice(0);
 			this.ft.draw();
+		},
+		/**
+		 * Expands all visible rows.
+		 */
+		expand: function(){
+			F.arr.each(this.array, function(row){
+				row.expand();
+			});
+		},
+		/**
+		 * Collapses all visible rows.
+		 */
+		collapse: function(){
+			F.arr.each(this.array, function(row){
+				row.collapse();
+			});
 		}
 	});
 
