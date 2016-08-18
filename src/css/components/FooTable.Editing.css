@@ -14,6 +14,12 @@ table.footable-editing-no-delete.footable-editing-no-view td.footable-editing {
 	width: 50px;
 	max-width: 50px;
 }
+table.footable-editing-no-edit.footable-editing-no-delete.footable-editing-no-view td.footable-editing,
+table.footable-editing-no-edit.footable-editing-no-delete.footable-editing-no-view th.footable-editing {
+	width: 0;
+	max-width: 0;
+	display: none !important;
+}
 table.footable-editing-right td.footable-editing,
 table.footable-editing-right tr.footable-editing {
 	text-align: right;

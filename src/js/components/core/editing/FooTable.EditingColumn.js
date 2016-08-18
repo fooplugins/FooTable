@@ -15,6 +15,15 @@
 			this.editing = editing;
 		},
 		/**
+		 * After the column has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.
+		 * @instance
+		 * @protected
+		 * @this FooTable.Column
+		 */
+		$create: function(){
+			(this.$el = !this.virtual && F.is.jq(this.$el) ? this.$el : $('<th/>', {'class': 'footable-editing'})).html(this.title);
+		},
+		/**
 		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and
 		 * will be provided to the {@link FooTable.EditingColumn#format} function
 		 * to generate the cell contents.
