@@ -180,7 +180,14 @@
 			this.expanded = this.o.expanded;
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
-			this.value = isObj ? (hasOptions ? data.value : data) : null;
+			if (isObj) {
+				if ( hasOptions ) data = data.value;
+				for (var attrKey in data) { 
+					this.value[attrKey] = data[attrKey]; 
+				}			
+			} else {
+				this.value = null;
+			}
 
 			F.arr.each(this.cells, function(cell){
 				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
