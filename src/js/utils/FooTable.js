@@ -25,8 +25,12 @@
 	 */
 	F.getFnPointer = function(functionName){
 		if (F.is.emptyString(functionName)) return null;
-		if (F.is.fn(window[functionName])) return window[functionName];
-		return null;
+		var pointer = window,
+			parts = functionName.split('.');
+		F.arr.each(parts, function(part){
+			if (pointer[part]) pointer = pointer[part];
+		});
+		return F.is.fn(pointer) ? pointer : null;
 	};
 
 	/**
