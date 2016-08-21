@@ -89,6 +89,8 @@
 				var $header = self.ft.$el.find('tr.footable-header'), $cell, cdata;
 				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last:has([data-breakpoints])');
 				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first:has([data-breakpoints])');
+				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last');
+				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first');
 				if ($header.length > 0){
 					var virtual = $header.parent().is('tbody') && $header.children().length == $header.children('td').length;
 					if (!virtual) self.$header = $header.addClass('footable-header');
