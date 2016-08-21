@@ -182,9 +182,14 @@
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
 			if (isObj) {
 				if ( hasOptions ) data = data.value;
-				for (var attrKey in data) { 
-					this.value[attrKey] = data[attrKey]; 
-				}			
+				if (F.is.hash(this.value)){
+					for (var prop in data) {
+						if (!data.hasOwnProperty(prop)) continue;
+						this.value[prop] = data[prop];
+					}
+				} else {
+					this.value = data;
+				}
 			} else {
 				this.value = null;
 			}
