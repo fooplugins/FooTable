@@ -137,9 +137,7 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 
 	// create the select element with the default value and append it to the form group
 	self.$status = $(&#39;&lt;select/&gt;&#39;, { &#39;class&#39;: &#39;form-control&#39; })
-		.on(&#39;change&#39;, function(){
-			self.filter(); // when ever the dropdown value changes trigger the filter operation
-		})
+		.on(&#39;change&#39;, {self: self}, self._onStatusDropdownChanged)
 		.append($(&#39;&lt;option/&gt;&#39;, {text: self.def}))
 		.appendTo($form_grp);
 
@@ -149,28 +147,36 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 	});
 }</code></pre>
 
-		<h3>Step 4: Hooking into the filter operation</h3>
+		<h3>Step 4: Handing the dropdown change event</h3>
 		<p>
-			At this point we have the dropdown appearing next to the search input and it triggers a filter operation whenever it is changed however we need to hook into the
-			filter operation to actually apply our custom filter. To do this we will override the base filtering components' <code>filter</code> method and use the
-			<code>addFilter</code> and <code>removeFilter</code> methods to implement the status filter.
+			At this point we have the dropdown appearing next to the search input but we still need to handle the change event we bound to above and actually apply the filter. To do
+			this we will use the <code>addFilter</code>, <code>removeFilter</code> and <code>filter</code> methods.
 		</p>
-		<pre class="language-javascript between" data-lang="javascript"><code>filter: function(query, columns){
-	var val = this.$status.val(); // get the current dropdown value
-	if (val != this.def) this.addFilter(&#39;status&#39;, val, [&#39;status&#39;]); // if it's not the default value add a new filter
-	else this.removeFilter(&#39;status&#39;); // otherwise remove the filter
-	return this._super(query, columns); // call the base filter method
+		<pre class="language-javascript between" data-lang="javascript"><code>_onStatusDropdownChanged: function(e){
+	var self = e.data.self, // get the MyFiltering object
+		selected = $(this).val(); // get the current dropdown value
+	if (selected !== self.def){ // if it's not the default value add a new filter
+		self.addFilter('status', selected, ['status']);
+	} else { // otherwise remove the filter
+		self.removeFilter('status');
+	}
+	// initiate the actual filter operation
+	self.filter();
 }</code></pre>
 
-		<h3>Step 5: Hooking into the clear filter operation</h3>
+		<h3>Step 5: Hooking into the draw operation</h3>
 		<p>
-			So now we have the dropdown, it's applying the filter as required but we also need it to clear itself when we click the [X] button on the search input. To do this
-			we will override the base filtering components' <code>clear</code> method and use the <code>removeFilter</code> method to remove the status filter.
+			So now we have the dropdown, the filter is being added or removed in the change event as required but we also need the dropdown to be able to handle having it's value set
+			through the options. To do this we hook into the <code>draw</code> method and check for the 'status' filter and if one exists update the dropdown as required.
 		</p>
-		<pre class="language-javascript between" data-lang="javascript"><code>clear: function(){
-	this.$status.val(this.def); // reset the dropdown to the default value
-	this.removeFilter(&#39;status&#39;); // remove the filter
-	return this._super(); // call the base clear method
+		<pre class="language-javascript between" data-lang="javascript"><code>draw: function(){
+	this._super(); // call the base draw method, this will handle the default search input
+	var status = this.find(&#39;status&#39;); // find the status filter
+	if (status instanceof FooTable.Filter){ // if it exists update the dropdown to reflect the value
+		this.$status.val(status.query.val());
+	} else { // otherwise update the dropdown to the default value
+		this.$status.val(this.def);
+	}
 }</code></pre>
 
 		<h3>Finished!</h3>
@@ -190,9 +196,7 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 				.prependTo(self.$form);
 
 		self.$status = $(&#39;&lt;select/&gt;&#39;, { &#39;class&#39;: &#39;form-control&#39; })
-			.on(&#39;change&#39;, function(){
-				self.filter();
-			})
+			.on(&#39;change&#39;, {self: self}, self._onStatusDropdownChanged)
 			.append($(&#39;&lt;option/&gt;&#39;, {text: self.def}))
 			.appendTo($form_grp);
 
@@ -200,16 +204,24 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 			self.$status.append($(&#39;&lt;option/&gt;&#39;).text(status));
 		});
 	},
-	filter: function(query, columns){
-		var val = this.$status.val();
-		if (val != this.def) this.addFilter(&#39;status&#39;, val, [&#39;status&#39;]);
-		else this.removeFilter(&#39;status&#39;);
-		return this._super(query, columns);
+	_onStatusDropdownChanged: function(e){
+		var self = e.data.self,
+			selected = $(this).val();
+		if (selected !== self.def){
+			self.addFilter(&#39;status&#39;, selected, [&#39;status&#39;]);
+		} else {
+			self.removeFilter(&#39;status&#39;);
+		}
+		self.filter();
 	},
-	clear: function(){
-		this.$status.val(this.def);
-		this.removeFilter(&#39;status&#39;);
-		return this._super();
+	draw: function(){
+		this._super();
+		var status = this.find(&#39;status&#39;);
+		if (status instanceof FooTable.Filter){
+			this.$status.val(status.query.val());
+		} else {
+			this.$status.val(this.def);
+		}
 	}
 });
 
@@ -232,45 +244,51 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 <script src="../../../compiled/footable.js"></script>
 <!-- Initialize FooTable -->
 <script>
-	FooTable.MyFiltering = FooTable.Filtering.extend({
-		construct: function(instance){
-			this._super(instance);
-			this.statuses = ['Active','Disabled','Suspended'];
-			this.def = 'Any Status';
-			this.$status = null;
-		},
-		$create: function(){
-			this._super();
-			var self = this,
-				$form_grp = $('<div/>', {'class': 'form-group'})
-					.append($('<label/>', {'class': 'sr-only', text: 'Status'}))
-					.prependTo(self.$form);
+FooTable.MyFiltering = FooTable.Filtering.extend({
+	construct: function(instance){
+		this._super(instance);
+		this.statuses = ['Active','Disabled','Suspended'];
+		this.def = 'Any Status';
+		this.$status = null;
+	},
+	$create: function(){
+		this._super();
+		var self = this,
+			$form_grp = $('<div/>', {'class': 'form-group'})
+				.append($('<label/>', {'class': 'sr-only', text: 'Status'}))
+				.prependTo(self.$form);
 
-			self.$status = $('<select/>', { 'class': 'form-control' })
-				.on('change', function(){
-					self.filter();
-				})
-				.append($('<option/>', {text: self.def}))
-				.appendTo($form_grp);
+		self.$status = $('<select/>', { 'class': 'form-control' })
+			.on('change', {self: self}, self._onStatusDropdownChanged)
+			.append($('<option/>', {text: self.def}))
+			.appendTo($form_grp);
 
-			$.each(self.statuses, function(i, status){
-				self.$status.append($('<option/>').text(status));
-			});
-		},
-		filter: function(query, columns){
-			var val = this.$status.val();
-			if (val != this.def) this.addFilter('status', val, ['status']);
-			else this.removeFilter('status');
-			return this._super(query, columns);
-		},
-		clear: function(){
-			this.$status.val(this.def);
-			this.removeFilter('status');
-			return this._super();
+		$.each(self.statuses, function(i, status){
+			self.$status.append($('<option/>').text(status));
+		});
+	},
+	_onStatusDropdownChanged: function(e){
+		var self = e.data.self,
+			selected = $(this).val();
+		if (selected !== self.def){
+			self.addFilter('status', selected, ['status']);
+		} else {
+			self.removeFilter('status');
 		}
-	});
+		self.filter();
+	},
+	draw: function(){
+		this._super();
+		var status = this.find('status');
+		if (status instanceof FooTable.Filter){
+			this.$status.val(status.query.val());
+		} else {
+			this.$status.val(this.def);
+		}
+	}
+});
 
-	FooTable.components.core.register('filtering', FooTable.MyFiltering);
+FooTable.components.core.register('filtering', FooTable.MyFiltering);
 
 	jQuery(function($){
 		$('#filter-dropdown-example').footable({
