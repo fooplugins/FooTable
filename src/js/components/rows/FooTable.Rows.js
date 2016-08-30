@@ -166,6 +166,27 @@
 			});
 		},
 		/**
+		 * Destroys the rows component removing any UI generated from the table.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Rows#"destroy.ft.rows"
+		 */
+		destroy: function(){
+			/**
+			 * The destroy.ft.rows event is raised before its UI is removed.
+			 * Calling preventDefault on this event will prevent the component from being destroyed.
+			 * @event FooTable.Rows#"destroy.ft.rows"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 */
+			var self = this;
+			this.ft.raise('destroy.ft.rows').then(function(){
+				F.arr.each(self.array, function(row){
+					row.predraw();
+				});
+			});
+		},
+		/**
 		 * Performs the predraw operations that are required including creating the shallow clone of the {@link FooTable.Rows#array} to work with.
 		 * @instance
 		 * @protected
@@ -218,9 +239,25 @@
 			this.all = (F.is.boolean(append) ? append : false) ? this.all.concat(rows) : rows;
 			this.array = this.all.slice(0);
 			this.ft.draw();
+		},
+		/**
+		 * Expands all visible rows.
+		 */
+		expand: function(){
+			F.arr.each(this.array, function(row){
+				row.expand();
+			});
+		},
+		/**
+		 * Collapses all visible rows.
+		 */
+		collapse: function(){
+			F.arr.each(this.array, function(row){
+				row.collapse();
+			});
 		}
 	});
 
-	F.components.internal.register('rows', F.Rows, 0);
+	F.components.register('rows', F.Rows, 800);
 
 })(jQuery, FooTable);

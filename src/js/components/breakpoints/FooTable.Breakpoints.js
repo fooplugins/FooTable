@@ -241,6 +241,6 @@
 		}
 	});
 
-	F.components.internal.register('breakpoints', F.Breakpoints, 10);
+	F.components.register('breakpoints', F.Breakpoints, 1000);
 
 })(jQuery, FooTable);

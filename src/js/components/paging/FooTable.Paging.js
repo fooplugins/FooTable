@@ -555,6 +555,6 @@
 		}
 	});
 
-	F.components.core.register('paging', F.Paging, 0);
+	F.components.register('paging', F.Paging, 400);
 
 })(jQuery, FooTable);

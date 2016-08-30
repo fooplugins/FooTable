@@ -53,6 +53,12 @@
 			 */
 			this.o = $.extend(true, {}, F.defaults, options);
 			/**
+			 * The jQuery data object for the table at initialization.
+			 * @instance
+			 * @type {object}
+			 */
+			this.data = this.$el.data() || {};
+			/**
 			 * An array of all CSS classes on the table that do not start with "footable".
 			 * @instance
 			 * @protected
@@ -68,11 +74,7 @@
 			 * @prop {Array.<FooTable.Component>} core - The core components for the plugin. These are executed either after the internal components in the initialize phase or before them in the destroy phase of the plugin.
 			 * @prop {Array.<FooTable.Component>} custom - The custom components for the plugin. These are executed either after the core components in the initialize phase or before them in the destroy phase of the plugin.
 			 */
-			this.components = {
-				internal: F.components.internal.load(this),//[this.breakpoints, this.columns, this.editor, this.rows],
-				core: F.components.core.load(this),
-				custom: F.components.load(this)
-			};
+			this.components = F.components.load((F.is.hash(this.data.components) ? this.data.components : this.o.components), this);
 			/**
 			 * The breakpoints component for this instance of the plugin.
 			 * @instance
@@ -141,14 +143,14 @@
 			 * @event FooTable.Table#"preinit.ft.table"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {object} data - The jQuery data object from the root table element.
 			 */
-			return this.raise('preinit.ft.table').then(function(){
-				var classes = self.$el.attr('class').match(/\S+/g),
-					data = self.$el.data() || {};
+			return this.raise('preinit.ft.table', [self.data]).then(function(){
+				var classes = self.$el.attr('class').match(/\S+/g);
 
-				self.o.ajax = F.checkFnValue(self, data.ajax, self.o.ajax);
-				self.o.stopPropagation = F.is.boolean(data.stopPropagation)
-					? data.stopPropagation
+				self.o.ajax = F.checkFnValue(self, self.data.ajax, self.o.ajax);
+				self.o.stopPropagation = F.is.boolean(self.data.stopPropagation)
+					? self.data.stopPropagation
 					: self.o.stopPropagation;
 
 				for (var i = 0, len = classes.length; i < len; i++){
@@ -156,7 +158,7 @@
 				}
 				var $loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
 				self.$el.hide().after($loader);
-				return self.execute(false, false, 'preinit', data).always(function(){
+				return self.execute(false, false, 'preinit', self.data).always(function(){
 					self.$el.show();
 					$loader.remove();
 				});
@@ -272,9 +274,8 @@
 		 * @returns {(*|null)}
 		 */
 		use: function(type){
-			var components = this.components.internal.concat(this.components.core, this.components.custom);
-			for (var i = 0, len = components.length; i < len; i++){
-				if (components[i] instanceof type) return components[i];
+			for (var i = 0, len = this.components.length; i < len; i++){
+				if (this.components[i] instanceof type) return this.components[i];
 			}
 			return null;
 		},
@@ -341,20 +342,9 @@
 			var self = this, args = Array.prototype.slice.call(arguments);
 			reverse = args.shift();
 			enabled = args.shift();
-			var internal = enabled ? F.arr.get(self.components.internal, function(c){ return c.enabled; }) : self.components.internal.slice(0),
-				core = enabled ? F.arr.get(self.components.core, function(c){ return c.enabled; }) : self.components.core.slice(0),
-				custom = enabled ? F.arr.get(self.components.custom, function(c){ return c.enabled; }) : self.components.custom.slice(0);
-
-			args.unshift(reverse ? custom.reverse() : internal);
-			return self._execute.apply(self, args).then(function(){
-				args.shift();
-				args.unshift(reverse ? core.reverse() : core);
-				return self._execute.apply(self, args).then(function(){
-					args.shift();
-					args.unshift(reverse ? internal.reverse() : custom);
-					return self._execute.apply(self, args);
-				});
-			});
+			var components = enabled ? F.arr.get(self.components, function(c){ return c.enabled; }) : self.components.slice(0);
+			args.unshift(reverse ? components.reverse() : components);
+			return self._execute.apply(self, args);
 		},
 		/**
 		 * Executes the specified method with the optional number of parameters on all supplied components waiting for the result of each before executing the next.

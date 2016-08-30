@@ -89,6 +89,8 @@
 				var $header = self.ft.$el.find('tr.footable-header'), $cell, cdata;
 				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last:has([data-breakpoints])');
 				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first:has([data-breakpoints])');
+				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last');
+				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first');
 				if ($header.length > 0){
 					var virtual = $header.parent().is('tbody') && $header.children().length == $header.children('td').length;
 					if (!virtual) self.$header = $header.addClass('footable-header');
@@ -193,6 +195,25 @@
 			});
 		},
 		/**
+		 * Destroys the columns component removing any UI generated from the table.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Columns#"destroy.ft.columns"
+		 */
+		destroy: function(){
+			/**
+			 * The destroy.ft.columns event is raised before its UI is removed.
+			 * Calling preventDefault on this event will prevent the component from being destroyed.
+			 * @event FooTable.Columns#"destroy.ft.columns"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 */
+			var self = this;
+			this.ft.raise('destroy.ft.columns').then(function(){
+				self.$header.remove();
+			});
+		},
+		/**
 		 * The predraw method called from within the {@link FooTable.Table#draw} method.
 		 * @instance
 		 * @protected
@@ -290,6 +311,6 @@
 		}
 	});
 
-	F.components.internal.register('columns', F.Columns, 5);
+	F.components.register('columns', F.Columns, 900);
 
 })(jQuery, FooTable);

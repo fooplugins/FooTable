@@ -19,14 +19,17 @@
 
 	/**
 	 * Attempts to retrieve a function pointer using the given name.
-	 * @protected
 	 * @param {string} functionName - The name of the function to fetch a pointer to.
 	 * @returns {(function|object|null)}
 	 */
 	F.getFnPointer = function(functionName){
 		if (F.is.emptyString(functionName)) return null;
-		if (F.is.fn(window[functionName])) return window[functionName];
-		return null;
+		var pointer = window,
+			parts = functionName.split('.');
+		F.arr.each(parts, function(part){
+			if (pointer[part]) pointer = pointer[part];
+		});
+		return F.is.fn(pointer) ? pointer : null;
 	};
 
 	/**

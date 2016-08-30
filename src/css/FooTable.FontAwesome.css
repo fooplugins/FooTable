@@ -56,3 +56,6 @@
 .fooicon-cog:before {
 	content: "\f013";
 }
+.fooicon-stats:before {
+	content: "\f080";
+}

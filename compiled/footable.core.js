@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.0.11
+* @version 3.1.0
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -72,6 +72,22 @@
 		var ft = F.get(table);
 		if (ft instanceof F.Table) ft.destroy();
 		return new F.Table(table, options, ready);
+	};
+
+	/**
+	 * Gets the FooTable.Row instance for the supplied element.
+	 * @param {(jQuery|jQuery.selector|HTMLTableElement)} element - A jQuery object, selector or the HTMLElement of an element to retrieve the FooTable.Row for.
+	 * @returns {FooTable.Row}
+	 */
+	F.getRow = function(element){
+		// to get the FooTable.Row object simply walk up the DOM, find the TR and grab the __FooTableRow__ data value
+		var $row = $(element).closest('tr');
+		// if this is a detail row get the previous row in the table to get the main TR element
+		if ($row.hasClass('footable-detail-row')){
+			$row = $row.prev();
+		}
+		// grab the row object
+		return $row.data('__FooTableRow__');
 	};
 
 	// The below are external type definitions mainly used as pointers to jQuery docs for important information
@@ -828,16 +844,34 @@
 		/**
 		 * Creates new instances of all registered classes using there priority and the supplied arguments to return them in an array.
 		 * @instance
+		 * @param {object} subs - An object containing classes to substitute on load.
 		 * @param {*} arg1 - The first argument to supply when creating new instances of all registered classes.
 		 * @param {*} [argN...] - Any number of additional arguments to supply when creating new instances of all registered classes.
 		 * @returns {Array.<FooTable.Class>}
 		 * @this FooTable.ClassFactory
 		 */
-		load: function(arg1, argN){
-			var self = this, args = Array.prototype.slice.call(arguments), reg = [], loaded = [];
-			for (var name in self.registered){
+		load: function(subs, arg1, argN){
+			var self = this, args = Array.prototype.slice.call(arguments), reg = [], loaded = [], name, klass;
+			subs = args.shift() || {};
+			for (name in self.registered){
 				if (!self.registered.hasOwnProperty(name)) continue;
-				reg.push(self.registered[name]);
+				var component = self.registered[name];
+				if (subs.hasOwnProperty(name)){
+					klass = subs[name];
+					if (F.is.string(klass)) klass = F.getFnPointer(subs[name]);
+					if (F.is.fn(klass)){
+						component = {name: name, klass: klass, priority: self.registered[name].priority};
+					}
+				}
+				reg.push(component);
+			}
+			for (name in subs){
+				if (!subs.hasOwnProperty(name) || self.registered.hasOwnProperty(name)) continue;
+				klass = subs[name];
+				if (F.is.string(klass)) klass = F.getFnPointer(subs[name]);
+				if (F.is.fn(klass)){
+					reg.push({name: name, klass: klass, priority: 0});
+				}
 			}
 			reg.sort(function(a, b){ return b.priority - a.priority; });
 			F.arr.each(reg, function(r){
@@ -905,14 +939,17 @@
 
 	/**
 	 * Attempts to retrieve a function pointer using the given name.
-	 * @protected
 	 * @param {string} functionName - The name of the function to fetch a pointer to.
 	 * @returns {(function|object|null)}
 	 */
 	F.getFnPointer = function(functionName){
 		if (F.is.emptyString(functionName)) return null;
-		if (F.is.fn(window[functionName])) return window[functionName];
-		return null;
+		var pointer = window,
+			parts = functionName.split('.');
+		F.arr.each(parts, function(part){
+			if (pointer[part]) pointer = pointer[part];
+		});
+		return F.is.fn(pointer) ? pointer : null;
 	};
 
 	/**
@@ -1343,6 +1380,81 @@
 
 })(jQuery, FooTable);
 (function ($, F) {
+
+	F.Component = F.Class.extend(/** @lends FooTable.Component */{
+		/**
+		 * The base class for all FooTable components.
+		 * @constructs
+		 * @extends FooTable.Class
+		 * @param {FooTable.Table} instance - The parent {@link FooTable.Table} object for the component.
+		 * @param {boolean} enabled - Whether or not the component is enabled.
+		 * @throws {TypeError} The instance parameter must be an instance of {@link FooTable.Table}.
+		 * @returns {FooTable.Component}
+		 */
+		construct: function (instance, enabled) {
+			if (!(instance instanceof F.Table))
+				throw new TypeError('The instance parameter must be an instance of FooTable.Table.');
+
+			/**
+			 * The parent {@link FooTable.Table} for the component.
+			 * @type {FooTable.Table}
+			 */
+			this.ft = instance;
+			/**
+			 * Whether or not this component is enabled. Disabled components only have there preinit method called allowing for this value to be overridden.
+			 * @type {boolean}
+			 */
+			this.enabled = F.is.boolean(enabled) ? enabled : false;
+		},
+		/**
+		 * The preinit method is called during the parent {@link FooTable.Table} constructor call.
+		 * @param {object} data - The jQuery.data() object of the root table.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		preinit: function(data){},
+		/**
+		 * The init method is called during the parent {@link FooTable.Table} constructor call.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		init: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#destroy} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		destroy: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#draw} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		predraw: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#draw} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		draw: function(){},
+		/**
+		 * This method is called from the {@link FooTable.Table#draw} method.
+		 * @instance
+		 * @protected
+		 * @function
+		 */
+		postdraw: function(){}
+	});
+
+	F.components = new F.ClassFactory();
+
+})(jQuery, FooTable);
+(function ($, F) {
 	/**
 	 * Contains all the available options for the FooTable plugin.
 	 * @name FooTable.Defaults
@@ -1565,7 +1677,19 @@
 			this.expanded = this.o.expanded;
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
-			this.value = isObj ? (hasOptions ? data.value : data) : null;
+			if (isObj) {
+				if ( hasOptions ) data = data.value;
+				if (F.is.hash(this.value)){
+					for (var prop in data) {
+						if (!data.hasOwnProperty(prop)) continue;
+						this.value[prop] = data[prop];
+					}
+				} else {
+					this.value = data;
+				}
+			} else {
+				this.value = null;
+			}
 
 			F.arr.each(this.cells, function(cell){
 				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
@@ -1635,15 +1759,16 @@
 		/**
 		 * Sets the current row to a collapsed state removing the detail row if it exists.
 		 * @instance
-		 * @this FooTable.Row
+		 * @param {boolean} [setExpanded] - Whether or not to set the {@link FooTable.Row#expanded} property to false.
+		 * @fires FooTable.Row#"collapse.ft.row"
 		 */
 		collapse: function(setExpanded){
 			if (!this.created) return;
 			var self = this;
 			/**
-			 * The collapse.ft.row event is raised before the the row is expanded.
-			 * Calling preventDefault on this event will stop the row being expanded.
-			 * @event FooTable.Row#"expand.ft.row"
+			 * The collapse.ft.row event is raised before the the row is collapsed.
+			 * Calling preventDefault on this event will stop the row being collapsed.
+			 * @event FooTable.Row#"collapse.ft.row"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.
@@ -1722,6 +1847,7 @@
 	});
 
 })(jQuery, FooTable);
+
 (function ($, F) {
 
 	/**
@@ -1777,6 +1903,12 @@
 			 */
 			this.o = $.extend(true, {}, F.defaults, options);
 			/**
+			 * The jQuery data object for the table at initialization.
+			 * @instance
+			 * @type {object}
+			 */
+			this.data = this.$el.data() || {};
+			/**
 			 * An array of all CSS classes on the table that do not start with "footable".
 			 * @instance
 			 * @protected
@@ -1792,11 +1924,7 @@
 			 * @prop {Array.<FooTable.Component>} core - The core components for the plugin. These are executed either after the internal components in the initialize phase or before them in the destroy phase of the plugin.
 			 * @prop {Array.<FooTable.Component>} custom - The custom components for the plugin. These are executed either after the core components in the initialize phase or before them in the destroy phase of the plugin.
 			 */
-			this.components = {
-				internal: F.components.internal.load(this),//[this.breakpoints, this.columns, this.editor, this.rows],
-				core: F.components.core.load(this),
-				custom: F.components.load(this)
-			};
+			this.components = F.components.load((F.is.hash(this.data.components) ? this.data.components : this.o.components), this);
 			/**
 			 * The breakpoints component for this instance of the plugin.
 			 * @instance
@@ -1865,14 +1993,14 @@
 			 * @event FooTable.Table#"preinit.ft.table"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {object} data - The jQuery data object from the root table element.
 			 */
-			return this.raise('preinit.ft.table').then(function(){
-				var classes = self.$el.attr('class').match(/\S+/g),
-					data = self.$el.data() || {};
+			return this.raise('preinit.ft.table', [self.data]).then(function(){
+				var classes = self.$el.attr('class').match(/\S+/g);
 
-				self.o.ajax = F.checkFnValue(self, data.ajax, self.o.ajax);
-				self.o.stopPropagation = F.is.boolean(data.stopPropagation)
-					? data.stopPropagation
+				self.o.ajax = F.checkFnValue(self, self.data.ajax, self.o.ajax);
+				self.o.stopPropagation = F.is.boolean(self.data.stopPropagation)
+					? self.data.stopPropagation
 					: self.o.stopPropagation;
 
 				for (var i = 0, len = classes.length; i < len; i++){
@@ -1880,7 +2008,7 @@
 				}
 				var $loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
 				self.$el.hide().after($loader);
-				return self.execute(false, false, 'preinit', data).always(function(){
+				return self.execute(false, false, 'preinit', self.data).always(function(){
 					self.$el.show();
 					$loader.remove();
 				});
@@ -1996,9 +2124,8 @@
 		 * @returns {(*|null)}
 		 */
 		use: function(type){
-			var components = this.components.internal.concat(this.components.core, this.components.custom);
-			for (var i = 0, len = components.length; i < len; i++){
-				if (components[i] instanceof type) return components[i];
+			for (var i = 0, len = this.components.length; i < len; i++){
+				if (this.components[i] instanceof type) return this.components[i];
 			}
 			return null;
 		},
@@ -2065,20 +2192,9 @@
 			var self = this, args = Array.prototype.slice.call(arguments);
 			reverse = args.shift();
 			enabled = args.shift();
-			var internal = enabled ? F.arr.get(self.components.internal, function(c){ return c.enabled; }) : self.components.internal.slice(0),
-				core = enabled ? F.arr.get(self.components.core, function(c){ return c.enabled; }) : self.components.core.slice(0),
-				custom = enabled ? F.arr.get(self.components.custom, function(c){ return c.enabled; }) : self.components.custom.slice(0);
-
-			args.unshift(reverse ? custom.reverse() : internal);
-			return self._execute.apply(self, args).then(function(){
-				args.shift();
-				args.unshift(reverse ? core.reverse() : core);
-				return self._execute.apply(self, args).then(function(){
-					args.shift();
-					args.unshift(reverse ? internal.reverse() : custom);
-					return self._execute.apply(self, args);
-				});
-			});
+			var components = enabled ? F.arr.get(self.components, function(c){ return c.enabled; }) : self.components.slice(0);
+			args.unshift(reverse ? components.reverse() : components);
+			return self._execute.apply(self, args);
 		},
 		/**
 		 * Executes the specified method with the optional number of parameters on all supplied components waiting for the result of each before executing the next.
@@ -2344,82 +2460,6 @@
 	});
 
 	F.columns.register('number', F.NumberColumn);
-
-})(jQuery, FooTable);
-(function ($, F) {
-
-	F.Component = F.Class.extend(/** @lends FooTable.Component */{
-		/**
-		 * The base class for all FooTable components.
-		 * @constructs
-		 * @extends FooTable.Class
-		 * @param {FooTable.Table} instance - The parent {@link FooTable.Table} object for the component.
-		 * @param {boolean} enabled - Whether or not the component is enabled.
-		 * @throws {TypeError} The instance parameter must be an instance of {@link FooTable.Table}.
-		 * @returns {FooTable.Component}
-		 */
-		construct: function (instance, enabled) {
-			if (!(instance instanceof F.Table))
-				throw new TypeError('The instance parameter must be an instance of FooTable.Table.');
-
-			/**
-			 * The parent {@link FooTable.Table} for the component.
-			 * @type {FooTable.Table}
-			 */
-			this.ft = instance;
-			/**
-			 * Whether or not this component is enabled. Disabled components only have there preinit method called allowing for this value to be overridden.
-			 * @type {boolean}
-			 */
-			this.enabled = F.is.boolean(enabled) ? enabled : false;
-		},
-		/**
-		 * The preinit method is called during the parent {@link FooTable.Table} constructor call.
-		 * @param {object} data - The jQuery.data() object of the root table.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		preinit: null,
-		/**
-		 * The init method is called during the parent {@link FooTable.Table} constructor call.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		init: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#destroy} method.
-		 * @instance
-		 * @protected
-		 */
-		destroy: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#draw} method.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		predraw: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#draw} method.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		draw: null,
-		/**
-		 * This method is called from the {@link FooTable.Table#draw} method.
-		 * @instance
-		 * @protected
-		 * @function
-		 */
-		postdraw: null
-	});
-
-	F.components = new F.ClassFactory();
-	F.components.core = new F.ClassFactory();
-	F.components.internal = new F.ClassFactory();
 
 })(jQuery, FooTable);
 (function($, F){
@@ -2691,7 +2731,7 @@
 		}
 	});
 
-	F.components.internal.register('breakpoints', F.Breakpoints, 10);
+	F.components.register('breakpoints', F.Breakpoints, 1000);
 
 })(jQuery, FooTable);
 (function(F){
@@ -2838,6 +2878,8 @@
 				var $header = self.ft.$el.find('tr.footable-header'), $cell, cdata;
 				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last:has([data-breakpoints])');
 				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first:has([data-breakpoints])');
+				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last');
+				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first');
 				if ($header.length > 0){
 					var virtual = $header.parent().is('tbody') && $header.children().length == $header.children('td').length;
 					if (!virtual) self.$header = $header.addClass('footable-header');
@@ -2942,6 +2984,25 @@
 			});
 		},
 		/**
+		 * Destroys the columns component removing any UI generated from the table.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Columns#"destroy.ft.columns"
+		 */
+		destroy: function(){
+			/**
+			 * The destroy.ft.columns event is raised before its UI is removed.
+			 * Calling preventDefault on this event will prevent the component from being destroyed.
+			 * @event FooTable.Columns#"destroy.ft.columns"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 */
+			var self = this;
+			this.ft.raise('destroy.ft.columns').then(function(){
+				self.$header.remove();
+			});
+		},
+		/**
 		 * The predraw method called from within the {@link FooTable.Table#draw} method.
 		 * @instance
 		 * @protected
@@ -3039,7 +3100,7 @@
 		}
 	});
 
-	F.components.internal.register('columns', F.Columns, 5);
+	F.components.register('columns', F.Columns, 900);
 
 })(jQuery, FooTable);
 (function(F){
@@ -3231,6 +3292,27 @@
 			});
 		},
 		/**
+		 * Destroys the rows component removing any UI generated from the table.
+		 * @instance
+		 * @protected
+		 * @fires FooTable.Rows#"destroy.ft.rows"
+		 */
+		destroy: function(){
+			/**
+			 * The destroy.ft.rows event is raised before its UI is removed.
+			 * Calling preventDefault on this event will prevent the component from being destroyed.
+			 * @event FooTable.Rows#"destroy.ft.rows"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 */
+			var self = this;
+			this.ft.raise('destroy.ft.rows').then(function(){
+				F.arr.each(self.array, function(row){
+					row.predraw();
+				});
+			});
+		},
+		/**
 		 * Performs the predraw operations that are required including creating the shallow clone of the {@link FooTable.Rows#array} to work with.
 		 * @instance
 		 * @protected
@@ -3283,10 +3365,26 @@
 			this.all = (F.is.boolean(append) ? append : false) ? this.all.concat(rows) : rows;
 			this.array = this.all.slice(0);
 			this.ft.draw();
+		},
+		/**
+		 * Expands all visible rows.
+		 */
+		expand: function(){
+			F.arr.each(this.array, function(row){
+				row.expand();
+			});
+		},
+		/**
+		 * Collapses all visible rows.
+		 */
+		collapse: function(){
+			F.arr.each(this.array, function(row){
+				row.collapse();
+			});
 		}
 	});
 
-	F.components.internal.register('rows', F.Rows, 0);
+	F.components.register('rows', F.Rows, 800);
 
 })(jQuery, FooTable);
 (function(F){

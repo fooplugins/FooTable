@@ -168,11 +168,10 @@
 		filter = $(this).val(); // get the value to filter by
 	if (filter === &#39;none&#39;){ // if the value is "none" remove the filter
 		filtering.removeFilter(&#39;status&#39;);
-		filtering.clear();
 	} else { // otherwise add/update the filter.
 		filtering.addFilter(&#39;status&#39;, filter, [&#39;status&#39;]);
-		filtering.filter();
 	}
+	filtering.filter();
 });</code></pre>
 
 		<h3>Finished!</h3>
@@ -205,11 +204,10 @@
 				filter = $(this).val();
 			if (filter === 'none'){
 				filtering.removeFilter('status');
-				filtering.clear();
 			} else {
 				filtering.addFilter('status', filter, ['status']);
-				filtering.filter();
 			}
+			filtering.filter();
 		});
 	});
 </script>

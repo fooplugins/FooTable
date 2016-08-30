@@ -290,14 +290,24 @@
 		 */
 		draw: function(){
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			var search = this.find('search');
+			if (search instanceof F.Filter){
+				this.$input.val(search.query.val());
+				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
+			} else {
+				this.$input.val(null);
+				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
+			}
 		},
 
 		/* PUBLIC */
 		/**
 		 * Adds or updates the filter using the supplied name, query and columns.
+		 * @instance
 		 * @param {string} name - The name for the filter.
 		 * @param {(string|FooTable.Query)} query - The query for the filter.
-		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} columns - The columns to apply the filter to.
+		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
+		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
 		 */
 		addFilter: function(name, query, columns){
 			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
@@ -311,34 +321,42 @@
 		},
 		/**
 		 * Removes the filter using the supplied name if it exists.
+		 * @instance
 		 * @param {string} name - The name of the filter to remove.
 		 */
 		removeFilter: function(name){
 			F.arr.remove(this.filters, function(f){ return f.name == name; });
 		},
 		/**
-		 * Creates a new search filter from the supplied parameters and applies it to the rows. If no parameters are supplied the current search input value
-		 * and selected columns are used to create or update the search filter. If there is no search input value then the search filter is removed.
+		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
 		 * @instance
-		 * @param {string} [query] - The query to filter the rows by.
-		 * @param {(Array.<string>|Array.<number>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to in each row.
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Filtering#"before.ft.filtering"
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
-		filter: function(query, columns){
-			if (F.is.undef(query)){
-				query = $.trim(this.$input.val() || '');
-			} else {
-				this.$input.val(query);
-			}
-			if (!F.is.emptyString(query)) {
-				this.addFilter('search', query, columns);
-			} else {
-				this.removeFilter('search');
-			}
-			this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
-			return this._filter();
+		filter: function(){
+			var self = this;
+			self.filters = self.ensure(self.filters);
+			/**
+			 * The before.ft.filtering event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
+			 * @event FooTable.Filtering#"before.ft.filtering"
+			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+			 * @param {Array.<FooTable.Filter>} filters - The filters that are about to be applied.
+			 */
+			return self.ft.raise('before.ft.filtering', [self.filters]).then(function(){
+				self.filters = self.ensure(self.filters);
+				return self.ft.draw().then(function(){
+					/**
+					 * The after.ft.filtering event is raised after a filter has been applied.
+					 * @event FooTable.Filtering#"after.ft.filtering"
+					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+					 * @param {FooTable.Filter} filter - The filters that were applied.
+					 */
+					self.ft.raise('after.ft.filtering', [self.filters]);
+				});
+			});
 		},
 		/**
 		 * Removes the current search filter.
@@ -348,10 +366,16 @@
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
 		clear: function(){
-			this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
-			this.$input.val(null);
-			this.removeFilter('search');
-			return this._filter();
+			this.filters = [];
+			return this.filter();
+		},
+		/**
+		 * Finds a filter by name.
+		 * @param {string} name - The name of the filter to find.
+		 * @returns {(FooTable.Filter|null)}
+		 */
+		find: function(name){
+			return F.arr.first(this.filters, function(f){ return f.name == name; });
 		},
 		/**
 		 * Gets an array of {@link FooTable.Column} to apply the search filter to. This also doubles as the default columns for filters which do not specify any columns.
@@ -392,38 +416,6 @@
 
 		/* PRIVATE */
 		/**
-		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
-		 * @instance
-		 * @private
-		 * @returns {jQuery.Promise}
-		 * @fires FooTable.Filtering#"before.ft.filtering"
-		 * @fires FooTable.Filtering#"after.ft.filtering"
-		 */
-		_filter: function(){
-			var self = this;
-			self.filters = self.ensure(self.filters);
-			/**
-			 * The before.ft.filtering event is raised before a filter is applied and allows listeners to modify the filter or cancel it completely by calling preventDefault on the jQuery.Event object.
-			 * @event FooTable.Filtering#"before.ft.filtering"
-			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
-			 * @param {Array.<FooTable.Filter>} filters - The filters that are about to be applied.
-			 */
-			return self.ft.raise('before.ft.filtering', [self.filters]).then(function(){
-				self.filters = self.ensure(self.filters);
-				return self.ft.draw().then(function(){
-					/**
-					 * The after.ft.filtering event is raised after a filter has been applied.
-					 * @event FooTable.Filtering#"after.ft.filtering"
-					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
-					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
-					 * @param {FooTable.Filter} filter - The filters that were applied.
-					 */
-					self.ft.raise('after.ft.filtering', [self.filters]);
-				});
-			});
-		},
-		/**
 		 * Handles the change event for the {@link FooTable.Filtering#$input}.
 		 * @instance
 		 * @private
@@ -440,6 +432,7 @@
 				if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 				self._filterTimeout = setTimeout(function(){
 					self._filterTimeout = null;
+					self.addFilter('search', self.$input.val());
 					self.filter();
 				}, self.delay);
 			}
@@ -456,7 +449,10 @@
 			if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 			var $icon = self.$button.children('.fooicon');
 			if ($icon.hasClass('fooicon-remove')) self.clear();
-			else self.filter();
+			else {
+				self.addFilter('search', self.$input.val());
+				self.filter();
+			}
 		},
 		/**
 		 * Handles the click event for the column checkboxes in the {@link FooTable.Filtering#$dropdown}.
@@ -472,6 +468,7 @@
 				var $icon = self.$button.children('.fooicon');
 				if ($icon.hasClass('fooicon-remove')){
 					$icon.removeClass('fooicon-remove').addClass('fooicon-search');
+					self.addFilter('search', self.$input.val());
 					self.filter();
 				}
 			}, self.delay);
@@ -506,6 +503,6 @@
 		}
 	});
 
-	F.components.core.register('filtering', F.Filtering, 10);
+	F.components.register('filtering', F.Filtering, 500);
 
 })(jQuery, FooTable);

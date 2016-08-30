@@ -180,7 +180,19 @@
 			this.expanded = this.o.expanded;
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
-			this.value = isObj ? (hasOptions ? data.value : data) : null;
+			if (isObj) {
+				if ( hasOptions ) data = data.value;
+				if (F.is.hash(this.value)){
+					for (var prop in data) {
+						if (!data.hasOwnProperty(prop)) continue;
+						this.value[prop] = data[prop];
+					}
+				} else {
+					this.value = data;
+				}
+			} else {
+				this.value = null;
+			}
 
 			F.arr.each(this.cells, function(cell){
 				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
@@ -250,15 +262,16 @@
 		/**
 		 * Sets the current row to a collapsed state removing the detail row if it exists.
 		 * @instance
-		 * @this FooTable.Row
+		 * @param {boolean} [setExpanded] - Whether or not to set the {@link FooTable.Row#expanded} property to false.
+		 * @fires FooTable.Row#"collapse.ft.row"
 		 */
 		collapse: function(setExpanded){
 			if (!this.created) return;
 			var self = this;
 			/**
-			 * The collapse.ft.row event is raised before the the row is expanded.
-			 * Calling preventDefault on this event will stop the row being expanded.
-			 * @event FooTable.Row#"expand.ft.row"
+			 * The collapse.ft.row event is raised before the the row is collapsed.
+			 * Calling preventDefault on this event will stop the row being collapsed.
+			 * @event FooTable.Row#"collapse.ft.row"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.

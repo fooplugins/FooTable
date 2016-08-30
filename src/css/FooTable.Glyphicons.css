@@ -55,3 +55,6 @@
 .fooicon-cog:before {
 	content: "\e019";
 }
+.fooicon-stats:before {
+	content: "\e185";
+}

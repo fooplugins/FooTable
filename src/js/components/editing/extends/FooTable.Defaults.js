@@ -10,11 +10,17 @@
 	 * @prop {function} addRow - The callback function to execute when the add row button is clicked.
 	 * @prop {function} editRow - The callback function to execute when the edit row button is clicked.
 	 * @prop {function} deleteRow - The callback function to execute when the delete row button is clicked.
+	 * @prop {function} viewRow - The callback function to execute when the view row button is clicked.
 	 * @prop {string} showText - The text that appears in the show button. This can contain HTML.
 	 * @prop {string} hideText - The text that appears in the hide button. This can contain HTML.
 	 * @prop {string} addText - The text that appears in the add button. This can contain HTML.
 	 * @prop {string} editText - The text that appears in the edit button. This can contain HTML.
 	 * @prop {string} deleteText - The text that appears in the delete button. This can contain HTML.
+	 * @prop {string} viewText - The text that appears in the view button. This can contain HTML.
+	 * @prop {boolean} allowAdd - Whether or not to show the Add Row button.
+	 * @prop {boolean} allowEdit - Whether or not to show the Edit Row button.
+	 * @prop {boolean} allowDelete - Whether or not to show the Delete Row button.
+	 * @prop {boolean} allowView - Whether or not to show the View Row button.
 	 * @prop {object} column - The options for the editing column. @see {@link FooTable.EditingColumn} for more info.
 	 * @prop {string} column.classes="footable-editing" - A space separated string of class names to apply to all cells in the column.
 	 * @prop {string} column.name="editing" - The name of the column.
@@ -30,11 +36,17 @@
 		addRow: function(){},
 		editRow: function(row){},
 		deleteRow: function(row){},
+		viewRow: function(row){},
 		showText: '<span class="fooicon fooicon-pencil" aria-hidden="true"></span> Edit rows',
 		hideText: 'Cancel',
 		addText: 'New row',
 		editText: '<span class="fooicon fooicon-pencil" aria-hidden="true"></span>',
 		deleteText: '<span class="fooicon fooicon-trash" aria-hidden="true"></span>',
+		viewText: '<span class="fooicon fooicon-stats" aria-hidden="true"></span>',
+		allowAdd: true,
+		allowEdit: true,
+		allowDelete: true,
+		allowView: false,
 		column: {
 			classes: 'footable-editing',
 			name: 'editing',

@@ -71,6 +71,43 @@
 			 * @type {string}
 			 */
 			this.deleteText = table.o.editing.deleteText;
+			
+			/**
+			 * The text that appears in the view button. This can contain HTML.
+			 * @type {string}
+			 */
+			this.viewText = table.o.editing.viewText;
+
+			/**
+			 * Whether or not to show the Add Row button.
+			 * @type {boolean}
+			 */
+			this.allowAdd = table.o.editing.allowAdd;
+
+			/**
+			 * Whether or not to show the Edit Row button.
+			 * @type {boolean}
+			 */
+			this.allowEdit = table.o.editing.allowEdit;
+
+			/**
+			 * Whether or not to show the Delete Row button.
+			 * @type {boolean}
+			 */
+			this.allowDelete = table.o.editing.allowDelete;
+
+			/**
+			 * Whether or not to show the View Row button.
+			 * @type {boolean}
+			 */
+			this.allowView = table.o.editing.allowView;
+
+			/**
+			 * Caches the row button elements to help with performance.
+			 * @type {(null|jQuery)}
+			 * @private
+			 */
+			this._$buttons = null;
 
 			/**
 			 * This object is used to contain the callbacks for the add, edit and delete row buttons.
@@ -78,11 +115,13 @@
 			 * @prop {function} addRow
 			 * @prop {function} editRow
 			 * @prop {function} deleteRow
+			 * @prop {function} viewRow
 			 */
 			this.callbacks = {
 				addRow: F.checkFnValue(this, table.o.editing.addRow),
 				editRow: F.checkFnValue(this, table.o.editing.editRow),
-				deleteRow: F.checkFnValue(this, table.o.editing.deleteRow)
+				deleteRow: F.checkFnValue(this, table.o.editing.deleteRow),
+				viewRow: F.checkFnValue(this, table.o.editing.viewRow)
 			};
 		},
 		/* PROTECTED */
@@ -129,6 +168,16 @@
 
 				self.deleteText = F.is.string(data.editingDeleteText) ? data.editingDeleteText : self.deleteText;
 
+				self.viewText = F.is.string(data.editingViewText) ? data.editingViewText : self.viewText;
+
+				self.allowAdd = F.is.boolean(data.editingAllowAdd) ? data.editingAllowAdd : self.allowAdd;
+
+				self.allowEdit = F.is.boolean(data.editingAllowEdit) ? data.editingAllowEdit : self.allowEdit;
+
+				self.allowDelete = F.is.boolean(data.editingAllowDelete) ? data.editingAllowDelete : self.allowDelete;
+
+				self.allowView = F.is.boolean(data.editingAllowView) ? data.editingAllowView : self.allowView;
+
 				self.column = new F.EditingColumn(self.ft, self, $.extend(true, {}, self.column, data.editingColumn, {visible: self.alwaysShow}));
 
 				if (self.ft.$el.hasClass('footable-editing-left'))
@@ -151,6 +200,7 @@
 				self.callbacks.addRow = F.checkFnValue(self, data.editingAddRow, self.callbacks.addRow);
 				self.callbacks.editRow = F.checkFnValue(self, data.editingEditRow, self.callbacks.editRow);
 				self.callbacks.deleteRow = F.checkFnValue(self, data.editingDeleteRow, self.callbacks.deleteRow);
+				self.callbacks.viewRow = F.checkFnValue(self, data.editingViewRow, self.callbacks.viewRow);
 			}, function(){
 				self.enabled = false;
 			});
@@ -192,8 +242,8 @@
 			 */
 			var self = this;
 			this.ft.raise('destroy.ft.editing').then(function(){
-				self.ft.$el.removeClass('footable-editing').off('click.ft.editing')
-					.find('tfoot > tr.footable-editing').remove();
+				self.ft.$el.removeClass('footable-editing footable-editing-always-show footable-editing-no-add footable-editing-no-edit footable-editing-no-delete footable-editing-no-view')
+					.off('click.ft.editing').find('tfoot > tr.footable-editing').remove();
 			});
 		},
 		/**
@@ -208,16 +258,23 @@
 				.on('click.ft.editing', '.footable-hide', {self: self}, self._onHideClick)
 				.on('click.ft.editing', '.footable-edit', {self: self}, self._onEditClick)
 				.on('click.ft.editing', '.footable-delete', {self: self}, self._onDeleteClick)
+				.on('click.ft.editing', '.footable-view', {self: self}, self._onViewClick)
 				.on('click.ft.editing', '.footable-add', {self: self}, self._onAddClick);
 
-			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan)
-				.append(self.$buttonShow())
-				.append(self.$buttonAdd())
-				.append(self.$buttonHide());
+			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan).append(self.$buttonShow());
+			if (self.allowAdd){
+				self.$cell.append(self.$buttonAdd());
+			}
+			self.$cell.append(self.$buttonHide());
 
 			if (self.alwaysShow){
 				self.ft.$el.addClass('footable-editing-always-show');
 			}
+
+			if (!self.allowAdd) self.ft.$el.addClass('footable-editing-no-add');
+			if (!self.allowEdit) self.ft.$el.addClass('footable-editing-no-edit');
+			if (!self.allowDelete) self.ft.$el.addClass('footable-editing-no-delete');
+			if (!self.allowView) self.ft.$el.addClass('footable-editing-no-view');
 
 			var $tfoot = self.ft.$el.children('tfoot');
 			if ($tfoot.length == 0){
@@ -272,15 +329,27 @@
 			return '<button type="button" class="btn btn-default footable-delete">' + this.deleteText + '</button>';
 		},
 		/**
+		 * Creates the view button for the editing component.
+		 * @instance
+		 * @protected
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		$buttonView: function(){
+			return '<button type="button" class="btn btn-default footable-view">' + this.viewText + '</button> ';
+		},
+		/**
 		 * Creates the button group for the row buttons.
 		 * @instance
 		 * @protected
 		 * @returns {(string|HTMLElement|jQuery)}
 		 */
 		$rowButtons: function(){
-			return $('<div class="btn-group btn-group-xs" role="group"></div>')
-				.append(this.$buttonEdit())
-				.append(this.$buttonDelete());
+			if (F.is.jq(this._$buttons)) return this._$buttons.clone();
+			this._$buttons = $('<div class="btn-group btn-group-xs" role="group"></div>');
+			if (this.allowView) this._$buttons.append(this.$buttonView());
+			if (this.allowEdit) this._$buttons.append(this.$buttonEdit());
+			if (this.allowDelete) this._$buttons.append(this.$buttonDelete());
+			return this._$buttons;
 		},
 		/**
 		 * Performs the drawing of the component.
@@ -333,6 +402,30 @@
 				 */
 				self.ft.raise('delete.ft.editing', [row]).then(function(){
 					self.callbacks.deleteRow.call(self.ft, row);
+				});
+			}
+		},
+		/**
+		 * Handles the view button click event.
+		 * @instance
+		 * @private
+		 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+		 * @fires FooTable.Editing#"view.ft.editing"
+		 */
+		_onViewClick: function(e){
+			e.preventDefault();
+			var self = e.data.self, row = $(this).closest('tr').data('__FooTableRow__');
+			if (row instanceof F.Row){
+				/**
+				 * The view.ft.editing event is raised before its callback is executed.
+				 * Calling preventDefault on this event will prevent the callback from being executed.
+				 * @event FooTable.Editing#"view.ft.editing"
+				 * @param {jQuery.Event} e - The jQuery.Event object for the event.
+				 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
+				 * @param {FooTable.Row} row - The row to be viewed.
+				 */
+				self.ft.raise('view.ft.editing', [row]).then(function(){
+					self.callbacks.viewRow.call(self.ft, row);
 				});
 			}
 		},
@@ -405,6 +498,6 @@
 		}
 	});
 
-	F.components.internal.register('editing', F.Editing, 4);
+	F.components.register('editing', F.Editing, 850);
 
 })(jQuery, FooTable);

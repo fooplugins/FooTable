@@ -630,6 +630,69 @@
 
 			</div>
 
+			<!-- components -->
+			<a href="#components" class="list-group-item anchored">
+				<span id="components" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">components <small>object</small></h4>
+				<p class="list-group-item-text">An object containing components to load for only this instance of the plugin.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+						<div class="example default">
+							<p><code>{}</code></p>
+							<p>By default there are no custom components so the plugin only loads those that have been registered through the static <code>FooTable.components.register()</code> method.</p>
+						</div>
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>
+								To supply components through data attributes you must follow <a href="http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example" target="_blank">valid JSON syntax</a> <i>including quoted property names</i>.
+								The string supplied must be a named function, in the below example it is <code>"YourCustomFilteringComponent"</code>.
+							</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-components=&#39;{ &quot;components&quot;: { &quot;filtering&quot;: &quot;YourCustomFilteringComponent&quot; } }&#39;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>
+								The below shows how to supply the value directly through the options. When supplying a component through the options you can simply give the function pointer as the
+								value for the option as seen below however the plugin will try to retrieve the function if only provided the name as a string.
+							</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;components&quot;: {
+			&quot;filtering&quot;: YourCustomFilteringComponent
+		}
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Notes</h4>
+						<ul>
+							<li>
+								Components supplied through this option will override any registered through the static <code>FooTable.components.register()</code> method. So in the above
+								examples the original filtering component would be replaced with <code>YourCustomFilteringComponent</code>.
+							</li>
+							<li>See step 6 in the <a href="examples/advanced/filter-dropdown.html">custom filter dropdown example</a> to get an idea of when this option can be used.</li>
+						</ul>
+					</div>
+
+				</div>
+
+			</div>
+
 			<!-- empty -->
 			<a href="#empty" class="list-group-item anchored">
 				<span id="empty" class="anchor">&nbsp;</span>
@@ -2227,7 +2290,7 @@
 			<a href="examples/component/showcase.html" class="list-group-item anchored">
 				<span id="component-showcase" class="anchor">&nbsp;</span>
 				<h4 class="list-group-item-heading">Showcase</h4>
-				<p class="list-group-item-text">Shows how to create a table that makes use of all the components.</p>
+				<p class="list-group-item-text">Shows how to create a table that makes use of all the components including the state component.</p>
 			</a>
 
 		</div>

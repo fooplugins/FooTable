@@ -32,45 +32,44 @@
 		 * @protected
 		 * @function
 		 */
-		preinit: null,
+		preinit: function(data){},
 		/**
 		 * The init method is called during the parent {@link FooTable.Table} constructor call.
 		 * @instance
 		 * @protected
 		 * @function
 		 */
-		init: null,
+		init: function(){},
 		/**
 		 * This method is called from the {@link FooTable.Table#destroy} method.
 		 * @instance
 		 * @protected
+		 * @function
 		 */
-		destroy: null,
+		destroy: function(){},
 		/**
 		 * This method is called from the {@link FooTable.Table#draw} method.
 		 * @instance
 		 * @protected
 		 * @function
 		 */
-		predraw: null,
+		predraw: function(){},
 		/**
 		 * This method is called from the {@link FooTable.Table#draw} method.
 		 * @instance
 		 * @protected
 		 * @function
 		 */
-		draw: null,
+		draw: function(){},
 		/**
 		 * This method is called from the {@link FooTable.Table#draw} method.
 		 * @instance
 		 * @protected
 		 * @function
 		 */
-		postdraw: null
+		postdraw: function(){}
 	});
 
 	F.components = new F.ClassFactory();
-	F.components.core = new F.ClassFactory();
-	F.components.internal = new F.ClassFactory();
 
 })(jQuery, FooTable);
