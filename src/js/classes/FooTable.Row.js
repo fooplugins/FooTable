@@ -262,15 +262,16 @@
 		/**
 		 * Sets the current row to a collapsed state removing the detail row if it exists.
 		 * @instance
-		 * @this FooTable.Row
+		 * @param {boolean} [setExpanded] - Whether or not to set the {@link FooTable.Row#expanded} property to false.
+		 * @fires FooTable.Row#"collapse.ft.row"
 		 */
 		collapse: function(setExpanded){
 			if (!this.created) return;
 			var self = this;
 			/**
-			 * The collapse.ft.row event is raised before the the row is expanded.
-			 * Calling preventDefault on this event will stop the row being expanded.
-			 * @event FooTable.Row#"expand.ft.row"
+			 * The collapse.ft.row event is raised before the the row is collapsed.
+			 * Calling preventDefault on this event will stop the row being collapsed.
+			 * @event FooTable.Row#"collapse.ft.row"
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {FooTable.Row} row - The row about to be expanded.

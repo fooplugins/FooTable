@@ -110,19 +110,22 @@
 			localStorage.removeItem(this.key + ':' + key);
 		},
 		/**
-		 * Executes the {@link FooTable.State#readState} function on all components.
+		 * Executes the {@link FooTable.Component#readState} function on all components.
+		 * @instance
 		 */
 		read: function(){
 			this.ft.execute(false, true, 'readState');
 		},
 		/**
-		 * Executes the {@link FooTable.State#writeState} function on all components.
+		 * Executes the {@link FooTable.Component#writeState} function on all components.
+		 * @instance
 		 */
 		write: function(){
 			this.ft.execute(false, true, 'writeState');
 		},
 		/**
-		 * Executes the {@link FooTable.State#clearState} function on all components.
+		 * Executes the {@link FooTable.Component#clearState} function on all components.
+		 * @instance
 		 */
 		clear: function(){
 			this.ft.execute(false, true, 'clearState');
