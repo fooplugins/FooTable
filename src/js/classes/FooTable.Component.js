@@ -71,7 +71,5 @@
 	});
 
 	F.components = new F.ClassFactory();
-	F.components.core = new F.ClassFactory();
-	F.components.internal = new F.ClassFactory();
 
 })(jQuery, FooTable);

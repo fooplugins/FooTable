@@ -140,6 +140,6 @@
 		}
 	});
 
-	F.components.core.register('state', F.State, 15);
+	F.components.register('state', F.State, 700);
 
 })(jQuery, FooTable);

@@ -503,6 +503,6 @@
 		}
 	});
 
-	F.components.core.register('filtering', F.Filtering, 10);
+	F.components.register('filtering', F.Filtering, 500);
 
 })(jQuery, FooTable);

@@ -281,6 +281,6 @@
 		return F.is.string(str) && (str == 'ASC' || str == 'DESC') ? str : 'ASC';
 	};
 
-	F.components.core.register('sorting', F.Sorting, 5);
+	F.components.register('sorting', F.Sorting, 600);
 
 })(jQuery, FooTable);

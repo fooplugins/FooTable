@@ -258,6 +258,6 @@
 		}
 	});
 
-	F.components.internal.register('rows', F.Rows, 0);
+	F.components.register('rows', F.Rows, 800);
 
 })(jQuery, FooTable);

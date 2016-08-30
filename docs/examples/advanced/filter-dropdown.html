@@ -95,17 +95,14 @@
 		<p>
 			All core objects or "classes" in FooTable are derived from the <a href="../../jsdocs/FooTable.Class.html">FooTable.Class</a> object. This object exposes a single
 			method called <code>extend</code> which allows you to create a whole new class from a base class (inherit) or to simply override a single method on an existing class.
-			In this example we will be inheriting the base <a href="../../jsdocs/FooTable.Filtering.html">FooTable.Filtering</a> component, modifying it and then replacing, it
+			In this example we will be inheriting the base <a href="../../jsdocs/FooTable.Filtering.html">FooTable.Filtering</a> component, modifying it and then replacing it
 			with our modified version.
 		</p>
 		<pre class="language-javascript between" data-lang="javascript"><code>FooTable.MyFiltering = FooTable.Filtering.extend({ // inherit the base class
 	construct: function(instance){ // override the default constructor
 		this._super(instance); // call the base constructor
 	}
-});
-
-// replace the existing component with our custom one
-FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</code></pre>
+});</code></pre>
 
 		<h3>Step 2: Add custom properties for the dropdown</h3>
 		<p>
@@ -179,6 +176,22 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 	}
 }</code></pre>
 
+		<h3>Step 6: Global or instance specific</h3>
+		<p>
+			The final step is to simply decide whether the custom filtering should be applied to all tables in the page or just those specified by you. To register your custom filtering
+			component for all tables in the page you need to use the <code>FooTable.components.register()</code> method as seen below.
+		</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>FooTable.components.register(&#39;filtering&#39;, FooTable.MyFiltering);</code></pre>
+		<p>
+			If you want to use your custom filtering component for only a single table or specific tables in a multi-table page then you need to make use of the
+			<a href="../../getting-started.html#components">components</a> option. To do this you would provide the option as below when initializing the plugin.
+		</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>$(&#39;.table&#39;).footable({
+	components: {
+		filtering: FooTable.MyFiltering
+	}
+});</code></pre>
+
 		<h3>Finished!</h3>
 		<p>That's it! We now have a custom filter dropdown that is fully integrated with the rest of the filter functionality. The full code can be seen below.</p>
 		<pre class="language-javascript between" data-lang="javascript"><code>FooTable.MyFiltering = FooTable.Filtering.extend({
@@ -223,9 +236,16 @@ FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</c
 			this.$status.val(this.def);
 		}
 	}
-});
+});</code></pre>
 
-FooTable.components.core.register(&#39;filtering&#39;, FooTable.MyFiltering);</code></pre>
+		<p>Followed by either the below to register the component globally for all tables.</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>FooTable.components.register(&#39;filtering&#39;, FooTable.MyFiltering);</code></pre>
+		<p>Or the below to register it for just a single table.</p>
+		<pre class="language-javascript between" data-lang="javascript"><code>$(&#39;.table&#39;).footable({
+	components: {
+		filtering: FooTable.MyFiltering
+	}
+});</code></pre>
 
 
 	</div>
@@ -288,7 +308,7 @@ FooTable.MyFiltering = FooTable.Filtering.extend({
 	}
 });
 
-FooTable.components.core.register('filtering', FooTable.MyFiltering);
+FooTable.components.register('filtering', FooTable.MyFiltering);
 
 	jQuery(function($){
 		$('#filter-dropdown-example').footable({

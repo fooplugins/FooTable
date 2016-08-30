@@ -30,8 +30,9 @@ module.exports = function (grunt) {
 					"src/js/utils/*.js",
 					"src/js/classes/*.js",
 					"src/js/classes/columns/*.js",
-					"src/js/components/FooTable.Component.js",
-					"src/js/components/internal/**/*.js"
+					"src/js/components/breakpoints/**/*.js",
+					"src/js/components/columns/**/*.js",
+					"src/js/components/rows/**/*.js"
 				],
 				dest: "compiled/footable.core.js"
 			},
@@ -52,7 +53,7 @@ module.exports = function (grunt) {
 			},
 			filtering_js: {
 				src: [
-					"src/js/components/core/filtering/**/*.js"
+					"src/js/components/filtering/**/*.js"
 				],
 				dest: "compiled/footable.filtering.js"
 			},
@@ -64,7 +65,7 @@ module.exports = function (grunt) {
 			},
 			sorting_js: {
 				src: [
-					"src/js/components/core/sorting/**/*.js"
+					"src/js/components/sorting/**/*.js"
 				],
 				dest: "compiled/footable.sorting.js"
 			},
@@ -76,7 +77,7 @@ module.exports = function (grunt) {
 			},
 			paging_js: {
 				src: [
-					"src/js/components/core/paging/**/*.js"
+					"src/js/components/paging/**/*.js"
 				],
 				dest: "compiled/footable.paging.js"
 			},
@@ -88,7 +89,7 @@ module.exports = function (grunt) {
 			},
 			editing_js: {
 				src: [
-					"src/js/components/core/editing/**/*.js"
+					"src/js/components/editing/**/*.js"
 				],
 				dest: "compiled/footable.editing.js"
 			},
@@ -100,7 +101,7 @@ module.exports = function (grunt) {
 			},
 			state_js: {
 				src: [
-					"src/js/components/core/state/**/*.js"
+					"src/js/components/state/**/*.js"
 				],
 				dest: "compiled/footable.state.js"
 			},

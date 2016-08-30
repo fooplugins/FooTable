@@ -498,6 +498,6 @@
 		}
 	});
 
-	F.components.internal.register('editing', F.Editing, 4);
+	F.components.register('editing', F.Editing, 850);
 
 })(jQuery, FooTable);

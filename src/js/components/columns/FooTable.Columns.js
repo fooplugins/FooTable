@@ -311,6 +311,6 @@
 		}
 	});
 
-	F.components.internal.register('columns', F.Columns, 5);
+	F.components.register('columns', F.Columns, 900);
 
 })(jQuery, FooTable);

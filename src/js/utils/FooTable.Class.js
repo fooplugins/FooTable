@@ -194,16 +194,34 @@
 		/**
 		 * Creates new instances of all registered classes using there priority and the supplied arguments to return them in an array.
 		 * @instance
+		 * @param {object} subs - An object containing classes to substitute on load.
 		 * @param {*} arg1 - The first argument to supply when creating new instances of all registered classes.
 		 * @param {*} [argN...] - Any number of additional arguments to supply when creating new instances of all registered classes.
 		 * @returns {Array.<FooTable.Class>}
 		 * @this FooTable.ClassFactory
 		 */
-		load: function(arg1, argN){
-			var self = this, args = Array.prototype.slice.call(arguments), reg = [], loaded = [];
-			for (var name in self.registered){
+		load: function(subs, arg1, argN){
+			var self = this, args = Array.prototype.slice.call(arguments), reg = [], loaded = [], name, klass;
+			subs = args.shift() || {};
+			for (name in self.registered){
 				if (!self.registered.hasOwnProperty(name)) continue;
-				reg.push(self.registered[name]);
+				var component = self.registered[name];
+				if (subs.hasOwnProperty(name)){
+					klass = subs[name];
+					if (F.is.string(klass)) klass = F.getFnPointer(subs[name]);
+					if (F.is.fn(klass)){
+						component = {name: name, klass: klass, priority: self.registered[name].priority};
+					}
+				}
+				reg.push(component);
+			}
+			for (name in subs){
+				if (!subs.hasOwnProperty(name) || self.registered.hasOwnProperty(name)) continue;
+				klass = subs[name];
+				if (F.is.string(klass)) klass = F.getFnPointer(subs[name]);
+				if (F.is.fn(klass)){
+					reg.push({name: name, klass: klass, priority: 0});
+				}
 			}
 			reg.sort(function(a, b){ return b.priority - a.priority; });
 			F.arr.each(reg, function(r){
