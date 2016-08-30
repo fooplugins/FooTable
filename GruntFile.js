@@ -98,13 +98,20 @@ module.exports = function (grunt) {
 				],
 				dest: "compiled/footable.editing.css"
 			},
+			state_js: {
+				src: [
+					"src/js/components/core/state/**/*.js"
+				],
+				dest: "compiled/footable.state.js"
+			},
 			all_js: {
 				src: [
 					"compiled/footable.core.js",
 					"compiled/footable.filtering.js",
 					"compiled/footable.sorting.js",
 					"compiled/footable.paging.js",
-					"compiled/footable.editing.js"
+					"compiled/footable.editing.js",
+					"compiled/footable.state.js"
 				],
 				dest: "compiled/footable.js"
 			},
@@ -147,7 +154,8 @@ module.exports = function (grunt) {
 					'compiled/footable.filtering.min.js': [ "compiled/footable.filtering.js" ],
 					'compiled/footable.sorting.min.js': [ "compiled/footable.sorting.js" ],
 					'compiled/footable.paging.min.js': [ "compiled/footable.paging.js" ],
-					'compiled/footable.editing.min.js': [ "compiled/footable.editing.js" ]
+					'compiled/footable.editing.min.js': [ "compiled/footable.editing.js" ],
+					'compiled/footable.state.min.js': [ "compiled/footable.state.js" ]
 				}
 			}
 		},
@@ -246,7 +254,9 @@ module.exports = function (grunt) {
 						'footable.sorting.js',
 						'footable.sorting.min.js',
 						'footable.editing.js',
-						'footable.editing.min.js'
+						'footable.editing.min.js',
+						'footable.state.js',
+						'footable.state.min.js'
 					],
 					dest: 'js/'
 				}]
