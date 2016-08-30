@@ -93,18 +93,21 @@
 					Using the <a href="../../components/paging.html">paging component</a> drastically improves the performance of the plugin on large numbers of rows.
 				</li>
 				<li>
-					The editing component requires you to create the modal and editor form that is displayed. Check out the individual component documentation or example for more details.
+					The <a href="../../components/editing.html">editing component</a> requires you to create the modal and editor form that is displayed. Check out the individual component documentation or example for more details.
+				</li>
+				<li>
+					As the <a href="../../components/state.html">state component</a> has no UI try sorting a column, changing the page or applying a search filter and then refreshing the browser.
 				</li>
 			</ul>
 		</div>
 
 		<p>
 			To create a table using multiple components simply enable those you want to use and set any specific options for them. The below example uses ajax to load the column and row data
-			and enables the filtering, paging, sorting and editing components simultaneously.
+			and enables the filtering, paging, sorting, editing and state components simultaneously.
 		</p>
 
 		<div class="example">
-			<table id="showcase-example-1" class="table" data-paging="true" data-filtering="true" data-sorting="true" data-editing="true"></table>
+			<table id="showcase-example-1" class="table" data-paging="true" data-filtering="true" data-sorting="true" data-editing="true" data-state="true"></table>
 
 			<div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
 				<style scoped>
@@ -174,7 +177,7 @@
 
 		</div>
 		<pre class="language-markup" data-lang="markup"><code>&lt;!-- Table Markup --&gt;
-&lt;table id=&quot;showcase-example-1&quot; class=&quot;table&quot; data-paging=&quot;true&quot; data-filtering=&quot;true&quot; data-sorting=&quot;true&quot; data-editing=&quot;true&quot;&gt;&lt;/table&gt;
+&lt;table id=&quot;showcase-example-1&quot; class=&quot;table&quot; data-paging=&quot;true&quot; data-filtering=&quot;true&quot; data-sorting=&quot;true&quot; data-editing=&quot;true&quot; data-state=&quot;true&quot;&gt;&lt;/table&gt;
 
 &lt;!-- Editing Modal Markup --&gt;
 &lt;div class=&quot;modal fade&quot; id=&quot;editor-modal&quot; tabindex=&quot;-1&quot; role=&quot;dialog&quot; aria-labelledby=&quot;editor-title&quot;&gt;

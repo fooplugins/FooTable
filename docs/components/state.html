@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>State Component - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../css/docs.css" rel="stylesheet">
+
+	<script src="../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="docs">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../getting-started.html">Getting started</a></li>
+				<li class="dropdown active">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="editing.html">Editing</a></li>
+						<li><a href="filtering.html">Filtering</a></li>
+						<li><a href="paging.html">Paging</a></li>
+						<li><a href="sorting.html">Sorting</a></li>
+						<li><a>State</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>State</h1>
+		<h2>A simple state component for your table.</h2>
+	</div>
+</div>
+
+<div class="container">
+	<!-- General -->
+	<div class="docs-section">
+		<p class="lead">
+			The state component allows for a better user experience by remembering which page the user is on, the currently sorted column
+			and any search filters that have been applied. These values are persisted across browser sessions by using <code>localStorage</code>.
+		</p>
+		<div class="callout callout-info">
+			<h4>Note</h4>
+			<p>
+				See the <a href="../examples/component/showcase.html">showcase example</a> to see this component in action. There is no UI so sort a
+				column, change the page or apply a filter and then refresh the browser.
+			</p>
+		</div>
+	</div>
+
+	<!-- Options -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="options" class="anchor">&nbsp;</span>Options</h1>
+		<p class="lead">The below lists all the options for the state component, these are available in addition to the <a href="../getting-started.html#options">core options</a>.</p>
+
+		<div class="list-group list-group-detailed">
+			<h3 class="list-group-header">General options</h3>
+
+			<!-- enabled -->
+			<a href="#enabled" class="list-group-item anchored">
+				<span id="enabled" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">enabled <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not the component is enabled.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>By default this component is disabled, no UI or features of this component will be available.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-state=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;state&quot;: {
+			&quot;enabled&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- filtering -->
+			<a href="#filtering" class="list-group-item anchored">
+				<span id="filtering" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">filtering <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to store the state of the filtering component.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>true</code></p>
+							<p>By default the filtering state is stored when the component is enabled.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-state-filtering=&quot;false&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;state&quot;: {
+			&quot;filtering&quot;: false
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- paging -->
+			<a href="#paging" class="list-group-item anchored">
+				<span id="paging" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">paging <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to store the state of the paging component.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>true</code></p>
+							<p>By default the paging state is stored when the component is enabled.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-state-paging=&quot;false&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;state&quot;: {
+			&quot;paging&quot;: false
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- sorting -->
+			<a href="#sorting" class="list-group-item anchored">
+				<span id="sorting" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">sorting <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to store the state of the sorting component.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>true</code></p>
+							<p>By default the sorting state is stored when the component is enabled.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-state-sorting=&quot;false&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;state&quot;: {
+			&quot;sorting&quot;: false
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- key -->
+			<a href="#key" class="list-group-item anchored">
+				<span id="key" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">key <small>string</small></h4>
+				<p class="list-group-item-text">The key used to store this tables state in localStorage.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>
+								The default of null means the plugin will generate a page and table specific identifier. By supplying a value you can persist state across
+								different pages for the same table.
+							</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table data-state-key=&quot;YOUR_KEY&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;state&quot;: {
+			&quot;key&quot;: &quot;YOUR_KEY&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Notes</h4>
+						<ul>
+							<li>
+								The generated key is created by using a hash of the current url combined with either the table ID, if it exists, or simply by a number
+								assigned by the order the tables are initialized in.
+							</li>
+							<li>
+								If you have multiple tables per page using the state component I suggest adding an ID to each table to help make as unique a localStorage key as possible.
+								It will work without it however by adding an ID you can ensure that you can rearrange the table initializations at a later date and any stored state will be retained.
+								Without an ID the localStorage key is generated using a simple number which is incremented for each table that is initialized on a page. This means if you change the order
+								the tables are initialized in any stored state will no longer match up and it would be lost.
+							</li>
+						</ul>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+<script src="../js/docs.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../compiled/footable.min.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$('#paging-example-1').footable({
+			"columns": $.get("columns.json"),
+			"rows": $.get("rows.json")
+		});
+	});
+</script>
+</body>
+</html>
