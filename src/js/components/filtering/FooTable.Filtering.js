@@ -308,15 +308,24 @@
 		 * @param {(string|FooTable.Query)} query - The query for the filter.
 		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
 		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {string} [space="AND"] - How the query treats space chars.
 		 */
-		addFilter: function(name, query, columns){
+		addFilter: function(name, query, columns, ignoreCase, connectors, space){
 			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
 			if (f instanceof F.Filter){
 				f.name = name;
 				f.query = query;
 				f.columns = columns;
+				f.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : f.ignoreCase;
+				f.connectors = F.is.boolean(connectors) ? connectors : f.connectors;
+				f.space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : f.space;
 			} else {
-				this.filters.push({name: name, query: query, columns: columns});
+				ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : self.ignoreCase;
+				connectors = F.is.boolean(connectors) ? connectors : self.connectors;
+				space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : self.space;
+				this.filters.push(new F.Filter(name, query, columns, space, connectors, ignoreCase));
 			}
 		},
 		/**
