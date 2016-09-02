@@ -237,6 +237,7 @@
 				}
 				if (col.hidden) self.hasHidden = true;
 			});
+			self.ft.$el.toggleClass('breakpoint', self.hasHidden);
 		},
 		/**
 		 * Performs the actual drawing of the columns, hiding or displaying them depending on there breakpoints.
