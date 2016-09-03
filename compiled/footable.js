@@ -563,8 +563,8 @@
 	 * @returns {boolean}
 	 */
 	F.str.contains = function (str, contains, ignoreCase) {
-		return !F.is.emptyString(str)
-			&& !F.is.emptyString(contains) && contains.length <= str.length
+		if (F.is.emptyString(str) || F.is.emptyString(contains)) return false;
+		return contains.length <= str.length
 			&& (ignoreCase ? str.toUpperCase().indexOf(contains.toUpperCase()) : str.indexOf(contains)) !== -1;
 	};
 
@@ -596,7 +596,8 @@
 	 * @returns {string}
 	 */
 	F.str.from = function (str, from) {
-		return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
+		if (F.is.emptyString(str)) return str;
+		return F.str.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
 	};
 
 	/**
@@ -608,6 +609,7 @@
 	 * @returns {boolean}
 	 */
 	F.str.startsWith = function (str, prefix) {
+		if (F.is.emptyString(str)) return str == prefix;
 		return str.slice(0, prefix.length) == prefix;
 	};
 
@@ -619,9 +621,10 @@
 	 * @returns {string}
 	 */
 	F.str.toCamelCase = function (str) {
+		if (F.is.emptyString(str)) return str;
 		if (str.toUpperCase() === str) return str.toLowerCase();
 		return str.replace(/^([A-Z])|[-\s_](\w)/g, function (match, p1, p2) {
-			if (p2) return p2.toUpperCase();
+			if (F.is.string(p2)) return p2.toUpperCase();
 			return p1.toLowerCase();
 		});
 	};
@@ -644,6 +647,7 @@
 	 * @returns {string}
 	 */
 	F.str.escapeRegExp = function(str){
+		if (F.is.emptyString(str)) return str;
 		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	};
 
@@ -929,6 +933,7 @@
 		if (F.is.emptyString(cssText)) return {};
 		var json = {}, props = cssText.split(';'), pair, key, value;
 		for (var i = 0, i_len = props.length; i < i_len; i++){
+			if (F.is.emptyString(props[i])) continue;
 			pair = props[i].split(':');
 			key = F.str.toCamelCase($.trim(pair[0]));
 			value = $.trim(pair[1]);
@@ -1786,15 +1791,17 @@
 		/**
 		 * Prior to drawing this moves the details contents back to there original cells and detaches the toggle element from the row.
 		 * @instance
+		 * @param {boolean} [detach] - Whether or not to detach the row.
 		 * @this FooTable.Row
 		 */
-		predraw: function(){
+		predraw: function(detach){
 			if (this.created){
 				if (this.expanded){
 					this.collapse(false);
 				}
 				this.$toggle.detach();
-				this.$el.detach();
+				detach = F.is.boolean(detach) ? detach : true;
+				if (detach) this.$el.detach();
 			}
 		},
 		/**
@@ -2824,6 +2831,8 @@
 			 * @type {boolean}
 			 */
 			this.showHeader = table.o.showHeader;
+
+			this._fromHTML = F.is.emptyArray(table.o.columns);
 		},
 
 		/* PROTECTED */
@@ -2875,11 +2884,7 @@
 
 				var json = [], html = [];
 				// get the column options from the content
-				var $header = self.ft.$el.find('tr.footable-header'), $cell, cdata;
-				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last:has([data-breakpoints])');
-				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first:has([data-breakpoints])');
-				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last');
-				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first');
+				var $header = self.ft.$el.find('tr.footable-header, thead > tr:last:has([data-breakpoints]), tbody > tr:first:has([data-breakpoints]), thead > tr:last, tbody > tr:first').first(), $cell, cdata;
 				if ($header.length > 0){
 					var virtual = $header.parent().is('tbody') && $header.children().length == $header.children('td').length;
 					if (!virtual) self.$header = $header.addClass('footable-header');
@@ -2894,7 +2899,7 @@
 					if (virtual) self.showHeader = false;
 				}
 				// get the supplied column options
-				if (F.is.array(self.o.columns)){
+				if (F.is.array(self.o.columns) && !F.is.emptyArray(self.o.columns)){
 					F.arr.each(self.o.columns, function(c, i){
 						c.index = i;
 						json.push(c);
@@ -2999,7 +3004,7 @@
 			 */
 			var self = this;
 			this.ft.raise('destroy.ft.columns').then(function(){
-				self.$header.remove();
+				if (!self._fromHTML) self.$header.remove();
 			});
 		},
 		/**
@@ -3026,6 +3031,7 @@
 				}
 				if (col.hidden) self.hasHidden = true;
 			});
+			self.ft.$el.toggleClass('breakpoint', self.hasHidden);
 		},
 		/**
 		 * Performs the actual drawing of the columns, hiding or displaying them depending on there breakpoints.
@@ -3199,6 +3205,7 @@
 			 * @type {jQuery}
 			 */
 			this.$empty = null;
+			this._fromHTML = F.is.emptyArray(table.o.rows);
 		},
 		/**
 		 * This parses the rows from either the tables rows or the supplied options.
@@ -3308,7 +3315,7 @@
 			var self = this;
 			this.ft.raise('destroy.ft.rows').then(function(){
 				F.arr.each(self.array, function(row){
-					row.predraw();
+					row.predraw(!self._fromHTML);
 				});
 			});
 		},
