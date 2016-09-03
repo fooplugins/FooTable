@@ -15,8 +15,8 @@
 	 * @returns {boolean}
 	 */
 	F.str.contains = function (str, contains, ignoreCase) {
-		return !F.is.emptyString(str)
-			&& !F.is.emptyString(contains) && contains.length <= str.length
+		if (F.is.emptyString(str) || F.is.emptyString(contains)) return false;
+		return contains.length <= str.length
 			&& (ignoreCase ? str.toUpperCase().indexOf(contains.toUpperCase()) : str.indexOf(contains)) !== -1;
 	};
 
@@ -48,7 +48,8 @@
 	 * @returns {string}
 	 */
 	F.str.from = function (str, from) {
-		return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
+		if (F.is.emptyString(str)) return str;
+		return F.str.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
 	};
 
 	/**
@@ -60,6 +61,7 @@
 	 * @returns {boolean}
 	 */
 	F.str.startsWith = function (str, prefix) {
+		if (F.is.emptyString(str)) return str == prefix;
 		return str.slice(0, prefix.length) == prefix;
 	};
 
@@ -71,9 +73,10 @@
 	 * @returns {string}
 	 */
 	F.str.toCamelCase = function (str) {
+		if (F.is.emptyString(str)) return str;
 		if (str.toUpperCase() === str) return str.toLowerCase();
 		return str.replace(/^([A-Z])|[-\s_](\w)/g, function (match, p1, p2) {
-			if (p2) return p2.toUpperCase();
+			if (F.is.string(p2)) return p2.toUpperCase();
 			return p1.toLowerCase();
 		});
 	};
@@ -96,6 +99,7 @@
 	 * @returns {string}
 	 */
 	F.str.escapeRegExp = function(str){
+		if (F.is.emptyString(str)) return str;
 		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	};
 
