@@ -73,6 +73,7 @@
 			 * @type {jQuery}
 			 */
 			this.$empty = null;
+			this._fromHTML = F.is.emptyArray(table.o.rows);
 		},
 		/**
 		 * This parses the rows from either the tables rows or the supplied options.
@@ -182,7 +183,7 @@
 			var self = this;
 			this.ft.raise('destroy.ft.rows').then(function(){
 				F.arr.each(self.array, function(row){
-					row.predraw();
+					row.predraw(!self._fromHTML);
 				});
 			});
 		},

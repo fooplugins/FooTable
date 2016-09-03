@@ -35,6 +35,8 @@
 			 * @type {boolean}
 			 */
 			this.showHeader = table.o.showHeader;
+
+			this._fromHTML = F.is.emptyArray(table.o.columns);
 		},
 
 		/* PROTECTED */
@@ -86,11 +88,7 @@
 
 				var json = [], html = [];
 				// get the column options from the content
-				var $header = self.ft.$el.find('tr.footable-header'), $cell, cdata;
-				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last:has([data-breakpoints])');
-				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first:has([data-breakpoints])');
-				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last');
-				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first');
+				var $header = self.ft.$el.find('tr.footable-header, thead > tr:last:has([data-breakpoints]), tbody > tr:first:has([data-breakpoints]), thead > tr:last, tbody > tr:first').first(), $cell, cdata;
 				if ($header.length > 0){
 					var virtual = $header.parent().is('tbody') && $header.children().length == $header.children('td').length;
 					if (!virtual) self.$header = $header.addClass('footable-header');
@@ -105,7 +103,7 @@
 					if (virtual) self.showHeader = false;
 				}
 				// get the supplied column options
-				if (F.is.array(self.o.columns)){
+				if (F.is.array(self.o.columns) && !F.is.emptyArray(self.o.columns)){
 					F.arr.each(self.o.columns, function(c, i){
 						c.index = i;
 						json.push(c);
@@ -210,7 +208,7 @@
 			 */
 			var self = this;
 			this.ft.raise('destroy.ft.columns').then(function(){
-				self.$header.remove();
+				if (!self._fromHTML) self.$header.remove();
 			});
 		},
 		/**
