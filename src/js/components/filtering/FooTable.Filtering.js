@@ -293,11 +293,10 @@
 			var search = this.find('search');
 			if (search instanceof F.Filter){
 				this.$input.val(search.query.val());
-				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
 			} else {
 				this.$input.val(null);
-				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
 			}
+			this.setButton(this.filters.length === 0);
 		},
 
 		/* PUBLIC */
@@ -377,6 +376,18 @@
 		clear: function(){
 			this.filters = [];
 			return this.filter();
+		},
+		/**
+		 * Toggles the button icon between the search and clear icons based on the supplied value.
+		 * @instance
+		 * @param {boolean} search - Whether or not to display the search icon.
+		 */
+		setButton: function(search){
+			if (!search){
+				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
+			} else {
+				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
+			}
 		},
 		/**
 		 * Finds a filter by name.
