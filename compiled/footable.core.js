@@ -935,6 +935,7 @@
 		for (var i = 0, i_len = props.length; i < i_len; i++){
 			if (F.is.emptyString(props[i])) continue;
 			pair = props[i].split(':');
+			if (F.is.emptyString(pair[0]) || F.is.emptyString(pair[1])) continue;
 			key = F.str.toCamelCase($.trim(pair[0]));
 			value = $.trim(pair[1]);
 			json[key] = value;
