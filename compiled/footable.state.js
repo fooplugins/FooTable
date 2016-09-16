@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.0
+* @version 3.1.1
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -30,11 +30,13 @@
 		construct: function(table){
 			// call the constructor of the base class
 			this._super(table, table.o.state.enabled);
+			// Change this value if an update to this component requires any stored data to be reset
+			this._key = '1';
 			/**
 			 * The key to use to store the state for this table.
 			 * @type {(null|string)}
 			 */
-			this.key = F.is.string(table.o.state.key) ? table.o.state.key : this._uid();
+			this.key = this._key + (F.is.string(table.o.state.key) ? table.o.state.key : this._uid());
 			/**
 			 * Whether or not to allow the filtering component to store it's state.
 			 * @type {boolean}
@@ -78,7 +80,7 @@
 
 				if (!self.enabled) return;
 
-				self.key = F.is.string(data.stateKey) ? data.stateKey : self.key;
+				self.key = self._key + (F.is.string(data.stateKey) ? data.stateKey : self.key);
 
 				self.filtering = F.is.boolean(data.stateFiltering) ? data.stateFiltering : self.filtering;
 
@@ -210,7 +212,7 @@
 	F.Filtering.prototype.readState = function(){
 		if (this.ft.state.filtering){
 			var state = this.ft.state.get('filtering');
-			if (F.is.hash(state) && F.is.array(state.filters)){
+			if (F.is.hash(state) && !F.is.emptyArray(state.filters)){
 				this.filters = this.ensure(state.filters);
 			}
 		}
@@ -227,7 +229,11 @@
 					query: f.query instanceof F.Query ? f.query.val() : f.query,
 					columns: F.arr.map(f.columns, function (c) {
 						return c.name;
-					})
+					}),
+					hidden: f.hidden,
+					space: f.space,
+					connectors: f.connectors,
+					ignoreCase: f.ignoreCase
 				};
 			});
 			this.ft.state.set('filtering', {filters: filters});

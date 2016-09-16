@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Loading rows - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../../css/docs.css" rel="stylesheet">
+
+	<script src="../../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="docs">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="../../getting-started.html">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../../components/editing.html">Editing</a></li>
+						<li><a href="../../components/filtering.html">Filtering</a></li>
+						<li><a href="../../components/paging.html">Paging</a></li>
+						<li><a href="../../components/sorting.html">Sorting</a></li>
+						<li><a href="../../components/state.html">State</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<!-- Header -->
+<div class="jumbotron">
+
+	<div class="container">
+		<h1>loading rows</h1>
+		<h2>How to load table rows after the plugin has been initialized.</h2>
+	</div>
+
+</div>
+<!-- Content -->
+<div class="container">
+	<div class="docs-section">
+		<p class="lead">This page shows two examples, the first completely replaces the current table rows with the newly supplied ones while the second appends the new rows to current ones.</p>
+
+		<p>
+			The main method demonstrated in these examples is the <a href="../../jsdocs/FooTable.Rows.html#load" target="_blank"><code>FooTable.Rows#load(array, bool)</code></a> method and it's extension
+			method found directly on the plugin instance <a href="../../jsdocs/FooTable.Table.html#loadRows" target="_blank"><code>FooTable.Table#loadRows(array, bool)</code></a>.
+		</p>
+
+		<div class="callout callout-info">
+			<h4>Notes</h4>
+			<ul>
+				<li>
+					We make use of five static files (<a href="../../content/columns.json" target="_blank">columns.json</a>, <a href="../../content/rows-1.json" target="_blank">rows-1.json</a>,
+					<a href="../../content/rows-2.json" target="_blank">rows-2.json</a>, <a href="../../content/rows-3.json" target="_blank">rows-3.json</a>,
+					<a href="../../content/rows-4.json" target="_blank">rows-4.json</a>)
+					to supply our data. How you retrieve your data is completely up to you but for this example we make a simple <code>jQuery.get</code> call.
+				</li>
+				<li>
+					Using the <a href="../../components/paging.html">paging component</a> drastically improves the performance of the plugin on large numbers of rows.
+				</li>
+			</ul>
+		</div>
+
+		<div class="example">
+			<p>This first example shows how to completely replace the current table rows with new ones retrieved from an ajax call to the server.</p>
+			<button class="load-rows" type="button" data-url="../../content/rows-1.json">Load rows 1-2500</button>
+			<button class="load-rows" type="button" data-url="../../content/rows-2.json">Load rows 2501-5000</button>
+			<button class="load-rows" type="button" data-url="../../content/rows-3.json">Load rows 5001-7500</button>
+			<button class="load-rows" type="button" data-url="../../content/rows-4.json">Load rows 7501-10000</button>
+			<hr/>
+			<table id="load-example" class="table" data-paging="true" data-sorting="true" data-filtering="true"></table>
+		</div>
+		<pre class="language-markup" data-lang="markup"><code>&lt;button class=&quot;load-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-1.json&quot;&gt;Load rows 1-2500&lt;/button&gt;
+&lt;button class=&quot;load-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-2.json&quot;&gt;Load rows 2501-5000&lt;/button&gt;
+&lt;button class=&quot;load-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-3.json&quot;&gt;Load rows 5001-7500&lt;/button&gt;
+&lt;button class=&quot;load-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-4.json&quot;&gt;Load rows 7501-10000&lt;/button&gt;
+
+&lt;table id=&quot;load-example&quot; class=&quot;table&quot; data-paging=&quot;true&quot; data-sorting=&quot;true&quot; data-filtering=&quot;true&quot;&gt;&lt;/table&gt;</code></pre>
+		<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($) {
+	// init the plugin and hold a reference to the instance
+	var ft = FooTable.init(&#39;#load-example&#39;, {
+		// we only load the column definitions as the row data is loaded through the button clicks
+		&quot;columns&quot;: $.get(&#39;../../content/columns.json&#39;)
+	});
+
+	// bind the buttons to load the rows
+	$(&#39;.load-rows&#39;).on(&#39;click&#39;, function (e) {
+		e.preventDefault();
+		// get the url to load off the button
+		var url = $(this).data(&#39;url&#39;);
+		// ajax fetch the rows
+		$.get(url).then(function (rows) {
+			// and then load them using either
+			ft.rows.load(rows);
+			// or
+			// ft.loadRows(rows);
+		});
+	});
+});</code></pre>
+
+		<div class="example">
+			<p>
+				This second example shows how to append new data to the current table rows. Here you can only load each set of rows a single time as once each is done there is no need to
+				load them again, they are already in the table. If you were to load a set again it would cause duplicates to appear in the table.
+			</p>
+
+			<button class="append-rows" type="button" data-url="../../content/rows-1.json">Append rows 1-2500</button>
+			<button class="append-rows" type="button" data-url="../../content/rows-2.json">Append rows 2501-5000</button>
+			<button class="append-rows" type="button" data-url="../../content/rows-3.json">Append rows 5001-7500</button>
+			<button class="append-rows" type="button" data-url="../../content/rows-4.json">Append rows 7501-10000</button>
+			<hr/>
+			<table id="append-example" class="table" data-paging="true" data-sorting="true" data-filtering="true"></table>
+		</div>
+		<pre class="language-markup" data-lang="markup"><code>&lt;button class=&quot;append-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-1.json&quot;&gt;Append rows 1-2500&lt;/button&gt;
+&lt;button class=&quot;append-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-2.json&quot;&gt;Append rows 2501-5000&lt;/button&gt;
+&lt;button class=&quot;append-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-3.json&quot;&gt;Append rows 5001-7500&lt;/button&gt;
+&lt;button class=&quot;append-rows&quot; type=&quot;button&quot; data-url=&quot;../../content/rows-4.json&quot;&gt;Append rows 7501-10000&lt;/button&gt;
+
+&lt;table id=&quot;append-example&quot; class=&quot;table&quot; data-paging=&quot;true&quot; data-sorting=&quot;true&quot; data-filtering=&quot;true&quot;&gt;&lt;/table&gt;</code></pre>
+		<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	// init the plugin and hold a reference to the instance
+	var ft = FooTable.init(&#39;#append-example&#39;, {
+		// we only load the column definitions as the row data is loaded through the button clicks
+		&quot;columns&quot;: $.get(&#39;../../content/columns.json&#39;)
+	});
+
+	// bind the buttons to load and then append the rows
+	$(&#39;.append-rows&#39;).on(&#39;click&#39;, function(e){
+		e.preventDefault();
+		// hold a reference to the button, disable it and update the text to indicate loading
+		var $this = $(this).prop(&#39;disabled&#39;, true).text(&#39;Loading&#39;),
+			// get the url to load off the button
+			url = $this.data(&#39;url&#39;);
+		// ajax fetch the rows
+		$.get(url).then(function(rows){
+			// and then append them using either
+			ft.rows.load(rows, true);
+			// or
+			// ft.loadRows(rows, true);
+
+			// set the button text to loaded
+			$this.text(&#39;Appended&#39;);
+		});
+	});
+});</code></pre>
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="../../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+jQuery(function($) {
+	// init the plugin and hold a reference to the instance
+	var ft = FooTable.init('#load-example', {
+		// we only load the column definitions as the row data is loaded through the button clicks
+		"columns": $.get('../../content/columns.json')
+	});
+
+	// bind the buttons to load the rows
+	$('.load-rows').on('click', function (e) {
+		e.preventDefault();
+		// get the url to load off the button
+		var url = $(this).data('url');
+		// ajax fetch the rows
+		$.get(url).then(function (rows) {
+			// and then load them using either
+			ft.rows.load(rows);
+			// or
+			// ft.loadRows(rows);
+		});
+	});
+});
+jQuery(function($){
+	// init the plugin and hold a reference to the instance
+	var ft = FooTable.init('#append-example', {
+		// we only load the column definitions as the row data is loaded through the button clicks
+		"columns": $.get('../../content/columns.json')
+	});
+
+	// bind the buttons to load and then append the rows
+	$('.append-rows').on('click', function(e){
+		e.preventDefault();
+		// hold a reference to the button, disable it and update the text to indicate loading
+		var $this = $(this).prop('disabled', true).text('Loading'),
+			// get the url to load off the button
+			url = $this.data('url');
+		// ajax fetch the rows
+		$.get(url).then(function(rows){
+			// and then append them using either
+			ft.rows.load(rows, true);
+			// or
+			// ft.loadRows(rows, true);
+
+			// set the button text to loaded
+			$this.text('Appended');
+		});
+	});
+});
+</script>
+</body>
+</html>

@@ -23,11 +23,13 @@
 		construct: function(table){
 			// call the constructor of the base class
 			this._super(table, table.o.state.enabled);
+			// Change this value if an update to this component requires any stored data to be reset
+			this._key = '1';
 			/**
 			 * The key to use to store the state for this table.
 			 * @type {(null|string)}
 			 */
-			this.key = F.is.string(table.o.state.key) ? table.o.state.key : this._uid();
+			this.key = this._key + (F.is.string(table.o.state.key) ? table.o.state.key : this._uid());
 			/**
 			 * Whether or not to allow the filtering component to store it's state.
 			 * @type {boolean}
@@ -71,7 +73,7 @@
 
 				if (!self.enabled) return;
 
-				self.key = F.is.string(data.stateKey) ? data.stateKey : self.key;
+				self.key = self._key + (F.is.string(data.stateKey) ? data.stateKey : self.key);
 
 				self.filtering = F.is.boolean(data.stateFiltering) ? data.stateFiltering : self.filtering;
 

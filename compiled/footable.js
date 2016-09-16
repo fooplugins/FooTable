@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.0
+* @version 3.1.1
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -563,8 +563,8 @@
 	 * @returns {boolean}
 	 */
 	F.str.contains = function (str, contains, ignoreCase) {
-		return !F.is.emptyString(str)
-			&& !F.is.emptyString(contains) && contains.length <= str.length
+		if (F.is.emptyString(str) || F.is.emptyString(contains)) return false;
+		return contains.length <= str.length
 			&& (ignoreCase ? str.toUpperCase().indexOf(contains.toUpperCase()) : str.indexOf(contains)) !== -1;
 	};
 
@@ -596,7 +596,8 @@
 	 * @returns {string}
 	 */
 	F.str.from = function (str, from) {
-		return this.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
+		if (F.is.emptyString(str)) return str;
+		return F.str.contains(str, from) ? str.substring(str.indexOf(from) + 1) : str;
 	};
 
 	/**
@@ -608,6 +609,7 @@
 	 * @returns {boolean}
 	 */
 	F.str.startsWith = function (str, prefix) {
+		if (F.is.emptyString(str)) return str == prefix;
 		return str.slice(0, prefix.length) == prefix;
 	};
 
@@ -619,9 +621,10 @@
 	 * @returns {string}
 	 */
 	F.str.toCamelCase = function (str) {
+		if (F.is.emptyString(str)) return str;
 		if (str.toUpperCase() === str) return str.toLowerCase();
 		return str.replace(/^([A-Z])|[-\s_](\w)/g, function (match, p1, p2) {
-			if (p2) return p2.toUpperCase();
+			if (F.is.string(p2)) return p2.toUpperCase();
 			return p1.toLowerCase();
 		});
 	};
@@ -644,6 +647,7 @@
 	 * @returns {string}
 	 */
 	F.str.escapeRegExp = function(str){
+		if (F.is.emptyString(str)) return str;
 		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	};
 
@@ -929,7 +933,9 @@
 		if (F.is.emptyString(cssText)) return {};
 		var json = {}, props = cssText.split(';'), pair, key, value;
 		for (var i = 0, i_len = props.length; i < i_len; i++){
+			if (F.is.emptyString(props[i])) continue;
 			pair = props[i].split(':');
+			if (F.is.emptyString(pair[0]) || F.is.emptyString(pair[1])) continue;
 			key = F.str.toCamelCase($.trim(pair[0]));
 			value = $.trim(pair[1]);
 			json[key] = value;
@@ -1786,15 +1792,17 @@
 		/**
 		 * Prior to drawing this moves the details contents back to there original cells and detaches the toggle element from the row.
 		 * @instance
+		 * @param {boolean} [detach] - Whether or not to detach the row.
 		 * @this FooTable.Row
 		 */
-		predraw: function(){
+		predraw: function(detach){
 			if (this.created){
 				if (this.expanded){
 					this.collapse(false);
 				}
 				this.$toggle.detach();
-				this.$el.detach();
+				detach = F.is.boolean(detach) ? detach : true;
+				if (detach) this.$el.detach();
 			}
 		},
 		/**
@@ -2824,6 +2832,8 @@
 			 * @type {boolean}
 			 */
 			this.showHeader = table.o.showHeader;
+
+			this._fromHTML = F.is.emptyArray(table.o.columns);
 		},
 
 		/* PROTECTED */
@@ -2875,11 +2885,7 @@
 
 				var json = [], html = [];
 				// get the column options from the content
-				var $header = self.ft.$el.find('tr.footable-header'), $cell, cdata;
-				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last:has([data-breakpoints])');
-				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first:has([data-breakpoints])');
-				if ($header.length == 0) $header = self.ft.$el.find('thead > tr:last');
-				if ($header.length == 0) $header = self.ft.$el.find('tbody > tr:first');
+				var $header = self.ft.$el.find('tr.footable-header, thead > tr:last:has([data-breakpoints]), tbody > tr:first:has([data-breakpoints]), thead > tr:last, tbody > tr:first').first(), $cell, cdata;
 				if ($header.length > 0){
 					var virtual = $header.parent().is('tbody') && $header.children().length == $header.children('td').length;
 					if (!virtual) self.$header = $header.addClass('footable-header');
@@ -2894,7 +2900,7 @@
 					if (virtual) self.showHeader = false;
 				}
 				// get the supplied column options
-				if (F.is.array(self.o.columns)){
+				if (F.is.array(self.o.columns) && !F.is.emptyArray(self.o.columns)){
 					F.arr.each(self.o.columns, function(c, i){
 						c.index = i;
 						json.push(c);
@@ -2999,7 +3005,7 @@
 			 */
 			var self = this;
 			this.ft.raise('destroy.ft.columns').then(function(){
-				self.$header.remove();
+				if (!self._fromHTML) self.$header.remove();
 			});
 		},
 		/**
@@ -3026,6 +3032,7 @@
 				}
 				if (col.hidden) self.hasHidden = true;
 			});
+			self.ft.$el.toggleClass('breakpoint', self.hasHidden);
 		},
 		/**
 		 * Performs the actual drawing of the columns, hiding or displaying them depending on there breakpoints.
@@ -3199,6 +3206,7 @@
 			 * @type {jQuery}
 			 */
 			this.$empty = null;
+			this._fromHTML = F.is.emptyArray(table.o.rows);
 		},
 		/**
 		 * This parses the rows from either the tables rows or the supplied options.
@@ -3308,7 +3316,7 @@
 			var self = this;
 			this.ft.raise('destroy.ft.rows').then(function(){
 				F.arr.each(self.array, function(row){
-					row.predraw();
+					row.predraw(!self._fromHTML);
 				});
 			});
 		},
@@ -3352,6 +3360,7 @@
 		},
 		/**
 		 * Loads a JSON array of row objects into the table
+		 * @instance
 		 * @param {Array.<object>} data - An array of row objects to load.
 		 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
 		 */
@@ -3368,6 +3377,7 @@
 		},
 		/**
 		 * Expands all visible rows.
+		 * @instance
 		 */
 		expand: function(){
 			F.arr.each(this.array, function(row){
@@ -3376,6 +3386,7 @@
 		},
 		/**
 		 * Collapses all visible rows.
+		 * @instance
 		 */
 		collapse: function(){
 			F.arr.each(this.array, function(row){
@@ -3457,9 +3468,10 @@
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space, connectors, ignoreCase){
+		construct: function(name, query, columns, space, connectors, ignoreCase, hidden){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -3484,6 +3496,12 @@
 			 * @type {boolean}
 			 */
 			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
+			/**
+			 * Whether or not this is a hidden filter.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.hidden = F.is.boolean(hidden) ? hidden : false;
 			/**
 			 * The query for the filter.
 			 * @instance
@@ -3821,11 +3839,10 @@
 			var search = this.find('search');
 			if (search instanceof F.Filter){
 				this.$input.val(search.query.val());
-				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
 			} else {
 				this.$input.val(null);
-				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
 			}
+			this.setButton(!F.arr.any(this.filters, function(f){ return !f.hidden; }));
 		},
 
 		/* PUBLIC */
@@ -3836,15 +3853,26 @@
 		 * @param {(string|FooTable.Query)} query - The query for the filter.
 		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
 		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 */
-		addFilter: function(name, query, columns){
+		addFilter: function(name, query, columns, ignoreCase, connectors, space, hidden){
 			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
 			if (f instanceof F.Filter){
 				f.name = name;
 				f.query = query;
 				f.columns = columns;
+				f.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : f.ignoreCase;
+				f.connectors = F.is.boolean(connectors) ? connectors : f.connectors;
+				f.hidden = F.is.boolean(hidden) ? hidden : f.hidden;
+				f.space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : f.space;
 			} else {
-				this.filters.push({name: name, query: query, columns: columns});
+				ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : self.ignoreCase;
+				connectors = F.is.boolean(connectors) ? connectors : self.connectors;
+				space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : self.space;
+				this.filters.push(new F.Filter(name, query, columns, space, connectors, ignoreCase, hidden));
 			}
 		},
 		/**
@@ -3894,8 +3922,20 @@
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
 		clear: function(){
-			this.filters = [];
+			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
 			return this.filter();
+		},
+		/**
+		 * Toggles the button icon between the search and clear icons based on the supplied value.
+		 * @instance
+		 * @param {boolean} search - Whether or not to display the search icon.
+		 */
+		setButton: function(search){
+			if (!search){
+				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
+			} else {
+				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
+			}
 		},
 		/**
 		 * Finds a filter by name.
@@ -3935,7 +3975,11 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors, self.ignoreCase));
+						f.ignoreCase = F.is.boolean(f.ignoreCase) ? f.ignoreCase : self.ignoreCase;
+						f.connectors = F.is.boolean(f.connectors) ? f.connectors : self.connectors;
+						f.hidden = F.is.boolean(f.hidden) ? f.hidden : false;
+						f.space = F.is.string(f.space) && (f.space === 'AND' || f.space === 'OR') ? f.space : self.space;
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, f.space, f.connectors, f.ignoreCase, f.hidden));
 					}
 				});
 			}
@@ -4559,8 +4603,8 @@
 
 			$sortable.removeClass('footable-asc footable-desc').children('.fooicon').removeClass('fooicon-sort fooicon-sort-asc fooicon-sort-desc');
 			$sortable.not($active).children('.fooicon').addClass('fooicon-sort');
-			$active.addClass(self.column.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
-				.children('.fooicon').addClass(self.column.direction == 'ASC' ? 'fooicon-sort-asc' : 'fooicon-sort-desc');
+			$active.addClass(self.column.direction == 'DESC' ? 'footable-desc' : 'footable-asc')
+				.children('.fooicon').addClass(self.column.direction == 'DESC' ? 'fooicon-sort-desc' : 'fooicon-sort-asc');
 		},
 
 		/* PUBLIC */
@@ -6403,11 +6447,13 @@
 		construct: function(table){
 			// call the constructor of the base class
 			this._super(table, table.o.state.enabled);
+			// Change this value if an update to this component requires any stored data to be reset
+			this._key = '1';
 			/**
 			 * The key to use to store the state for this table.
 			 * @type {(null|string)}
 			 */
-			this.key = F.is.string(table.o.state.key) ? table.o.state.key : this._uid();
+			this.key = this._key + (F.is.string(table.o.state.key) ? table.o.state.key : this._uid());
 			/**
 			 * Whether or not to allow the filtering component to store it's state.
 			 * @type {boolean}
@@ -6451,7 +6497,7 @@
 
 				if (!self.enabled) return;
 
-				self.key = F.is.string(data.stateKey) ? data.stateKey : self.key;
+				self.key = self._key + (F.is.string(data.stateKey) ? data.stateKey : self.key);
 
 				self.filtering = F.is.boolean(data.stateFiltering) ? data.stateFiltering : self.filtering;
 
@@ -6583,7 +6629,7 @@
 	F.Filtering.prototype.readState = function(){
 		if (this.ft.state.filtering){
 			var state = this.ft.state.get('filtering');
-			if (F.is.hash(state) && F.is.array(state.filters)){
+			if (F.is.hash(state) && !F.is.emptyArray(state.filters)){
 				this.filters = this.ensure(state.filters);
 			}
 		}
@@ -6600,7 +6646,11 @@
 					query: f.query instanceof F.Query ? f.query.val() : f.query,
 					columns: F.arr.map(f.columns, function (c) {
 						return c.name;
-					})
+					}),
+					hidden: f.hidden,
+					space: f.space,
+					connectors: f.connectors,
+					ignoreCase: f.ignoreCase
 				};
 			});
 			this.ft.state.set('filtering', {filters: filters});
