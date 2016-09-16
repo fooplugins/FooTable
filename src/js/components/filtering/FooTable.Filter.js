@@ -10,9 +10,10 @@
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space, connectors, ignoreCase){
+		construct: function(name, query, columns, space, connectors, ignoreCase, hidden){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -37,6 +38,12 @@
 			 * @type {boolean}
 			 */
 			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
+			/**
+			 * Whether or not this is a hidden filter.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.hidden = F.is.boolean(hidden) ? hidden : false;
 			/**
 			 * The query for the filter.
 			 * @instance

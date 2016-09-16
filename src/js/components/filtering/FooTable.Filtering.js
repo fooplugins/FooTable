@@ -296,7 +296,7 @@
 			} else {
 				this.$input.val(null);
 			}
-			this.setButton(this.filters.length === 0);
+			this.setButton(!F.arr.any(this.filters, function(f){ return !f.hidden; }));
 		},
 
 		/* PUBLIC */
@@ -310,8 +310,9 @@
 		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 */
-		addFilter: function(name, query, columns, ignoreCase, connectors, space){
+		addFilter: function(name, query, columns, ignoreCase, connectors, space, hidden){
 			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
 			if (f instanceof F.Filter){
 				f.name = name;
@@ -319,12 +320,13 @@
 				f.columns = columns;
 				f.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : f.ignoreCase;
 				f.connectors = F.is.boolean(connectors) ? connectors : f.connectors;
+				f.hidden = F.is.boolean(hidden) ? hidden : f.hidden;
 				f.space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : f.space;
 			} else {
 				ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : self.ignoreCase;
 				connectors = F.is.boolean(connectors) ? connectors : self.connectors;
 				space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : self.space;
-				this.filters.push(new F.Filter(name, query, columns, space, connectors, ignoreCase));
+				this.filters.push(new F.Filter(name, query, columns, space, connectors, ignoreCase, hidden));
 			}
 		},
 		/**
@@ -374,7 +376,7 @@
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
 		clear: function(){
-			this.filters = [];
+			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
 			return this.filter();
 		},
 		/**
@@ -427,7 +429,11 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors, self.ignoreCase));
+						f.ignoreCase = F.is.boolean(f.ignoreCase) ? f.ignoreCase : self.ignoreCase;
+						f.connectors = F.is.boolean(f.connectors) ? f.connectors : self.connectors;
+						f.hidden = F.is.boolean(f.hidden) ? f.hidden : false;
+						f.space = F.is.string(f.space) && (f.space === 'AND' || f.space === 'OR') ? f.space : self.space;
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, f.space, f.connectors, f.ignoreCase, f.hidden));
 					}
 				});
 			}
