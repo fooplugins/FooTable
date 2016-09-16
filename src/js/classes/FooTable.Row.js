@@ -289,15 +289,17 @@
 		/**
 		 * Prior to drawing this moves the details contents back to there original cells and detaches the toggle element from the row.
 		 * @instance
+		 * @param {boolean} [detach] - Whether or not to detach the row.
 		 * @this FooTable.Row
 		 */
-		predraw: function(){
+		predraw: function(detach){
 			if (this.created){
 				if (this.expanded){
 					this.collapse(false);
 				}
 				this.$toggle.detach();
-				this.$el.detach();
+				detach = F.is.boolean(detach) ? detach : true;
+				if (detach) this.$el.detach();
 			}
 		},
 		/**

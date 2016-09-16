@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.0
+* @version 3.1.1
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -17,9 +17,10 @@
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
 		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 * @returns {FooTable.Filter}
 		 */
-		construct: function(name, query, columns, space, connectors, ignoreCase){
+		construct: function(name, query, columns, space, connectors, ignoreCase, hidden){
 			/**
 			 * The name of the filter.
 			 * @instance
@@ -44,6 +45,12 @@
 			 * @type {boolean}
 			 */
 			this.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : true;
+			/**
+			 * Whether or not this is a hidden filter.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.hidden = F.is.boolean(hidden) ? hidden : false;
 			/**
 			 * The query for the filter.
 			 * @instance
@@ -381,11 +388,10 @@
 			var search = this.find('search');
 			if (search instanceof F.Filter){
 				this.$input.val(search.query.val());
-				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
 			} else {
 				this.$input.val(null);
-				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
 			}
+			this.setButton(!F.arr.any(this.filters, function(f){ return !f.hidden; }));
 		},
 
 		/* PUBLIC */
@@ -396,15 +402,26 @@
 		 * @param {(string|FooTable.Query)} query - The query for the filter.
 		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
 		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 */
-		addFilter: function(name, query, columns){
+		addFilter: function(name, query, columns, ignoreCase, connectors, space, hidden){
 			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
 			if (f instanceof F.Filter){
 				f.name = name;
 				f.query = query;
 				f.columns = columns;
+				f.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : f.ignoreCase;
+				f.connectors = F.is.boolean(connectors) ? connectors : f.connectors;
+				f.hidden = F.is.boolean(hidden) ? hidden : f.hidden;
+				f.space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : f.space;
 			} else {
-				this.filters.push({name: name, query: query, columns: columns});
+				ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : self.ignoreCase;
+				connectors = F.is.boolean(connectors) ? connectors : self.connectors;
+				space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : self.space;
+				this.filters.push(new F.Filter(name, query, columns, space, connectors, ignoreCase, hidden));
 			}
 		},
 		/**
@@ -454,8 +471,20 @@
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
 		clear: function(){
-			this.filters = [];
+			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
 			return this.filter();
+		},
+		/**
+		 * Toggles the button icon between the search and clear icons based on the supplied value.
+		 * @instance
+		 * @param {boolean} search - Whether or not to display the search icon.
+		 */
+		setButton: function(search){
+			if (!search){
+				this.$button.children('.fooicon').removeClass('fooicon-search').addClass('fooicon-remove');
+			} else {
+				this.$button.children('.fooicon').removeClass('fooicon-remove').addClass('fooicon-search');
+			}
 		},
 		/**
 		 * Finds a filter by name.
@@ -495,7 +524,11 @@
 					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
 						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
 						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, self.space, self.connectors, self.ignoreCase));
+						f.ignoreCase = F.is.boolean(f.ignoreCase) ? f.ignoreCase : self.ignoreCase;
+						f.connectors = F.is.boolean(f.connectors) ? f.connectors : self.connectors;
+						f.hidden = F.is.boolean(f.hidden) ? f.hidden : false;
+						f.space = F.is.string(f.space) && (f.space === 'AND' || f.space === 'OR') ? f.space : self.space;
+						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, f.space, f.connectors, f.ignoreCase, f.hidden));
 					}
 				});
 			}

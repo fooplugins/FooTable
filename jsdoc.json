@@ -3,20 +3,23 @@
     "allowUnknownTags": true
   },
   "source": {
-    "include": ["./src/js","README.md"],
     "includePattern": ".+\\.js(doc)?$",
-    "excludePattern": "docs|lib"
+    "excludePattern": "(^|\\/|\\\\)_"
   },
+  "plugins": [],
   "templates": {
-    "applicationName": "FooTable V3",
-    "default":{
-      "outputSourceFiles": false
-    },
     "cleverLinks": false,
-    "monospaceLinks": true
-  },
-  "opts": {
-    "recurse": true,
-    "private": true
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true
+    },
+    "systemName"      : "FooTable V3",
+    "footer"          : "",
+    "copyright"       : "Copyright © 2016",
+    "navType"         : "vertical",
+    "theme"           : "oblivion",
+    "linenums"        : true,
+    "collapseSymbols" : false,
+    "inverseNav"      : true
   }
 }

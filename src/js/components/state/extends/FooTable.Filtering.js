@@ -8,7 +8,7 @@
 	F.Filtering.prototype.readState = function(){
 		if (this.ft.state.filtering){
 			var state = this.ft.state.get('filtering');
-			if (F.is.hash(state) && F.is.array(state.filters)){
+			if (F.is.hash(state) && !F.is.emptyArray(state.filters)){
 				this.filters = this.ensure(state.filters);
 			}
 		}
@@ -25,7 +25,11 @@
 					query: f.query instanceof F.Query ? f.query.val() : f.query,
 					columns: F.arr.map(f.columns, function (c) {
 						return c.name;
-					})
+					}),
+					hidden: f.hidden,
+					space: f.space,
+					connectors: f.connectors,
+					ignoreCase: f.ignoreCase
 				};
 			});
 			this.ft.state.set('filtering', {filters: filters});

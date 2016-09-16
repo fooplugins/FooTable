@@ -73,6 +73,7 @@
 			 * @type {jQuery}
 			 */
 			this.$empty = null;
+			this._fromHTML = F.is.emptyArray(table.o.rows);
 		},
 		/**
 		 * This parses the rows from either the tables rows or the supplied options.
@@ -182,7 +183,7 @@
 			var self = this;
 			this.ft.raise('destroy.ft.rows').then(function(){
 				F.arr.each(self.array, function(row){
-					row.predraw();
+					row.predraw(!self._fromHTML);
 				});
 			});
 		},
@@ -226,6 +227,7 @@
 		},
 		/**
 		 * Loads a JSON array of row objects into the table
+		 * @instance
 		 * @param {Array.<object>} data - An array of row objects to load.
 		 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
 		 */
@@ -242,6 +244,7 @@
 		},
 		/**
 		 * Expands all visible rows.
+		 * @instance
 		 */
 		expand: function(){
 			F.arr.each(this.array, function(row){
@@ -250,6 +253,7 @@
 		},
 		/**
 		 * Collapses all visible rows.
+		 * @instance
 		 */
 		collapse: function(){
 			F.arr.each(this.array, function(row){

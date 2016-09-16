@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.0
+* @version 3.1.1
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -190,8 +190,8 @@
 
 			$sortable.removeClass('footable-asc footable-desc').children('.fooicon').removeClass('fooicon-sort fooicon-sort-asc fooicon-sort-desc');
 			$sortable.not($active).children('.fooicon').addClass('fooicon-sort');
-			$active.addClass(self.column.direction == 'ASC' ? 'footable-asc' : 'footable-desc')
-				.children('.fooicon').addClass(self.column.direction == 'ASC' ? 'fooicon-sort-asc' : 'fooicon-sort-desc');
+			$active.addClass(self.column.direction == 'DESC' ? 'footable-desc' : 'footable-asc')
+				.children('.fooicon').addClass(self.column.direction == 'DESC' ? 'fooicon-sort-desc' : 'fooicon-sort-asc');
 		},
 
 		/* PUBLIC */
