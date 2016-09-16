@@ -227,6 +227,7 @@
 		},
 		/**
 		 * Loads a JSON array of row objects into the table
+		 * @instance
 		 * @param {Array.<object>} data - An array of row objects to load.
 		 * @param {boolean} [append=false] - Whether or not to append the new rows to the current rows array or to replace them entirely.
 		 */
@@ -243,6 +244,7 @@
 		},
 		/**
 		 * Expands all visible rows.
+		 * @instance
 		 */
 		expand: function(){
 			F.arr.each(this.array, function(row){
@@ -251,6 +253,7 @@
 		},
 		/**
 		 * Collapses all visible rows.
+		 * @instance
 		 */
 		collapse: function(){
 			F.arr.each(this.array, function(row){
