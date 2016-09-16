@@ -294,9 +294,15 @@ module.exports = function (grunt) {
 		},
 		jsdoc: {
 			dist: {
+				src: [
+					'./src/js/**/*.js',
+					'README.md'
+				],
+				jsdoc: './node_modules/.bin/jsdoc',
 				options: {
 					destination: 'docs/jsdocs',
-					configure: 'jsdoc.json'
+					configure: 'jsdoc.json',
+					template: './node_modules/jsdoc-oblivion/template'
 				}
 			}
 		}
