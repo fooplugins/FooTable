@@ -93,6 +93,12 @@
 			 * @private
 			 */
 			this._total = 0;
+			/**
+			 * Used to hold the number of page links previously created.
+			 * @type {number}
+			 * @private
+			 */
+			this._prevPageCount = 0;
 		},
 
 		/* PROTECTED */
@@ -204,7 +210,8 @@
 		predraw: function(){
 			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
-			if (this.ft.rows.array.length > this.size){
+			this._total = this.ft.rows.array.length;
+			if (this._total > this.size){
 				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
 			}
 		},
@@ -393,7 +400,7 @@
 		 * @private
 		 */
 		_createLinks: function(){
-			if (this._total === this.total) return;
+			if (this._pageCount === this.total) return;
 			var self = this,
 				multiple = self.total > 1,
 				link = function(attr, html, klass){
@@ -424,7 +431,7 @@
 				self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
 				self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
 			}
-			self._total = self.total;
+			self._pageCount = self.total;
 		},
 		/**
 		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the current page link.
@@ -499,15 +506,14 @@
 				this.$pagination.children('li.footable-page').removeClass('visible').slice(0, this.total).addClass('visible');
 			}
 			var first = (this.size * (page - 1)) + 1,
-				last = this.size * page,
-				totalRows = this.ft.rows.all.length;
+				last = this.size * page;
 			if (this.ft.rows.array.length == 0){
 				first = 0;
 				last = 0;
 			} else {
-				last = last > totalRows ? totalRows : last;
+				last = last > this.total ? this.total : last;
 			}
-			this._setCount(page, this.total, first, last, totalRows);
+			this._setCount(page, this.total, first, last, this._total);
 		},
 		/**
 		 * Uses the countFormat option to generate the text using the supplied parameters.
