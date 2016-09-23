@@ -94,11 +94,11 @@
 			 */
 			this._total = 0;
 			/**
-			 * Used to hold the number of page links previously created.
+			 * Used to hold the number of page links created.
 			 * @type {number}
 			 * @private
 			 */
-			this._prevPageCount = 0;
+			this._pageCount = 0;
 		},
 
 		/* PROTECTED */
