@@ -262,7 +262,7 @@
 			);
 
 			if (self.delay > 0){
-				self.$input.on('keypress keyup', { self: self }, self._onSearchInputChanged);
+				self.$input.on('keypress keyup paste', { self: self }, self._onSearchInputChanged);
 				self.$dropdown.on('click', 'input[type="checkbox"]', {self: self}, self._onSearchColumnClicked);
 			}
 
@@ -467,10 +467,11 @@
 		_onSearchInputChanged: function (e) {
 			var self = e.data.self;
 			var alpha = e.type == 'keypress' && !F.is.emptyString(String.fromCharCode(e.charCode)),
-				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46); // backspace & delete
+				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46),
+				paste = e.type == 'paste'; // backspace & delete
 
 			// if alphanumeric characters or specific control characters
-			if(alpha || ctrl) {
+			if(alpha || ctrl || paste) {
 				if (e.which == 13) e.preventDefault();
 				if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 				self._filterTimeout = setTimeout(function(){
