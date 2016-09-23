@@ -3463,7 +3463,7 @@
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {string} name - The name for the filter.
-		 * @param {string} query - The query for the filter.
+		 * @param {(string|FooTable.Query)} query - The query for the filter.
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
@@ -3507,7 +3507,7 @@
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space, this.connectors, this.ignoreCase);
+			this.query = query instanceof F.Query ? query : new F.Query(query, this.space, this.connectors, this.ignoreCase);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -3664,7 +3664,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {object} data - The jQuery data object of the table raising the event.
 			 */
-			this.ft.raise('preinit.ft.filtering').then(function(){
+			return self.ft.raise('preinit.ft.filtering').then(function(){
 				// first check if filtering is enabled via the class being applied
 				if (self.ft.$el.hasClass('footable-filtering'))
 					self.enabled = true;
@@ -3733,7 +3733,7 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
-			this.ft.raise('init.ft.filtering').then(function(){
+			return self.ft.raise('init.ft.filtering').then(function(){
 				self.$create();
 			}, function(){
 				self.enabled = false;
@@ -3754,7 +3754,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
 			var self = this;
-			this.ft.raise('destroy.ft.filtering').then(function(){
+			return self.ft.raise('destroy.ft.filtering').then(function(){
 				self.ft.$el.removeClass('footable-filtering')
 					.find('thead > tr.footable-filtering').remove();
 			});
@@ -3808,7 +3808,7 @@
 			);
 
 			if (self.delay > 0){
-				self.$input.on('keypress keyup', { self: self }, self._onSearchInputChanged);
+				self.$input.on('keypress keyup paste', { self: self }, self._onSearchInputChanged);
 				self.$dropdown.on('click', 'input[type="checkbox"]', {self: self}, self._onSearchColumnClicked);
 			}
 
@@ -3849,8 +3849,8 @@
 		/**
 		 * Adds or updates the filter using the supplied name, query and columns.
 		 * @instance
-		 * @param {string} name - The name for the filter.
-		 * @param {(string|FooTable.Query)} query - The query for the filter.
+		 * @param {(string|FooTable.Filter|object)} nameOrFilter - The name for the filter or the actual filter object itself.
+		 * @param {(string|FooTable.Query)} [query] - The query for the filter. This is only optional when the first parameter is a filter object.
 		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
 		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
 		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
@@ -3858,21 +3858,11 @@
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 */
-		addFilter: function(name, query, columns, ignoreCase, connectors, space, hidden){
-			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
+		addFilter: function(nameOrFilter, query, columns, ignoreCase, connectors, space, hidden){
+			var f = this.createFilter(nameOrFilter, query, columns, ignoreCase, connectors, space, hidden);
 			if (f instanceof F.Filter){
-				f.name = name;
-				f.query = query;
-				f.columns = columns;
-				f.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : f.ignoreCase;
-				f.connectors = F.is.boolean(connectors) ? connectors : f.connectors;
-				f.hidden = F.is.boolean(hidden) ? hidden : f.hidden;
-				f.space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : f.space;
-			} else {
-				ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : self.ignoreCase;
-				connectors = F.is.boolean(connectors) ? connectors : self.connectors;
-				space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : self.space;
-				this.filters.push(new F.Filter(name, query, columns, space, connectors, ignoreCase, hidden));
+				this.removeFilter(f.name);
+				this.filters.push(f);
 			}
 		},
 		/**
@@ -3972,21 +3962,48 @@
 			var self = this, parsed = [], filterable = self.columns();
 			if (!F.is.emptyArray(filters)){
 				F.arr.each(filters, function(f){
-					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
-						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
-						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						f.ignoreCase = F.is.boolean(f.ignoreCase) ? f.ignoreCase : self.ignoreCase;
-						f.connectors = F.is.boolean(f.connectors) ? f.connectors : self.connectors;
-						f.hidden = F.is.boolean(f.hidden) ? f.hidden : false;
-						f.space = F.is.string(f.space) && (f.space === 'AND' || f.space === 'OR') ? f.space : self.space;
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, f.space, f.connectors, f.ignoreCase, f.hidden));
-					}
+					f = self._ensure(f, filterable);
+					if (f instanceof F.Filter) parsed.push(f);
 				});
 			}
 			return parsed;
 		},
 
+		/**
+		 * Creates a new filter using the supplied object or individual parameters to populate it.
+		 * @instance
+		 * @param {(string|FooTable.Filter|object)} nameOrObject - The name for the filter or the actual filter object itself.
+		 * @param {(string|FooTable.Query)} [query] - The query for the filter. This is only optional when the first parameter is a filter object.
+		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
+		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
+		 * @returns {*}
+		 */
+		createFilter: function(nameOrObject, query, columns, ignoreCase, connectors, space, hidden){
+			if (F.is.string(nameOrObject)){
+				nameOrObject = {name: nameOrObject, query: query, columns: columns, ignoreCase: ignoreCase, connectors: connectors, space: space, hidden: hidden};
+			}
+			return this._ensure(nameOrObject, this.columns());
+		},
+
 		/* PRIVATE */
+		_ensure: function(filter, selectedColumns){
+			if ((F.is.hash(filter) || filter instanceof F.Filter) && !F.is.emptyString(filter.name) && (!F.is.emptyString(filter.query) || filter.query instanceof F.Query)){
+				filter.columns = F.is.emptyArray(filter.columns) ? selectedColumns : this.ft.columns.ensure(filter.columns);
+				filter.ignoreCase = F.is.boolean(filter.ignoreCase) ? filter.ignoreCase : this.ignoreCase;
+				filter.connectors = F.is.boolean(filter.connectors) ? filter.connectors : this.connectors;
+				filter.hidden = F.is.boolean(filter.hidden) ? filter.hidden : false;
+				filter.space = F.is.string(filter.space) && (filter.space === 'AND' || filter.space === 'OR') ? filter.space : this.space;
+				filter.query = F.is.string(filter.query) ? new F.Query(filter.query, filter.space, filter.connectors, filter.ignoreCase) : filter.query;
+				return (filter instanceof F.Filter)
+					? filter
+					: new F.Filter(filter.name, filter.query, filter.columns, filter.space, filter.connectors, filter.ignoreCase, filter.hidden);
+			}
+			return null;
+		},
 		/**
 		 * Handles the change event for the {@link FooTable.Filtering#$input}.
 		 * @instance
@@ -3996,16 +4013,20 @@
 		_onSearchInputChanged: function (e) {
 			var self = e.data.self;
 			var alpha = e.type == 'keypress' && !F.is.emptyString(String.fromCharCode(e.charCode)),
-				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46); // backspace & delete
+				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46),
+				paste = e.type == 'paste'; // backspace & delete
 
 			// if alphanumeric characters or specific control characters
-			if(alpha || ctrl) {
+			if(alpha || ctrl || paste) {
 				if (e.which == 13) e.preventDefault();
 				if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 				self._filterTimeout = setTimeout(function(){
 					self._filterTimeout = null;
-					self.addFilter('search', self.$input.val());
-					self.filter();
+					var query = self.$input.val();
+					if (query.length >= self.min){
+						self.addFilter('search', query);
+						self.filter();
+					}
 				}, self.delay);
 			}
 		},
@@ -4022,8 +4043,11 @@
 			var $icon = self.$button.children('.fooicon');
 			if ($icon.hasClass('fooicon-remove')) self.clear();
 			else {
-				self.addFilter('search', self.$input.val());
-				self.filter();
+				var query = self.$input.val();
+				if (query.length >= self.min){
+					self.addFilter('search', query);
+					self.filter();
+				}
 			}
 		},
 		/**
@@ -4975,16 +4999,19 @@
 			this.size = table.o.paging.size;
 			/**
 			 * The maximum number of page links to display at once.
+			 * @instance
 			 * @type {number}
 			 */
 			this.limit = table.o.paging.limit;
 			/**
 			 * The position of the pagination control within the paging rows cell.
+			 * @instance
 			 * @type {string}
 			 */
 			this.position = table.o.paging.position;
 			/**
 			 * The format string used to generate the text displayed under the pagination control.
+			 * @instance
 			 * @type {string}
 			 */
 			this.countFormat = table.o.paging.countFormat;
@@ -4994,6 +5021,24 @@
 			 * @type {number}
 			 */
 			this.total = -1;
+			/**
+			 * The number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * @instance
+			 * @type {number}
+			 */
+			this.totalRows = 0;
+			/**
+			 * A number indicating the previous page displayed.
+			 * @instance
+			 * @type {number}
+			 */
+			this.previous = -1;
+			/**
+			 * The count string generated using the {@link FooTable.Filtering#countFormat} option. This value is only set after the first call to the {@link FooTable.Filtering#predraw} method.
+			 * @instance
+			 * @type {string}
+			 */
+			this.formattedCount = null;
 			/**
 			 * The jQuery row object that contains all the paging specific elements.
 			 * @instance
@@ -5008,33 +5053,31 @@
 			this.$cell = null;
 			/**
 			 * The jQuery object that contains the links for the pagination control.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$pagination = null;
 			/**
 			 * The jQuery object that contains the row count.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$count = null;
 			/**
 			 * Whether or not the pagination row is detached from the table.
+			 * @instance
 			 * @type {boolean}
 			 */
 			this.detached = false;
 
 			/* PRIVATE */
 			/**
-			 * A number indicating the previous page displayed.
-			 * @private
-			 * @type {number}
-			 */
-			this._previous = 1;
-			/**
-			 * Used to hold the number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * Used to hold the number of page links created.
+			 * @instance
 			 * @type {number}
 			 * @private
 			 */
-			this._total = 0;
+			this._createdLinks = 0;
 		},
 
 		/* PROTECTED */
@@ -5146,9 +5189,20 @@
 		predraw: function(){
 			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
-			if (this.ft.rows.array.length > this.size){
+			this.totalRows = this.ft.rows.array.length;
+			if (this.totalRows > this.size){
 				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
 			}
+
+			var firstRow = (this.size * (this.current - 1)) + 1,
+				lastRow = this.size * this.current;
+			if (this.ft.rows.array.length == 0){
+				firstRow = 0;
+				lastRow = 0;
+			} else {
+				lastRow = lastRow > this.totalRows ? this.totalRows : lastRow;
+			}
+			this.formattedCount = this._countFormat(this.current, this.total, firstRow, lastRow, this.totalRows);
 		},
 		/**
 		 * Updates the paging UI setting the state of the pagination control.
@@ -5173,8 +5227,9 @@
 				}
 				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 				this._createLinks();
-				this._setVisible(this.current, this.current > this._previous);
+				this._setVisible(this.current, this.current > this.previous);
 				this._setNavigation(true);
+				this.$count.text(this.formattedCount);
 			}
 		},
 		/**
@@ -5200,7 +5255,6 @@
 			this.$count = $('<span/>', { 'class': 'label label-default' });
 			this.$cell.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
 			this.detached = false;
-			this._createLinks();
 		},
 
 		/* PUBLIC */
@@ -5314,7 +5368,7 @@
 				pager.page = pager.page > pager.total ? pager.total	: pager.page;
 				pager.page = pager.page < 1 ? 1 : pager.page;
 				if (self.current == page) return $.when();
-				self._previous = self.current;
+				self.previous = self.current;
 				self.current = pager.page;
 				return self.ft.draw().then(function(){
 					/**
@@ -5335,7 +5389,7 @@
 		 * @private
 		 */
 		_createLinks: function(){
-			if (this._total === this.total) return;
+			if (this._createdLinks === this.total) return;
 			var self = this,
 				multiple = self.total > 1,
 				link = function(attr, html, klass){
@@ -5366,7 +5420,7 @@
 				self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
 				self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
 			}
-			self._total = self.total;
+			self._createdLinks = self.total;
 		},
 		/**
 		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the current page link.
@@ -5440,32 +5494,23 @@
 			} else {
 				this.$pagination.children('li.footable-page').removeClass('visible').slice(0, this.total).addClass('visible');
 			}
-			var first = (this.size * (page - 1)) + 1,
-				last = this.size * page,
-				totalRows = this.ft.rows.all.length;
-			if (this.ft.rows.array.length == 0){
-				first = 0;
-				last = 0;
-			} else {
-				last = last > totalRows ? totalRows : last;
-			}
-			this._setCount(page, this.total, first, last, totalRows);
 		},
 		/**
 		 * Uses the countFormat option to generate the text using the supplied parameters.
+		 * @instance
+		 * @private
 		 * @param {number} currentPage - The current page.
 		 * @param {number} totalPages - The total number of pages.
 		 * @param {number} pageFirst - The first row number of the current page.
 		 * @param {number} pageLast - The last row number of the current page.
 		 * @param {number} totalRows - The total number of rows.
-		 * @private
 		 */
-		_setCount: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
-			this.$count.text(this.countFormat.replace(/\{CP}/g, currentPage)
+		_countFormat: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
+			return this.countFormat.replace(/\{CP}/g, currentPage)
 				.replace(/\{TP}/g, totalPages)
 				.replace(/\{PF}/g, pageFirst)
 				.replace(/\{PL}/g, pageLast)
-				.replace(/\{TR}/g, totalRows));
+				.replace(/\{TR}/g, totalRows);
 		},
 		/**
 		 * Handles the click event for all links in the pagination control.

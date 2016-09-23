@@ -4,6 +4,17 @@ This is a complete re-write of the plugin. There is no upgrade path from V2 to V
 
 # Changelog #
 
+### X.X.X
+
+- Updated filtering component internals to clean things up a bit.
+- Updated filtering component search input to trigger a filtering operation on paste.
+- Updated `FooTable.Filtering#addFilter` method to accept an object or `FooTable.Filter` as the first argument to make custom filters easier to implement.
+- Updated filtering `preinit` and `init` to return a promise to make custom filters easier to implement.
+- Updated `FooTable.Filter` to accept a `FooTable.Query` as the query parameter along with the original plain string.
+- Updated paging component to expose some previously private properties to make setting a custom count label element easier.
+- Fixed issue where the filtering components `min` option was not being applied.
+- Fixed the paging components' `countFormat` option placeholder `{TR}` to correctly reflect filtered rows.
+
 ### 3.1.1
 
 - Added the `breakpoint` class to the table when columns are hidden.
