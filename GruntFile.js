@@ -166,7 +166,9 @@ module.exports = function (grunt) {
 					keepSpecialComments: 1
 				},
 				files: {
+					'compiled/footable.core.standalone.min.css': [ "compiled/footable.core.standalone.css" ],
 					'compiled/footable.standalone.min.css': [ "compiled/footable.standalone.css" ],
+					'compiled/footable.core.bootstrap.min.css': [ "compiled/footable.core.bootstrap.css" ],
 					'compiled/footable.bootstrap.min.css': [ "compiled/footable.bootstrap.css" ],
 					'compiled/footable.filtering.min.css': [ "compiled/footable.filtering.css" ],
 					'compiled/footable.sorting.min.css': [ "compiled/footable.sorting.css" ],

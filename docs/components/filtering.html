@@ -587,19 +587,19 @@
 						<div class="example static">
 							<p>To supply the function through data attributes it must be defined as a named JavaScript function with the name supplied as the attribute value.</p>
 						</div>
-						<pre class="language-javascript" data-lang="javascript"><code>function filterValue(valueOrElement){
-	if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data(&#39;filterValue&#39;) || $(valueOrElement).text();
-	if (F.is.hash(valueOrElement) &amp;&amp; F.is.hash(valueOrElement.options)){
-		if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
-		if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+						<pre class="language-javascript" data-lang="javascript"><code>function myFilterValue(valueOrElement){
+	if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) return jQuery(valueOrElement).data(&#39;filterValue&#39;) || jQuery(valueOrElement).text();
+	if (FooTable.is.hash(valueOrElement) &amp;&amp; FooTable.is.hash(valueOrElement.options)){
+		if (FooTable.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
+		if (FooTable.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
 	}
-	if (F.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
+	if (FooTable.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
 	return &#39;&#39;;
 }</code></pre>
 						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
 	&lt;thead&gt;
 		&lt;tr&gt;
-			&lt;th data-filter-value=&quot;filterValue&quot;&gt;...&lt;/th&gt;
+			&lt;th data-filter-value=&quot;myFilterValue&quot;&gt;...&lt;/th&gt;
 			...
 		&lt;/tr&gt;
 	&lt;/thead&gt;
@@ -617,12 +617,12 @@
 	$(&#39;.table&#39;).footable({
 		&quot;columns&quot;: [{
 			&quot;filterValue&quot;: function(valueOrElement){
-				if (F.is.jq(valueOrElement)) return valueOrElement.data(&#39;filterValue&#39;) || valueOrElement.text();
-				if (F.is.hash(valueOrElement) &amp;&amp; F.is.hash(valueOrElement.options)){
-					if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
-					if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+				if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) return jQuery(valueOrElement).data(&#39;filterValue&#39;) || jQuery(valueOrElement).text();
+				if (FooTable.is.hash(valueOrElement) &amp;&amp; FooTable.is.hash(valueOrElement.options)){
+					if (FooTable.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
+					if (FooTable.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
 				}
-				if (F.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
+				if (FooTable.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement+&#39;&#39;;
 				return &#39;&#39;;
 			}
 		},{
@@ -635,7 +635,7 @@
 
 					<div class="callout callout-info">
 						<h4>Note</h4>
-						<p>The first argument (<code>valueOrElement</code>) is either the jQuery wrapper around the <code>td</code> element to parse or a value that needs to be parsed into a string.</p>
+						<p>The first argument (<code>valueOrElement</code>) is either the <code>td</code> element, the jQuery wrapper around the <code>td</code> element or a value that needs to be parsed.</p>
 					</div>
 
 				</div>

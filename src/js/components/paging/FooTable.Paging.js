@@ -33,16 +33,19 @@
 			this.size = table.o.paging.size;
 			/**
 			 * The maximum number of page links to display at once.
+			 * @instance
 			 * @type {number}
 			 */
 			this.limit = table.o.paging.limit;
 			/**
 			 * The position of the pagination control within the paging rows cell.
+			 * @instance
 			 * @type {string}
 			 */
 			this.position = table.o.paging.position;
 			/**
 			 * The format string used to generate the text displayed under the pagination control.
+			 * @instance
 			 * @type {string}
 			 */
 			this.countFormat = table.o.paging.countFormat;
@@ -52,6 +55,24 @@
 			 * @type {number}
 			 */
 			this.total = -1;
+			/**
+			 * The number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * @instance
+			 * @type {number}
+			 */
+			this.totalRows = 0;
+			/**
+			 * A number indicating the previous page displayed.
+			 * @instance
+			 * @type {number}
+			 */
+			this.previous = -1;
+			/**
+			 * The count string generated using the {@link FooTable.Filtering#countFormat} option. This value is only set after the first call to the {@link FooTable.Filtering#predraw} method.
+			 * @instance
+			 * @type {string}
+			 */
+			this.formattedCount = null;
 			/**
 			 * The jQuery row object that contains all the paging specific elements.
 			 * @instance
@@ -66,33 +87,31 @@
 			this.$cell = null;
 			/**
 			 * The jQuery object that contains the links for the pagination control.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$pagination = null;
 			/**
 			 * The jQuery object that contains the row count.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$count = null;
 			/**
 			 * Whether or not the pagination row is detached from the table.
+			 * @instance
 			 * @type {boolean}
 			 */
 			this.detached = false;
 
 			/* PRIVATE */
 			/**
-			 * A number indicating the previous page displayed.
-			 * @private
-			 * @type {number}
-			 */
-			this._previous = 1;
-			/**
-			 * Used to hold the number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * Used to hold the number of page links created.
+			 * @instance
 			 * @type {number}
 			 * @private
 			 */
-			this._total = 0;
+			this._createdLinks = 0;
 		},
 
 		/* PROTECTED */
@@ -204,9 +223,20 @@
 		predraw: function(){
 			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
-			if (this.ft.rows.array.length > this.size){
+			this.totalRows = this.ft.rows.array.length;
+			if (this.totalRows > this.size){
 				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
 			}
+
+			var firstRow = (this.size * (this.current - 1)) + 1,
+				lastRow = this.size * this.current;
+			if (this.ft.rows.array.length == 0){
+				firstRow = 0;
+				lastRow = 0;
+			} else {
+				lastRow = lastRow > this.totalRows ? this.totalRows : lastRow;
+			}
+			this.formattedCount = this._countFormat(this.current, this.total, firstRow, lastRow, this.totalRows);
 		},
 		/**
 		 * Updates the paging UI setting the state of the pagination control.
@@ -231,8 +261,9 @@
 				}
 				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 				this._createLinks();
-				this._setVisible(this.current, this.current > this._previous);
+				this._setVisible(this.current, this.current > this.previous);
 				this._setNavigation(true);
+				this.$count.text(this.formattedCount);
 			}
 		},
 		/**
@@ -258,7 +289,6 @@
 			this.$count = $('<span/>', { 'class': 'label label-default' });
 			this.$cell.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
 			this.detached = false;
-			this._createLinks();
 		},
 
 		/* PUBLIC */
@@ -372,7 +402,7 @@
 				pager.page = pager.page > pager.total ? pager.total	: pager.page;
 				pager.page = pager.page < 1 ? 1 : pager.page;
 				if (self.current == page) return $.when();
-				self._previous = self.current;
+				self.previous = self.current;
 				self.current = pager.page;
 				return self.ft.draw().then(function(){
 					/**
@@ -393,7 +423,7 @@
 		 * @private
 		 */
 		_createLinks: function(){
-			if (this._total === this.total) return;
+			if (this._createdLinks === this.total) return;
 			var self = this,
 				multiple = self.total > 1,
 				link = function(attr, html, klass){
@@ -424,7 +454,7 @@
 				self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
 				self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
 			}
-			self._total = self.total;
+			self._createdLinks = self.total;
 		},
 		/**
 		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the current page link.
@@ -498,32 +528,23 @@
 			} else {
 				this.$pagination.children('li.footable-page').removeClass('visible').slice(0, this.total).addClass('visible');
 			}
-			var first = (this.size * (page - 1)) + 1,
-				last = this.size * page,
-				totalRows = this.ft.rows.all.length;
-			if (this.ft.rows.array.length == 0){
-				first = 0;
-				last = 0;
-			} else {
-				last = last > totalRows ? totalRows : last;
-			}
-			this._setCount(page, this.total, first, last, totalRows);
 		},
 		/**
 		 * Uses the countFormat option to generate the text using the supplied parameters.
+		 * @instance
+		 * @private
 		 * @param {number} currentPage - The current page.
 		 * @param {number} totalPages - The total number of pages.
 		 * @param {number} pageFirst - The first row number of the current page.
 		 * @param {number} pageLast - The last row number of the current page.
 		 * @param {number} totalRows - The total number of rows.
-		 * @private
 		 */
-		_setCount: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
-			this.$count.text(this.countFormat.replace(/\{CP}/g, currentPage)
+		_countFormat: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
+			return this.countFormat.replace(/\{CP}/g, currentPage)
 				.replace(/\{TP}/g, totalPages)
 				.replace(/\{PF}/g, pageFirst)
 				.replace(/\{PL}/g, pageLast)
-				.replace(/\{TR}/g, totalRows));
+				.replace(/\{TR}/g, totalRows);
 		},
 		/**
 		 * Handles the click event for all links in the pagination control.

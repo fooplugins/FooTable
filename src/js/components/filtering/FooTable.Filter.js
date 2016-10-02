@@ -5,7 +5,7 @@
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {string} name - The name for the filter.
-		 * @param {string} query - The query for the filter.
+		 * @param {(string|FooTable.Query)} query - The query for the filter.
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
@@ -49,7 +49,7 @@
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space, this.connectors, this.ignoreCase);
+			this.query = query instanceof F.Query ? query : new F.Query(query, this.space, this.connectors, this.ignoreCase);
 			/**
 			 * The columns to apply the query to.
 			 * @instance

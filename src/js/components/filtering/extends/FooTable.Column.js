@@ -27,6 +27,7 @@
 	// this is used to define the filtering specific properties on column creation
 	F.Column.prototype.__filtering_define__ = function(definition){
 		this.filterable = F.is.boolean(definition.filterable) ? definition.filterable : this.filterable;
+		this.filterValue = F.checkFnValue(this, definition.filterValue, this.filterValue);
 	};
 
 	// overrides the public define method and replaces it with our own
