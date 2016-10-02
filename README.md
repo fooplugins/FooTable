@@ -6,6 +6,7 @@ This is a complete re-write of the plugin. There is no upgrade path from V2 to V
 
 ### X.X.X
 
+- Added `sortValue` column option. This option allows you to supply your own function to retrieve the sort value for a cell.
 - Updated filtering component internals to clean things up a bit.
 - Updated filtering component search input to trigger a filtering operation on paste.
 - Updated `FooTable.Filtering#addFilter` method to accept an object or `FooTable.Filter` as the first argument to make custom filters easier to implement.
@@ -14,6 +15,8 @@ This is a complete re-write of the plugin. There is no upgrade path from V2 to V
 - Updated paging component to expose some previously private properties to make setting a custom count label element easier.
 - Fixed issue where the filtering components `min` option was not being applied.
 - Fixed the paging components' `countFormat` option placeholder `{TR}` to correctly reflect filtered rows.
+- Fixed preinit unhandled exception if the `table` the plugin is initialized on has no `class` attribute.
+- Fixed issue with the individual components .ZIP missing the `footable.core.bootstrap.min.css` and `footable.core.standalone.min.css` minified files.
 
 ### 3.1.1
 
