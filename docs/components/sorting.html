@@ -147,6 +147,90 @@
 		<div class="list-group list-group-detailed child">
 			<h3 class="list-group-header">Column options</h3>
 
+			<!-- sortValue -->
+			<a href="#sortValue" class="list-group-item anchored">
+				<span id="sortValue" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">sortValue <small>function</small></h4>
+				<p class="list-group-item-text">The function used to retrieve the sort value for a cell.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+					<p>
+						To improve the performance of the component all cells provide a value to be used during sorting operations.
+					</p>
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default the column will use its <a href="../getting-started.html#column-type"><code>type</code></a>s sortValue function.</p>
+						</div>
+						<div class="example returns">
+							<p><code>*</code></p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply the function through data attributes it must be defined as a named JavaScript function with the name supplied as the attribute value.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>function mySortValue(valueOrElement){
+	if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) return jQuery(valueOrElement).data(&#39;sortValue&#39;) || this.parser(valueOrElement);
+	if (FooTable.is.hash(valueOrElement) &amp;&amp; FooTable.is.hash(valueOrElement.options)){
+		if (FooTable.is.string(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
+		if (FooTable.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+	}
+	if (FooTable.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement;
+	return null;
+}</code></pre>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-sort-value=&quot;mySortValue&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;sortValue&quot;: function(valueOrElement){
+				if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) return jQuery(valueOrElement).data(&#39;sortValue&#39;) || this.parser(valueOrElement);
+				if (FooTable.is.hash(valueOrElement) &amp;&amp; FooTable.is.hash(valueOrElement.options)){
+					if (FooTable.is.string(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
+					if (FooTable.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
+				}
+				if (FooTable.is.defined(valueOrElement) &amp;&amp; valueOrElement != null) return valueOrElement;
+				return null;
+			}
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+					</div>
+
+					<div class="callout callout-info">
+						<h4>Note</h4>
+						<p>The first argument (<code>valueOrElement</code>) is either the <code>td</code> element, the jQuery wrapper around the <code>td</code> element or a value that needs to be parsed.</p>
+					</div>
+
+				</div>
+
+			</div>
+
 			<!-- sortable -->
 			<a href="#sortable" class="list-group-item anchored">
 				<span id="sortable" class="anchor">&nbsp;</span>
