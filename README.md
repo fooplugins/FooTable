@@ -4,7 +4,7 @@ This is a complete re-write of the plugin. There is no upgrade path from V2 to V
 
 # Changelog #
 
-### X.X.X
+### 3.1.2
 
 - Added `sortValue` column option. This option allows you to supply your own function to retrieve the sort value for a cell.
 - Updated filtering component internals to clean things up a bit.
