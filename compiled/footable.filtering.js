@@ -150,6 +150,11 @@
 			 */
 			this.placeholder = table.o.filtering.placeholder;
 			/**
+			 * The title to display at the top of the search input column select.
+			 * @type {string}
+			 */
+			this.dropdownTitle = table.o.filtering.dropdownTitle;
+			/**
 			 * The position of the $search input within the filtering rows cell.
 			 * @type {string}
 			 */
@@ -249,6 +254,10 @@
 					? data.filterPlaceholder
 					: self.placeholder;
 
+				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
+					? data.filterDropdownTitle
+					: self.dropdownTitle;
+
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
 					: self.ensure(self.filters);
@@ -344,7 +353,11 @@
 				.on('click', { self: self }, self._onSearchButtonClicked)
 				.append($('<span/>', {'class': 'fooicon fooicon-search'}));
 
-			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
+			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'});
+			if (!F.is.emptyString(self.dropdownTitle)){
+				self.$dropdown.append($('<li/>', {'class': 'dropdown-header','text': self.dropdownTitle}));
+			}
+			self.$dropdown.append(
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
@@ -961,6 +974,7 @@
 	 * @prop {number} min=3 - The minimum number of characters allowed in the search input before it is auto applied.
 	 * @prop {string} space="AND" - Specifies how whitespace in a filter query is handled.
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
+	 * @prop {string} dropdownTitle=null - The title to display at the top of the search input column select.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
@@ -972,6 +986,7 @@
 		min: 3,
 		space: 'AND',
 		placeholder: 'Search',
+		dropdownTitle: null,
 		position: 'right',
 		connectors: true,
 		ignoreCase: true

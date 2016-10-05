@@ -2,7 +2,15 @@
 
 This is a complete re-write of the plugin. There is no upgrade path from V2 to V3 at present as the options and the way the code is written are inherently different. Please check out the full documentation for V3 found in the docs folder or by viewing it [online here](http://fooplugins.github.io/FooTable/).
 
+### Contributors
+
+Pull requests need to be made against the [develop branch](https://github.com/fooplugins/FooTable/tree/develop) as a new feature. I've switched to using a GitFlow process with this repository to try keep things organized a bit more. It makes it easier for me to test and make changes to submitted pull requests before merging the feature into the develop branch. The master branch now only contains release versions of the code.
+
 # Changelog #
+
+### X.X.X
+
+- Added a new `dropdownTitle` option to the filtering component. This options specifies a title to display at the top of the column select dropdown.
 
 ### 3.1.2
 
