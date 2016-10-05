@@ -249,17 +249,19 @@
 				.on('click', { self: self }, self._onSearchButtonClicked)
 				.append($('<span/>', {'class': 'fooicon fooicon-search'}));
 
-			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
-				F.arr.map(self.ft.columns.array, function (col) {
-					return col.filterable ? $('<li/>').append(
-						$('<a/>', {'class': 'checkbox'}).append(
-							$('<label/>', {text: col.title}).prepend(
-								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
+			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'})
+				.append($('<li/>', {'class': 'dropdown-header','text': 'Search in:'}))
+				.append(
+					F.arr.map(self.ft.columns.array, function (col) {
+						return col.filterable ? $('<li/>').append(
+							$('<a/>', {'class': 'checkbox'}).append(
+								$('<label/>', {text: col.title}).prepend(
+									$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
+								)
 							)
-						)
-					) : null;
-				})
-			);
+						) : null;
+					})
+				);
 
 			if (self.delay > 0){
 				self.$input.on('keypress keyup paste', { self: self }, self._onSearchInputChanged);
