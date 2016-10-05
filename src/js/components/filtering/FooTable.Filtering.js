@@ -55,6 +55,11 @@
 			 */
 			this.placeholder = table.o.filtering.placeholder;
 			/**
+			 * The title to display at the top of the search input column select.
+			 * @type {string}
+			 */
+			this.dropdownTitle = table.o.filtering.dropdownTitle;
+			/**
 			 * The position of the $search input within the filtering rows cell.
 			 * @type {string}
 			 */
@@ -154,6 +159,10 @@
 					? data.filterPlaceholder
 					: self.placeholder;
 
+				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
+					? data.filterDropdownTitle
+					: self.dropdownTitle;
+
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
 					: self.ensure(self.filters);
@@ -249,7 +258,11 @@
 				.on('click', { self: self }, self._onSearchButtonClicked)
 				.append($('<span/>', {'class': 'fooicon fooicon-search'}));
 
-			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
+			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'});
+			if (!F.is.emptyString(self.dropdownTitle)){
+				self.$dropdown.append($('<li/>', {'class': 'dropdown-header','text': self.dropdownTitle}));
+			}
+			self.$dropdown.append(
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
