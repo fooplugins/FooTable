@@ -517,6 +517,8 @@
 						}
 						self.addFilter('search', query);
 						self.filter();
+					} else if (F.is.emptyString(query)){
+						self.clear();
 					}
 				}, self.delay);
 			}
