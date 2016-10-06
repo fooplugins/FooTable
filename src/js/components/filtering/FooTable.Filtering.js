@@ -49,6 +49,12 @@
 			 */
 			this.ignoreCase = table.o.filtering.ignoreCase;
 			/**
+			 * Whether or not search queries are treated as phrases when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.exactMatch = table.o.filtering.exactMatch;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
@@ -103,6 +109,13 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
+			/**
+			 * The regular expression used to check for encapsulating quotations.
+			 * @instance
+			 * @private
+			 * @type {RegExp}
+			 */
+			this._exactRegExp = /^"(.*?)"$/;
 		},
 
 		/* PROTECTED */
@@ -150,6 +163,10 @@
 				self.ignoreCase = F.is.boolean(data.filterIgnoreCase)
 					? data.filterIgnoreCase
 					: self.ignoreCase;
+
+				self.exactMatch = F.is.boolean(data.filterExactMatch)
+					? data.filterExactMatch
+					: self.exactMatch;
 
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
@@ -305,7 +322,11 @@
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 			var search = this.find('search');
 			if (search instanceof F.Filter){
-				this.$input.val(search.query.val());
+				var query = search.query.val();
+				if (this.exactMatch && this._exactRegExp.test(query)){
+					query = query.replace(this._exactRegExp, '$1');
+				}
+				this.$input.val(query);
 			} else {
 				this.$input.val(null);
 			}
@@ -491,6 +512,9 @@
 					self._filterTimeout = null;
 					var query = self.$input.val();
 					if (query.length >= self.min){
+						if (self.exactMatch && !self._exactRegExp.test(query)){
+							query = '"' + query + '"';
+						}
 						self.addFilter('search', query);
 						self.filter();
 					}
@@ -512,6 +536,9 @@
 			else {
 				var query = self.$input.val();
 				if (query.length >= self.min){
+					if (self.exactMatch && !self._exactRegExp.test(query)){
+						query = '"' + query + '"';
+					}
 					self.addFilter('search', query);
 					self.filter();
 				}

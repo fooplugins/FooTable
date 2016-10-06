@@ -12,6 +12,7 @@
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
+	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -23,6 +24,7 @@
 		dropdownTitle: null,
 		position: 'right',
 		connectors: true,
-		ignoreCase: true
+		ignoreCase: true,
+		exactMatch: false
 	};
 })(FooTable);
