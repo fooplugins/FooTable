@@ -559,7 +559,7 @@
 	 * @function contains
 	 * @param {string} str - The string to check.
 	 * @param {string} contains - The string to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.contains = function (str, contains, ignoreCase) {
@@ -569,12 +569,26 @@
 	};
 
 	/**
+	 * Checks if the supplied string contains the exact given substring.
+	 * @memberof FooTable.str
+	 * @function contains
+	 * @param {string} str - The string to check.
+	 * @param {string} contains - The string to check for.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
+	 * @returns {boolean}
+	 */
+	F.str.containsExact = function (str, contains, ignoreCase) {
+		if (F.is.emptyString(str) || F.is.emptyString(contains) || contains.length > str.length) return false;
+		return new RegExp('\\b'+ F.str.escapeRegExp(contains)+'\\b', ignoreCase ? 'i' : '').test(str);
+	};
+
+	/**
 	 * Checks if the supplied string contains the given word.
 	 * @memberof FooTable.str
 	 * @function containsWord
 	 * @param {string} str - The string to check.
 	 * @param {string} word - The word to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.containsWord = function(str, word, ignoreCase){
@@ -643,6 +657,8 @@
 
 	/**
 	 * Escapes a string for use in a regular expression.
+	 * @memberof FooTable.str
+	 * @function escapeRegExp
 	 * @param {string} str - The string to escape.
 	 * @returns {string}
 	 */
@@ -3595,6 +3611,12 @@
 			 */
 			this.ignoreCase = table.o.filtering.ignoreCase;
 			/**
+			 * Whether or not search queries are treated as phrases when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.exactMatch = table.o.filtering.exactMatch;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
@@ -3649,6 +3671,13 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
+			/**
+			 * The regular expression used to check for encapsulating quotations.
+			 * @instance
+			 * @private
+			 * @type {RegExp}
+			 */
+			this._exactRegExp = /^"(.*?)"$/;
 		},
 
 		/* PROTECTED */
@@ -3696,6 +3725,10 @@
 				self.ignoreCase = F.is.boolean(data.filterIgnoreCase)
 					? data.filterIgnoreCase
 					: self.ignoreCase;
+
+				self.exactMatch = F.is.boolean(data.filterExactMatch)
+					? data.filterExactMatch
+					: self.exactMatch;
 
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
@@ -3851,7 +3884,11 @@
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 			var search = this.find('search');
 			if (search instanceof F.Filter){
-				this.$input.val(search.query.val());
+				var query = search.query.val();
+				if (this.exactMatch && this._exactRegExp.test(query)){
+					query = query.replace(this._exactRegExp, '$1');
+				}
+				this.$input.val(query);
 			} else {
 				this.$input.val(null);
 			}
@@ -4037,8 +4074,13 @@
 					self._filterTimeout = null;
 					var query = self.$input.val();
 					if (query.length >= self.min){
+						if (self.exactMatch && !self._exactRegExp.test(query)){
+							query = '"' + query + '"';
+						}
 						self.addFilter('search', query);
 						self.filter();
+					} else if (F.is.emptyString(query)){
+						self.clear();
 					}
 				}, self.delay);
 			}
@@ -4058,6 +4100,9 @@
 			else {
 				var query = self.$input.val();
 				if (query.length >= self.min){
+					if (self.exactMatch && !self._exactRegExp.test(query)){
+						query = '"' + query + '"';
+					}
 					self.addFilter('search', query);
 					self.filter();
 				}
@@ -4235,7 +4280,7 @@
 							return result;
 						}
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if (match && !p.negate) result = true;
 						if (match && p.negate) {
 							result = false;
@@ -4251,7 +4296,7 @@
 						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
 						return result;
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if ((!match && !p.negate) || (match && p.negate)) result = false;
 						return result;
 					}
@@ -4422,25 +4467,27 @@
 	 * @prop {boolean} enabled=false - Whether or not to allow filtering on the table.
 	 * @prop {({name: string, query: (string|FooTable.Query), columns: (Array.<string>|Array.<number>|Array.<FooTable.Column>)}|Array.<FooTable.Filter>)} filters - The filters to apply to the current {@link FooTable.Rows#array}.
 	 * @prop {number} delay=1200 - The delay in milliseconds before the query is auto applied after a change (any value equal to or less than zero will disable this).
-	 * @prop {number} min=3 - The minimum number of characters allowed in the search input before it is auto applied.
+	 * @prop {number} min=1 - The minimum number of characters allowed in the search input before it is auto applied.
 	 * @prop {string} space="AND" - Specifies how whitespace in a filter query is handled.
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
 	 * @prop {string} dropdownTitle=null - The title to display at the top of the search input column select.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
+	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
 		filters: [],
 		delay: 1200,
-		min: 3,
+		min: 1,
 		space: 'AND',
 		placeholder: 'Search',
 		dropdownTitle: null,
 		position: 'right',
 		connectors: true,
-		ignoreCase: true
+		ignoreCase: true,
+		exactMatch: false
 	};
 })(FooTable);
 (function(F){
