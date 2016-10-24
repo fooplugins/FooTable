@@ -16,6 +16,7 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 - Updated the `min` option default value from `3` to `1` for the filtering component.
 - Fixed an issue in the `FooTable.Query` object where phrases were not being matched correctly.
 - Fixed filtering component not properly clearing filters when the search input is cleared using backspace or delete.
+- Fixed the resize event not being removed when the plugin is destroyed.
 
 ### 3.1.2
 
