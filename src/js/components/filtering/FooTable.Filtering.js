@@ -248,7 +248,7 @@
 		$create: function () {
 			var self = this;
 			// generate the cell that actually contains all the UI.
-			var $form_grp = $('<div/>', {'class': 'form-group search-filter'})
+			var $form_grp = $('<div/>', {'class': 'form-group footable-filtering-search'})
 					.append($('<label/>', {'class': 'sr-only', text: 'Search'})),
 				$input_grp = $('<div/>', {'class': 'input-group'}).appendTo($form_grp),
 				$input_grp_btn = $('<div/>', {'class': 'input-group-btn'}),
