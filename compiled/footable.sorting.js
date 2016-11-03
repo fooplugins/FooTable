@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.1
+* @version 3.1.3
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -405,7 +405,10 @@
 	 */
 	F.Column.prototype.sortValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('sortValue') || this.parser(valueOrElement);
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
@@ -421,6 +424,7 @@
 		this.direction = F.is.type(definition.direction, 'string') ? F.Sorting.dir(definition.direction) : null;
 		this.sortable = F.is.boolean(definition.sortable) ? definition.sortable : true;
 		this.sorted = F.is.boolean(definition.sorted) ? definition.sorted : false;
+		this.sortValue = F.checkFnValue(this, definition.sortValue, this.sortValue);
 	};
 
 	// overrides the public define method and replaces it with our own
@@ -456,7 +460,8 @@
 	F.HTMLColumn.prototype.sortValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
 		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-			return $(valueOrElement).data('sortValue') || $.trim($(valueOrElement)[this.sortUse]());
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.defined(data) ? data : $.trim($(valueOrElement)[this.sortUse]());
 		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){

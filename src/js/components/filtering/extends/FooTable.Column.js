@@ -14,7 +14,10 @@
 	 */
 	F.Column.prototype.filterValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('filterValue') || $(valueOrElement).text();
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('filterValue');
+			return F.is.defined(data) ? ''+data : $(valueOrElement).text();
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
@@ -27,6 +30,7 @@
 	// this is used to define the filtering specific properties on column creation
 	F.Column.prototype.__filtering_define__ = function(definition){
 		this.filterable = F.is.boolean(definition.filterable) ? definition.filterable : this.filterable;
+		this.filterValue = F.checkFnValue(this, definition.filterValue, this.filterValue);
 	};
 
 	// overrides the public define method and replaces it with our own

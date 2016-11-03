@@ -793,76 +793,15 @@
 
         
             
-<dt class="name" id="_previous">
-    <h4><span class="type-signature">&lt;private> </span>_previous<span class="type-signature"> :number</span></h4>
+<dt class="name" id="_createdLinks">
+    <h4><span class="type-signature">&lt;private> </span>_createdLinks<span class="type-signature"> :number</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        A number indicating the previous page displayed.
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">number</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<dt class="name" id="_total">
-    <h4><span class="type-signature">&lt;private> </span>_total<span class="type-signature"> :number</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        Used to hold the number of rows in the <a href="FooTable.Rows.html#array">FooTable.Rows#array</a> before paging is applied.
+        Used to hold the number of page links created.
     </div>
     
 
@@ -1168,6 +1107,67 @@
 
         
             
+<dt class="name" id="formattedCount">
+    <h4><span class="type-signature"></span>formattedCount<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The count string generated using the FooTable.Filtering#countFormat option. This value is only set after the first call to the <a href="FooTable.Filtering.html#predraw">FooTable.Filtering#predraw</a> method.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
 <dt class="name" id="ft">
     <h4><span class="type-signature"></span>ft<span class="type-signature"> :<a href="FooTable.Table.html">FooTable.Table</a></span></h4>
 
@@ -1317,6 +1317,67 @@
             <li>
                 
 <span class="param-type">string</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="previous">
+    <h4><span class="type-signature"></span>previous<span class="type-signature"> :number</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        A number indicating the previous page displayed.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
 
 
             </li>
@@ -1541,6 +1602,67 @@
     
 </dd>
 
+        
+            
+<dt class="name" id="totalRows">
+    <h4><span class="type-signature"></span>totalRows<span class="type-signature"> :number</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The number of rows in the <a href="FooTable.Rows.html#array">FooTable.Rows#array</a> before paging is applied.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
         </dl>
     
 
@@ -1550,7 +1672,73 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="._setCount"><span class="type-signature">&lt;private, static> </span>_setCount<span class="signature">(currentPage, totalPages, pageFirst, pageLast, totalRows)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="$create"><span class="type-signature">&lt;protected> </span>$create<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Creates the paging UI from the current options setting the various jQuery properties of this component.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_countFormat"><span class="type-signature">&lt;private> </span>_countFormat<span class="signature">(currentPage, totalPages, pageFirst, pageLast, totalRows)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1708,72 +1896,6 @@
   </table>
 </div>
 
-    
-    
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="$create"><span class="type-signature">&lt;protected> </span>$create<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates the paging UI from the current options setting the various jQuery properties of this component.
-    </div>
-    
-
-    
-    
-    
-    
     
     
     
@@ -3688,7 +3810,7 @@
           
     <span class="jsdoc-message">
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc" target="_blank">JSDoc 3.4.1</a>
-    on 2016-09-16T04:23:05+02:00
+    on 2016-11-03T16:26:44+02:00
     </span>
         </footer>
       </div>

@@ -319,6 +319,13 @@
 						cell.$el.prepend(self.$toggle);
 					}
 				}
+				cell.$el.add(cell.column.$el).removeClass('footable-first-visible footable-last-visible');
+				if (cell.column.index == self.ft.columns.firstVisibleIndex){
+					cell.$el.add(cell.column.$el).addClass('footable-first-visible');
+				}
+				if (cell.column.index == self.ft.columns.lastVisibleIndex){
+					cell.$el.add(cell.column.$el).addClass('footable-last-visible');
+				}
 			});
 			if (this.expanded){
 				this.expand();

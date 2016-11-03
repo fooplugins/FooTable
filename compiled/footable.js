@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.1
+* @version 3.1.3
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -559,7 +559,7 @@
 	 * @function contains
 	 * @param {string} str - The string to check.
 	 * @param {string} contains - The string to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.contains = function (str, contains, ignoreCase) {
@@ -569,12 +569,26 @@
 	};
 
 	/**
+	 * Checks if the supplied string contains the exact given substring.
+	 * @memberof FooTable.str
+	 * @function contains
+	 * @param {string} str - The string to check.
+	 * @param {string} contains - The string to check for.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
+	 * @returns {boolean}
+	 */
+	F.str.containsExact = function (str, contains, ignoreCase) {
+		if (F.is.emptyString(str) || F.is.emptyString(contains) || contains.length > str.length) return false;
+		return new RegExp('\\b'+ F.str.escapeRegExp(contains)+'\\b', ignoreCase ? 'i' : '').test(str);
+	};
+
+	/**
 	 * Checks if the supplied string contains the given word.
 	 * @memberof FooTable.str
 	 * @function containsWord
 	 * @param {string} str - The string to check.
 	 * @param {string} word - The word to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.containsWord = function(str, word, ignoreCase){
@@ -643,6 +657,8 @@
 
 	/**
 	 * Escapes a string for use in a regular expression.
+	 * @memberof FooTable.str
+	 * @function escapeRegExp
 	 * @param {string} str - The string to escape.
 	 * @returns {string}
 	 */
@@ -1349,7 +1365,10 @@
 		 * @this FooTable.Column
 		 */
 		parser: function(valueOrElement){
-			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('value') || $(valueOrElement).text(); // use jQuery to get the value
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var data = $(valueOrElement).data('value');
+				return F.is.defined(data) ? data : $(valueOrElement).text();
+			}
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
 		},
@@ -1822,6 +1841,13 @@
 						cell.$el.prepend(self.$toggle);
 					}
 				}
+				cell.$el.add(cell.column.$el).removeClass('footable-first-visible footable-last-visible');
+				if (cell.column.index == self.ft.columns.firstVisibleIndex){
+					cell.$el.add(cell.column.$el).addClass('footable-first-visible');
+				}
+				if (cell.column.index == self.ft.columns.lastVisibleIndex){
+					cell.$el.add(cell.column.$el).addClass('footable-last-visible');
+				}
 			});
 			if (this.expanded){
 				this.expand();
@@ -2004,7 +2030,7 @@
 			 * @param {object} data - The jQuery data object from the root table element.
 			 */
 			return this.raise('preinit.ft.table', [self.data]).then(function(){
-				var classes = self.$el.attr('class').match(/\S+/g);
+				var classes = (self.$el.attr('class') || '').match(/\S+/g) || [];
 
 				self.o.ajax = F.checkFnValue(self, self.data.ajax, self.o.ajax);
 				self.o.stopPropagation = F.is.boolean(self.data.stopPropagation)
@@ -2090,6 +2116,7 @@
 				return self.execute(true, true, 'destroy').then(function () {
 					self.$el.removeData('__FooTable__').removeClass('footable-' + self.id);
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
+					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
 				});
 			}).fail(function(err){
@@ -2303,7 +2330,8 @@
 		 */
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text();
+				var data = $(valueOrElement).data('value');
+				valueOrElement = F.is.defined(data) ? data : $(valueOrElement).text();
 				if (F.is.string(valueOrElement)) valueOrElement = isNaN(valueOrElement) ? valueOrElement : +valueOrElement;
 			}
 			if (F.is.date(valueOrElement)) return moment(valueOrElement);
@@ -2391,7 +2419,7 @@
 		 * @instance
 		 * @protected
 		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
-		 * @returns {(number|null)}
+		 * @returns {(jQuery|null)}
 		 * @this FooTable.HTMLColumn
 		 */
 		parser: function(valueOrElement){
@@ -2399,7 +2427,10 @@
 			if (F.is.element(valueOrElement)) valueOrElement = $(valueOrElement);
 			if (F.is.jq(valueOrElement)){
 				var tagName = valueOrElement.prop('tagName').toLowerCase();
-				if (tagName == 'td' || tagName == 'th') return valueOrElement.data('value') || valueOrElement.contents();
+				if (tagName == 'td' || tagName == 'th'){
+					var data = valueOrElement.data('value');
+					return F.is.defined(data) ? data : valueOrElement.contents();
+				}
 				return valueOrElement;
 			}
 			return null;
@@ -2439,7 +2470,8 @@
 		 */
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text().replace(this.cleanRegex, '');
+				var data = $(valueOrElement).data('value');
+				valueOrElement = F.is.defined(data) ? data : $(valueOrElement).text().replace(this.cleanRegex, '');
 			}
 			if (F.is.string(valueOrElement)){
 				valueOrElement = valueOrElement.replace(this.thousandSeparatorRegex, '').replace(this.decimalSeparatorRegex, '.');
@@ -2833,7 +2865,7 @@
 			 */
 			this.showHeader = table.o.showHeader;
 
-			this._fromHTML = F.is.emptyArray(table.o.columns);
+			this._fromHTML = F.is.emptyArray(table.o.columns) && !F.is.promise(table.o.columns);
 		},
 
 		/* PROTECTED */
@@ -3206,7 +3238,7 @@
 			 * @type {jQuery}
 			 */
 			this.$empty = null;
-			this._fromHTML = F.is.emptyArray(table.o.rows);
+			this._fromHTML = F.is.emptyArray(table.o.rows) && !F.is.promise(table.o.rows);
 		},
 		/**
 		 * This parses the rows from either the tables rows or the supplied options.
@@ -3218,10 +3250,7 @@
 			var self = this;
 			return $.Deferred(function(d){
 				var $rows = self.ft.$el.children('tbody').children('tr');
-				if (F.is.jq($rows)){
-					self.parseFinalize(d, $rows);
-					$rows.detach();
-				} else if (F.is.array(self.o.rows) && self.o.rows.length > 0){
+				if (F.is.array(self.o.rows) && self.o.rows.length > 0){
 					self.parseFinalize(d, self.o.rows);
 				} else if (F.is.promise(self.o.rows)){
 					self.o.rows.then(function(rows){
@@ -3229,6 +3258,9 @@
 					}, function(xhr){
 						d.reject(Error('Rows ajax request error: ' + xhr.status + ' (' + xhr.statusText + ')'));
 					});
+				} else if (F.is.jq($rows)){
+					self.parseFinalize(d, $rows);
+					$rows.detach();
 				} else {
 					self.parseFinalize(d, []);
 				}
@@ -3463,7 +3495,7 @@
 		 * @constructs
 		 * @extends FooTable.Class
 		 * @param {string} name - The name for the filter.
-		 * @param {string} query - The query for the filter.
+		 * @param {(string|FooTable.Query)} query - The query for the filter.
 		 * @param {Array.<FooTable.Column>} columns - The columns to apply the query to.
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
@@ -3507,7 +3539,7 @@
 			 * @instance
 			 * @type {(string|FooTable.Query)}
 			 */
-			this.query = new F.Query(query, this.space, this.connectors, this.ignoreCase);
+			this.query = query instanceof F.Query ? query : new F.Query(query, this.space, this.connectors, this.ignoreCase);
 			/**
 			 * The columns to apply the query to.
 			 * @instance
@@ -3595,11 +3627,22 @@
 			 */
 			this.ignoreCase = table.o.filtering.ignoreCase;
 			/**
+			 * Whether or not search queries are treated as phrases when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.exactMatch = table.o.filtering.exactMatch;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
 			 */
 			this.placeholder = table.o.filtering.placeholder;
+			/**
+			 * The title to display at the top of the search input column select.
+			 * @type {string}
+			 */
+			this.dropdownTitle = table.o.filtering.dropdownTitle;
 			/**
 			 * The position of the $search input within the filtering rows cell.
 			 * @type {string}
@@ -3644,6 +3687,13 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
+			/**
+			 * The regular expression used to check for encapsulating quotations.
+			 * @instance
+			 * @private
+			 * @type {RegExp}
+			 */
+			this._exactRegExp = /^"(.*?)"$/;
 		},
 
 		/* PROTECTED */
@@ -3664,7 +3714,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 * @param {object} data - The jQuery data object of the table raising the event.
 			 */
-			this.ft.raise('preinit.ft.filtering').then(function(){
+			return self.ft.raise('preinit.ft.filtering').then(function(){
 				// first check if filtering is enabled via the class being applied
 				if (self.ft.$el.hasClass('footable-filtering'))
 					self.enabled = true;
@@ -3692,6 +3742,10 @@
 					? data.filterIgnoreCase
 					: self.ignoreCase;
 
+				self.exactMatch = F.is.boolean(data.filterExactMatch)
+					? data.filterExactMatch
+					: self.exactMatch;
+
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
 					: self.delay;
@@ -3699,6 +3753,10 @@
 				self.placeholder = F.is.string(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
+
+				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
+					? data.filterDropdownTitle
+					: self.dropdownTitle;
 
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
@@ -3733,7 +3791,7 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
-			this.ft.raise('init.ft.filtering').then(function(){
+			return self.ft.raise('init.ft.filtering').then(function(){
 				self.$create();
 			}, function(){
 				self.enabled = false;
@@ -3754,7 +3812,7 @@
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
 			var self = this;
-			this.ft.raise('destroy.ft.filtering').then(function(){
+			return self.ft.raise('destroy.ft.filtering').then(function(){
 				self.ft.$el.removeClass('footable-filtering')
 					.find('thead > tr.footable-filtering').remove();
 			});
@@ -3768,7 +3826,7 @@
 		$create: function () {
 			var self = this;
 			// generate the cell that actually contains all the UI.
-			var $form_grp = $('<div/>', {'class': 'form-group'})
+			var $form_grp = $('<div/>', {'class': 'form-group footable-filtering-search'})
 					.append($('<label/>', {'class': 'sr-only', text: 'Search'})),
 				$input_grp = $('<div/>', {'class': 'input-group'}).appendTo($form_grp),
 				$input_grp_btn = $('<div/>', {'class': 'input-group-btn'}),
@@ -3795,7 +3853,11 @@
 				.on('click', { self: self }, self._onSearchButtonClicked)
 				.append($('<span/>', {'class': 'fooicon fooicon-search'}));
 
-			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
+			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'});
+			if (!F.is.emptyString(self.dropdownTitle)){
+				self.$dropdown.append($('<li/>', {'class': 'dropdown-header','text': self.dropdownTitle}));
+			}
+			self.$dropdown.append(
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
@@ -3808,7 +3870,7 @@
 			);
 
 			if (self.delay > 0){
-				self.$input.on('keypress keyup', { self: self }, self._onSearchInputChanged);
+				self.$input.on('keypress keyup paste', { self: self }, self._onSearchInputChanged);
 				self.$dropdown.on('click', 'input[type="checkbox"]', {self: self}, self._onSearchColumnClicked);
 			}
 
@@ -3838,7 +3900,11 @@
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 			var search = this.find('search');
 			if (search instanceof F.Filter){
-				this.$input.val(search.query.val());
+				var query = search.query.val();
+				if (this.exactMatch && this._exactRegExp.test(query)){
+					query = query.replace(this._exactRegExp, '$1');
+				}
+				this.$input.val(query);
 			} else {
 				this.$input.val(null);
 			}
@@ -3849,8 +3915,8 @@
 		/**
 		 * Adds or updates the filter using the supplied name, query and columns.
 		 * @instance
-		 * @param {string} name - The name for the filter.
-		 * @param {(string|FooTable.Query)} query - The query for the filter.
+		 * @param {(string|FooTable.Filter|object)} nameOrFilter - The name for the filter or the actual filter object itself.
+		 * @param {(string|FooTable.Query)} [query] - The query for the filter. This is only optional when the first parameter is a filter object.
 		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
 		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
 		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
@@ -3858,21 +3924,11 @@
 		 * @param {string} [space="AND"] - How the query treats space chars.
 		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
 		 */
-		addFilter: function(name, query, columns, ignoreCase, connectors, space, hidden){
-			var f = F.arr.first(this.filters, function(f){ return f.name == name; });
+		addFilter: function(nameOrFilter, query, columns, ignoreCase, connectors, space, hidden){
+			var f = this.createFilter(nameOrFilter, query, columns, ignoreCase, connectors, space, hidden);
 			if (f instanceof F.Filter){
-				f.name = name;
-				f.query = query;
-				f.columns = columns;
-				f.ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : f.ignoreCase;
-				f.connectors = F.is.boolean(connectors) ? connectors : f.connectors;
-				f.hidden = F.is.boolean(hidden) ? hidden : f.hidden;
-				f.space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : f.space;
-			} else {
-				ignoreCase = F.is.boolean(ignoreCase) ? ignoreCase : self.ignoreCase;
-				connectors = F.is.boolean(connectors) ? connectors : self.connectors;
-				space = F.is.string(space) && (space === 'AND' || space === 'OR') ? space : self.space;
-				this.filters.push(new F.Filter(name, query, columns, space, connectors, ignoreCase, hidden));
+				this.removeFilter(f.name);
+				this.filters.push(f);
 			}
 		},
 		/**
@@ -3972,21 +4028,48 @@
 			var self = this, parsed = [], filterable = self.columns();
 			if (!F.is.emptyArray(filters)){
 				F.arr.each(filters, function(f){
-					if (F.is.object(f) && (!F.is.emptyString(f.query) || f.query instanceof F.Query)) {
-						f.name = F.is.emptyString(f.name) ? 'anon' : f.name;
-						f.columns = F.is.emptyArray(f.columns) ? filterable : self.ft.columns.ensure(f.columns);
-						f.ignoreCase = F.is.boolean(f.ignoreCase) ? f.ignoreCase : self.ignoreCase;
-						f.connectors = F.is.boolean(f.connectors) ? f.connectors : self.connectors;
-						f.hidden = F.is.boolean(f.hidden) ? f.hidden : false;
-						f.space = F.is.string(f.space) && (f.space === 'AND' || f.space === 'OR') ? f.space : self.space;
-						parsed.push(f instanceof F.Filter ? f : new F.Filter(f.name, f.query, f.columns, f.space, f.connectors, f.ignoreCase, f.hidden));
-					}
+					f = self._ensure(f, filterable);
+					if (f instanceof F.Filter) parsed.push(f);
 				});
 			}
 			return parsed;
 		},
 
+		/**
+		 * Creates a new filter using the supplied object or individual parameters to populate it.
+		 * @instance
+		 * @param {(string|FooTable.Filter|object)} nameOrObject - The name for the filter or the actual filter object itself.
+		 * @param {(string|FooTable.Query)} [query] - The query for the filter. This is only optional when the first parameter is a filter object.
+		 * @param {(Array.<number>|Array.<string>|Array.<FooTable.Column>)} [columns] - The columns to apply the filter to.
+		 * 	If not supplied the filter will be applied to all selected columns in the search input dropdown.
+		 * @param {boolean} [ignoreCase=true] - Whether or not ignore case when matching.
+		 * @param {boolean} [connectors=true] - Whether or not to replace phrase connectors (+.-_) with spaces.
+		 * @param {string} [space="AND"] - How the query treats space chars.
+		 * @param {boolean} [hidden=true] - Whether or not this is a hidden filter.
+		 * @returns {*}
+		 */
+		createFilter: function(nameOrObject, query, columns, ignoreCase, connectors, space, hidden){
+			if (F.is.string(nameOrObject)){
+				nameOrObject = {name: nameOrObject, query: query, columns: columns, ignoreCase: ignoreCase, connectors: connectors, space: space, hidden: hidden};
+			}
+			return this._ensure(nameOrObject, this.columns());
+		},
+
 		/* PRIVATE */
+		_ensure: function(filter, selectedColumns){
+			if ((F.is.hash(filter) || filter instanceof F.Filter) && !F.is.emptyString(filter.name) && (!F.is.emptyString(filter.query) || filter.query instanceof F.Query)){
+				filter.columns = F.is.emptyArray(filter.columns) ? selectedColumns : this.ft.columns.ensure(filter.columns);
+				filter.ignoreCase = F.is.boolean(filter.ignoreCase) ? filter.ignoreCase : this.ignoreCase;
+				filter.connectors = F.is.boolean(filter.connectors) ? filter.connectors : this.connectors;
+				filter.hidden = F.is.boolean(filter.hidden) ? filter.hidden : false;
+				filter.space = F.is.string(filter.space) && (filter.space === 'AND' || filter.space === 'OR') ? filter.space : this.space;
+				filter.query = F.is.string(filter.query) ? new F.Query(filter.query, filter.space, filter.connectors, filter.ignoreCase) : filter.query;
+				return (filter instanceof F.Filter)
+					? filter
+					: new F.Filter(filter.name, filter.query, filter.columns, filter.space, filter.connectors, filter.ignoreCase, filter.hidden);
+			}
+			return null;
+		},
 		/**
 		 * Handles the change event for the {@link FooTable.Filtering#$input}.
 		 * @instance
@@ -3996,16 +4079,25 @@
 		_onSearchInputChanged: function (e) {
 			var self = e.data.self;
 			var alpha = e.type == 'keypress' && !F.is.emptyString(String.fromCharCode(e.charCode)),
-				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46); // backspace & delete
+				ctrl = e.type == 'keyup' && (e.which == 8 || e.which == 46),
+				paste = e.type == 'paste'; // backspace & delete
 
 			// if alphanumeric characters or specific control characters
-			if(alpha || ctrl) {
+			if(alpha || ctrl || paste) {
 				if (e.which == 13) e.preventDefault();
 				if (self._filterTimeout != null) clearTimeout(self._filterTimeout);
 				self._filterTimeout = setTimeout(function(){
 					self._filterTimeout = null;
-					self.addFilter('search', self.$input.val());
-					self.filter();
+					var query = self.$input.val();
+					if (query.length >= self.min){
+						if (self.exactMatch && !self._exactRegExp.test(query)){
+							query = '"' + query + '"';
+						}
+						self.addFilter('search', query);
+						self.filter();
+					} else if (F.is.emptyString(query)){
+						self.clear();
+					}
 				}, self.delay);
 			}
 		},
@@ -4022,8 +4114,14 @@
 			var $icon = self.$button.children('.fooicon');
 			if ($icon.hasClass('fooicon-remove')) self.clear();
 			else {
-				self.addFilter('search', self.$input.val());
-				self.filter();
+				var query = self.$input.val();
+				if (query.length >= self.min){
+					if (self.exactMatch && !self._exactRegExp.test(query)){
+						query = '"' + query + '"';
+					}
+					self.addFilter('search', query);
+					self.filter();
+				}
 			}
 		},
 		/**
@@ -4078,6 +4176,7 @@
 	F.components.register('filtering', F.Filtering, 500);
 
 })(jQuery, FooTable);
+
 (function(F){
 	F.Query = F.Class.extend(/** @lends FooTable.Query */{
 		/**
@@ -4198,7 +4297,7 @@
 							return result;
 						}
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if (match && !p.negate) result = true;
 						if (match && p.negate) {
 							result = false;
@@ -4214,7 +4313,7 @@
 						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
 						return result;
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if ((!match && !p.negate) || (match && p.negate)) result = false;
 						return result;
 					}
@@ -4356,7 +4455,10 @@
 	 */
 	F.Column.prototype.filterValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('filterValue') || $(valueOrElement).text();
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('filterValue');
+			return F.is.defined(data) ? ''+data : $(valueOrElement).text();
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
@@ -4369,6 +4471,7 @@
 	// this is used to define the filtering specific properties on column creation
 	F.Column.prototype.__filtering_define__ = function(definition){
 		this.filterable = F.is.boolean(definition.filterable) ? definition.filterable : this.filterable;
+		this.filterValue = F.checkFnValue(this, definition.filterValue, this.filterValue);
 	};
 
 	// overrides the public define method and replaces it with our own
@@ -4384,23 +4487,27 @@
 	 * @prop {boolean} enabled=false - Whether or not to allow filtering on the table.
 	 * @prop {({name: string, query: (string|FooTable.Query), columns: (Array.<string>|Array.<number>|Array.<FooTable.Column>)}|Array.<FooTable.Filter>)} filters - The filters to apply to the current {@link FooTable.Rows#array}.
 	 * @prop {number} delay=1200 - The delay in milliseconds before the query is auto applied after a change (any value equal to or less than zero will disable this).
-	 * @prop {number} min=3 - The minimum number of characters allowed in the search input before it is auto applied.
+	 * @prop {number} min=1 - The minimum number of characters allowed in the search input before it is auto applied.
 	 * @prop {string} space="AND" - Specifies how whitespace in a filter query is handled.
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
+	 * @prop {string} dropdownTitle=null - The title to display at the top of the search input column select.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
+	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
 		filters: [],
 		delay: 1200,
-		min: 3,
+		min: 1,
 		space: 'AND',
 		placeholder: 'Search',
+		dropdownTitle: null,
 		position: 'right',
 		connectors: true,
-		ignoreCase: true
+		ignoreCase: true,
+		exactMatch: false
 	};
 })(FooTable);
 (function(F){
@@ -4818,7 +4925,10 @@
 	 */
 	F.Column.prototype.sortValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('sortValue') || this.parser(valueOrElement);
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
@@ -4834,6 +4944,7 @@
 		this.direction = F.is.type(definition.direction, 'string') ? F.Sorting.dir(definition.direction) : null;
 		this.sortable = F.is.boolean(definition.sortable) ? definition.sortable : true;
 		this.sorted = F.is.boolean(definition.sorted) ? definition.sorted : false;
+		this.sortValue = F.checkFnValue(this, definition.sortValue, this.sortValue);
 	};
 
 	// overrides the public define method and replaces it with our own
@@ -4869,7 +4980,8 @@
 	F.HTMLColumn.prototype.sortValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
 		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-			return $(valueOrElement).data('sortValue') || $.trim($(valueOrElement)[this.sortUse]());
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.defined(data) ? data : $.trim($(valueOrElement)[this.sortUse]());
 		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
@@ -4975,16 +5087,19 @@
 			this.size = table.o.paging.size;
 			/**
 			 * The maximum number of page links to display at once.
+			 * @instance
 			 * @type {number}
 			 */
 			this.limit = table.o.paging.limit;
 			/**
 			 * The position of the pagination control within the paging rows cell.
+			 * @instance
 			 * @type {string}
 			 */
 			this.position = table.o.paging.position;
 			/**
 			 * The format string used to generate the text displayed under the pagination control.
+			 * @instance
 			 * @type {string}
 			 */
 			this.countFormat = table.o.paging.countFormat;
@@ -4994,6 +5109,24 @@
 			 * @type {number}
 			 */
 			this.total = -1;
+			/**
+			 * The number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * @instance
+			 * @type {number}
+			 */
+			this.totalRows = 0;
+			/**
+			 * A number indicating the previous page displayed.
+			 * @instance
+			 * @type {number}
+			 */
+			this.previous = -1;
+			/**
+			 * The count string generated using the {@link FooTable.Filtering#countFormat} option. This value is only set after the first call to the {@link FooTable.Filtering#predraw} method.
+			 * @instance
+			 * @type {string}
+			 */
+			this.formattedCount = null;
 			/**
 			 * The jQuery row object that contains all the paging specific elements.
 			 * @instance
@@ -5008,33 +5141,31 @@
 			this.$cell = null;
 			/**
 			 * The jQuery object that contains the links for the pagination control.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$pagination = null;
 			/**
 			 * The jQuery object that contains the row count.
+			 * @instance
 			 * @type {jQuery}
 			 */
 			this.$count = null;
 			/**
 			 * Whether or not the pagination row is detached from the table.
+			 * @instance
 			 * @type {boolean}
 			 */
-			this.detached = false;
+			this.detached = true;
 
 			/* PRIVATE */
 			/**
-			 * A number indicating the previous page displayed.
-			 * @private
-			 * @type {number}
-			 */
-			this._previous = 1;
-			/**
-			 * Used to hold the number of rows in the {@link FooTable.Rows#array} before paging is applied.
+			 * Used to hold the number of page links created.
+			 * @instance
 			 * @type {number}
 			 * @private
 			 */
-			this._total = 0;
+			this._createdLinks = 0;
 		},
 
 		/* PROTECTED */
@@ -5135,7 +5266,8 @@
 			this.ft.raise('destroy.ft.paging').then(function(){
 				self.ft.$el.removeClass('footable-paging')
 					.find('tfoot > tr.footable-paging').remove();
-				self.detached = false;
+				self.detached = true;
+				self._createdLinks = 0;
 			});
 		},
 		/**
@@ -5146,9 +5278,20 @@
 		predraw: function(){
 			this.total = Math.ceil(this.ft.rows.array.length / this.size);
 			this.current = this.current > this.total ? this.total : (this.current < 1 ? 1 : this.current);
-			if (this.ft.rows.array.length > this.size){
+			this.totalRows = this.ft.rows.array.length;
+			if (this.totalRows > this.size){
 				this.ft.rows.array = this.ft.rows.array.splice((this.current - 1) * this.size, this.size);
 			}
+
+			var firstRow = (this.size * (this.current - 1)) + 1,
+				lastRow = this.size * this.current;
+			if (this.ft.rows.array.length == 0){
+				firstRow = 0;
+				lastRow = 0;
+			} else {
+				lastRow = lastRow > this.totalRows ? this.totalRows : lastRow;
+			}
+			this.formattedCount = this._countFormat(this.current, this.total, firstRow, lastRow, this.totalRows);
 		},
 		/**
 		 * Updates the paging UI setting the state of the pagination control.
@@ -5173,8 +5316,9 @@
 				}
 				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 				this._createLinks();
-				this._setVisible(this.current, this.current > this._previous);
+				this._setVisible(this.current, this.current > this.previous);
 				this._setNavigation(true);
+				this.$count.text(this.formattedCount);
 			}
 		},
 		/**
@@ -5183,6 +5327,7 @@
 		 * @protected
 		 */
 		$create: function(){
+			this._createdLinks = 0;
 			var position = 'footable-paging-center';
 			switch (this.position){
 				case 'left': position = 'footable-paging-left'; break;
@@ -5200,7 +5345,6 @@
 			this.$count = $('<span/>', { 'class': 'label label-default' });
 			this.$cell.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
 			this.detached = false;
-			this._createLinks();
 		},
 
 		/* PUBLIC */
@@ -5314,7 +5458,7 @@
 				pager.page = pager.page > pager.total ? pager.total	: pager.page;
 				pager.page = pager.page < 1 ? 1 : pager.page;
 				if (self.current == page) return $.when();
-				self._previous = self.current;
+				self.previous = self.current;
 				self.current = pager.page;
 				return self.ft.draw().then(function(){
 					/**
@@ -5335,7 +5479,7 @@
 		 * @private
 		 */
 		_createLinks: function(){
-			if (this._total === this.total) return;
+			if (this._createdLinks === this.total) return;
 			var self = this,
 				multiple = self.total > 1,
 				link = function(attr, html, klass){
@@ -5366,7 +5510,7 @@
 				self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
 				self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
 			}
-			self._total = self.total;
+			self._createdLinks = self.total;
 		},
 		/**
 		 * Sets the state for the navigation links of the pagination control and optionally sets the active class state on the current page link.
@@ -5440,32 +5584,23 @@
 			} else {
 				this.$pagination.children('li.footable-page').removeClass('visible').slice(0, this.total).addClass('visible');
 			}
-			var first = (this.size * (page - 1)) + 1,
-				last = this.size * page,
-				totalRows = this.ft.rows.all.length;
-			if (this.ft.rows.array.length == 0){
-				first = 0;
-				last = 0;
-			} else {
-				last = last > totalRows ? totalRows : last;
-			}
-			this._setCount(page, this.total, first, last, totalRows);
 		},
 		/**
 		 * Uses the countFormat option to generate the text using the supplied parameters.
+		 * @instance
+		 * @private
 		 * @param {number} currentPage - The current page.
 		 * @param {number} totalPages - The total number of pages.
 		 * @param {number} pageFirst - The first row number of the current page.
 		 * @param {number} pageLast - The last row number of the current page.
 		 * @param {number} totalRows - The total number of rows.
-		 * @private
 		 */
-		_setCount: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
-			this.$count.text(this.countFormat.replace(/\{CP}/g, currentPage)
+		_countFormat: function(currentPage, totalPages, pageFirst, pageLast, totalRows){
+			return this.countFormat.replace(/\{CP}/g, currentPage)
 				.replace(/\{TP}/g, totalPages)
 				.replace(/\{PF}/g, pageFirst)
 				.replace(/\{PL}/g, pageLast)
-				.replace(/\{TR}/g, totalRows));
+				.replace(/\{TR}/g, totalRows);
 		},
 		/**
 		 * Handles the click event for all links in the pagination control.

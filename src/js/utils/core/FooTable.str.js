@@ -11,7 +11,7 @@
 	 * @function contains
 	 * @param {string} str - The string to check.
 	 * @param {string} contains - The string to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.contains = function (str, contains, ignoreCase) {
@@ -21,12 +21,26 @@
 	};
 
 	/**
+	 * Checks if the supplied string contains the exact given substring.
+	 * @memberof FooTable.str
+	 * @function contains
+	 * @param {string} str - The string to check.
+	 * @param {string} contains - The string to check for.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
+	 * @returns {boolean}
+	 */
+	F.str.containsExact = function (str, contains, ignoreCase) {
+		if (F.is.emptyString(str) || F.is.emptyString(contains) || contains.length > str.length) return false;
+		return new RegExp('\\b'+ F.str.escapeRegExp(contains)+'\\b', ignoreCase ? 'i' : '').test(str);
+	};
+
+	/**
 	 * Checks if the supplied string contains the given word.
 	 * @memberof FooTable.str
 	 * @function containsWord
 	 * @param {string} str - The string to check.
 	 * @param {string} word - The word to check for.
-	 * @param {boolean} [ignoreCase] - Whether or not to ignore casing when performing the check.
+	 * @param {boolean} [ignoreCase=false] - Whether or not to ignore casing when performing the check.
 	 * @returns {boolean}
 	 */
 	F.str.containsWord = function(str, word, ignoreCase){
@@ -95,6 +109,8 @@
 
 	/**
 	 * Escapes a string for use in a regular expression.
+	 * @memberof FooTable.str
+	 * @function escapeRegExp
 	 * @param {string} str - The string to escape.
 	 * @returns {string}
 	 */

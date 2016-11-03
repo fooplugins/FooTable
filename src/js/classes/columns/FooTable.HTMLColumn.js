@@ -18,7 +18,7 @@
 		 * @instance
 		 * @protected
 		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
-		 * @returns {(number|null)}
+		 * @returns {(jQuery|null)}
 		 * @this FooTable.HTMLColumn
 		 */
 		parser: function(valueOrElement){
@@ -26,7 +26,10 @@
 			if (F.is.element(valueOrElement)) valueOrElement = $(valueOrElement);
 			if (F.is.jq(valueOrElement)){
 				var tagName = valueOrElement.prop('tagName').toLowerCase();
-				if (tagName == 'td' || tagName == 'th') return valueOrElement.data('value') || valueOrElement.contents();
+				if (tagName == 'td' || tagName == 'th'){
+					var data = valueOrElement.data('value');
+					return F.is.defined(data) ? data : valueOrElement.contents();
+				}
 				return valueOrElement;
 			}
 			return null;

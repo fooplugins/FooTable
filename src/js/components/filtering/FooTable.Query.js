@@ -118,7 +118,7 @@
 							return result;
 						}
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if (match && !p.negate) result = true;
 						if (match && p.negate) {
 							result = false;
@@ -134,7 +134,7 @@
 						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
 						return result;
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if ((!match && !p.negate) || (match && p.negate)) result = false;
 						return result;
 					}

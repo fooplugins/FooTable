@@ -146,7 +146,7 @@
 			 * @param {object} data - The jQuery data object from the root table element.
 			 */
 			return this.raise('preinit.ft.table', [self.data]).then(function(){
-				var classes = self.$el.attr('class').match(/\S+/g);
+				var classes = (self.$el.attr('class') || '').match(/\S+/g) || [];
 
 				self.o.ajax = F.checkFnValue(self, self.data.ajax, self.o.ajax);
 				self.o.stopPropagation = F.is.boolean(self.data.stopPropagation)
@@ -232,6 +232,7 @@
 				return self.execute(true, true, 'destroy').then(function () {
 					self.$el.removeData('__FooTable__').removeClass('footable-' + self.id);
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
+					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
 				});
 			}).fail(function(err){
