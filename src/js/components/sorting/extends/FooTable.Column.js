@@ -51,7 +51,10 @@
 	 */
 	F.Column.prototype.sortValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('sortValue') || this.parser(valueOrElement);
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;

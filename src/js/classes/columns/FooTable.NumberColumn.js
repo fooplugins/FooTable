@@ -28,7 +28,8 @@
 		 */
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
-				valueOrElement = $(valueOrElement).data('value') || $(valueOrElement).text().replace(this.cleanRegex, '');
+				var data = $(valueOrElement).data('value');
+				valueOrElement = F.is.defined(data) ? data : $(valueOrElement).text().replace(this.cleanRegex, '');
 			}
 			if (F.is.string(valueOrElement)){
 				valueOrElement = valueOrElement.replace(this.thousandSeparatorRegex, '').replace(this.decimalSeparatorRegex, '.');

@@ -14,7 +14,10 @@
 	 */
 	F.Column.prototype.filterValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('filterValue') || $(valueOrElement).text();
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('filterValue');
+			return F.is.defined(data) ? ''+data : $(valueOrElement).text();
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
