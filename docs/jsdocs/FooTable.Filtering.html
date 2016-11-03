@@ -854,6 +854,67 @@
 
         
             
+<dt class="name" id="_exactRegExp">
+    <h4><span class="type-signature">&lt;private> </span>_exactRegExp<span class="type-signature"> :RegExp</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The regular expression used to check for encapsulating quotations.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">RegExp</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
 <dt class="name" id="_filterTimeout">
     <h4><span class="type-signature">&lt;private, nullable> </span>_filterTimeout<span class="type-signature"> :number</span></h4>
 
@@ -1037,6 +1098,67 @@
 
         
             
+<dt class="name" id="dropdownTitle">
+    <h4><span class="type-signature"></span>dropdownTitle<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The title to display at the top of the search input column select.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
 <dt class="name" id="enabled">
     <h4><span class="type-signature"></span>enabled<span class="type-signature"> :boolean</span></h4>
 
@@ -1078,6 +1200,67 @@
       </li>
     </ul>
   </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="exactMatch">
+    <h4><span class="type-signature"></span>exactMatch<span class="type-signature"> :boolean</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Whether or not search queries are treated as phrases when matching.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
   
 
   
@@ -2337,7 +2520,7 @@
         
             
 <dt>
-    <h4 class="name" id="addFilter"><span class="type-signature"></span>addFilter<span class="signature">(name, query, <span class="optional">columns</span>, <span class="optional">ignoreCase</span>, <span class="optional">connectors</span>, <span class="optional">space</span>, <span class="optional">hidden</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addFilter"><span class="type-signature"></span>addFilter<span class="signature">(nameOrFilter, <span class="optional">query</span>, <span class="optional">columns</span>, <span class="optional">ignoreCase</span>, <span class="optional">connectors</span>, <span class="optional">space</span>, <span class="optional">hidden</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -2383,13 +2566,19 @@
   
           <tr>
               
-                  <td class="name"><code>name</code></td>
+                  <td class="name"><code>nameOrFilter</code></td>
               
   
               <td class="type">
               
                   
 <span class="param-type">string</span>
+|
+
+<span class="param-type"><a href="FooTable.Filter.html">FooTable.Filter</a></span>
+|
+
+<span class="param-type">object</span>
 
 
               
@@ -2411,7 +2600,7 @@
                   </td>
               
   
-              <td class="description last">The name for the filter.</td>
+              <td class="description last">The name for the filter or the actual filter object itself.</td>
           </tr>
   
     
@@ -2436,6 +2625,8 @@
               
                   <td class="attributes">
                   
+                      &lt;optional><br>
+                  
   
                   
   
@@ -2449,7 +2640,7 @@
                   </td>
               
   
-              <td class="description last">The query for the filter.</td>
+              <td class="description last">The query for the filter. This is only optional when the first parameter is a filter object.</td>
           </tr>
   
     
@@ -2869,6 +3060,402 @@
   <dd>
     
 <span class="param-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="createFilter"><span class="type-signature"></span>createFilter<span class="signature">(nameOrObject, <span class="optional">query</span>, <span class="optional">columns</span>, <span class="optional">ignoreCase</span>, <span class="optional">connectors</span>, <span class="optional">space</span>, <span class="optional">hidden</span>)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Creates a new filter using the supplied object or individual parameters to populate it.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+      <th>Argument</th>
+      
+  
+      
+      <th>Default</th>
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>nameOrObject</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">string</span>
+|
+
+<span class="param-type"><a href="FooTable.Filter.html">FooTable.Filter</a></span>
+|
+
+<span class="param-type">object</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                  </td>
+              
+  
+              <td class="description last">The name for the filter or the actual filter object itself.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>query</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">string</span>
+|
+
+<span class="param-type"><a href="FooTable.Query.html">FooTable.Query</a></span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                  </td>
+              
+  
+              <td class="description last">The query for the filter. This is only optional when the first parameter is a filter object.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>columns</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Array.&lt;number></span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                  </td>
+              
+  
+              <td class="description last">The columns to apply the filter to.	If not supplied the filter will be applied to all selected columns in the search input dropdown.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>ignoreCase</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">boolean</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      true
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not ignore case when matching.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>connectors</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">boolean</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      true
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not to replace phrase connectors (+.-_) with spaces.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>space</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">string</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      "AND"
+                  
+                  </td>
+              
+  
+              <td class="description last">How the query treats space chars.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>hidden</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">boolean</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      true
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not this is a hidden filter.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">*</span>
 
 
   </dd>
@@ -3838,7 +4425,7 @@
           
     <span class="jsdoc-message">
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc" target="_blank">JSDoc 3.4.1</a>
-    on 2016-09-16T04:23:05+02:00
+    on 2016-11-03T16:26:44+02:00
     </span>
         </footer>
       </div>

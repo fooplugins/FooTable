@@ -8,15 +8,20 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 
 # Changelog #
 
-### X.X.X
+### 3.1.3
 
 - Added a new `dropdownTitle` option to the filtering component. This options specifies a title to display at the top of the column select dropdown.
 - Added a new `exactMatch` option to the filtering component.
 - Added a new utility method `FooTable.str.containsExact(string, match, ignoreCase)`.
+- Added a class `footable-filtering-search` to the `form-group` of the built in search input for the filtering component.
+- Added `footable-first-visible` and `footable-last-visible` classes to all cells (including headers) in either the first or last visible columns respectively.
 - Updated the `min` option default value from `3` to `1` for the filtering component.
+- Updated the load priority for rows and columns supplied via options or ajax load, they now take precedence over those supplied through the DOM to work around issues with the plugin being reinitialized multiple times on the same element.
 - Fixed an issue in the `FooTable.Query` object where phrases were not being matched correctly.
 - Fixed filtering component not properly clearing filters when the search input is cleared using backspace or delete.
 - Fixed the resize event not being removed when the plugin is destroyed.
+- Fixed an issue with unexpected sorting and filtering results if the `sortValue` and `filterValue` attributes contained a falsy value. The values are now subject to a strict undefined check before being passed off.
+- Fixed an issue with the `date` column type not sorting it's values as expected.
 
 ### 3.1.2
 
