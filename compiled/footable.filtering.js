@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.2
+* @version 3.1.3
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -144,11 +144,22 @@
 			 */
 			this.ignoreCase = table.o.filtering.ignoreCase;
 			/**
+			 * Whether or not search queries are treated as phrases when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.exactMatch = table.o.filtering.exactMatch;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
 			 */
 			this.placeholder = table.o.filtering.placeholder;
+			/**
+			 * The title to display at the top of the search input column select.
+			 * @type {string}
+			 */
+			this.dropdownTitle = table.o.filtering.dropdownTitle;
 			/**
 			 * The position of the $search input within the filtering rows cell.
 			 * @type {string}
@@ -193,6 +204,13 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
+			/**
+			 * The regular expression used to check for encapsulating quotations.
+			 * @instance
+			 * @private
+			 * @type {RegExp}
+			 */
+			this._exactRegExp = /^"(.*?)"$/;
 		},
 
 		/* PROTECTED */
@@ -241,6 +259,10 @@
 					? data.filterIgnoreCase
 					: self.ignoreCase;
 
+				self.exactMatch = F.is.boolean(data.filterExactMatch)
+					? data.filterExactMatch
+					: self.exactMatch;
+
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
 					: self.delay;
@@ -248,6 +270,10 @@
 				self.placeholder = F.is.string(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
+
+				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
+					? data.filterDropdownTitle
+					: self.dropdownTitle;
 
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
@@ -317,7 +343,7 @@
 		$create: function () {
 			var self = this;
 			// generate the cell that actually contains all the UI.
-			var $form_grp = $('<div/>', {'class': 'form-group'})
+			var $form_grp = $('<div/>', {'class': 'form-group footable-filtering-search'})
 					.append($('<label/>', {'class': 'sr-only', text: 'Search'})),
 				$input_grp = $('<div/>', {'class': 'input-group'}).appendTo($form_grp),
 				$input_grp_btn = $('<div/>', {'class': 'input-group-btn'}),
@@ -344,7 +370,11 @@
 				.on('click', { self: self }, self._onSearchButtonClicked)
 				.append($('<span/>', {'class': 'fooicon fooicon-search'}));
 
-			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
+			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'});
+			if (!F.is.emptyString(self.dropdownTitle)){
+				self.$dropdown.append($('<li/>', {'class': 'dropdown-header','text': self.dropdownTitle}));
+			}
+			self.$dropdown.append(
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
@@ -387,7 +417,11 @@
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 			var search = this.find('search');
 			if (search instanceof F.Filter){
-				this.$input.val(search.query.val());
+				var query = search.query.val();
+				if (this.exactMatch && this._exactRegExp.test(query)){
+					query = query.replace(this._exactRegExp, '$1');
+				}
+				this.$input.val(query);
 			} else {
 				this.$input.val(null);
 			}
@@ -573,8 +607,13 @@
 					self._filterTimeout = null;
 					var query = self.$input.val();
 					if (query.length >= self.min){
+						if (self.exactMatch && !self._exactRegExp.test(query)){
+							query = '"' + query + '"';
+						}
 						self.addFilter('search', query);
 						self.filter();
+					} else if (F.is.emptyString(query)){
+						self.clear();
 					}
 				}, self.delay);
 			}
@@ -594,6 +633,9 @@
 			else {
 				var query = self.$input.val();
 				if (query.length >= self.min){
+					if (self.exactMatch && !self._exactRegExp.test(query)){
+						query = '"' + query + '"';
+					}
 					self.addFilter('search', query);
 					self.filter();
 				}
@@ -651,6 +693,7 @@
 	F.components.register('filtering', F.Filtering, 500);
 
 })(jQuery, FooTable);
+
 (function(F){
 	F.Query = F.Class.extend(/** @lends FooTable.Query */{
 		/**
@@ -771,7 +814,7 @@
 							return result;
 						}
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if (match && !p.negate) result = true;
 						if (match && p.negate) {
 							result = false;
@@ -787,7 +830,7 @@
 						if ((!empty && !p.negate) || (empty && p.negate)) result = false;
 						return result;
 					} else {
-						var match = F.str.contains(str, p.query, self.ignoreCase);
+						var match = (p.exact ? F.str.containsExact : F.str.contains)(str, p.query, self.ignoreCase);
 						if ((!match && !p.negate) || (match && p.negate)) result = false;
 						return result;
 					}
@@ -929,7 +972,10 @@
 	 */
 	F.Column.prototype.filterValue = function(valueOrElement){
 		// if we have an element or a jQuery object use jQuery to get the value
-		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('filterValue') || $(valueOrElement).text();
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('filterValue');
+			return F.is.defined(data) ? ''+data : $(valueOrElement).text();
+		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
 			if (F.is.string(valueOrElement.options.filterValue)) return valueOrElement.options.filterValue;
@@ -958,23 +1004,27 @@
 	 * @prop {boolean} enabled=false - Whether or not to allow filtering on the table.
 	 * @prop {({name: string, query: (string|FooTable.Query), columns: (Array.<string>|Array.<number>|Array.<FooTable.Column>)}|Array.<FooTable.Filter>)} filters - The filters to apply to the current {@link FooTable.Rows#array}.
 	 * @prop {number} delay=1200 - The delay in milliseconds before the query is auto applied after a change (any value equal to or less than zero will disable this).
-	 * @prop {number} min=3 - The minimum number of characters allowed in the search input before it is auto applied.
+	 * @prop {number} min=1 - The minimum number of characters allowed in the search input before it is auto applied.
 	 * @prop {string} space="AND" - Specifies how whitespace in a filter query is handled.
 	 * @prop {string} placeholder="Search" - The string used as the placeholder for the search input.
+	 * @prop {string} dropdownTitle=null - The title to display at the top of the search input column select.
 	 * @prop {string} position="right" - The string used to specify the alignment of the search input.
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
+	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
 		filters: [],
 		delay: 1200,
-		min: 3,
+		min: 1,
 		space: 'AND',
 		placeholder: 'Search',
+		dropdownTitle: null,
 		position: 'right',
 		connectors: true,
-		ignoreCase: true
+		ignoreCase: true,
+		exactMatch: false
 	};
 })(FooTable);
 (function(F){

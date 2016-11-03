@@ -232,6 +232,7 @@
 				return self.execute(true, true, 'destroy').then(function () {
 					self.$el.removeData('__FooTable__').removeClass('footable-' + self.id);
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
+					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
 				});
 			}).fail(function(err){

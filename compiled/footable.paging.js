@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.2
+* @version 3.1.3
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -153,7 +153,7 @@
 			 * @instance
 			 * @type {boolean}
 			 */
-			this.detached = false;
+			this.detached = true;
 
 			/* PRIVATE */
 			/**
@@ -263,7 +263,8 @@
 			this.ft.raise('destroy.ft.paging').then(function(){
 				self.ft.$el.removeClass('footable-paging')
 					.find('tfoot > tr.footable-paging').remove();
-				self.detached = false;
+				self.detached = true;
+				self._createdLinks = 0;
 			});
 		},
 		/**
@@ -323,6 +324,7 @@
 		 * @protected
 		 */
 		$create: function(){
+			this._createdLinks = 0;
 			var position = 'footable-paging-center';
 			switch (this.position){
 				case 'left': position = 'footable-paging-left'; break;

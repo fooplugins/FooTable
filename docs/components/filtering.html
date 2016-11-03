@@ -309,6 +309,102 @@
 
 			</div>
 
+			<!-- dropdownTitle -->
+			<a href="#dropdownTitle" class="list-group-item anchored">
+				<span id="dropdownTitle" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">dropdownTitle <small>string</small></h4>
+				<p class="list-group-item-text">The title to display at the top of the search input column select.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default no title is displayed, you must supply a string value for one to be added.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-dropdown-title=&quot;Search in:&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;dropdownTitle&quot;: &quot;Search in:&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- exactMatch -->
+			<a href="#exactMatch" class="list-group-item anchored">
+				<span id="exactMatch" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">exactMatch <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not search queries are treated as phrases when matching.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>false</code></p>
+							<p>By default to match an exact phrase a search query must be wrapped in quotation marks.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-exact-match=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;exactMatch&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
 			<!-- ignoreCase -->
 			<a href="#ignoreCase" class="list-group-item anchored">
 				<span id="ignoreCase" class="anchor">&nbsp;</span>
@@ -369,7 +465,7 @@
 					<div class="examples">
 
 						<div class="example default">
-							<p><code>3</code></p>
+							<p><code>1</code></p>
 						</div>
 
 					</div>

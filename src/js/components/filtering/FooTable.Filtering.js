@@ -49,11 +49,22 @@
 			 */
 			this.ignoreCase = table.o.filtering.ignoreCase;
 			/**
+			 * Whether or not search queries are treated as phrases when matching.
+			 * @instance
+			 * @type {boolean}
+			 */
+			this.exactMatch = table.o.filtering.exactMatch;
+			/**
 			 * The placeholder text to display within the search $input.
 			 * @instance
 			 * @type {string}
 			 */
 			this.placeholder = table.o.filtering.placeholder;
+			/**
+			 * The title to display at the top of the search input column select.
+			 * @type {string}
+			 */
+			this.dropdownTitle = table.o.filtering.dropdownTitle;
 			/**
 			 * The position of the $search input within the filtering rows cell.
 			 * @type {string}
@@ -98,6 +109,13 @@
 			 * @type {?number}
 			 */
 			this._filterTimeout = null;
+			/**
+			 * The regular expression used to check for encapsulating quotations.
+			 * @instance
+			 * @private
+			 * @type {RegExp}
+			 */
+			this._exactRegExp = /^"(.*?)"$/;
 		},
 
 		/* PROTECTED */
@@ -146,6 +164,10 @@
 					? data.filterIgnoreCase
 					: self.ignoreCase;
 
+				self.exactMatch = F.is.boolean(data.filterExactMatch)
+					? data.filterExactMatch
+					: self.exactMatch;
+
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
 					: self.delay;
@@ -153,6 +175,10 @@
 				self.placeholder = F.is.string(data.filterPlaceholder)
 					? data.filterPlaceholder
 					: self.placeholder;
+
+				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
+					? data.filterDropdownTitle
+					: self.dropdownTitle;
 
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
@@ -222,7 +248,7 @@
 		$create: function () {
 			var self = this;
 			// generate the cell that actually contains all the UI.
-			var $form_grp = $('<div/>', {'class': 'form-group'})
+			var $form_grp = $('<div/>', {'class': 'form-group footable-filtering-search'})
 					.append($('<label/>', {'class': 'sr-only', text: 'Search'})),
 				$input_grp = $('<div/>', {'class': 'input-group'}).appendTo($form_grp),
 				$input_grp_btn = $('<div/>', {'class': 'input-group-btn'}),
@@ -249,7 +275,11 @@
 				.on('click', { self: self }, self._onSearchButtonClicked)
 				.append($('<span/>', {'class': 'fooicon fooicon-search'}));
 
-			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'}).append(
+			self.$dropdown = $('<ul/>', {'class': 'dropdown-menu dropdown-menu-right'});
+			if (!F.is.emptyString(self.dropdownTitle)){
+				self.$dropdown.append($('<li/>', {'class': 'dropdown-header','text': self.dropdownTitle}));
+			}
+			self.$dropdown.append(
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
@@ -292,7 +322,11 @@
 			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
 			var search = this.find('search');
 			if (search instanceof F.Filter){
-				this.$input.val(search.query.val());
+				var query = search.query.val();
+				if (this.exactMatch && this._exactRegExp.test(query)){
+					query = query.replace(this._exactRegExp, '$1');
+				}
+				this.$input.val(query);
 			} else {
 				this.$input.val(null);
 			}
@@ -478,8 +512,13 @@
 					self._filterTimeout = null;
 					var query = self.$input.val();
 					if (query.length >= self.min){
+						if (self.exactMatch && !self._exactRegExp.test(query)){
+							query = '"' + query + '"';
+						}
 						self.addFilter('search', query);
 						self.filter();
+					} else if (F.is.emptyString(query)){
+						self.clear();
 					}
 				}, self.delay);
 			}
@@ -499,6 +538,9 @@
 			else {
 				var query = self.$input.val();
 				if (query.length >= self.min){
+					if (self.exactMatch && !self._exactRegExp.test(query)){
+						query = '"' + query + '"';
+					}
 					self.addFilter('search', query);
 					self.filter();
 				}

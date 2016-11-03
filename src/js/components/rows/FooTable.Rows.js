@@ -73,7 +73,7 @@
 			 * @type {jQuery}
 			 */
 			this.$empty = null;
-			this._fromHTML = F.is.emptyArray(table.o.rows);
+			this._fromHTML = F.is.emptyArray(table.o.rows) && !F.is.promise(table.o.rows);
 		},
 		/**
 		 * This parses the rows from either the tables rows or the supplied options.
@@ -85,10 +85,7 @@
 			var self = this;
 			return $.Deferred(function(d){
 				var $rows = self.ft.$el.children('tbody').children('tr');
-				if (F.is.jq($rows)){
-					self.parseFinalize(d, $rows);
-					$rows.detach();
-				} else if (F.is.array(self.o.rows) && self.o.rows.length > 0){
+				if (F.is.array(self.o.rows) && self.o.rows.length > 0){
 					self.parseFinalize(d, self.o.rows);
 				} else if (F.is.promise(self.o.rows)){
 					self.o.rows.then(function(rows){
@@ -96,6 +93,9 @@
 					}, function(xhr){
 						d.reject(Error('Rows ajax request error: ' + xhr.status + ' (' + xhr.statusText + ')'));
 					});
+				} else if (F.is.jq($rows)){
+					self.parseFinalize(d, $rows);
+					$rows.detach();
 				} else {
 					self.parseFinalize(d, []);
 				}

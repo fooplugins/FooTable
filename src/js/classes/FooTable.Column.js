@@ -121,7 +121,10 @@
 		 * @this FooTable.Column
 		 */
 		parser: function(valueOrElement){
-			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)) return $(valueOrElement).data('value') || $(valueOrElement).text(); // use jQuery to get the value
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var data = $(valueOrElement).data('value');
+				return F.is.defined(data) ? data : $(valueOrElement).text();
+			}
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
 		},
