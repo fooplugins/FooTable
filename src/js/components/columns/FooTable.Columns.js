@@ -36,7 +36,7 @@
 			 */
 			this.showHeader = table.o.showHeader;
 
-			this._fromHTML = F.is.emptyArray(table.o.columns);
+			this._fromHTML = F.is.emptyArray(table.o.columns) && !F.is.promise(table.o.columns);
 		},
 
 		/* PROTECTED */

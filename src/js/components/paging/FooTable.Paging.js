@@ -102,7 +102,7 @@
 			 * @instance
 			 * @type {boolean}
 			 */
-			this.detached = false;
+			this.detached = true;
 
 			/* PRIVATE */
 			/**
@@ -212,7 +212,8 @@
 			this.ft.raise('destroy.ft.paging').then(function(){
 				self.ft.$el.removeClass('footable-paging')
 					.find('tfoot > tr.footable-paging').remove();
-				self.detached = false;
+				self.detached = true;
+				self._createdLinks = 0;
 			});
 		},
 		/**
@@ -272,6 +273,7 @@
 		 * @protected
 		 */
 		$create: function(){
+			this._createdLinks = 0;
 			var position = 'footable-paging-center';
 			switch (this.position){
 				case 'left': position = 'footable-paging-left'; break;
