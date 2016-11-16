@@ -118,7 +118,7 @@
 			this._preinit().then(function(){
 				return self._init();
 			}).always(function(arg){
-				self._showTable();
+				self.$el.show();
 				if (F.is.error(arg)){
 					console.error('FooTable: unhandled error thrown during initialization.', arg);
 				} else {
@@ -296,7 +296,18 @@
 		 */
 		draw: function () {
 			var self = this;
-			self._hideTable();
+
+			// Copy `self.$el` with no event handlers
+			var $elCopy = $(self.$el[0].outerHTML);
+
+			// Insert the copy at the same location as `self.$el`
+			self.$el.prev().length === 0
+				? self.$el.parent().prepend($elCopy)
+				: self.$el.prev().after($elCopy);
+
+			// Detach `self.$el` from the DOM, retaining its event handlers
+			self.$el.detach();
+
 			// when drawing the order that the components are executed is important so chain the methods but use promises to retain async safety.
 			return self.execute(false, true, 'predraw').then(function(){
 				/**
@@ -331,7 +342,9 @@
 					console.error('FooTable: unhandled error thrown during a draw operation.', err);
 				}
 			}).always(function(){
-				self._showTable();
+				// Replace the copy that we added above with the modified `self.$el`
+				$elCopy.replaceWith(self.$el);
+				self.$loader.remove();
 			});
 		},
 		/**
@@ -413,33 +426,6 @@
 					self.breakpoints.check();
 				});
 			}, 300);
-		},
-		/**
-		 * Hide the table to prevent flashes of partially styled or unstyled content as the table is initializing and drawing itself.
-		 * @instance
-		 * @private
-		 */
-		_hideTable: function() {
-			var self = this;
-			self.$el.css({
-				"display": self.$el.css("display") === "none" ? "none" : "block",
-				"height": self.$el.outerHeight(),
-				"visibility": "hidden"
-			});
-		},
-		/**
-		 * Shows the table element and removes the loader
-		 * @instance
-		 * @private
-		 */
-		_showTable: function() {
-			var self = this;
-			self.$el.css({
-				"display": "table",
-				"height": "auto",
-				"visibility": "visible"
-			}).show();
-			self.$loader.remove();
 		}
 	});
 
