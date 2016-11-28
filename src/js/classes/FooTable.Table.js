@@ -297,13 +297,8 @@
 		draw: function () {
 			var self = this;
 
-			// Copy `self.$el` with no event handlers
-			var $elCopy = $(self.$el[0].outerHTML);
-
-			// Insert the copy at the same location as `self.$el`
-			self.$el.prev().length === 0
-				? self.$el.parent().prepend($elCopy)
-				: self.$el.prev().after($elCopy);
+			// Clone the current table and insert it into the original's place
+			var $elCopy = self.$el.clone().insertBefore(self.$el);
 
 			// Detach `self.$el` from the DOM, retaining its event handlers
 			self.$el.detach();
