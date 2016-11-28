@@ -490,9 +490,9 @@
 			}
 
 			if (this.limit > 0 && this.total < this.limit){
-				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').hide();
+				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').css('display', 'none');
 			} else {
-				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').show();
+				this.$pagination.children('li[data-page="prev-limit"],li[data-page="next-limit"]').css('display', '');
 			}
 
 			if (active){
