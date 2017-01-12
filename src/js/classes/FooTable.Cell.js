@@ -121,11 +121,12 @@
 		collapse: function(){
 			if (!this.created) return;
 			this.$detail.children('th').html(this.column.title);
-			this.$detail.children('td').first()
-				.attr('class', this.$el.attr('class'))
-				.attr('style', this.$el.attr('style'))
+			this.$el.clone()
+				.attr('id', this.$el.attr('id') ? this.$el.attr('id') + '-detail' : undefined)
 				.css('display', 'table-cell')
-				.append(this.$el.contents().detach());
+				.html('')
+				.append(this.$el.contents().detach())
+				.replaceAll(this.$detail.children('td').first());
 
 			if (!F.is.jq(this.$detail.parent()))
 				this.$detail.appendTo(this.row.$details.find('.footable-details > tbody'));
