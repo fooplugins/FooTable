@@ -123,7 +123,7 @@
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
 				var data = $(valueOrElement).data('value');
-				return F.is.defined(data) ? data : $(valueOrElement).text();
+				return F.is.defined(data) ? data : $(valueOrElement).html();
 			}
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
