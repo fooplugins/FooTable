@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.3
+* @version 3.1.4
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -1117,11 +1117,12 @@
 		collapse: function(){
 			if (!this.created) return;
 			this.$detail.children('th').html(this.column.title);
-			this.$detail.children('td').first()
-				.attr('class', this.$el.attr('class'))
-				.attr('style', this.$el.attr('style'))
+			this.$el.clone()
+				.attr('id', this.$el.attr('id') ? this.$el.attr('id') + '-detail' : undefined)
 				.css('display', 'table-cell')
-				.append(this.$el.contents().detach());
+				.html('')
+				.append(this.$el.contents().detach())
+				.replaceAll(this.$detail.children('td').first());
 
 			if (!F.is.jq(this.$detail.parent()))
 				this.$detail.appendTo(this.row.$details.find('.footable-details > tbody'));
@@ -1353,7 +1354,7 @@
 		 * @this FooTable.Column
 		 */
 		$create: function(){
-			(this.$el = !this.virtual && F.is.jq(this.$el) ? this.$el : $('<th/>')).html(this.title);
+			(this.$el = !this.virtual && F.is.jq(this.$el) ? this.$el : $('<th/>')).html(this.title).addClass(this.classes.join(' ')).css(this.style);
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.Column#format} function
@@ -1367,7 +1368,7 @@
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
 				var data = $(valueOrElement).data('value');
-				return F.is.defined(data) ? data : $(valueOrElement).text();
+				return F.is.defined(data) ? data : $(valueOrElement).html();
 			}
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
@@ -1931,6 +1932,12 @@
 			 */
 			this.$el = (F.is.jq(element) ? element : $(element)).first(); // ensure one table, one instance
 			/**
+			 * A loader jQuery instance
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
+			/**
 			 * The options for the plugin. This is a merge of user defined options and the default options.
 			 * @instance
 			 * @type {object}
@@ -1996,6 +2003,7 @@
 			this._preinit().then(function(){
 				return self._init();
 			}).always(function(arg){
+				self.$el.show();
 				if (F.is.error(arg)){
 					console.error('FooTable: unhandled error thrown during initialization.', arg);
 				} else {
@@ -2040,12 +2048,9 @@
 				for (var i = 0, len = classes.length; i < len; i++){
 					if (!F.str.startsWith(classes[i], 'footable')) self.classes.push(classes[i]);
 				}
-				var $loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
-				self.$el.hide().after($loader);
-				return self.execute(false, false, 'preinit', self.data).always(function(){
-					self.$el.show();
-					$loader.remove();
-				});
+
+				self.$el.hide().after(self.$loader);
+				return self.execute(false, false, 'preinit', self.data);
 			});
 		},
 		/**
@@ -2176,6 +2181,13 @@
 		 */
 		draw: function () {
 			var self = this;
+
+			// Clone the current table and insert it into the original's place
+			var $elCopy = self.$el.clone().insertBefore(self.$el);
+
+			// Detach `self.$el` from the DOM, retaining its event handlers
+			self.$el.detach();
+
 			// when drawing the order that the components are executed is important so chain the methods but use promises to retain async safety.
 			return self.execute(false, true, 'predraw').then(function(){
 				/**
@@ -2209,6 +2221,10 @@
 				if (F.is.error(err)){
 					console.error('FooTable: unhandled error thrown during a draw operation.', err);
 				}
+			}).always(function(){
+				// Replace the copy that we added above with the modified `self.$el`
+				$elCopy.replaceWith(self.$el);
+				self.$loader.remove();
 			});
 		},
 		/**
@@ -2359,7 +2375,7 @@
 		 * @this FooTable.DateColumn
 		 */
 		formatter: function(value){
-			return F.is.object(value) && F.is.boolean(value._isAMomentObject) ? value.format(this.formatString) : '';
+			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. A string value must be returned from this method and will be used during filtering operations.
@@ -2399,6 +2415,7 @@
 	F.columns.register('date', F.DateColumn);
 
 })(jQuery, FooTable);
+
 (function($, F){
 
 	F.HTMLColumn = F.Column.extend(/** @lends FooTable.HTMLColumn */{
