@@ -63,7 +63,7 @@
 		 * @this FooTable.DateColumn
 		 */
 		formatter: function(value){
-			return F.is.object(value) && F.is.boolean(value._isAMomentObject) ? value.format(this.formatString) : '';
+			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. A string value must be returned from this method and will be used during filtering operations.
