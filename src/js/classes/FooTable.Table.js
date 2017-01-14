@@ -47,6 +47,12 @@
 			 */
 			this.$el = (F.is.jq(element) ? element : $(element)).first(); // ensure one table, one instance
 			/**
+			 * A loader jQuery instance
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
+			/**
 			 * The options for the plugin. This is a merge of user defined options and the default options.
 			 * @instance
 			 * @type {object}
@@ -112,6 +118,7 @@
 			this._preinit().then(function(){
 				return self._init();
 			}).always(function(arg){
+				self.$el.show();
 				if (F.is.error(arg)){
 					console.error('FooTable: unhandled error thrown during initialization.', arg);
 				} else {
@@ -156,12 +163,9 @@
 				for (var i = 0, len = classes.length; i < len; i++){
 					if (!F.str.startsWith(classes[i], 'footable')) self.classes.push(classes[i]);
 				}
-				var $loader = $('<div/>', { 'class': 'footable-loader' }).append($('<span/>', {'class': 'fooicon fooicon-loader'}));
-				self.$el.hide().after($loader);
-				return self.execute(false, false, 'preinit', self.data).always(function(){
-					self.$el.show();
-					$loader.remove();
-				});
+
+				self.$el.hide().after(self.$loader);
+				return self.execute(false, false, 'preinit', self.data);
 			});
 		},
 		/**
@@ -292,6 +296,13 @@
 		 */
 		draw: function () {
 			var self = this;
+
+			// Clone the current table and insert it into the original's place
+			var $elCopy = self.$el.clone().insertBefore(self.$el);
+
+			// Detach `self.$el` from the DOM, retaining its event handlers
+			self.$el.detach();
+
 			// when drawing the order that the components are executed is important so chain the methods but use promises to retain async safety.
 			return self.execute(false, true, 'predraw').then(function(){
 				/**
@@ -325,6 +336,10 @@
 				if (F.is.error(err)){
 					console.error('FooTable: unhandled error thrown during a draw operation.', err);
 				}
+			}).always(function(){
+				// Replace the copy that we added above with the modified `self.$el`
+				$elCopy.replaceWith(self.$el);
+				self.$loader.remove();
 			});
 		},
 		/**

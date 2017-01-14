@@ -8,6 +8,17 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 
 # Changelog #
 
+### 3.1.4
+
+- Updated the `FooTable.Table#draw` method to prevent unnecessary browser reflows and hide an unstyled flash of content during the initial loading of the table. (@jleider & @mrdziuban)
+- Updated the `FooTable.DateColumn#formatter` method to perform a check for invalid dates and return an empty string instead of `"Invalid Date"`. (@jnimety)
+- Updated the `FooTable.Cell#collapse` method to copy all attributes from the original element to the one displayed in the details row. If the element has an ID, the copied version is suffixed with `"-detail"` to avoid duplicates. (@mrdziuban)
+- Updated the `FooTable.Column#parser` method to use jQuery's `.html()` method instead of `.text()` as the latter was decoding HTML entities which were then reinserted into the DOM which opened up the possibility of XSS.
+- Removed the `FooTable.Paging#_countFormat` private method and replaced it with a new `FooTable.Paging#format( string )` method to make custom paging UI's simpler to implement.
+- Fixed an issue with column classes and styles supplied through the options not being applied to the actual column header `TH` element.
+
+----------
+
 ### 3.1.3
 
 - Added a new `dropdownTitle` option to the filtering component. This options specifies a title to display at the top of the column select dropdown.
@@ -23,6 +34,8 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 - Fixed an issue with unexpected sorting and filtering results if the `sortValue` and `filterValue` attributes contained a falsy value. The values are now subject to a strict undefined check before being passed off.
 - Fixed an issue with the `date` column type not sorting it's values as expected.
 
+----------
+
 ### 3.1.2
 
 - Added `sortValue` column option. This option allows you to supply your own function to retrieve the sort value for a cell.
@@ -36,6 +49,8 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 - Fixed the paging components' `countFormat` option placeholder `{TR}` to correctly reflect filtered rows.
 - Fixed preinit unhandled exception if the `table` the plugin is initialized on has no `class` attribute.
 - Fixed issue with the individual components .ZIP missing the `footable.core.bootstrap.min.css` and `footable.core.standalone.min.css` minified files.
+
+----------
 
 ### 3.1.1
 

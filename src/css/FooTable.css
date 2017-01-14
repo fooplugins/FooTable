@@ -8,6 +8,9 @@ table.footable-details {
 table.footable-details {
 	margin-bottom: 0;
 }
+table.footable-hide-fouc {
+	display: none;
+}
 table > tbody > tr > td > span.footable-toggle {
 	margin-right: 8px;
 	opacity: 0.3;

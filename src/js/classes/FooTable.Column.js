@@ -109,7 +109,7 @@
 		 * @this FooTable.Column
 		 */
 		$create: function(){
-			(this.$el = !this.virtual && F.is.jq(this.$el) ? this.$el : $('<th/>')).html(this.title);
+			(this.$el = !this.virtual && F.is.jq(this.$el) ? this.$el : $('<th/>')).html(this.title).addClass(this.classes.join(' ')).css(this.style);
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.Column#format} function
@@ -123,7 +123,7 @@
 		parser: function(valueOrElement){
 			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
 				var data = $(valueOrElement).data('value');
-				return F.is.defined(data) ? data : $(valueOrElement).text();
+				return F.is.defined(data) ? data : $(valueOrElement).html();
 			}
 			if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement+''; // use the native toString of the value
 			return null; // otherwise we have no value so return null
