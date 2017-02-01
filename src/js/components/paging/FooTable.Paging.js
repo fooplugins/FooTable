@@ -382,13 +382,14 @@
 			this._setNavigation(false);
 		},
 		/**
-		 * Gets or sets the current page size
+		 * Gets or sets the current page size.
 		 * @instance
-		 * @param {number} [value] - The new page size to use.
+		 * @param {(number|string)} [value] - The new page size to use, this value is supplied to `parseInt` so strings can be used. If not supplied or an invalid valid the current page size is returned.
 		 * @returns {(number|undefined)}
 		 */
 		pageSize: function(value){
-			if (!F.is.number(value)){
+			value = parseInt(value);
+			if (isNaN(value)){
 				return this.size;
 			}
 			this.size = value;
