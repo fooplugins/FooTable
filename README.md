@@ -8,6 +8,12 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 
 # Changelog #
 
+### 3.1.5 - Development
+
+- Updated the `FooTable.Paging#pageSize` method to also accept string values. If the parameter is not supplied or is not a valid number the current page size is returned.
+
+----------
+
 ### 3.1.4
 
 - Updated the `FooTable.Table#draw` method to prevent unnecessary browser reflows and hide an unstyled flash of content during the initial loading of the table. (@jleider & @mrdziuban)
