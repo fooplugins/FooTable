@@ -71,6 +71,11 @@
 			 */
 			this.position = table.o.filtering.position;
 			/**
+			 * Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+			 * @type {boolean}
+			 */
+			this.focus = table.o.filtering.focus;
+			/**
 			 * The jQuery row object that contains all the filtering specific elements.
 			 * @instance
 			 * @type {jQuery}
@@ -167,6 +172,10 @@
 				self.exactMatch = F.is.boolean(data.filterExactMatch)
 					? data.filterExactMatch
 					: self.exactMatch;
+
+				self.focus = F.is.boolean(data.filterFocus)
+					? data.filterFocus
+					: self.focus;
 
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
@@ -364,11 +373,12 @@
 		/**
 		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
 		 * @instance
+		 * @param {boolean} [focus=false] - Whether or not to set the focus to the input once filtering is complete.
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Filtering#"before.ft.filtering"
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
-		filter: function(){
+		filter: function(focus){
 			var self = this;
 			self.filters = self.ensure(self.filters);
 			/**
@@ -389,6 +399,7 @@
 					 * @param {FooTable.Filter} filter - The filters that were applied.
 					 */
 					self.ft.raise('after.ft.filtering', [self.filters]);
+					if (focus) self.$input.focus();
 				});
 			});
 		},
@@ -401,7 +412,7 @@
 		 */
 		clear: function(){
 			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
-			return this.filter();
+			return this.filter(this.focus);
 		},
 		/**
 		 * Toggles the button icon between the search and clear icons based on the supplied value.
@@ -516,7 +527,7 @@
 							query = '"' + query + '"';
 						}
 						self.addFilter('search', query);
-						self.filter();
+						self.filter(self.focus);
 					} else if (F.is.emptyString(query)){
 						self.clear();
 					}
@@ -542,7 +553,7 @@
 						query = '"' + query + '"';
 					}
 					self.addFilter('search', query);
-					self.filter();
+					self.filter(self.focus);
 				}
 			}
 		},

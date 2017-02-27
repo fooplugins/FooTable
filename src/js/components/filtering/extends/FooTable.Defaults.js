@@ -13,6 +13,7 @@
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
+	 * @prop {boolean} focus=true - Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -25,6 +26,7 @@
 		position: 'right',
 		connectors: true,
 		ignoreCase: true,
-		exactMatch: false
+		exactMatch: false,
+		focus: true
 	};
 })(FooTable);
