@@ -76,6 +76,17 @@
 			 */
 			this.focus = table.o.filtering.focus;
 			/**
+			 * A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
+			 * @type {string}
+			 */
+			this.container = table.o.filtering.container;
+			/**
+			 * The jQuery object of the element containing the entire filtering form.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$container = null;
+			/**
 			 * The jQuery row object that contains all the filtering specific elements.
 			 * @instance
 			 * @type {jQuery}
@@ -87,6 +98,12 @@
 			 * @type {jQuery}
 			 */
 			this.$cell = null;
+			/**
+			 * The jQuery form object of the form that contains the search input and column selector.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$form = null;
 			/**
 			 * The jQuery object of the column selector dropdown.
 			 * @instance
@@ -189,6 +206,10 @@
 					? data.filterDropdownTitle
 					: self.dropdownTitle;
 
+				self.container = F.is.string(data.filterContainer)
+					? data.filterContainer
+					: self.container;
+
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
 					: self.ensure(self.filters);
@@ -235,6 +256,7 @@
 		 * @fires FooTable.Filtering#"destroy.ft.filtering"
 		 */
 		destroy: function () {
+			var self = this;
 			/**
 			 * The destroy.ft.filtering event is raised before its UI is removed.
 			 * Calling preventDefault on this event will prevent the component from being destroyed.
@@ -242,7 +264,6 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
-			var self = this;
 			return self.ft.raise('destroy.ft.filtering').then(function(){
 				self.ft.$el.removeClass('footable-filtering')
 					.find('thead > tr.footable-filtering').remove();
@@ -273,10 +294,16 @@
 			}
 			self.ft.$el.addClass('footable-filtering').addClass(position);
 
-			// add it to a row and then populate it with the search input and column selector dropdown.
-			self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
-			self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
-			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$cell);
+			self.$container = self.container === null ? $() : $(self.container).first();
+			if (!self.$container.length){
+				// add it to a row and then populate it with the search input and column selector dropdown.
+				self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
+				self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
+				self.$container = self.$cell;
+			} else {
+				self.$container.addClass('footable-filtering-external').addClass(position);
+			}
+			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$container);
 
 			self.$input = $('<input/>', {type: 'text', 'class': 'form-control', placeholder: self.placeholder});
 
@@ -292,7 +319,7 @@
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
-							$('<label/>', {text: col.title}).prepend(
+							$('<label/>', {html: col.title}).prepend(
 								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
 							)
 						)
@@ -328,7 +355,9 @@
 		 * @protected
 		 */
 		draw: function(){
-			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			if (F.is.jq(this.$cell)){
+				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			}
 			var search = this.find('search');
 			if (search instanceof F.Filter){
 				var query = search.query.val();

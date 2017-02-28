@@ -14,6 +14,7 @@
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
 	 * @prop {boolean} focus=true - Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+	 * @prop {string} container=null - A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -27,6 +28,7 @@
 		connectors: true,
 		ignoreCase: true,
 		exactMatch: false,
-		focus: true
+		focus: true,
+		container: null
 	};
 })(FooTable);
