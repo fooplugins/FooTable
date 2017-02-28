@@ -1165,7 +1165,7 @@
 		 * @this FooTable.Cell
 		 */
 		format: function(value){
-			return this.column.formatter.call(this.column, value, this.ft.o);
+			return this.column.formatter.call(this.column, value, this.ft.o, this.row.value);
 		},
 		/**
 		 * Allows easy access to getting or setting the cell's value. If the value is set all associated properties are also updated along with the actual element.
@@ -1379,10 +1379,12 @@
 		 * @instance
 		 * @protected
 		 * @param {string} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.Column
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return value == null ? '' : value;
 		},
 		/**
@@ -2371,10 +2373,12 @@
 		 * @instance
 		 * @protected
 		 * @param {*} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.DateColumn
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
 		},
 		/**
@@ -2503,10 +2507,12 @@
 		 * @instance
 		 * @protected
 		 * @param {number} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.NumberColumn
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			if (value == null) return '';
 			var s = (value + '').split('.');
 			if (s.length == 2 && s[0].length > 3) {
@@ -2517,6 +2523,61 @@
 	});
 
 	F.columns.register('number', F.NumberColumn);
+
+})(jQuery, FooTable);
+(function($, F){
+
+	F.ObjectColumn = F.Column.extend(/** @lends FooTable.ObjectColumn */{
+		/**
+		 * @summary A column to handle Object values.
+		 * @constructs
+		 * @extends FooTable.Column
+		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
+		 * @param {object} definition - An object containing all the properties to set for the column.
+		 */
+		construct: function(instance, definition) {
+			this._super(instance, definition, 'object');
+		},
+		/**
+		 * @summary Parses the supplied value or element to retrieve a column value.
+		 * @description This is supplied either the cell value or jQuery object to parse. This method will return either the Object containing the values or null.
+		 * @instance
+		 * @protected
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+		 * @returns {(object|null)}
+		 */
+		parser: function(valueOrElement){
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var $el = $(valueOrElement), data = $el.data('value'); // .data() will automatically convert a JSON string to an object
+				if (F.is.object(data)) return data;
+				data = $el.html();
+				try {
+					data = JSON.parse(data);
+				} catch(err) {
+					data = null;
+				}
+				return F.is.object(data) ? data : null; // if we have an object return it
+			}
+			if (F.is.object(valueOrElement)) return valueOrElement; // if we have an object return it
+			return null; // otherwise we have no value so return null
+		},
+		/**
+		 * @summary Formats the column value and creates the HTML seen within a cell.
+		 * @description This is supplied the value retrieved from the {@link FooTable.ObjectColumn#parser} function and must return a string, HTMLElement or jQuery object.
+		 * The return value from this function is what is displayed in the cell in the table.
+		 * @instance
+		 * @protected
+		 * @param {*} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		formatter: function(value, options, rowData){
+			return F.is.object(value) ? JSON.stringify(value) : '';
+		}
+	});
+
+	F.columns.register('object', F.ObjectColumn);
 
 })(jQuery, FooTable);
 (function($, F){
@@ -3666,6 +3727,22 @@
 			 */
 			this.position = table.o.filtering.position;
 			/**
+			 * Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+			 * @type {boolean}
+			 */
+			this.focus = table.o.filtering.focus;
+			/**
+			 * A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
+			 * @type {string}
+			 */
+			this.container = table.o.filtering.container;
+			/**
+			 * The jQuery object of the element containing the entire filtering form.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$container = null;
+			/**
 			 * The jQuery row object that contains all the filtering specific elements.
 			 * @instance
 			 * @type {jQuery}
@@ -3677,6 +3754,12 @@
 			 * @type {jQuery}
 			 */
 			this.$cell = null;
+			/**
+			 * The jQuery form object of the form that contains the search input and column selector.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$form = null;
 			/**
 			 * The jQuery object of the column selector dropdown.
 			 * @instance
@@ -3763,6 +3846,10 @@
 					? data.filterExactMatch
 					: self.exactMatch;
 
+				self.focus = F.is.boolean(data.filterFocus)
+					? data.filterFocus
+					: self.focus;
+
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
 					: self.delay;
@@ -3774,6 +3861,10 @@
 				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
 					? data.filterDropdownTitle
 					: self.dropdownTitle;
+
+				self.container = F.is.string(data.filterContainer)
+					? data.filterContainer
+					: self.container;
 
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
@@ -3821,6 +3912,7 @@
 		 * @fires FooTable.Filtering#"destroy.ft.filtering"
 		 */
 		destroy: function () {
+			var self = this;
 			/**
 			 * The destroy.ft.filtering event is raised before its UI is removed.
 			 * Calling preventDefault on this event will prevent the component from being destroyed.
@@ -3828,7 +3920,6 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
-			var self = this;
 			return self.ft.raise('destroy.ft.filtering').then(function(){
 				self.ft.$el.removeClass('footable-filtering')
 					.find('thead > tr.footable-filtering').remove();
@@ -3859,10 +3950,16 @@
 			}
 			self.ft.$el.addClass('footable-filtering').addClass(position);
 
-			// add it to a row and then populate it with the search input and column selector dropdown.
-			self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
-			self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
-			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$cell);
+			self.$container = self.container === null ? $() : $(self.container).first();
+			if (!self.$container.length){
+				// add it to a row and then populate it with the search input and column selector dropdown.
+				self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
+				self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
+				self.$container = self.$cell;
+			} else {
+				self.$container.addClass('footable-filtering-external').addClass(position);
+			}
+			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$container);
 
 			self.$input = $('<input/>', {type: 'text', 'class': 'form-control', placeholder: self.placeholder});
 
@@ -3878,7 +3975,7 @@
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
-							$('<label/>', {text: col.title}).prepend(
+							$('<label/>', {html: col.title}).prepend(
 								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
 							)
 						)
@@ -3914,7 +4011,9 @@
 		 * @protected
 		 */
 		draw: function(){
-			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			if (F.is.jq(this.$cell)){
+				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			}
 			var search = this.find('search');
 			if (search instanceof F.Filter){
 				var query = search.query.val();
@@ -3959,11 +4058,12 @@
 		/**
 		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
 		 * @instance
+		 * @param {boolean} [focus=false] - Whether or not to set the focus to the input once filtering is complete.
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Filtering#"before.ft.filtering"
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
-		filter: function(){
+		filter: function(focus){
 			var self = this;
 			self.filters = self.ensure(self.filters);
 			/**
@@ -3984,6 +4084,7 @@
 					 * @param {FooTable.Filter} filter - The filters that were applied.
 					 */
 					self.ft.raise('after.ft.filtering', [self.filters]);
+					if (focus) self.$input.focus();
 				});
 			});
 		},
@@ -3996,7 +4097,7 @@
 		 */
 		clear: function(){
 			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
-			return this.filter();
+			return this.filter(this.focus);
 		},
 		/**
 		 * Toggles the button icon between the search and clear icons based on the supplied value.
@@ -4111,7 +4212,7 @@
 							query = '"' + query + '"';
 						}
 						self.addFilter('search', query);
-						self.filter();
+						self.filter(self.focus);
 					} else if (F.is.emptyString(query)){
 						self.clear();
 					}
@@ -4137,7 +4238,7 @@
 						query = '"' + query + '"';
 					}
 					self.addFilter('search', query);
-					self.filter();
+					self.filter(self.focus);
 				}
 			}
 		},
@@ -4512,6 +4613,8 @@
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
+	 * @prop {boolean} focus=true - Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+	 * @prop {string} container=null - A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -4524,7 +4627,9 @@
 		position: 'right',
 		connectors: true,
 		ignoreCase: true,
-		exactMatch: false
+		exactMatch: false,
+		focus: true,
+		container: null
 	};
 })(FooTable);
 (function(F){
@@ -4998,7 +5103,7 @@
 		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
 		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
 			var data = $(valueOrElement).data('sortValue');
-			return F.is.defined(data) ? data : $.trim($(valueOrElement)[this.sortUse]());
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
 		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
@@ -5006,6 +5111,31 @@
 			if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
 		}
 		if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement;
+		return null;
+	};
+
+})(jQuery, FooTable);
+(function($, F){
+
+	/**
+	 * This is supplied either the cell value or jQuery object to parse. A value must be returned from this method and will be used during sorting operations.
+	 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+	 * @returns {*}
+	 */
+	F.NumberColumn.prototype.sortValue = function(valueOrElement){
+		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.number(data) ? data : this.parser(valueOrElement);
+		}
+		// if options are supplied with the value
+		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
+			if (F.is.string(valueOrElement.options.sortValue)) return this.parser(valueOrElement);
+			if (F.is.number(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
+			if (F.is.number(valueOrElement.value)) return valueOrElement.value;
+		}
+		if (F.is.string(valueOrElement)) return this.parser(valueOrElement);
+		if (F.is.number(valueOrElement)) return valueOrElement;
 		return null;
 	};
 

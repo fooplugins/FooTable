@@ -10,7 +10,13 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 
 ### 3.1.5 - Development
 
+- Added a new `object` column type to make rendering JavaScript objects containing multiple properties as cell contents easier.
+- Added a new `container` option to the filtering component. This option allows you to provide a selector to specify where the filtering form is rendered. The selector should match only a single element but if multiple are found only the first is used.
 - Updated the `FooTable.Paging#pageSize` method to also accept string values. If the parameter is not supplied or is not a valid number the current page size is returned.
+- Updated the `FooTable.Filtering#filter` method to accept a single boolean param simply called `focus`, if supplied and true the default search input receives focus after the component performs a filter operation. This new param is used internally when auto applying a query after a user types in the search input, or clicks the search/clear buttons. This behavior can be disabled by setting the new `filtering.focus` option to `false`.
+- Updated the `.formatter()` function of all column types to now accept three parameters; `value`, `options` and `rowData`. `value` and `options` have always been available, the new addition is the `rowData` parameter which is an object containing the current rows' parsed values, the properties of this object match the names of the columns for the current table, if no names are specified the properties will be `col1`, `col2`, etc.
+- Updated the `FooTable.HTMLColumn#sortValue` method to offload additional parsing to its `.parser()` method.
+- Fixed an issue in the sorting component where values in a number column supplied as strings were being sorted as such and not as numbers as they should.
 
 ----------
 

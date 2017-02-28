@@ -166,6 +166,22 @@
 			 */
 			this.position = table.o.filtering.position;
 			/**
+			 * Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+			 * @type {boolean}
+			 */
+			this.focus = table.o.filtering.focus;
+			/**
+			 * A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
+			 * @type {string}
+			 */
+			this.container = table.o.filtering.container;
+			/**
+			 * The jQuery object of the element containing the entire filtering form.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$container = null;
+			/**
 			 * The jQuery row object that contains all the filtering specific elements.
 			 * @instance
 			 * @type {jQuery}
@@ -177,6 +193,12 @@
 			 * @type {jQuery}
 			 */
 			this.$cell = null;
+			/**
+			 * The jQuery form object of the form that contains the search input and column selector.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$form = null;
 			/**
 			 * The jQuery object of the column selector dropdown.
 			 * @instance
@@ -263,6 +285,10 @@
 					? data.filterExactMatch
 					: self.exactMatch;
 
+				self.focus = F.is.boolean(data.filterFocus)
+					? data.filterFocus
+					: self.focus;
+
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
 					: self.delay;
@@ -274,6 +300,10 @@
 				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
 					? data.filterDropdownTitle
 					: self.dropdownTitle;
+
+				self.container = F.is.string(data.filterContainer)
+					? data.filterContainer
+					: self.container;
 
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
@@ -321,6 +351,7 @@
 		 * @fires FooTable.Filtering#"destroy.ft.filtering"
 		 */
 		destroy: function () {
+			var self = this;
 			/**
 			 * The destroy.ft.filtering event is raised before its UI is removed.
 			 * Calling preventDefault on this event will prevent the component from being destroyed.
@@ -328,7 +359,6 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
-			var self = this;
 			return self.ft.raise('destroy.ft.filtering').then(function(){
 				self.ft.$el.removeClass('footable-filtering')
 					.find('thead > tr.footable-filtering').remove();
@@ -359,10 +389,16 @@
 			}
 			self.ft.$el.addClass('footable-filtering').addClass(position);
 
-			// add it to a row and then populate it with the search input and column selector dropdown.
-			self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
-			self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
-			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$cell);
+			self.$container = self.container === null ? $() : $(self.container).first();
+			if (!self.$container.length){
+				// add it to a row and then populate it with the search input and column selector dropdown.
+				self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
+				self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
+				self.$container = self.$cell;
+			} else {
+				self.$container.addClass('footable-filtering-external').addClass(position);
+			}
+			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$container);
 
 			self.$input = $('<input/>', {type: 'text', 'class': 'form-control', placeholder: self.placeholder});
 
@@ -378,7 +414,7 @@
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
-							$('<label/>', {text: col.title}).prepend(
+							$('<label/>', {html: col.title}).prepend(
 								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
 							)
 						)
@@ -414,7 +450,9 @@
 		 * @protected
 		 */
 		draw: function(){
-			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			if (F.is.jq(this.$cell)){
+				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			}
 			var search = this.find('search');
 			if (search instanceof F.Filter){
 				var query = search.query.val();
@@ -459,11 +497,12 @@
 		/**
 		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
 		 * @instance
+		 * @param {boolean} [focus=false] - Whether or not to set the focus to the input once filtering is complete.
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Filtering#"before.ft.filtering"
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
-		filter: function(){
+		filter: function(focus){
 			var self = this;
 			self.filters = self.ensure(self.filters);
 			/**
@@ -484,6 +523,7 @@
 					 * @param {FooTable.Filter} filter - The filters that were applied.
 					 */
 					self.ft.raise('after.ft.filtering', [self.filters]);
+					if (focus) self.$input.focus();
 				});
 			});
 		},
@@ -496,7 +536,7 @@
 		 */
 		clear: function(){
 			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
-			return this.filter();
+			return this.filter(this.focus);
 		},
 		/**
 		 * Toggles the button icon between the search and clear icons based on the supplied value.
@@ -611,7 +651,7 @@
 							query = '"' + query + '"';
 						}
 						self.addFilter('search', query);
-						self.filter();
+						self.filter(self.focus);
 					} else if (F.is.emptyString(query)){
 						self.clear();
 					}
@@ -637,7 +677,7 @@
 						query = '"' + query + '"';
 					}
 					self.addFilter('search', query);
-					self.filter();
+					self.filter(self.focus);
 				}
 			}
 		},
@@ -1012,6 +1052,8 @@
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
+	 * @prop {boolean} focus=true - Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+	 * @prop {string} container=null - A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -1024,7 +1066,9 @@
 		position: 'right',
 		connectors: true,
 		ignoreCase: true,
-		exactMatch: false
+		exactMatch: false,
+		focus: true,
+		container: null
 	};
 })(FooTable);
 (function(F){
