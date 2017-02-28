@@ -41,9 +41,11 @@
 		 * @instance
 		 * @protected
 		 * @param {*} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return F.is.object(value) ? JSON.stringify(value) : '';
 		}
 	});

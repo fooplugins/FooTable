@@ -134,10 +134,12 @@
 		 * @instance
 		 * @protected
 		 * @param {string} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.Column
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return value == null ? '' : value;
 		},
 		/**

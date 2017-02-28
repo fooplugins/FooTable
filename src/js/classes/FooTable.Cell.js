@@ -169,7 +169,7 @@
 		 * @this FooTable.Cell
 		 */
 		format: function(value){
-			return this.column.formatter.call(this.column, value, this.ft.o);
+			return this.column.formatter.call(this.column, value, this.ft.o, this.row.value);
 		},
 		/**
 		 * Allows easy access to getting or setting the cell's value. If the value is set all associated properties are also updated along with the actual element.

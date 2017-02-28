@@ -44,10 +44,12 @@
 		 * @instance
 		 * @protected
 		 * @param {number} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.NumberColumn
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			if (value == null) return '';
 			var s = (value + '').split('.');
 			if (s.length == 2 && s[0].length > 3) {
