@@ -15,7 +15,7 @@
 		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
 		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
 			var data = $(valueOrElement).data('sortValue');
-			return F.is.defined(data) ? data : $.trim($(valueOrElement)[this.sortUse]());
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
 		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
