@@ -17,6 +17,7 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 - Updated the `.formatter()` function of all column types to now accept three parameters; `value`, `options` and `rowData`. `value` and `options` have always been available, the new addition is the `rowData` parameter which is an object containing the current rows' parsed values, the properties of this object match the names of the columns for the current table, if no names are specified the properties will be `col1`, `col2`, etc.
 - Updated the `FooTable.HTMLColumn#sortValue` method to offload additional parsing to its `.parser()` method.
 - Fixed an issue in the sorting component where values in a number column supplied as strings were being sorted as such and not as numbers as they should.
+- Fixed an issue with the `FooTable.NumberColumn` where it was converting negative numbers to positive when parsing values directly from the DOM.
 
 ----------
 
