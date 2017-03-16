@@ -27,8 +27,8 @@
 		this.__sorting_define__(valueOrElement);
 	});
 	// overrides the public val method and replaces it with our own
-	F.Cell.extend('val', function(value){
-		var val = this._super(value);
+	F.Cell.extend('val', function(value, redraw, redrawSelf){
+		var val = this._super(value, redraw, redrawSelf);
 		this.__sorting_val__(value);
 		return val;
 	});

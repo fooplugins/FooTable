@@ -151,10 +151,11 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
-		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the table once the value has been set.
+		 * @param {boolean} [redrawSelf=true] - Whether or not to redraw the row itself once the value has been set, if `false` this will override the supplied `redraw` value and prevent the table from redrawing as well.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data, redraw){
+		val: function(data, redraw, redrawSelf){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
@@ -194,11 +195,12 @@
 				this.value = null;
 			}
 
+			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
+				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false, redrawSelf);
 			});
 
-			if (this.created){
+			if (this.created && redrawSelf){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
 				if (F.is.boolean(redraw) ? redraw : true) this.draw();
