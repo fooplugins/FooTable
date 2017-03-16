@@ -1173,10 +1173,11 @@
 		 * @instance
 		 * @param {*} [value] - The value to set for the cell. If not supplied the current value of the cell is returned.
 		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
+		 * @param {boolean} [redrawSelf=true] - Whether or not to redraw the cell itself once the value has been set, if `false` this will override the supplied `redraw` value and prevent the row from redrawing as well.
 		 * @returns {(*|undefined)}
 		 * @this FooTable.Cell
 		 */
-		val: function(value, redraw){
+		val: function(value, redraw, redrawSelf){
 			if (F.is.undef(value)){
 				// get
 				return this.value;
@@ -1192,7 +1193,8 @@
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
 
-			if (this.created){
+			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
+			if (this.created && redrawSelf){
 				this.$el.data('value', this.value).empty();
 
 				var $detail = this.$detail.children('td').first().empty(),
@@ -1676,10 +1678,11 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
-		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the table once the value has been set.
+		 * @param {boolean} [redrawSelf=true] - Whether or not to redraw the row itself once the value has been set, if `false` this will override the supplied `redraw` value and prevent the table from redrawing as well.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data, redraw){
+		val: function(data, redraw, redrawSelf){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
@@ -1719,11 +1722,12 @@
 				this.value = null;
 			}
 
+			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
+				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false, redrawSelf);
 			});
 
-			if (this.created){
+			if (this.created && redrawSelf){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
 				if (F.is.boolean(redraw) ? redraw : true) this.draw();
@@ -2002,23 +2006,23 @@
 		 */
 		_construct: function(ready){
 			var self = this;
-			this._preinit().then(function(){
-				return self._init();
-			}).always(function(arg){
-				self.$el.show();
-				if (F.is.error(arg)){
-					console.error('FooTable: unhandled error thrown during initialization.', arg);
-				} else {
+			return this._preinit().then(function(){
+				return self._init().then(function(){
 					/**
-					 * The postinit.ft.table event is raised after the plugin has been initialized and the table drawn.
+					 * The ready.ft.table event is raised after the plugin has been initialized and the table drawn.
 					 * Calling preventDefault on this event will stop the ready callback being executed.
-					 * @event FooTable.Table#"postinit.ft.table"
+					 * @event FooTable.Table#"ready.ft.table"
 					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 					 */
 					return self.raise('ready.ft.table').then(function(){
 						if (F.is.fn(ready)) ready.call(self, self);
 					});
+				});
+			}).always(function(arg){
+				self.$el.show();
+				if (F.is.error(arg)){
+					console.error('FooTable: unhandled error thrown during initialization.', arg);
 				}
 			});
 		},
