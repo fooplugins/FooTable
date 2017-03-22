@@ -230,7 +230,7 @@
 		 * @fires FooTable.Row#"expand.ft.row"
 		 */
 		expand: function(){
-			if (!this.created) return;
+			if (!this.created || this.expanded) return;
 			var self = this;
 			/**
 			 * The expand.ft.row event is raised before the the row is expanded.
