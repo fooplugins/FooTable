@@ -143,6 +143,55 @@
 
 			</div>
 
+			<!-- container -->
+			<a href="#container" class="list-group-item anchored">
+				<span id="container" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">container <small>string</small></h4>
+				<p class="list-group-item-text">A selector specifying where to place the paging components UI.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default the UI is displayed within a row in the foot of the table. By specifying a selector nothing is displayed in the table and the UI is instead appended to the first element matched by the selector.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;div id=&quot;paging-ui-container&quot;&gt;&lt;/div&gt;
+&lt;table class=&quot;table&quot; data-paging-container=&quot;#paging-ui-container&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;paging&quot;: {
+			&quot;container&quot;: &quot;#paging-ui-container&quot;
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
 			<!-- countFormat -->
 			<a href="#current" class="list-group-item anchored">
 				<span id="countFormat" class="anchor">&nbsp;</span>
