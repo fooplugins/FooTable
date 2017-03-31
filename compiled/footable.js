@@ -4079,7 +4079,17 @@
 			 */
 			return self.ft.raise('before.ft.filtering', [self.filters]).then(function(){
 				self.filters = self.ensure(self.filters);
+				if (focus){
+					var start = self.$input.prop('selectionStart'),
+						end = self.$input.prop('selectionEnd');
+				}
 				return self.ft.draw().then(function(){
+					if (focus){
+						self.$input.focus().prop({
+							selectionStart: start,
+							selectionEnd: end
+						});
+					}
 					/**
 					 * The after.ft.filtering event is raised after a filter has been applied.
 					 * @event FooTable.Filtering#"after.ft.filtering"
@@ -4088,7 +4098,6 @@
 					 * @param {FooTable.Filter} filter - The filters that were applied.
 					 */
 					self.ft.raise('after.ft.filtering', [self.filters]);
-					if (focus) self.$input.focus();
 				});
 			});
 		},
