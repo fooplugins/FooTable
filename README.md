@@ -12,6 +12,7 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 
 - Added a new `object` column type to make rendering JavaScript objects containing multiple properties as cell contents easier.
 - Added a new `container` option to the filtering component. This option allows you to provide a selector to specify where the filtering form is rendered. The selector should match only a single element but if multiple are found only the first is used.
+- Added a new `container` option to the paging component. This option allows you to provide a selector to specify where the paging UI is rendered. The selector should match only a single element but if multiple are found only the first is used.
 - Added `redrawSelf` as an extra parameter to the `FooTable.Cell#val(value, redraw, redrawSelf)` and `FooTable.Row#val(value, redraw, redrawSelf)` methods. This parameter dictates whether the row or cell updates its' own DOM when a value is set.
 - Updated the `FooTable.Paging#pageSize` method to also accept string values. If the parameter is not supplied or is not a valid number the current page size is returned.
 - Updated the `FooTable.Filtering#filter` method to accept a single boolean param simply called `focus`, if supplied and true the default search input receives focus after the component performs a filter operation. This new param is used internally when auto applying a query after a user types in the search input, or clicks the search/clear buttons. This behavior can be disabled by setting the new `filtering.focus` option to `false`.
