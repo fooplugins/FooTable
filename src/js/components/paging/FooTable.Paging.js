@@ -451,7 +451,7 @@
 						'class': klass
 					}).attr('data-page', attr)
 						.append($('<a/>', {
-							'class': 'footable-page-link',
+							'class': 'footable-page-link page-link',
 							href: '#'
 						}).data('page', attr).html(html));
 				};
@@ -464,7 +464,7 @@
 				}
 			}
 			for (var i = 0, $li; i < self.total; i++){
-				$li = link(i + 1, i + 1, 'footable-page');
+				$li = link(i + 1, i + 1, 'footable-page page-item');
 				self.$pagination.append($li);
 			}
 			if (multiple){
