@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.4
+* @version 3.1.5
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -1295,6 +1295,14 @@
 			 * @default -1
 			 */
 			this.index = F.is.number(definition.index) ? definition.index : -1;
+			/**
+			 * Whether or not this in an internal only column.
+			 * @instance
+			 * @readonly
+			 * @type {boolean}
+			 * @description Internal columns or there cells will not be returned when calling methods such as `FooTable.Row#val`.
+			 */
+			this.internal = false;
 			this.define(definition);
 			this.$create();
 		},
@@ -1689,7 +1697,9 @@
 				if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
 					this.value = {};
 					F.arr.each(this.cells, function(cell){
-						self.value[cell.column.name] = cell.val();
+						if (!cell.column.internal){
+							self.value[cell.column.name] = cell.val();
+						}
 					});
 				}
 				return this.value;
@@ -1724,7 +1734,9 @@
 
 			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false, redrawSelf);
+				if (!cell.column.internal && F.is.defined(self.value[cell.column.name])){
+					cell.val(self.value[cell.column.name], false, redrawSelf);
+				}
 			});
 
 			if (this.created && redrawSelf){
@@ -1786,6 +1798,7 @@
 				self.$el.attr('data-expanded', true);
 				self.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
 				self.expanded = true;
+				self.ft.raise('expanded.ft.row', [self]);
 			});
 		},
 		/**
@@ -1813,6 +1826,7 @@
 				self.$el.removeAttr('data-expanded');
 				self.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
 				if (F.is.boolean(setExpanded) ? setExpanded : true) self.expanded = false;
+				self.ft.raise('collapsed.ft.row', [self]);
 			});
 		},
 		/**
@@ -2129,6 +2143,7 @@
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
 					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
+					F.instances[self.id] = null;
 				});
 			}).fail(function(err){
 				if (F.is.error(err)){
@@ -2314,6 +2329,61 @@
 			}, 300);
 		}
 	});
+
+})(jQuery, FooTable);
+(function($, F){
+
+	F.ArrayColumn = F.Column.extend(/** @lends FooTable.ArrayColumn */{
+		/**
+		 * @summary A column to handle Array values.
+		 * @constructs
+		 * @extends FooTable.Column
+		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
+		 * @param {object} definition - An object containing all the properties to set for the column.
+		 */
+		construct: function(instance, definition) {
+			this._super(instance, definition, 'array');
+		},
+		/**
+		 * @summary Parses the supplied value or element to retrieve a column value.
+		 * @description This is supplied either the cell value or jQuery object to parse. This method will return either the Array containing the values or null.
+		 * @instance
+		 * @protected
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+		 * @returns {(array|null)}
+		 */
+		parser: function(valueOrElement){
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var $el = $(valueOrElement), data = $el.data('value'); // .data() will automatically convert a JSON string to an array
+				if (F.is.array(data)) return data;
+				data = $el.html();
+				try {
+					data = JSON.parse(data);
+				} catch(err) {
+					data = null;
+				}
+				return F.is.array(data) ? data : null; // if we have an array return it
+			}
+			if (F.is.array(valueOrElement)) return valueOrElement; // if we have an array return it
+			return null; // otherwise we have no value so return null
+		},
+		/**
+		 * @summary Formats the column value and creates the HTML seen within a cell.
+		 * @description This is supplied the value retrieved from the {@link FooTable.ArrayColumn#parser} function and must return a string, HTMLElement or jQuery object.
+		 * The return value from this function is what is displayed in the cell in the table.
+		 * @instance
+		 * @protected
+		 * @param {?Array} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		formatter: function(value, options, rowData){
+			return F.is.array(value) ? JSON.stringify(value) : '';
+		}
+	});
+
+	F.columns.register('array', F.ArrayColumn);
 
 })(jQuery, FooTable);
 (function($, F){
@@ -3432,6 +3502,7 @@
 				F.arr.each(self.array, function(row){
 					row.predraw(!self._fromHTML);
 				});
+				self.all = self.array = [];
 			});
 		},
 		/**

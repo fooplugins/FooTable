@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=yes, width=device-width">
-  <title>FooTable V3 — Class: Filter</title>
+  <title>FooTable V3 — Class: ObjectColumn</title>
   <link rel="shortcut icon" href="/favicon.ico">
 
   <!--[if lt IE 9]>
@@ -390,14 +390,14 @@
           
 
 
-	<h1 class="page-title">Class: Filter</h1>
+	<h1 class="page-title">Class: ObjectColumn</h1>
 <section>
 
 <header>
     <h2>
         <span class="ancestors"><a href="FooTable.html">FooTable</a>.</span>
     
-    Filter
+    ObjectColumn
     </h2>
     
 </header>
@@ -409,16 +409,14 @@
     
         
 <dt>
-    <h4 class="name" id="Filter"><span class="type-signature"></span>new Filter<span class="signature">(name, query, columns, <span class="optional">space</span>, <span class="optional">connectors</span>, <span class="optional">ignoreCase</span>, <span class="optional">hidden</span>)</span><span class="type-signature"> &rarr; {<a href="FooTable.Filter.html">FooTable.Filter</a>}</span></h4>
+    <h4 class="name" id="ObjectColumn"><span class="type-signature"></span>new ObjectColumn<span class="signature">(instance, definition)</span><span class="type-signature"></span></h4>
     
+    
+    <p class="summary">A column to handle Object values.</p>
     
 </dt>
 <dd>
     
-    
-    <div class="description">
-        The filter object contains the query to filter by and the columns to apply it to.
-    </div>
     
 
     
@@ -439,11 +437,7 @@
       <th>Type</th>
   
       
-      <th>Argument</th>
-      
   
-      
-      <th>Default</th>
       
   
       <th class="last">Description</th>
@@ -455,264 +449,46 @@
   
           <tr>
               
-                  <td class="name"><code>name</code></td>
+                  <td class="name"><code>instance</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type">string</span>
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
 
 
               
               </td>
   
               
-                  <td class="attributes">
-                  
-  
-                  
-  
-                  
-                  </td>
-              
   
               
-                  <td class="default">
-                  
-                  </td>
-              
   
-              <td class="description last">The name for the filter.</td>
+              <td class="description last">The parent <a href="FooTable.Table.html">FooTable.Table</a> this column belongs to.</td>
           </tr>
   
     
   
           <tr>
               
-                  <td class="name"><code>query</code></td>
+                  <td class="name"><code>definition</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type">string</span>
-|
-
-<span class="param-type"><a href="FooTable.Query.html">FooTable.Query</a></span>
+<span class="param-type">object</span>
 
 
               
               </td>
   
               
-                  <td class="attributes">
-                  
-  
-                  
-  
-                  
-                  </td>
-              
   
               
-                  <td class="default">
-                  
-                  </td>
-              
   
-              <td class="description last">The query for the filter.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>columns</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                  </td>
-              
-  
-              <td class="description last">The columns to apply the query to.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>space</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">string</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      "AND"
-                  
-                  </td>
-              
-  
-              <td class="description last">How the query treats space chars.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>connectors</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">boolean</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      true
-                  
-                  </td>
-              
-  
-              <td class="description last">Whether or not to replace phrase connectors (+.-_) with spaces.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>ignoreCase</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">boolean</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      true
-                  
-                  </td>
-              
-  
-              <td class="description last">Whether or not ignore case when matching.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>hidden</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">boolean</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      true
-                  
-                  </td>
-              
-  
-              <td class="description last">Whether or not this is a hidden filter.</td>
+              <td class="description last">An object containing all the properties to set for the column.</td>
           </tr>
   
     
@@ -763,25 +539,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-  <dt>
-    Type
-  </dt>
-  <dd>
-    
-<span class="param-type"><a href="FooTable.Filter.html">FooTable.Filter</a></span>
-
-
-  </dd>
-</dl>
-
-
-        
     
     
 </dd>
@@ -793,7 +550,7 @@
         <h3 class="subsection-title">Extends</h3>
 
         <ul>
-            <li><a href="FooTable.Class.html">FooTable.Class</a></li>
+            <li><a href="FooTable.Column.html">FooTable.Column</a></li>
         </ul>
     
 
@@ -810,15 +567,15 @@
 
         <dl>
             
-<dt class="name" id="columns">
-    <h4><span class="type-signature"></span>columns<span class="type-signature"> :Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span></h4>
+<dt class="name" id="$el">
+    <h4><span class="type-signature">&lt;readonly> </span>$el<span class="type-signature"> :<a href="jQuery.html">jQuery</a></span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        The columns to apply the query to.
+        The jQuery cell object for the column header.
     </div>
     
 
@@ -827,7 +584,7 @@
         <ul>
             <li>
                 
-<span class="param-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
 
 
             </li>
@@ -842,6 +599,15 @@
 
   
 
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#$el">FooTable.Column#$el</a>
+      </li>
+    </ul>
+  </dd>
   
 
   
@@ -871,15 +637,15 @@
 
         
             
-<dt class="name" id="connectors">
-    <h4><span class="type-signature"></span>connectors<span class="type-signature"> :boolean</span></h4>
+<dt class="name" id="classes">
+    <h4><span class="type-signature"></span>classes<span class="type-signature"> :Array.&lt;string></span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
+        The classes to apply to all cells in this column.
     </div>
     
 
@@ -888,7 +654,7 @@
         <ul>
             <li>
                 
-<span class="param-type">boolean</span>
+<span class="param-type">Array.&lt;string></span>
 
 
             </li>
@@ -903,6 +669,85 @@
 
   
 
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#classes">FooTable.Column#classes</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="ft">
+    <h4><span class="type-signature">&lt;readonly> </span>ft<span class="type-signature"> :<a href="FooTable.Table.html">FooTable.Table</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The root <a href="FooTable.Table.html">FooTable.Table</a> for the column.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#ft">FooTable.Column#ft</a>
+      </li>
+    </ul>
+  </dd>
   
 
   
@@ -940,7 +785,7 @@
 <dd>
     
     <div class="description">
-        Whether or not this is a hidden filter.
+        Whether or not this column is hidden from view and appears in the details row.
     </div>
     
 
@@ -965,7 +810,14 @@
   
 
   
-
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#hidden">FooTable.Column#hidden</a>
+      </li>
+    </ul>
+  </dd>
   
 
   
@@ -974,6 +826,15 @@
 
   
 
+  
+
+  
+  <dt class="tag-default">Default Value:</dt>
+  <dd class="tag-default">
+    <ul class="dummy">
+      <li>false</li>
+    </ul>
+  </dd>
   
 
 
@@ -993,15 +854,92 @@
 
         
             
-<dt class="name" id="ignoreCase">
-    <h4><span class="type-signature"></span>ignoreCase<span class="type-signature"> :boolean</span></h4>
+<dt class="name" id="index">
+    <h4><span class="type-signature">&lt;readonly> </span>index<span class="type-signature"> :number</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        Whether or not ignore case when matching.
+        The index of the column in the table. This is set by the plugin during initialization.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#index">FooTable.Column#index</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <dt class="tag-default">Default Value:</dt>
+  <dd class="tag-default">
+    <ul class="dummy">
+      <li>-1</li>
+    </ul>
+  </dd>
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="internal">
+    <h4><span class="type-signature">&lt;readonly> </span>internal<span class="type-signature"> :boolean</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Internal columns or there cells will not be returned when calling methods such as `FooTable.Row#val`.
     </div>
     
 
@@ -1025,6 +963,15 @@
 
   
 
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#internal">FooTable.Column#internal</a>
+      </li>
+    </ul>
+  </dd>
   
 
   
@@ -1062,7 +1009,7 @@
 <dd>
     
     <div class="description">
-        The name of the filter.
+        The name of the column. This name must correspond to the property name of the JSON row data.
     </div>
     
 
@@ -1086,6 +1033,92 @@
 
   
 
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#name">FooTable.Column#name</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <dt class="tag-default">Default Value:</dt>
+  <dd class="tag-default">
+    <ul class="dummy">
+      <li>null</li>
+    </ul>
+  </dd>
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="style">
+    <h4><span class="type-signature"></span>style<span class="type-signature"> :object</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The styles to apply to all cells in this column.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">object</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#style">FooTable.Column#style</a>
+      </li>
+    </ul>
+  </dd>
   
 
   
@@ -1115,15 +1148,15 @@
 
         
             
-<dt class="name" id="query">
-    <h4><span class="type-signature"></span>query<span class="type-signature"> :string|<a href="FooTable.Query.html">FooTable.Query</a></span></h4>
+<dt class="name" id="title">
+    <h4><span class="type-signature"></span>title<span class="type-signature"> :string</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        The query for the filter.
+        The title to display in the column header, this can be HTML.
     </div>
     
 
@@ -1133,9 +1166,6 @@
             <li>
                 
 <span class="param-type">string</span>
-|
-
-<span class="param-type"><a href="FooTable.Query.html">FooTable.Query</a></span>
 
 
             </li>
@@ -1150,6 +1180,92 @@
 
   
 
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#title">FooTable.Column#title</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <dt class="tag-default">Default Value:</dt>
+  <dd class="tag-default">
+    <ul class="dummy">
+      <li>null</li>
+    </ul>
+  </dd>
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="type">
+    <h4><span class="type-signature">&lt;readonly> </span>type<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The type of data displayed by the column.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#type">FooTable.Column#type</a>
+      </li>
+    </ul>
+  </dd>
   
 
   
@@ -1179,15 +1295,15 @@
 
         
             
-<dt class="name" id="space">
-    <h4><span class="type-signature"></span>space<span class="type-signature"> :string</span></h4>
+<dt class="name" id="virtual">
+    <h4><span class="type-signature">&lt;readonly> </span>virtual<span class="type-signature"> :boolean</span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        A string specifying how the filter treats space characters. Can be either "OR" or "AND".
+        Whether or not the column was parsed from a standard table row containing data instead of from an actual header row.
     </div>
     
 
@@ -1196,7 +1312,7 @@
         <ul>
             <li>
                 
-<span class="param-type">string</span>
+<span class="param-type">boolean</span>
 
 
             </li>
@@ -1212,7 +1328,14 @@
   
 
   
-
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#virtual">FooTable.Column#virtual</a>
+      </li>
+    </ul>
+  </dd>
   
 
   
@@ -1221,6 +1344,85 @@
 
   
 
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="visible">
+    <h4><span class="type-signature"></span>visible<span class="type-signature"> :boolean</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Whether or not this column is completely hidden from view and will not appear in the details row.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#visible">FooTable.Column#visible</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <dt class="tag-default">Default Value:</dt>
+  <dd class="tag-default">
+    <ul class="dummy">
+      <li>true</li>
+    </ul>
+  </dd>
   
 
 
@@ -1247,7 +1449,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="match"><span class="type-signature"></span>match<span class="signature">(str)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="$create"><span class="type-signature">&lt;protected> </span>$create<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1255,64 +1457,17 @@
     
     
     <div class="description">
-        Checks if the current filter matches the supplied string.If the current query property is a string it will be auto converted to a <a href="FooTable.Query.html">FooTable.Query</a> object to perform the match.
+        After the column has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.
     </div>
     
 
     
     
     
+        <h5>This:</h5>
+        <ul><li><a href="FooTable.Column.html">FooTable.Column</a></li></ul>
     
     
-        <h5>Parameters:</h5>
-        
-<div class="params-table-container">
-  <table class="params table table-striped">
-      <thead>
-    <tr>
-      
-      <th>Name</th>
-      
-  
-      <th>Type</th>
-  
-      
-  
-      
-  
-      <th class="last">Description</th>
-    </tr>
-    </thead>
-  
-    <tbody>
-    
-  
-          <tr>
-              
-                  <td class="name"><code>str</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">string</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last">The string to check.</td>
-          </tr>
-  
-    
-    </tbody>
-  </table>
-</div>
-
     
     
     
@@ -1324,57 +1479,47 @@
   
 
   
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-  <dt>
-    Type
-  </dt>
-  <dd>
-    
-<span class="param-type">boolean</span>
-
-
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#$create">FooTable.Column#$create</a>
+      </li>
+    </ul>
   </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
 </dl>
 
+    
+    
 
-        
+    
+
+    
+    
+    
+    
+    
     
     
 </dd>
@@ -1382,7 +1527,7 @@
         
             
 <dt>
-    <h4 class="name" id="matchRow"><span class="type-signature"></span>matchRow<span class="signature">(row)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="createCell"><span class="type-signature">&lt;protected> </span>createCell<span class="signature">(row)</span><span class="type-signature"> &rarr; {<a href="FooTable.Cell.html">FooTable.Cell</a>}</span></h4>
     
     
 </dt>
@@ -1390,12 +1535,15 @@
     
     
     <div class="description">
-        Checks if the current filter matches the supplied <a href="FooTable.Row.html">FooTable.Row</a>.
+        Creates a cell for this column from the supplied <a href="FooTable.Row.html">FooTable.Row</a> object. This allows different column types to return different types of cells.
     </div>
     
 
     
     
+    
+        <h5>This:</h5>
+        <ul><li><a href="FooTable.Column.html">FooTable.Column</a></li></ul>
     
     
     
@@ -1440,7 +1588,327 @@
   
               
   
-              <td class="description last">The row to check.</td>
+              <td class="description last">The row to create the cell from.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#createCell">FooTable.Column#createCell</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type"><a href="FooTable.Cell.html">FooTable.Cell</a></span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="define"><span class="type-signature">&lt;protected> </span>define<span class="signature">(definition)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This is supplied the column definition in the form of a simple object created by merging options supplied via the plugin constructor with those parsed from the DOM.
+    </div>
+    
+
+    
+    
+    
+        <h5>This:</h5>
+        <ul><li><a href="FooTable.Column.html">FooTable.Column</a></li></ul>
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>definition</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">object</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last">The object containing the column definition.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#define">FooTable.Column#define</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="formatter"><span class="type-signature">&lt;protected> </span>formatter<span class="signature">(value, options, rowData)</span><span class="type-signature"> &rarr; {string|HTMLElement|<a href="jQuery.html">jQuery</a>}</span></h4>
+    
+    
+    <p class="summary">Formats the column value and creates the HTML seen within a cell.</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This is supplied the value retrieved from the <a href="FooTable.ObjectColumn.html#parser">FooTable.ObjectColumn#parser</a> function and must return a string, HTMLElement or jQuery object.The return value from this function is what is displayed in the cell in the table.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>value</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">*</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last">The value to format.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>options</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">object</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last">The current plugin options.</td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>rowData</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">object</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last">An object containing the current row data.</td>
           </tr>
   
     
@@ -1502,7 +1970,248 @@
   </dt>
   <dd>
     
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="parser"><span class="type-signature">&lt;protected> </span>parser<span class="signature">(valueOrElement)</span><span class="type-signature"> &rarr; {object|null}</span></h4>
+    
+    
+    <p class="summary">Parses the supplied value or element to retrieve a column value.</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This is supplied either the cell value or jQuery object to parse. This method will return either the Object containing the values or null.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>valueOrElement</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">*</span>
+|
+
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last">The value or jQuery cell object.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">object</span>
+|
+
+<span class="param-type">null</span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="stringify"><span class="type-signature"></span>stringify<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+    
+    <p class="summary">Return the supplied value as a string.</p>
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+  <dt class="inherited-from">Inherited From:</dt>
+  <dd class="inherited-from">
+    <ul class="dummy">
+      <li>
+        <a href="FooTable.Column.html#stringify">FooTable.Column#stringify</a>
+      </li>
+    </ul>
+  </dd>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">string</span>
 
 
   </dd>
@@ -1540,7 +2249,7 @@
           
     <span class="jsdoc-message">
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc" target="_blank">JSDoc 3.4.1</a>
-    on 2017-07-06T21:37:42+02:00
+    on 2017-07-06T21:37:43+02:00
     </span>
         </footer>
       </div>

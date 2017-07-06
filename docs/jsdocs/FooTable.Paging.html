@@ -58,6 +58,10 @@
           <ul class="dropdown-menu ">
             
             <li>
+              <a href="FooTable.ArrayColumn.html">FooTable.ArrayColumn</a>
+            </li>
+            
+            <li>
               <a href="FooTable.Breakpoint.html">FooTable.Breakpoint</a>
             </li>
             
@@ -106,6 +110,10 @@
             </li>
             
             <li>
+              <a href="FooTable.Export.html">FooTable.Export</a>
+            </li>
+            
+            <li>
               <a href="FooTable.Filter.html">FooTable.Filter</a>
             </li>
             
@@ -119,6 +127,10 @@
             
             <li>
               <a href="FooTable.NumberColumn.html">FooTable.NumberColumn</a>
+            </li>
+            
+            <li>
+              <a href="FooTable.ObjectColumn.html">FooTable.ObjectColumn</a>
             </li>
             
             <li>
@@ -345,6 +357,10 @@
             
             <li>
               <a href="FooTable.html#.event:Table%2522preinit.ft.table%2522">FooTable.event:Table"preinit.ft.table"</a>
+            </li>
+            
+            <li>
+              <a href="FooTable.html#.event:Table%2522ready.ft.table%2522">FooTable.event:Table"ready.ft.table"</a>
             </li>
             
             <li>
@@ -610,6 +626,67 @@
 
         
             
+<dt class="name" id="$container">
+    <h4><span class="type-signature"></span>$container<span class="type-signature"> :<a href="jQuery.html">jQuery</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The jQuery object of the element containing the entire paging UI.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
 <dt class="name" id="$count">
     <h4><span class="type-signature"></span>$count<span class="type-signature"> :<a href="jQuery.html">jQuery</a></span></h4>
 
@@ -740,7 +817,68 @@
 <dd>
     
     <div class="description">
-        The jQuery row object that contains all the paging specific elements.
+        +The jQuery row object that contains all the paging specific elements.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="$wrapper">
+    <h4><span class="type-signature"></span>$wrapper<span class="type-signature"> :<a href="jQuery.html">jQuery</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The jQuery object of the element wrapping all the paging UI elements.
     </div>
     
 
@@ -811,6 +949,67 @@
             <li>
                 
 <span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="container">
+    <h4><span class="type-signature"></span>container<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        A selector specifying where to place the paging components UI, if null the UI is displayed within a row in the foot of the table.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
 
 
             </li>
@@ -1672,15 +1871,17 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="$create"><span class="type-signature">&lt;protected> </span>$create<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".format"><span class="type-signature">&lt;static> </span>format<span class="signature">(formatString)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
+    
+    <p class="summary">Uses the supplied format string and replaces the placeholder strings with the current values.</p>
     
 </dt>
 <dd>
     
     
     <div class="description">
-        Creates the paging UI from the current options setting the various jQuery properties of this component.
+        This method is used to generate the short description label for the pagination control. i.e. Showing X of Y records. The placeholders for this string are the following:* {CP} - The current page number.* {TP} - The total number of pages.* {PF} - The first row of the current page.* {PL} - The last row of the current page.* {TR} - The total rows available.These placeholders can be supplied in a string like; "Showing {PF} to {PL} of {TR} rows."
     </div>
     
 
@@ -1688,6 +1889,56 @@
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>formatString</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">string</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last">The string to be formatted with the paging specific variables.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
     
     
     
@@ -1731,6 +1982,25 @@
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">string</span>
+
+
+  </dd>
+</dl>
+
+
+        
     
     
 </dd>
@@ -1738,7 +2008,7 @@
         
             
 <dt>
-    <h4 class="name" id="_countFormat"><span class="type-signature">&lt;private> </span>_countFormat<span class="signature">(currentPage, totalPages, pageFirst, pageLast, totalRows)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="$create"><span class="type-signature">&lt;protected> </span>$create<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1746,7 +2016,7 @@
     
     
     <div class="description">
-        Uses the countFormat option to generate the text using the supplied parameters.
+        Creates the paging UI from the current options setting the various jQuery properties of this component.
     </div>
     
 
@@ -1754,148 +2024,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-<div class="params-table-container">
-  <table class="params table table-striped">
-      <thead>
-    <tr>
-      
-      <th>Name</th>
-      
-  
-      <th>Type</th>
-  
-      
-  
-      
-  
-      <th class="last">Description</th>
-    </tr>
-    </thead>
-  
-    <tbody>
-    
-  
-          <tr>
-              
-                  <td class="name"><code>currentPage</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last">The current page.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>totalPages</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last">The total number of pages.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>pageFirst</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last">The first row number of the current page.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>pageLast</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last">The last row number of the current page.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>totalRows</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last">The total number of rows.</td>
-          </tr>
-  
-    
-    </tbody>
-  </table>
-</div>
-
     
     
     
@@ -3225,7 +3353,7 @@
     
     
     <div class="description">
-        Gets or sets the current page size
+        Gets or sets the current page size.
     </div>
     
 
@@ -3268,6 +3396,9 @@
               
                   
 <span class="param-type">number</span>
+|
+
+<span class="param-type">string</span>
 
 
               
@@ -3287,7 +3418,7 @@
   
               
   
-              <td class="description last">The new page size to use.</td>
+              <td class="description last">The new page size to use, this value is supplied to `parseInt` so strings can be used. If not supplied or an invalid valid the current page size is returned.</td>
           </tr>
   
     
@@ -3810,7 +3941,7 @@
           
     <span class="jsdoc-message">
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc" target="_blank">JSDoc 3.4.1</a>
-    on 2016-11-03T16:26:44+02:00
+    on 2017-07-06T21:37:43+02:00
     </span>
         </footer>
       </div>

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=yes, width=device-width">
-  <title>FooTable V3 — Class: Filter</title>
+  <title>FooTable V3 — Class: Export</title>
   <link rel="shortcut icon" href="/favicon.ico">
 
   <!--[if lt IE 9]>
@@ -390,14 +390,14 @@
           
 
 
-	<h1 class="page-title">Class: Filter</h1>
+	<h1 class="page-title">Class: Export</h1>
 <section>
 
 <header>
     <h2>
         <span class="ancestors"><a href="FooTable.html">FooTable</a>.</span>
     
-    Filter
+    Export
     </h2>
     
 </header>
@@ -409,16 +409,14 @@
     
         
 <dt>
-    <h4 class="name" id="Filter"><span class="type-signature"></span>new Filter<span class="signature">(name, query, columns, <span class="optional">space</span>, <span class="optional">connectors</span>, <span class="optional">ignoreCase</span>, <span class="optional">hidden</span>)</span><span class="type-signature"> &rarr; {<a href="FooTable.Filter.html">FooTable.Filter</a>}</span></h4>
+    <h4 class="name" id="Export"><span class="type-signature"></span>new Export<span class="signature">(table)</span><span class="type-signature"></span></h4>
     
+    
+    <p class="summary">This component provides some basic export functionality.</p>
     
 </dt>
 <dd>
     
-    
-    <div class="description">
-        The filter object contains the query to filter by and the columns to apply it to.
-    </div>
     
 
     
@@ -439,11 +437,7 @@
       <th>Type</th>
   
       
-      <th>Argument</th>
-      
   
-      
-      <th>Default</th>
       
   
       <th class="last">Description</th>
@@ -455,264 +449,23 @@
   
           <tr>
               
-                  <td class="name"><code>name</code></td>
+                  <td class="name"><code>table</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type">string</span>
+<span class="param-type"><a href="FooTable.Table.html">FooTable.Table</a></span>
 
 
               
               </td>
   
               
-                  <td class="attributes">
-                  
-  
-                  
-  
-                  
-                  </td>
-              
   
               
-                  <td class="default">
-                  
-                  </td>
-              
   
-              <td class="description last">The name for the filter.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>query</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">string</span>
-|
-
-<span class="param-type"><a href="FooTable.Query.html">FooTable.Query</a></span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                  </td>
-              
-  
-              <td class="description last">The query for the filter.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>columns</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                  </td>
-              
-  
-              <td class="description last">The columns to apply the query to.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>space</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">string</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      "AND"
-                  
-                  </td>
-              
-  
-              <td class="description last">How the query treats space chars.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>connectors</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">boolean</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      true
-                  
-                  </td>
-              
-  
-              <td class="description last">Whether or not to replace phrase connectors (+.-_) with spaces.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>ignoreCase</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">boolean</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      true
-                  
-                  </td>
-              
-  
-              <td class="description last">Whether or not ignore case when matching.</td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>hidden</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">boolean</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-                  <td class="default">
-                  
-                      true
-                  
-                  </td>
-              
-  
-              <td class="description last">Whether or not this is a hidden filter.</td>
+              <td class="description last">The current instance of the plugin.</td>
           </tr>
   
     
@@ -763,25 +516,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-  <dt>
-    Type
-  </dt>
-  <dd>
-    
-<span class="param-type"><a href="FooTable.Filter.html">FooTable.Filter</a></span>
-
-
-  </dd>
-</dl>
-
-
-        
     
     
 </dd>
@@ -789,12 +523,6 @@
     
     </div>
 
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        <ul>
-            <li><a href="FooTable.Class.html">FooTable.Class</a></li>
-        </ul>
     
 
     
@@ -810,16 +538,14 @@
 
         <dl>
             
-<dt class="name" id="columns">
-    <h4><span class="type-signature"></span>columns<span class="type-signature"> :Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span></h4>
+<dt class="name" id="snapshot">
+    <h4><span class="type-signature"></span>snapshot<span class="type-signature"> :Array.&lt;<a href="FooTable.Row.html">FooTable.Row</a>></span></h4>
 
+    
+    <p class="summary">A snapshot of the working set of rows prior to being trimmed by the paging component.</p>
     
 </dt>
 <dd>
-    
-    <div class="description">
-        The columns to apply the query to.
-    </div>
     
 
     
@@ -827,376 +553,7 @@
         <ul>
             <li>
                 
-<span class="param-type">Array.&lt;<a href="FooTable.Column.html">FooTable.Column</a>></span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<dt class="name" id="connectors">
-    <h4><span class="type-signature"></span>connectors<span class="type-signature"> :boolean</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        Whether or not to replace phrase connectors (+.-_) with spaces before executing the query.
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">boolean</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<dt class="name" id="hidden">
-    <h4><span class="type-signature"></span>hidden<span class="type-signature"> :boolean</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        Whether or not this is a hidden filter.
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">boolean</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<dt class="name" id="ignoreCase">
-    <h4><span class="type-signature"></span>ignoreCase<span class="type-signature"> :boolean</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        Whether or not ignore case when matching.
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">boolean</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<dt class="name" id="name">
-    <h4><span class="type-signature"></span>name<span class="type-signature"> :string</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        The name of the filter.
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">string</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<dt class="name" id="query">
-    <h4><span class="type-signature"></span>query<span class="type-signature"> :string|<a href="FooTable.Query.html">FooTable.Query</a></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        The query for the filter.
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type"><a href="FooTable.Query.html">FooTable.Query</a></span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<dt class="name" id="space">
-    <h4><span class="type-signature"></span>space<span class="type-signature"> :string</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        A string specifying how the filter treats space characters. Can be either "OR" or "AND".
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">string</span>
+<span class="param-type">Array.&lt;<a href="FooTable.Row.html">FooTable.Row</a>></span>
 
 
             </li>
@@ -1247,72 +604,20 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="match"><span class="type-signature"></span>match<span class="signature">(str)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="columns"><span class="type-signature"></span>columns<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;Object>}</span></h4>
     
+    
+    <p class="summary">Return the columns as simple JavaScript objects in an array.</p>
     
 </dt>
 <dd>
     
     
-    <div class="description">
-        Checks if the current filter matches the supplied string.If the current query property is a string it will be auto converted to a <a href="FooTable.Query.html">FooTable.Query</a> object to perform the match.
-    </div>
-    
 
     
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-<div class="params-table-container">
-  <table class="params table table-striped">
-      <thead>
-    <tr>
-      
-      <th>Name</th>
-      
-  
-      <th>Type</th>
-  
-      
-  
-      
-  
-      <th class="last">Description</th>
-    </tr>
-    </thead>
-  
-    <tbody>
-    
-  
-          <tr>
-              
-                  <td class="name"><code>str</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">string</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last">The string to check.</td>
-          </tr>
-  
-    
-    </tbody>
-  </table>
-</div>
-
     
     
     
@@ -1367,7 +672,7 @@
   </dt>
   <dd>
     
-<span class="param-type">boolean</span>
+<span class="param-type">Array.&lt;Object></span>
 
 
   </dd>
@@ -1382,16 +687,14 @@
         
             
 <dt>
-    <h4 class="name" id="matchRow"><span class="type-signature"></span>matchRow<span class="signature">(row)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="csv"><span class="type-signature"></span>csv<span class="signature">(<span class="optional">filtered</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
+    
+    <p class="summary">Return the columns and rows as a properly formatted CSV value.</p>
     
 </dt>
 <dd>
     
-    
-    <div class="description">
-        Checks if the current filter matches the supplied <a href="FooTable.Row.html">FooTable.Row</a>.
-    </div>
     
 
     
@@ -1412,7 +715,11 @@
       <th>Type</th>
   
       
+      <th>Argument</th>
+      
   
+      
+      <th>Default</th>
       
   
       <th class="last">Description</th>
@@ -1424,23 +731,39 @@
   
           <tr>
               
-                  <td class="name"><code>row</code></td>
+                  <td class="name"><code>filtered</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type"><a href="FooTable.Row.html">FooTable.Row</a></span>
+<span class="param-type">boolean</span>
 
 
               
               </td>
   
               
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
   
+                  
+  
+                  
+                  </td>
               
   
-              <td class="description last">The row to check.</td>
+              
+                  <td class="default">
+                  
+                      false
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not to exclude filtered rows from the result.</td>
           </tr>
   
     
@@ -1502,7 +825,381 @@
   </dt>
   <dd>
     
+<span class="param-type">string</span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="json"><span class="type-signature"></span>json<span class="signature">(<span class="optional">filtered</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+    
+    <p class="summary">Return the columns and rows as a properly formatted JSON object.</p>
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+      <th>Argument</th>
+      
+  
+      
+      <th>Default</th>
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>filtered</code></td>
+              
+  
+              <td class="type">
+              
+                  
 <span class="param-type">boolean</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      false
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not to exclude filtered rows from the result.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">Object</span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="predraw"><span class="type-signature"></span>predraw<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+    <p class="summary">Hooks into the predraw pipeline after sorting and filtering have taken place but prior to paging.</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This method allows us to take a snapshot of the working set of rows before they are trimmed by the paging component and is called by the plugin instance.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="rows"><span class="type-signature"></span>rows<span class="signature">(<span class="optional">filtered</span>)</span><span class="type-signature"> &rarr; {Array.&lt;Object>}</span></h4>
+    
+    
+    <p class="summary">Return the rows as simple JavaScript objects in an array.</p>
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+      <th>Argument</th>
+      
+  
+      
+      <th>Default</th>
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>filtered</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">boolean</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      false
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not to exclude filtered rows from the result.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">Array.&lt;Object></span>
 
 
   </dd>

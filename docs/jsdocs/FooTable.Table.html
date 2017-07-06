@@ -58,6 +58,10 @@
           <ul class="dropdown-menu ">
             
             <li>
+              <a href="FooTable.ArrayColumn.html">FooTable.ArrayColumn</a>
+            </li>
+            
+            <li>
               <a href="FooTable.Breakpoint.html">FooTable.Breakpoint</a>
             </li>
             
@@ -106,6 +110,10 @@
             </li>
             
             <li>
+              <a href="FooTable.Export.html">FooTable.Export</a>
+            </li>
+            
+            <li>
               <a href="FooTable.Filter.html">FooTable.Filter</a>
             </li>
             
@@ -119,6 +127,10 @@
             
             <li>
               <a href="FooTable.NumberColumn.html">FooTable.NumberColumn</a>
+            </li>
+            
+            <li>
+              <a href="FooTable.ObjectColumn.html">FooTable.ObjectColumn</a>
             </li>
             
             <li>
@@ -345,6 +357,10 @@
             
             <li>
               <a href="FooTable.html#.event:Table%2522preinit.ft.table%2522">FooTable.event:Table"preinit.ft.table"</a>
+            </li>
+            
+            <li>
+              <a href="FooTable.html#.event:Table%2522ready.ft.table%2522">FooTable.event:Table"ready.ft.table"</a>
             </li>
             
             <li>
@@ -638,6 +654,67 @@
     
     <div class="description">
         The jQuery table object the plugin is bound to.
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="$loader">
+    <h4><span class="type-signature"></span>$loader<span class="type-signature"> :<a href="jQuery.html">jQuery</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        A loader jQuery instance
     </div>
     
 
@@ -1523,7 +1600,7 @@
     
     <h5>Fires:</h5>
     <ul>
-        <li>FooTable.event:Table"ready.ft.table"</li>
+        <li><a href="FooTable.html#.event:Table%2522ready.ft.table%2522">FooTable.event:Table"ready.ft.table"</a></li>
     </ul>
     
 
@@ -2694,6 +2771,312 @@
         
             
 <dt>
+    <h4 class="name" id="toCSV"><span class="type-signature"></span>toCSV<span class="signature">(<span class="optional">filtered</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+    
+    <p class="summary">Return the columns and rows as a properly formatted CSV value.</p>
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+      <th>Argument</th>
+      
+  
+      
+      <th>Default</th>
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>filtered</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">boolean</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      false
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not to exclude filtered rows from the result.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">string</span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toJSON"><span class="type-signature"></span>toJSON<span class="signature">(<span class="optional">filtered</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+    
+    <p class="summary">Return the columns and rows as a properly formatted JSON object.</p>
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+      <th>Argument</th>
+      
+  
+      
+      <th>Default</th>
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>filtered</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">boolean</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                      false
+                  
+                  </td>
+              
+  
+              <td class="description last">Whether or not to exclude filtered rows from the result.</td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+  <dt>
+    Type
+  </dt>
+  <dd>
+    
+<span class="param-type">Object</span>
+
+
+  </dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="use"><span class="type-signature"></span>use<span class="signature">(type)</span><span class="type-signature"> &rarr; {*|null}</span></h4>
     
     
@@ -2858,7 +3241,7 @@
           
     <span class="jsdoc-message">
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc" target="_blank">JSDoc 3.4.1</a>
-    on 2016-11-03T16:26:44+02:00
+    on 2017-07-06T21:37:43+02:00
     </span>
         </footer>
       </div>
