@@ -36,15 +36,17 @@
 		columns: function(){
 			var result = [];
 			F.arr.each(this.ft.columns.array, function(column){
-				result.push({
-					type: column.type,
-					name: column.name,
-					title: column.title,
-					visible: column.visible,
-					hidden: column.hidden,
-					classes: column.classes,
-					style: column.style
-				});
+				if (!column.internal){
+					result.push({
+						type: column.type,
+						name: column.name,
+						title: column.title,
+						visible: column.visible,
+						hidden: column.hidden,
+						classes: column.classes,
+						style: column.style
+					});
+				}
 			});
 			return result;
 		},
@@ -81,14 +83,21 @@
 		 * @returns {string}
 		 */
 		csv: function(filtered){
-			var csv = "", columns = this.columns();
+			var csv = "", columns = this.columns(), value, escaped;
 			F.arr.each(columns, function(column, i){
-				csv += (i === 0 ? column.title : "," + column.title);
+				escaped = '"' + column.title.replace(/"/g, '""') + '"';
+				csv += (i === 0 ? escaped : "," + escaped);
 			});
 			csv += "\n";
-			F.arr.each(this.rows(filtered), function(row){
-				F.arr.each(columns, function(column, i){
-					csv += (i === 0 ? row[column.name] : "," + row[column.name]);
+
+			var rows = filtered ? this.ft.rows.all : this.snapshot;
+			F.arr.each(rows, function(row){
+				F.arr.each(row.cells, function(cell, i){
+					if (!cell.column.internal){
+						value = cell.column.stringify.call(cell.column, cell.value, cell.ft.o, cell.row.value);
+						escaped = '"' + value.replace(/"/g, '""') + '"';
+						csv += (i === 0 ? escaped : "," + escaped);
+					}
 				});
 				csv += "\n";
 			});
