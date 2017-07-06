@@ -105,6 +105,12 @@ module.exports = function (grunt) {
 				],
 				dest: "compiled/footable.state.js"
 			},
+			export_js: {
+				src: [
+					"src/js/components/export/**/*.js"
+				],
+				dest: "compiled/footable.export.js"
+			},
 			all_js: {
 				src: [
 					"compiled/footable.core.js",
@@ -112,7 +118,8 @@ module.exports = function (grunt) {
 					"compiled/footable.sorting.js",
 					"compiled/footable.paging.js",
 					"compiled/footable.editing.js",
-					"compiled/footable.state.js"
+					"compiled/footable.state.js",
+					"compiled/footable.export.js"
 				],
 				dest: "compiled/footable.js"
 			},
@@ -156,7 +163,8 @@ module.exports = function (grunt) {
 					'compiled/footable.sorting.min.js': [ "compiled/footable.sorting.js" ],
 					'compiled/footable.paging.min.js': [ "compiled/footable.paging.js" ],
 					'compiled/footable.editing.min.js': [ "compiled/footable.editing.js" ],
-					'compiled/footable.state.min.js': [ "compiled/footable.state.js" ]
+					'compiled/footable.state.min.js': [ "compiled/footable.state.js" ],
+					'compiled/footable.export.min.js': [ "compiled/footable.export.js" ]
 				}
 			}
 		},
@@ -259,7 +267,9 @@ module.exports = function (grunt) {
 						'footable.editing.js',
 						'footable.editing.min.js',
 						'footable.state.js',
-						'footable.state.min.js'
+						'footable.state.min.js',
+						'footable.export.js',
+						'footable.export.min.js'
 					],
 					dest: 'js/'
 				}]

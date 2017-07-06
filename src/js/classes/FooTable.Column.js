@@ -48,6 +48,14 @@
 			 * @default -1
 			 */
 			this.index = F.is.number(definition.index) ? definition.index : -1;
+			/**
+			 * Whether or not this in an internal only column.
+			 * @instance
+			 * @readonly
+			 * @type {boolean}
+			 * @description Internal columns or there cells will not be returned when calling methods such as `FooTable.Row#val`.
+			 */
+			this.internal = false;
 			this.define(definition);
 			this.$create();
 		},
@@ -134,10 +142,12 @@
 		 * @instance
 		 * @protected
 		 * @param {string} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.Column
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return value == null ? '' : value;
 		},
 		/**

@@ -213,7 +213,7 @@
 
 			</div>
 
-			<!-- delay -->
+			<!-- connectors -->
 			<a href="#connectors" class="list-group-item anchored">
 				<span id="connectors" class="anchor">&nbsp;</span>
 				<h4 class="list-group-item-heading">connectors <small>boolean</small></h4>
@@ -251,6 +251,55 @@
 	$(&#39;.table&#39;).footable({
 		&quot;filtering&quot;: {
 			&quot;connectors&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- container -->
+			<a href="#container" class="list-group-item anchored">
+				<span id="container" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">container <small>string</small></h4>
+				<p class="list-group-item-text">A selector specifying where to place the filtering components form.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>null</code></p>
+							<p>By default the form is displayed within a row in the head of the table. By specifying a selector nothing is displayed in the table and the form is instead appended to the first element matched by the selector.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;div id=&quot;filter-form-container&quot;&gt;&lt;/div&gt;
+&lt;table class=&quot;table&quot; data-filter-container=&quot;#filter-form-container&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;container&quot;: &quot;#filter-form-container&quot;
 		}
 	});
 });</code></pre>
@@ -395,6 +444,54 @@
 	$(&#39;.table&#39;).footable({
 		&quot;filtering&quot;: {
 			&quot;exactMatch&quot;: true
+		}
+	});
+});</code></pre>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- focus -->
+			<a href="#focus" class="list-group-item anchored">
+				<span id="focus" class="anchor">&nbsp;</span>
+				<h4 class="list-group-item-heading">focus <small>boolean</small></h4>
+				<p class="list-group-item-text">Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.</p>
+			</a>
+			<div class="list-group-detail">
+				<div class="list-group-detail-inner">
+
+					<div class="examples">
+
+						<div class="example default">
+							<p><code>true</code></p>
+							<p>By default the search input will receive focus after the search/clear button is clicked or after auto applying the search input query.</p>
+						</div>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example static">
+							<p>To supply this option through data attributes you must specify the attribute on the <code>table</code> element.</p>
+						</div>
+						<pre class="language-markup" data-lang="markup"><code>&lt;table class=&quot;table&quot; data-filter-focus=&quot;true&quot;&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+					</div>
+
+					<div class="examples">
+
+						<div class="example javascript">
+							<p>The below shows how to supply the value directly through the options.</p>
+						</div>
+						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;filtering&quot;: {
+			&quot;focus&quot;: true
 		}
 	});
 });</code></pre>

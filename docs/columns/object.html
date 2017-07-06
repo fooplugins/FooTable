@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--<link rel="icon" href="../../favicon.ico">-->
+
+	<title>Object columns - FooTable</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<!-- Prism -->
+	<link href="../css/prism.css" rel="stylesheet">
+
+	<!-- FooTable Bootstrap CSS -->
+	<link href="../../compiled/footable.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="../css/docs.css" rel="stylesheet">
+
+	<script src="../js/demo-rows.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="docs">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="../../index.html" class="navbar-brand">FooTable</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a class="active">Getting started</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Components <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="../components/editing.html">Editing</a></li>
+						<li><a href="../components/filtering.html">Filtering</a></li>
+						<li><a href="../components/paging.html">Paging</a></li>
+						<li><a href="../components/sorting.html">Sorting</a></li>
+						<li><a href="../components/state.html">State</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../jsdocs/index.html" target="_blank">JSDocs</a></li>
+				<li><a href="https://github.com/fooplugins/FooTable" target="_blank">GitHub</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>Object Columns</h1>
+		<h2>Options, how to use, and basic examples for object columns.</h2>
+	</div>
+</div>
+
+<div class="container">
+
+	<p class="lead">
+		When specifying an object column the default formatter simply outputs the <code>JSON.stringify()</code> result of the supplied object. This column is meant to be used in conjunction with
+		a custom formatter/parser to achieve your desired results.
+	</p>
+
+	<!-- Options -->
+	<div class="docs-section">
+		<h1 class="page-header anchored"><span id="options" class="anchor">&nbsp;</span>Options</h1>
+		<p class="lead">There are no additional options when using the object column type however it is intended to be used in conjunction with the <a href="../getting-started.html#column-formatter">column formatter option</a> to create your desired cell contents.</p>
+	</div>
+
+	<!-- Examples -->
+	<div class="docs-section">
+		<h1 id="examples" class="page-header">Examples</h1>
+		<div class="examples">
+			<div class="example static plural">
+				<p>
+					The below shows a basic object column where the cell <a href="../getting-started.html#cell-value"><code>value</code></a> is a valid JSON string, including quotes around property names,
+					that describes parameters for <a href="http://satyr.io">satyr.io's</a> image API.
+					The custom formatter transforms the parsed object into an <code>&lt;img/&gt;</code> to be used as the cell contents.
+				</p>
+				<script>
+					function satyrFormatter(value){
+						if (value){
+							return '<img src="http://satyr.io/'+value.width+'x'+value.height+'/'+value.theme+'"/>';
+						}
+						return "";
+					}
+				</script>
+				<table id="object-column-example-1" class="table">
+					<thead>
+					<tr>
+						<th data-type="object" data-formatter="satyrFormatter">Image</th>
+					</tr>
+					</thead>
+					<tr>
+						<td>{"theme":1,"width":200,"height":200}</td>
+					</tr>
+					<tr>
+						<td>{"theme":2,"width":200,"height":300}</td>
+					</tr>
+					<tr>
+						<td>{"theme":3,"width":200,"height":100}</td>
+					</tr>
+				</table>
+			</div>
+			<pre class="language-javascript" data-lang="javascript"><code>function satyrFormatter(value){
+	if (value){
+		return &#39;&lt;img src=&quot;http://satyr.io/&#39;+value.width+&#39;x&#39;+value.height+&#39;/&#39;+value.theme+&#39;&quot;/&gt;&#39;;
+	}
+	return &quot;&quot;;
+}</code></pre>
+			<pre class="language-markup" data-lang="markup"><code>&lt;table id=&quot;object-column-example-1&quot; class=&quot;table&quot;&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;object&quot; data-formatter=&quot;satyrFormatter&quot;&gt;satyr.io Image&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;{&quot;theme&quot;:1,&quot;width&quot;:200,&quot;height&quot;:200}&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;{&quot;theme&quot;:2,&quot;width&quot;:200,&quot;height&quot;:300}&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;{&quot;theme&quot;:3,&quot;width&quot;:200,&quot;height&quot;:100}&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+			<p>The object can also be supplied using the <code>data-value</code> attribute on the cell element.</p>
+			<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th data-type=&quot;object&quot; data-formatter=&quot;satyrFormatter&quot;&gt;...&lt;/th&gt;
+			...
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tr&gt;
+		&lt;td data-value=&#39;{&quot;theme&quot;:1,&quot;width&quot;:200,&quot;height&quot;:200}&#39;&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+	...
+&lt;/table&gt;</code></pre>
+
+		</div>
+
+		<div class="examples">
+			<div class="example javascript plural">
+				<p>
+					Implementing an object column through the options requires the column's <a href="../getting-started.html#column-type"><code>type</code></a> option be set to <code>"object"</code>
+					and that the <a href="../getting-started.html#column-name"><code>name</code></a> of the column matches an object property in the row data. The
+					<a href="../getting-started.html#column-formatter"><code>formatter</code></a> option should also be supplied to create your cell contents.
+				</p>
+				<table id="object-column-example-2" class="table"></table>
+			</div>
+			<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
+	$(&#39;.table&#39;).footable({
+		&quot;columns&quot;: [{
+			&quot;type&quot;: &quot;object&quot;,
+			&quot;name&quot;: &quot;satyr&quot;,
+			&quot;formatter&quot;: function(value){
+				if (value){
+					return &#39;&lt;img src=&quot;http://satyr.io/&#39;+value.width+&#39;x&#39;+value.height+&#39;/&#39;+value.theme+&#39;&quot;/&gt;&#39;;
+				}
+				return &quot;&quot;;
+			}
+			...
+		},{
+			...
+		}],
+		&quot;rows&quot;: [{
+			&quot;satyr&quot;: {
+				&quot;theme&quot;: 1,
+				&quot;width&quot;: 200,
+				&quot;height&quot;: 200
+			},
+			...
+		},{
+			...
+		}]
+	});
+});</code></pre>
+
+		</div>
+
+	</div>
+
+</div> <!-- /container -->
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="../js/prism.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+<script src="../js/docs.js"></script>
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- Add in FooTable itself -->
+<script src="../../compiled/footable.js"></script>
+<!-- Initialize FooTable -->
+<script>
+	jQuery(function($){
+		$("#object-column-example-1").footable();
+	});
+</script>
+</body>
+</html>

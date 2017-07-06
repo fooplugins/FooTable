@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.4
+* @version 3.1.5
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -1165,7 +1165,7 @@
 		 * @this FooTable.Cell
 		 */
 		format: function(value){
-			return this.column.formatter.call(this.column, value, this.ft.o);
+			return this.column.formatter.call(this.column, value, this.ft.o, this.row.value);
 		},
 		/**
 		 * Allows easy access to getting or setting the cell's value. If the value is set all associated properties are also updated along with the actual element.
@@ -1173,10 +1173,11 @@
 		 * @instance
 		 * @param {*} [value] - The value to set for the cell. If not supplied the current value of the cell is returned.
 		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
+		 * @param {boolean} [redrawSelf=true] - Whether or not to redraw the cell itself once the value has been set, if `false` this will override the supplied `redraw` value and prevent the row from redrawing as well.
 		 * @returns {(*|undefined)}
 		 * @this FooTable.Cell
 		 */
-		val: function(value, redraw){
+		val: function(value, redraw, redrawSelf){
 			if (F.is.undef(value)){
 				// get
 				return this.value;
@@ -1192,7 +1193,8 @@
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
 
-			if (this.created){
+			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
+			if (this.created && redrawSelf){
 				this.$el.data('value', this.value).empty();
 
 				var $detail = this.$detail.children('td').first().empty(),
@@ -1293,6 +1295,14 @@
 			 * @default -1
 			 */
 			this.index = F.is.number(definition.index) ? definition.index : -1;
+			/**
+			 * Whether or not this in an internal only column.
+			 * @instance
+			 * @readonly
+			 * @type {boolean}
+			 * @description Internal columns or there cells will not be returned when calling methods such as `FooTable.Row#val`.
+			 */
+			this.internal = false;
 			this.define(definition);
 			this.$create();
 		},
@@ -1379,10 +1389,12 @@
 		 * @instance
 		 * @protected
 		 * @param {string} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.Column
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return value == null ? '' : value;
 		},
 		/**
@@ -1674,17 +1686,20 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
-		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the table once the value has been set.
+		 * @param {boolean} [redrawSelf=true] - Whether or not to redraw the row itself once the value has been set, if `false` this will override the supplied `redraw` value and prevent the table from redrawing as well.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data, redraw){
+		val: function(data, redraw, redrawSelf){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
 				if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
 					this.value = {};
 					F.arr.each(this.cells, function(cell){
-						self.value[cell.column.name] = cell.val();
+						if (!cell.column.internal){
+							self.value[cell.column.name] = cell.val();
+						}
 					});
 				}
 				return this.value;
@@ -1717,11 +1732,14 @@
 				this.value = null;
 			}
 
+			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
+				if (!cell.column.internal && F.is.defined(self.value[cell.column.name])){
+					cell.val(self.value[cell.column.name], false, redrawSelf);
+				}
 			});
 
-			if (this.created){
+			if (this.created && redrawSelf){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
 				if (F.is.boolean(redraw) ? redraw : true) this.draw();
@@ -1780,6 +1798,7 @@
 				self.$el.attr('data-expanded', true);
 				self.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
 				self.expanded = true;
+				self.ft.raise('expanded.ft.row', [self]);
 			});
 		},
 		/**
@@ -1807,6 +1826,7 @@
 				self.$el.removeAttr('data-expanded');
 				self.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
 				if (F.is.boolean(setExpanded) ? setExpanded : true) self.expanded = false;
+				self.ft.raise('collapsed.ft.row', [self]);
 			});
 		},
 		/**
@@ -2000,23 +2020,23 @@
 		 */
 		_construct: function(ready){
 			var self = this;
-			this._preinit().then(function(){
-				return self._init();
-			}).always(function(arg){
-				self.$el.show();
-				if (F.is.error(arg)){
-					console.error('FooTable: unhandled error thrown during initialization.', arg);
-				} else {
+			return this._preinit().then(function(){
+				return self._init().then(function(){
 					/**
-					 * The postinit.ft.table event is raised after the plugin has been initialized and the table drawn.
+					 * The ready.ft.table event is raised after the plugin has been initialized and the table drawn.
 					 * Calling preventDefault on this event will stop the ready callback being executed.
-					 * @event FooTable.Table#"postinit.ft.table"
+					 * @event FooTable.Table#"ready.ft.table"
 					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 					 */
 					return self.raise('ready.ft.table').then(function(){
 						if (F.is.fn(ready)) ready.call(self, self);
 					});
+				});
+			}).always(function(arg){
+				self.$el.show();
+				if (F.is.error(arg)){
+					console.error('FooTable: unhandled error thrown during initialization.', arg);
 				}
 			});
 		},
@@ -2123,6 +2143,7 @@
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
 					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
+					F.instances[self.id] = null;
 				});
 			}).fail(function(err){
 				if (F.is.error(err)){
@@ -2312,6 +2333,61 @@
 })(jQuery, FooTable);
 (function($, F){
 
+	F.ArrayColumn = F.Column.extend(/** @lends FooTable.ArrayColumn */{
+		/**
+		 * @summary A column to handle Array values.
+		 * @constructs
+		 * @extends FooTable.Column
+		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
+		 * @param {object} definition - An object containing all the properties to set for the column.
+		 */
+		construct: function(instance, definition) {
+			this._super(instance, definition, 'array');
+		},
+		/**
+		 * @summary Parses the supplied value or element to retrieve a column value.
+		 * @description This is supplied either the cell value or jQuery object to parse. This method will return either the Array containing the values or null.
+		 * @instance
+		 * @protected
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+		 * @returns {(array|null)}
+		 */
+		parser: function(valueOrElement){
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var $el = $(valueOrElement), data = $el.data('value'); // .data() will automatically convert a JSON string to an array
+				if (F.is.array(data)) return data;
+				data = $el.html();
+				try {
+					data = JSON.parse(data);
+				} catch(err) {
+					data = null;
+				}
+				return F.is.array(data) ? data : null; // if we have an array return it
+			}
+			if (F.is.array(valueOrElement)) return valueOrElement; // if we have an array return it
+			return null; // otherwise we have no value so return null
+		},
+		/**
+		 * @summary Formats the column value and creates the HTML seen within a cell.
+		 * @description This is supplied the value retrieved from the {@link FooTable.ArrayColumn#parser} function and must return a string, HTMLElement or jQuery object.
+		 * The return value from this function is what is displayed in the cell in the table.
+		 * @instance
+		 * @protected
+		 * @param {?Array} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		formatter: function(value, options, rowData){
+			return F.is.array(value) ? JSON.stringify(value) : '';
+		}
+	});
+
+	F.columns.register('array', F.ArrayColumn);
+
+})(jQuery, FooTable);
+(function($, F){
+
 	if (F.is.undef(window.moment)){
 		// The DateColumn requires moment.js to parse and format date values. Goto http://momentjs.com/ to get it.
 		return;
@@ -2371,10 +2447,12 @@
 		 * @instance
 		 * @protected
 		 * @param {*} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.DateColumn
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
 		},
 		/**
@@ -2474,7 +2552,7 @@
 			this.thousandSeparator = F.is.string(definition.thousandSeparator) ? definition.thousandSeparator : ',';
 			this.decimalSeparatorRegex = new RegExp(F.str.escapeRegExp(this.decimalSeparator), 'g');
 			this.thousandSeparatorRegex = new RegExp(F.str.escapeRegExp(this.thousandSeparator), 'g');
-			this.cleanRegex = new RegExp('[^0-9' + F.str.escapeRegExp(this.decimalSeparator) + ']', 'g');
+			this.cleanRegex = new RegExp('[^\-0-9' + F.str.escapeRegExp(this.decimalSeparator) + ']', 'g');
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.Column#formatter} function
@@ -2503,10 +2581,12 @@
 		 * @instance
 		 * @protected
 		 * @param {number} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.NumberColumn
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			if (value == null) return '';
 			var s = (value + '').split('.');
 			if (s.length == 2 && s[0].length > 3) {
@@ -2517,6 +2597,61 @@
 	});
 
 	F.columns.register('number', F.NumberColumn);
+
+})(jQuery, FooTable);
+(function($, F){
+
+	F.ObjectColumn = F.Column.extend(/** @lends FooTable.ObjectColumn */{
+		/**
+		 * @summary A column to handle Object values.
+		 * @constructs
+		 * @extends FooTable.Column
+		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
+		 * @param {object} definition - An object containing all the properties to set for the column.
+		 */
+		construct: function(instance, definition) {
+			this._super(instance, definition, 'object');
+		},
+		/**
+		 * @summary Parses the supplied value or element to retrieve a column value.
+		 * @description This is supplied either the cell value or jQuery object to parse. This method will return either the Object containing the values or null.
+		 * @instance
+		 * @protected
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+		 * @returns {(object|null)}
+		 */
+		parser: function(valueOrElement){
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var $el = $(valueOrElement), data = $el.data('value'); // .data() will automatically convert a JSON string to an object
+				if (F.is.object(data)) return data;
+				data = $el.html();
+				try {
+					data = JSON.parse(data);
+				} catch(err) {
+					data = null;
+				}
+				return F.is.object(data) ? data : null; // if we have an object return it
+			}
+			if (F.is.object(valueOrElement)) return valueOrElement; // if we have an object return it
+			return null; // otherwise we have no value so return null
+		},
+		/**
+		 * @summary Formats the column value and creates the HTML seen within a cell.
+		 * @description This is supplied the value retrieved from the {@link FooTable.ObjectColumn#parser} function and must return a string, HTMLElement or jQuery object.
+		 * The return value from this function is what is displayed in the cell in the table.
+		 * @instance
+		 * @protected
+		 * @param {*} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		formatter: function(value, options, rowData){
+			return F.is.object(value) ? JSON.stringify(value) : '';
+		}
+	});
+
+	F.columns.register('object', F.ObjectColumn);
 
 })(jQuery, FooTable);
 (function($, F){
@@ -3367,6 +3502,7 @@
 				F.arr.each(self.array, function(row){
 					row.predraw(!self._fromHTML);
 				});
+				self.all = self.array = [];
 			});
 		},
 		/**
@@ -3666,6 +3802,22 @@
 			 */
 			this.position = table.o.filtering.position;
 			/**
+			 * Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+			 * @type {boolean}
+			 */
+			this.focus = table.o.filtering.focus;
+			/**
+			 * A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
+			 * @type {string}
+			 */
+			this.container = table.o.filtering.container;
+			/**
+			 * The jQuery object of the element containing the entire filtering form.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$container = null;
+			/**
 			 * The jQuery row object that contains all the filtering specific elements.
 			 * @instance
 			 * @type {jQuery}
@@ -3677,6 +3829,12 @@
 			 * @type {jQuery}
 			 */
 			this.$cell = null;
+			/**
+			 * The jQuery form object of the form that contains the search input and column selector.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$form = null;
 			/**
 			 * The jQuery object of the column selector dropdown.
 			 * @instance
@@ -3763,6 +3921,10 @@
 					? data.filterExactMatch
 					: self.exactMatch;
 
+				self.focus = F.is.boolean(data.filterFocus)
+					? data.filterFocus
+					: self.focus;
+
 				self.delay = F.is.number(data.filterDelay)
 					? data.filterDelay
 					: self.delay;
@@ -3774,6 +3936,10 @@
 				self.dropdownTitle = F.is.string(data.filterDropdownTitle)
 					? data.filterDropdownTitle
 					: self.dropdownTitle;
+
+				self.container = F.is.string(data.filterContainer)
+					? data.filterContainer
+					: self.container;
 
 				self.filters = F.is.array(data.filterFilters)
 					? self.ensure(data.filterFilters)
@@ -3821,6 +3987,7 @@
 		 * @fires FooTable.Filtering#"destroy.ft.filtering"
 		 */
 		destroy: function () {
+			var self = this;
 			/**
 			 * The destroy.ft.filtering event is raised before its UI is removed.
 			 * Calling preventDefault on this event will prevent the component from being destroyed.
@@ -3828,7 +3995,6 @@
 			 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 			 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 			 */
-			var self = this;
 			return self.ft.raise('destroy.ft.filtering').then(function(){
 				self.ft.$el.removeClass('footable-filtering')
 					.find('thead > tr.footable-filtering').remove();
@@ -3859,10 +4025,16 @@
 			}
 			self.ft.$el.addClass('footable-filtering').addClass(position);
 
-			// add it to a row and then populate it with the search input and column selector dropdown.
-			self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
-			self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
-			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$cell);
+			self.$container = self.container === null ? $() : $(self.container).first();
+			if (!self.$container.length){
+				// add it to a row and then populate it with the search input and column selector dropdown.
+				self.$row = $('<tr/>', {'class': 'footable-filtering'}).prependTo(self.ft.$el.children('thead'));
+				self.$cell = $('<th/>').attr('colspan', self.ft.columns.visibleColspan).appendTo(self.$row);
+				self.$container = self.$cell;
+			} else {
+				self.$container.addClass('footable-filtering-external').addClass(position);
+			}
+			self.$form = $('<form/>', {'class': 'form-inline'}).append($form_grp).appendTo(self.$container);
 
 			self.$input = $('<input/>', {type: 'text', 'class': 'form-control', placeholder: self.placeholder});
 
@@ -3878,7 +4050,7 @@
 				F.arr.map(self.ft.columns.array, function (col) {
 					return col.filterable ? $('<li/>').append(
 						$('<a/>', {'class': 'checkbox'}).append(
-							$('<label/>', {text: col.title}).prepend(
+							$('<label/>', {html: col.title}).prepend(
 								$('<input/>', {type: 'checkbox', checked: true}).data('__FooTableColumn__', col)
 							)
 						)
@@ -3914,7 +4086,9 @@
 		 * @protected
 		 */
 		draw: function(){
-			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			if (F.is.jq(this.$cell)){
+				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			}
 			var search = this.find('search');
 			if (search instanceof F.Filter){
 				var query = search.query.val();
@@ -3959,11 +4133,12 @@
 		/**
 		 * Performs the required steps to handle filtering including the raising of the {@link FooTable.Filtering#"before.ft.filtering"} and {@link FooTable.Filtering#"after.ft.filtering"} events.
 		 * @instance
+		 * @param {boolean} [focus=false] - Whether or not to set the focus to the input once filtering is complete.
 		 * @returns {jQuery.Promise}
 		 * @fires FooTable.Filtering#"before.ft.filtering"
 		 * @fires FooTable.Filtering#"after.ft.filtering"
 		 */
-		filter: function(){
+		filter: function(focus){
 			var self = this;
 			self.filters = self.ensure(self.filters);
 			/**
@@ -3975,7 +4150,17 @@
 			 */
 			return self.ft.raise('before.ft.filtering', [self.filters]).then(function(){
 				self.filters = self.ensure(self.filters);
+				if (focus){
+					var start = self.$input.prop('selectionStart'),
+						end = self.$input.prop('selectionEnd');
+				}
 				return self.ft.draw().then(function(){
+					if (focus){
+						self.$input.focus().prop({
+							selectionStart: start,
+							selectionEnd: end
+						});
+					}
 					/**
 					 * The after.ft.filtering event is raised after a filter has been applied.
 					 * @event FooTable.Filtering#"after.ft.filtering"
@@ -3996,7 +4181,7 @@
 		 */
 		clear: function(){
 			this.filters = F.arr.get(this.filters, function(f){ return f.hidden; });
-			return this.filter();
+			return this.filter(this.focus);
 		},
 		/**
 		 * Toggles the button icon between the search and clear icons based on the supplied value.
@@ -4111,7 +4296,7 @@
 							query = '"' + query + '"';
 						}
 						self.addFilter('search', query);
-						self.filter();
+						self.filter(self.focus);
 					} else if (F.is.emptyString(query)){
 						self.clear();
 					}
@@ -4137,7 +4322,7 @@
 						query = '"' + query + '"';
 					}
 					self.addFilter('search', query);
-					self.filter();
+					self.filter(self.focus);
 				}
 			}
 		},
@@ -4450,8 +4635,8 @@
 		this.__filtering_define__(valueOrElement);
 	});
 	// overrides the public val method and replaces it with our own
-	F.Cell.extend('val', function(value){
-		var val = this._super(value);
+	F.Cell.extend('val', function(value, redraw, redrawSelf){
+		var val = this._super(value, redraw, redrawSelf);
 		this.__filtering_val__(value);
 		return val;
 	});
@@ -4512,6 +4697,8 @@
 	 * @prop {string} connectors=true - Whether or not to replace phrase connectors (+.-_) with space before executing the query.
 	 * @prop {boolean} ignoreCase=true - Whether or not ignore case when matching.
 	 * @prop {boolean} exactMatch=false - Whether or not search queries are treated as phrases when matching.
+	 * @prop {boolean} focus=true - Whether or not to focus the search input after the search/clear button is clicked or after auto applying the search input query.
+	 * @prop {string} container=null - A selector specifying where to place the filtering components form, if null the form is displayed within a row in the head of the table.
 	 */
 	F.Defaults.prototype.filtering = {
 		enabled: false,
@@ -4524,7 +4711,9 @@
 		position: 'right',
 		connectors: true,
 		ignoreCase: true,
-		exactMatch: false
+		exactMatch: false,
+		focus: true,
+		container: null
 	};
 })(FooTable);
 (function(F){
@@ -4883,8 +5072,8 @@
 		this.__sorting_define__(valueOrElement);
 	});
 	// overrides the public val method and replaces it with our own
-	F.Cell.extend('val', function(value){
-		var val = this._super(value);
+	F.Cell.extend('val', function(value, redraw, redrawSelf){
+		var val = this._super(value, redraw, redrawSelf);
 		this.__sorting_val__(value);
 		return val;
 	});
@@ -4998,7 +5187,7 @@
 		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
 		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
 			var data = $(valueOrElement).data('sortValue');
-			return F.is.defined(data) ? data : $.trim($(valueOrElement)[this.sortUse]());
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
 		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
@@ -5006,6 +5195,31 @@
 			if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
 		}
 		if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement;
+		return null;
+	};
+
+})(jQuery, FooTable);
+(function($, F){
+
+	/**
+	 * This is supplied either the cell value or jQuery object to parse. A value must be returned from this method and will be used during sorting operations.
+	 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+	 * @returns {*}
+	 */
+	F.NumberColumn.prototype.sortValue = function(valueOrElement){
+		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.number(data) ? data : this.parser(valueOrElement);
+		}
+		// if options are supplied with the value
+		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
+			if (F.is.string(valueOrElement.options.sortValue)) return this.parser(valueOrElement);
+			if (F.is.number(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
+			if (F.is.number(valueOrElement.value)) return valueOrElement.value;
+		}
+		if (F.is.string(valueOrElement)) return this.parser(valueOrElement);
+		if (F.is.number(valueOrElement)) return valueOrElement;
 		return null;
 	};
 
@@ -5121,6 +5335,12 @@
 			 */
 			this.countFormat = table.o.paging.countFormat;
 			/**
+			 * A selector specifying where to place the paging components UI, if null the UI is displayed within a row in the foot of the table.
+			 * @instance
+			 * @type {string}
+			 */
+			this.container = table.o.paging.container;
+				/**
 			 * The total number of pages.
 			 * @instance
 			 * @type {number}
@@ -5145,6 +5365,18 @@
 			 */
 			this.formattedCount = null;
 			/**
+			 * The jQuery object of the element containing the entire paging UI.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$container = null;
+			/**
+			 * The jQuery object of the element wrapping all the paging UI elements.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$wrapper = null;
+			/** +
 			 * The jQuery row object that contains all the paging specific elements.
 			 * @instance
 			 * @type {jQuery}
@@ -5239,6 +5471,10 @@
 					? data.pagingCountFormat
 					: self.countFormat;
 
+				self.container = F.is.string(data.pagingContainer)
+					? data.pagingContainer
+					: self.container;
+
 				self.total = Math.ceil(self.ft.rows.all.length / self.size);
 			}, function(){
 				self.enabled = false;
@@ -5309,20 +5545,30 @@
 		draw: function(){
 			if (this.total <= 1){
 				if (!this.detached){
-					this.$row.detach();
+					if (this.$row){
+						this.$row.detach();
+					} else {
+						this.$wrapper.detach();
+					}
 					this.detached = true;
 				}
 			} else {
 				if (this.detached){
-					var $tfoot = this.ft.$el.children('tfoot');
-					if ($tfoot.length == 0){
-						$tfoot = $('<tfoot/>');
-						this.ft.$el.append($tfoot);
+					if (this.$row){
+						var $tfoot = this.ft.$el.children('tfoot');
+						if ($tfoot.length == 0){
+							$tfoot = $('<tfoot/>');
+							this.ft.$el.append($tfoot);
+						}
+						this.$row.appendTo($tfoot);
+					} else {
+						this.$wrapper.appendTo(this.$container);
 					}
-					this.$row.appendTo($tfoot);
 					this.detached = false;
 				}
-				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+				if (F.is.jq(this.$cell)){
+					this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+				}
 				this._createLinks();
 				this._setVisible(this.current, this.current > this.previous);
 				this._setNavigation(true);
@@ -5342,16 +5588,24 @@
 				case 'right': position = 'footable-paging-right'; break;
 			}
 			this.ft.$el.addClass('footable-paging').addClass(position);
-			this.$cell = $('<td/>').attr('colspan', this.ft.columns.visibleColspan);
-			var $tfoot = this.ft.$el.children('tfoot');
-			if ($tfoot.length == 0){
-				$tfoot = $('<tfoot/>');
-				this.ft.$el.append($tfoot);
+
+			this.$container = this.container === null ? null : $(this.container).first();
+			if (!F.is.jq(this.$container)){
+				var $tfoot = this.ft.$el.children('tfoot');
+				if ($tfoot.length == 0){
+					$tfoot = $('<tfoot/>');
+					this.ft.$el.append($tfoot);
+				}
+				// add it to a row and then populate it with the search input and column selector dropdown.
+				this.$row = $('<tr/>', {'class': 'footable-paging'}).prependTo($tfoot);
+				this.$container = this.$cell = $('<td/>').attr('colspan', this.ft.columns.visibleColspan).appendTo(this.$row);
+			} else {
+				this.$container.addClass('footable-paging-external').addClass(position);
 			}
-			this.$row = $('<tr/>', { 'class': 'footable-paging' }).append(this.$cell).appendTo($tfoot);
+			this.$wrapper = $('<div/>', {'class': 'footable-pagination-wrapper'}).appendTo(this.$container);
 			this.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: this }, this._onPageClicked);
 			this.$count = $('<span/>', { 'class': 'label label-default' });
-			this.$cell.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
+			this.$wrapper.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
 			this.detached = false;
 		},
 
@@ -5453,18 +5707,25 @@
 			this._setNavigation(false);
 		},
 		/**
-		 * Gets or sets the current page size
+		 * Gets or sets the current page size.
 		 * @instance
-		 * @param {number} [value] - The new page size to use.
+		 * @param {(number|string)} [value] - The new page size to use, this value is supplied to `parseInt` so strings can be used. If not supplied or an invalid valid the current page size is returned.
 		 * @returns {(number|undefined)}
 		 */
 		pageSize: function(value){
-			if (!F.is.number(value)){
+			value = parseInt(value);
+			if (isNaN(value)){
 				return this.size;
 			}
 			this.size = value;
 			this.total = Math.ceil(this.ft.rows.all.length / this.size);
-			if (F.is.jq(this.$row)) this.$row.remove();
+			if (F.is.jq(this.$wrapper)){
+				if (this.$container.is("td")){
+					this.$row.remove();
+				} else {
+					this.$wrapper.remove();
+				}
+			}
 			this.$create();
 			this.ft.draw();
 		},
@@ -5663,6 +5924,7 @@
 	 * @prop {number} limit=5 - The maximum number of page links to display at once.
 	 * @prop {string} position="center" - The string used to specify the alignment of the pagination control.
 	 * @prop {number} size=10 - The number of rows displayed per page.
+	 * @prop {string} container=null - A selector specifying where to place the paging components UI, if null the UI is displayed within a row in the foot of the table.
 	 * @prop {object} strings - An object containing the strings used by the paging buttons.
 	 * @prop {string} strings.first="&laquo;" - The string used for the 'first' button.
 	 * @prop {string} strings.prev="&lsaquo;" - The string used for the 'previous' button.
@@ -5678,6 +5940,7 @@
 		limit: 5,
 		position: 'center',
 		size: 10,
+		container: null,
 		strings: {
 			first: '&laquo;',
 			prev: '&lsaquo;',
@@ -6298,6 +6561,7 @@
 		construct: function(instance, editing, definition){
 			this._super(instance, definition, 'editing');
 			this.editing = editing;
+			this.internal = true;
 		},
 		/**
 		 * After the column has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.
@@ -6906,7 +7170,7 @@
 	// hook into the _construct method so we can add the state property to the table.
 	F.Table.extend('_construct', function(ready){
 		this.state = this.use(FooTable.State);
-		this._super(ready);
+		return this._super(ready);
 	});
 
 	// hook into the _preinit method so we can trigger a plugin wide read state operation.
@@ -6928,5 +7192,178 @@
 			}
 		});
 	});
+
+})(FooTable);
+(function($, F){
+
+	F.Export = F.Component.extend(/** @lends FooTable.Export */{
+		/**
+		 * @summary This component provides some basic export functionality.
+		 * @memberof FooTable
+		 * @constructs Export
+		 * @param {FooTable.Table} table - The current instance of the plugin.
+		 */
+		construct: function(table){
+			// call the constructor of the base class
+			this._super(table, true);
+			/**
+			 * @summary A snapshot of the working set of rows prior to being trimmed by the paging component.
+			 * @memberof FooTable.Export#
+			 * @name snapshot
+			 * @type {FooTable.Row[]}
+			 */
+			this.snapshot = [];
+		},
+		/**
+		 * @summary Hooks into the predraw pipeline after sorting and filtering have taken place but prior to paging.
+		 * @memberof FooTable.Export#
+		 * @function predraw
+		 * @description This method allows us to take a snapshot of the working set of rows before they are trimmed by the paging component and is called by the plugin instance.
+		 */
+		predraw: function(){
+			this.snapshot = this.ft.rows.array.slice(0);
+		},
+		/**
+		 * @summary Return the columns as simple JavaScript objects in an array.
+		 * @memberof FooTable.Export#
+		 * @function columns
+		 * @returns {Object[]}
+		 */
+		columns: function(){
+			var result = [];
+			F.arr.each(this.ft.columns.array, function(column){
+				if (!column.internal){
+					result.push({
+						type: column.type,
+						name: column.name,
+						title: column.title,
+						visible: column.visible,
+						hidden: column.hidden,
+						classes: column.classes,
+						style: column.style
+					});
+				}
+			});
+			return result;
+		},
+		/**
+		 * @summary Return the rows as simple JavaScript objects in an array.
+		 * @memberof FooTable.Export#
+		 * @function rows
+		 * @param {boolean} [filtered=false] - Whether or not to exclude filtered rows from the result.
+		 * @returns {Object[]}
+		 */
+		rows: function(filtered){
+			filtered = F.is.boolean(filtered) ? filtered : false;
+			var rows = filtered ? this.ft.rows.all : this.snapshot, result = [];
+			F.arr.each(rows, function(row){
+				result.push(row.val());
+			});
+			return result;
+		},
+		/**
+		 * @summary Return the columns and rows as a properly formatted JSON object.
+		 * @memberof FooTable.Export#
+		 * @function json
+		 * @param {boolean} [filtered=false] - Whether or not to exclude filtered rows from the result.
+		 * @returns {Object}
+		 */
+		json: function(filtered){
+			return JSON.parse(JSON.stringify({columns: this.columns(),rows: this.rows(filtered)}));
+		},
+		/**
+		 * @summary Return the columns and rows as a properly formatted CSV value.
+		 * @memberof FooTable.Export#
+		 * @function csv
+		 * @param {boolean} [filtered=false] - Whether or not to exclude filtered rows from the result.
+		 * @returns {string}
+		 */
+		csv: function(filtered){
+			var csv = "", columns = this.columns(), value, escaped;
+			F.arr.each(columns, function(column, i){
+				escaped = '"' + column.title.replace(/"/g, '""') + '"';
+				csv += (i === 0 ? escaped : "," + escaped);
+			});
+			csv += "\n";
+
+			var rows = filtered ? this.ft.rows.all : this.snapshot;
+			F.arr.each(rows, function(row){
+				F.arr.each(row.cells, function(cell, i){
+					if (!cell.column.internal){
+						value = cell.column.stringify.call(cell.column, cell.value, cell.ft.o, cell.row.value);
+						escaped = '"' + value.replace(/"/g, '""') + '"';
+						csv += (i === 0 ? escaped : "," + escaped);
+					}
+				});
+				csv += "\n";
+			});
+			return csv;
+		}
+	});
+
+	// register the component using a priority of 490 which falls just after filtering (500) and before paging (400).
+	F.components.register("export", F.Export, 490);
+
+})(jQuery, FooTable);
+(function(F){
+	// this is used to define the filtering specific properties on column creation
+	F.Column.prototype.__export_define__ = function(definition){
+		this.stringify = F.checkFnValue(this, definition.stringify, this.stringify);
+	};
+
+	// overrides the public define method and replaces it with our own
+	F.Column.extend('define', function(definition){
+		this._super(definition); // call the base so we don't have to redefine any previously set properties
+		this.__export_define__(definition); // then call our own
+	});
+
+	/**
+	 * @summary Return the supplied value as a string.
+	 * @memberof FooTable.Column#
+	 * @function stringify
+	 * @returns {string}
+	 */
+	F.Column.prototype.stringify = function(value, options, rowData){
+		return value + "";
+	};
+
+	// override the base method for DateColumns
+	F.DateColumn.prototype.stringify = function(value, options, rowData){
+		return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
+	};
+
+	// override the base method for ObjectColumns
+	F.ObjectColumn.prototype.stringify = function(value, options, rowData){
+		return F.is.object(value) ? JSON.stringify(value) : "";
+	};
+
+	// override the base method for ArrayColumns
+	F.ArrayColumn.prototype.stringify = function(value, options, rowData){
+		return F.is.array(value) ? JSON.stringify(value) : "";
+	};
+
+})(FooTable);
+(function(F){
+	/**
+	 * @summary Return the columns and rows as a properly formatted JSON object.
+	 * @memberof FooTable.Table#
+	 * @function toJSON
+	 * @param {boolean} [filtered=false] - Whether or not to exclude filtered rows from the result.
+	 * @returns {Object}
+	 */
+	F.Table.prototype.toJSON = function(filtered){
+		return this.use(F.Export).json(filtered);
+	};
+
+	/**
+	 * @summary Return the columns and rows as a properly formatted CSV value.
+	 * @memberof FooTable.Table#
+	 * @function toCSV
+	 * @param {boolean} [filtered=false] - Whether or not to exclude filtered rows from the result.
+	 * @returns {string}
+	 */
+	F.Table.prototype.toCSV = function(filtered){
+		return this.use(F.Export).csv(filtered);
+	};
 
 })(FooTable);
