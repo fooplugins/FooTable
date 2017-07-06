@@ -11,4 +11,5 @@ which they are executed.
 | FooTable.State       | state           |      700 | false    |
 | FooTable.Sorting     | sorting         |      600 | false    |
 | FooTable.Filtering   | filtering       |      500 | false    |
+| FooTable.Export      | export          |      490 | false    |
 | FooTable.Paging      | paging          |      400 | false    |

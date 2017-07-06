@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.4
+* @version 3.1.5
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -346,8 +346,8 @@
 		this.__sorting_define__(valueOrElement);
 	});
 	// overrides the public val method and replaces it with our own
-	F.Cell.extend('val', function(value){
-		var val = this._super(value);
+	F.Cell.extend('val', function(value, redraw, redrawSelf){
+		var val = this._super(value, redraw, redrawSelf);
 		this.__sorting_val__(value);
 		return val;
 	});
@@ -461,7 +461,7 @@
 		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
 		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
 			var data = $(valueOrElement).data('sortValue');
-			return F.is.defined(data) ? data : $.trim($(valueOrElement)[this.sortUse]());
+			return F.is.defined(data) ? data : this.parser(valueOrElement);
 		}
 		// if options are supplied with the value
 		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
@@ -469,6 +469,31 @@
 			if (F.is.defined(valueOrElement.value)) valueOrElement = valueOrElement.value;
 		}
 		if (F.is.defined(valueOrElement) && valueOrElement != null) return valueOrElement;
+		return null;
+	};
+
+})(jQuery, FooTable);
+(function($, F){
+
+	/**
+	 * This is supplied either the cell value or jQuery object to parse. A value must be returned from this method and will be used during sorting operations.
+	 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+	 * @returns {*}
+	 */
+	F.NumberColumn.prototype.sortValue = function(valueOrElement){
+		// if we have an element or a jQuery object use jQuery to get the data value or pass it off to the parser
+		if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){
+			var data = $(valueOrElement).data('sortValue');
+			return F.is.number(data) ? data : this.parser(valueOrElement);
+		}
+		// if options are supplied with the value
+		if (F.is.hash(valueOrElement) && F.is.hash(valueOrElement.options)){
+			if (F.is.string(valueOrElement.options.sortValue)) return this.parser(valueOrElement);
+			if (F.is.number(valueOrElement.options.sortValue)) return valueOrElement.options.sortValue;
+			if (F.is.number(valueOrElement.value)) return valueOrElement.value;
+		}
+		if (F.is.string(valueOrElement)) return this.parser(valueOrElement);
+		if (F.is.number(valueOrElement)) return valueOrElement;
 		return null;
 	};
 

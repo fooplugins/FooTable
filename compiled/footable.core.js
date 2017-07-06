@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.4
+* @version 3.1.5
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -1165,7 +1165,7 @@
 		 * @this FooTable.Cell
 		 */
 		format: function(value){
-			return this.column.formatter.call(this.column, value, this.ft.o);
+			return this.column.formatter.call(this.column, value, this.ft.o, this.row.value);
 		},
 		/**
 		 * Allows easy access to getting or setting the cell's value. If the value is set all associated properties are also updated along with the actual element.
@@ -1173,10 +1173,11 @@
 		 * @instance
 		 * @param {*} [value] - The value to set for the cell. If not supplied the current value of the cell is returned.
 		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
+		 * @param {boolean} [redrawSelf=true] - Whether or not to redraw the cell itself once the value has been set, if `false` this will override the supplied `redraw` value and prevent the row from redrawing as well.
 		 * @returns {(*|undefined)}
 		 * @this FooTable.Cell
 		 */
-		val: function(value, redraw){
+		val: function(value, redraw, redrawSelf){
 			if (F.is.undef(value)){
 				// get
 				return this.value;
@@ -1192,7 +1193,8 @@
 			this.classes = F.is.array(this.o.classes) ? this.o.classes : (F.is.string(this.o.classes) ? this.o.classes.match(/\S+/g) : []);
 			this.style = F.is.hash(this.o.style) ? this.o.style : (F.is.string(this.o.style) ? F.css2json(this.o.style) : {});
 
-			if (this.created){
+			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
+			if (this.created && redrawSelf){
 				this.$el.data('value', this.value).empty();
 
 				var $detail = this.$detail.children('td').first().empty(),
@@ -1293,6 +1295,14 @@
 			 * @default -1
 			 */
 			this.index = F.is.number(definition.index) ? definition.index : -1;
+			/**
+			 * Whether or not this in an internal only column.
+			 * @instance
+			 * @readonly
+			 * @type {boolean}
+			 * @description Internal columns or there cells will not be returned when calling methods such as `FooTable.Row#val`.
+			 */
+			this.internal = false;
 			this.define(definition);
 			this.$create();
 		},
@@ -1379,10 +1389,12 @@
 		 * @instance
 		 * @protected
 		 * @param {string} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.Column
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return value == null ? '' : value;
 		},
 		/**
@@ -1674,17 +1686,20 @@
 		 * Using this method also allows us to supply an object containing options and the data for the row at the same time.
 		 * @instance
 		 * @param {object} [data] - The data to set for the row. If not supplied the current value of the row is returned.
-		 * @param {boolean} [redraw=true] - Whether or not to redraw the row once the value has been set.
+		 * @param {boolean} [redraw=true] - Whether or not to redraw the table once the value has been set.
+		 * @param {boolean} [redrawSelf=true] - Whether or not to redraw the row itself once the value has been set, if `false` this will override the supplied `redraw` value and prevent the table from redrawing as well.
 		 * @returns {(*|undefined)}
 		 */
-		val: function(data, redraw){
+		val: function(data, redraw, redrawSelf){
 			var self = this;
 			if (!F.is.hash(data)){
 				// get - check the value property and build it from the cells if required.
 				if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
 					this.value = {};
 					F.arr.each(this.cells, function(cell){
-						self.value[cell.column.name] = cell.val();
+						if (!cell.column.internal){
+							self.value[cell.column.name] = cell.val();
+						}
 					});
 				}
 				return this.value;
@@ -1717,11 +1732,14 @@
 				this.value = null;
 			}
 
+			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false);
+				if (!cell.column.internal && F.is.defined(self.value[cell.column.name])){
+					cell.val(self.value[cell.column.name], false, redrawSelf);
+				}
 			});
 
-			if (this.created){
+			if (this.created && redrawSelf){
 				this._setClasses(this.$el);
 				this._setStyle(this.$el);
 				if (F.is.boolean(redraw) ? redraw : true) this.draw();
@@ -1780,6 +1798,7 @@
 				self.$el.attr('data-expanded', true);
 				self.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
 				self.expanded = true;
+				self.ft.raise('expanded.ft.row', [self]);
 			});
 		},
 		/**
@@ -1807,6 +1826,7 @@
 				self.$el.removeAttr('data-expanded');
 				self.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
 				if (F.is.boolean(setExpanded) ? setExpanded : true) self.expanded = false;
+				self.ft.raise('collapsed.ft.row', [self]);
 			});
 		},
 		/**
@@ -2000,23 +2020,23 @@
 		 */
 		_construct: function(ready){
 			var self = this;
-			this._preinit().then(function(){
-				return self._init();
-			}).always(function(arg){
-				self.$el.show();
-				if (F.is.error(arg)){
-					console.error('FooTable: unhandled error thrown during initialization.', arg);
-				} else {
+			return this._preinit().then(function(){
+				return self._init().then(function(){
 					/**
-					 * The postinit.ft.table event is raised after the plugin has been initialized and the table drawn.
+					 * The ready.ft.table event is raised after the plugin has been initialized and the table drawn.
 					 * Calling preventDefault on this event will stop the ready callback being executed.
-					 * @event FooTable.Table#"postinit.ft.table"
+					 * @event FooTable.Table#"ready.ft.table"
 					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 					 */
 					return self.raise('ready.ft.table').then(function(){
 						if (F.is.fn(ready)) ready.call(self, self);
 					});
+				});
+			}).always(function(arg){
+				self.$el.show();
+				if (F.is.error(arg)){
+					console.error('FooTable: unhandled error thrown during initialization.', arg);
 				}
 			});
 		},
@@ -2123,6 +2143,7 @@
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
 					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
+					F.instances[self.id] = null;
 				});
 			}).fail(function(err){
 				if (F.is.error(err)){
@@ -2312,6 +2333,61 @@
 })(jQuery, FooTable);
 (function($, F){
 
+	F.ArrayColumn = F.Column.extend(/** @lends FooTable.ArrayColumn */{
+		/**
+		 * @summary A column to handle Array values.
+		 * @constructs
+		 * @extends FooTable.Column
+		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
+		 * @param {object} definition - An object containing all the properties to set for the column.
+		 */
+		construct: function(instance, definition) {
+			this._super(instance, definition, 'array');
+		},
+		/**
+		 * @summary Parses the supplied value or element to retrieve a column value.
+		 * @description This is supplied either the cell value or jQuery object to parse. This method will return either the Array containing the values or null.
+		 * @instance
+		 * @protected
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+		 * @returns {(array|null)}
+		 */
+		parser: function(valueOrElement){
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var $el = $(valueOrElement), data = $el.data('value'); // .data() will automatically convert a JSON string to an array
+				if (F.is.array(data)) return data;
+				data = $el.html();
+				try {
+					data = JSON.parse(data);
+				} catch(err) {
+					data = null;
+				}
+				return F.is.array(data) ? data : null; // if we have an array return it
+			}
+			if (F.is.array(valueOrElement)) return valueOrElement; // if we have an array return it
+			return null; // otherwise we have no value so return null
+		},
+		/**
+		 * @summary Formats the column value and creates the HTML seen within a cell.
+		 * @description This is supplied the value retrieved from the {@link FooTable.ArrayColumn#parser} function and must return a string, HTMLElement or jQuery object.
+		 * The return value from this function is what is displayed in the cell in the table.
+		 * @instance
+		 * @protected
+		 * @param {?Array} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		formatter: function(value, options, rowData){
+			return F.is.array(value) ? JSON.stringify(value) : '';
+		}
+	});
+
+	F.columns.register('array', F.ArrayColumn);
+
+})(jQuery, FooTable);
+(function($, F){
+
 	if (F.is.undef(window.moment)){
 		// The DateColumn requires moment.js to parse and format date values. Goto http://momentjs.com/ to get it.
 		return;
@@ -2371,10 +2447,12 @@
 		 * @instance
 		 * @protected
 		 * @param {*} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.DateColumn
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
 		},
 		/**
@@ -2474,7 +2552,7 @@
 			this.thousandSeparator = F.is.string(definition.thousandSeparator) ? definition.thousandSeparator : ',';
 			this.decimalSeparatorRegex = new RegExp(F.str.escapeRegExp(this.decimalSeparator), 'g');
 			this.thousandSeparatorRegex = new RegExp(F.str.escapeRegExp(this.thousandSeparator), 'g');
-			this.cleanRegex = new RegExp('[^0-9' + F.str.escapeRegExp(this.decimalSeparator) + ']', 'g');
+			this.cleanRegex = new RegExp('[^\-0-9' + F.str.escapeRegExp(this.decimalSeparator) + ']', 'g');
 		},
 		/**
 		 * This is supplied either the cell value or jQuery object to parse. Any value can be returned from this method and will be provided to the {@link FooTable.Column#formatter} function
@@ -2503,10 +2581,12 @@
 		 * @instance
 		 * @protected
 		 * @param {number} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
 		 * @returns {(string|HTMLElement|jQuery)}
 		 * @this FooTable.NumberColumn
 		 */
-		formatter: function(value){
+		formatter: function(value, options, rowData){
 			if (value == null) return '';
 			var s = (value + '').split('.');
 			if (s.length == 2 && s[0].length > 3) {
@@ -2517,6 +2597,61 @@
 	});
 
 	F.columns.register('number', F.NumberColumn);
+
+})(jQuery, FooTable);
+(function($, F){
+
+	F.ObjectColumn = F.Column.extend(/** @lends FooTable.ObjectColumn */{
+		/**
+		 * @summary A column to handle Object values.
+		 * @constructs
+		 * @extends FooTable.Column
+		 * @param {FooTable.Table} instance -  The parent {@link FooTable.Table} this column belongs to.
+		 * @param {object} definition - An object containing all the properties to set for the column.
+		 */
+		construct: function(instance, definition) {
+			this._super(instance, definition, 'object');
+		},
+		/**
+		 * @summary Parses the supplied value or element to retrieve a column value.
+		 * @description This is supplied either the cell value or jQuery object to parse. This method will return either the Object containing the values or null.
+		 * @instance
+		 * @protected
+		 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
+		 * @returns {(object|null)}
+		 */
+		parser: function(valueOrElement){
+			if (F.is.element(valueOrElement) || F.is.jq(valueOrElement)){ // use jQuery to get the value
+				var $el = $(valueOrElement), data = $el.data('value'); // .data() will automatically convert a JSON string to an object
+				if (F.is.object(data)) return data;
+				data = $el.html();
+				try {
+					data = JSON.parse(data);
+				} catch(err) {
+					data = null;
+				}
+				return F.is.object(data) ? data : null; // if we have an object return it
+			}
+			if (F.is.object(valueOrElement)) return valueOrElement; // if we have an object return it
+			return null; // otherwise we have no value so return null
+		},
+		/**
+		 * @summary Formats the column value and creates the HTML seen within a cell.
+		 * @description This is supplied the value retrieved from the {@link FooTable.ObjectColumn#parser} function and must return a string, HTMLElement or jQuery object.
+		 * The return value from this function is what is displayed in the cell in the table.
+		 * @instance
+		 * @protected
+		 * @param {*} value - The value to format.
+		 * @param {object} options - The current plugin options.
+		 * @param {object} rowData - An object containing the current row data.
+		 * @returns {(string|HTMLElement|jQuery)}
+		 */
+		formatter: function(value, options, rowData){
+			return F.is.object(value) ? JSON.stringify(value) : '';
+		}
+	});
+
+	F.columns.register('object', F.ObjectColumn);
 
 })(jQuery, FooTable);
 (function($, F){
@@ -3367,6 +3502,7 @@
 				F.arr.each(self.array, function(row){
 					row.predraw(!self._fromHTML);
 				});
+				self.all = self.array = [];
 			});
 		},
 		/**

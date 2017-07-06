@@ -185,6 +185,7 @@
 				F.arr.each(self.array, function(row){
 					row.predraw(!self._fromHTML);
 				});
+				self.all = self.array = [];
 			});
 		},
 		/**

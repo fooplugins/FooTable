@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.4
+* @version 3.1.5
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -101,6 +101,12 @@
 			 */
 			this.countFormat = table.o.paging.countFormat;
 			/**
+			 * A selector specifying where to place the paging components UI, if null the UI is displayed within a row in the foot of the table.
+			 * @instance
+			 * @type {string}
+			 */
+			this.container = table.o.paging.container;
+				/**
 			 * The total number of pages.
 			 * @instance
 			 * @type {number}
@@ -125,6 +131,18 @@
 			 */
 			this.formattedCount = null;
 			/**
+			 * The jQuery object of the element containing the entire paging UI.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$container = null;
+			/**
+			 * The jQuery object of the element wrapping all the paging UI elements.
+			 * @instance
+			 * @type {jQuery}
+			 */
+			this.$wrapper = null;
+			/** +
 			 * The jQuery row object that contains all the paging specific elements.
 			 * @instance
 			 * @type {jQuery}
@@ -219,6 +237,10 @@
 					? data.pagingCountFormat
 					: self.countFormat;
 
+				self.container = F.is.string(data.pagingContainer)
+					? data.pagingContainer
+					: self.container;
+
 				self.total = Math.ceil(self.ft.rows.all.length / self.size);
 			}, function(){
 				self.enabled = false;
@@ -289,20 +311,30 @@
 		draw: function(){
 			if (this.total <= 1){
 				if (!this.detached){
-					this.$row.detach();
+					if (this.$row){
+						this.$row.detach();
+					} else {
+						this.$wrapper.detach();
+					}
 					this.detached = true;
 				}
 			} else {
 				if (this.detached){
-					var $tfoot = this.ft.$el.children('tfoot');
-					if ($tfoot.length == 0){
-						$tfoot = $('<tfoot/>');
-						this.ft.$el.append($tfoot);
+					if (this.$row){
+						var $tfoot = this.ft.$el.children('tfoot');
+						if ($tfoot.length == 0){
+							$tfoot = $('<tfoot/>');
+							this.ft.$el.append($tfoot);
+						}
+						this.$row.appendTo($tfoot);
+					} else {
+						this.$wrapper.appendTo(this.$container);
 					}
-					this.$row.appendTo($tfoot);
 					this.detached = false;
 				}
-				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+				if (F.is.jq(this.$cell)){
+					this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+				}
 				this._createLinks();
 				this._setVisible(this.current, this.current > this.previous);
 				this._setNavigation(true);
@@ -322,16 +354,24 @@
 				case 'right': position = 'footable-paging-right'; break;
 			}
 			this.ft.$el.addClass('footable-paging').addClass(position);
-			this.$cell = $('<td/>').attr('colspan', this.ft.columns.visibleColspan);
-			var $tfoot = this.ft.$el.children('tfoot');
-			if ($tfoot.length == 0){
-				$tfoot = $('<tfoot/>');
-				this.ft.$el.append($tfoot);
+
+			this.$container = this.container === null ? null : $(this.container).first();
+			if (!F.is.jq(this.$container)){
+				var $tfoot = this.ft.$el.children('tfoot');
+				if ($tfoot.length == 0){
+					$tfoot = $('<tfoot/>');
+					this.ft.$el.append($tfoot);
+				}
+				// add it to a row and then populate it with the search input and column selector dropdown.
+				this.$row = $('<tr/>', {'class': 'footable-paging'}).prependTo($tfoot);
+				this.$container = this.$cell = $('<td/>').attr('colspan', this.ft.columns.visibleColspan).appendTo(this.$row);
+			} else {
+				this.$container.addClass('footable-paging-external').addClass(position);
 			}
-			this.$row = $('<tr/>', { 'class': 'footable-paging' }).append(this.$cell).appendTo($tfoot);
+			this.$wrapper = $('<div/>', {'class': 'footable-pagination-wrapper'}).appendTo(this.$container);
 			this.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: this }, this._onPageClicked);
 			this.$count = $('<span/>', { 'class': 'label label-default' });
-			this.$cell.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
+			this.$wrapper.append(this.$pagination, $('<div/>', {'class': 'divider'}), this.$count);
 			this.detached = false;
 		},
 
@@ -433,18 +473,25 @@
 			this._setNavigation(false);
 		},
 		/**
-		 * Gets or sets the current page size
+		 * Gets or sets the current page size.
 		 * @instance
-		 * @param {number} [value] - The new page size to use.
+		 * @param {(number|string)} [value] - The new page size to use, this value is supplied to `parseInt` so strings can be used. If not supplied or an invalid valid the current page size is returned.
 		 * @returns {(number|undefined)}
 		 */
 		pageSize: function(value){
-			if (!F.is.number(value)){
+			value = parseInt(value);
+			if (isNaN(value)){
 				return this.size;
 			}
 			this.size = value;
 			this.total = Math.ceil(this.ft.rows.all.length / this.size);
-			if (F.is.jq(this.$row)) this.$row.remove();
+			if (F.is.jq(this.$wrapper)){
+				if (this.$container.is("td")){
+					this.$row.remove();
+				} else {
+					this.$wrapper.remove();
+				}
+			}
 			this.$create();
 			this.ft.draw();
 		},
@@ -643,6 +690,7 @@
 	 * @prop {number} limit=5 - The maximum number of page links to display at once.
 	 * @prop {string} position="center" - The string used to specify the alignment of the pagination control.
 	 * @prop {number} size=10 - The number of rows displayed per page.
+	 * @prop {string} container=null - A selector specifying where to place the paging components UI, if null the UI is displayed within a row in the foot of the table.
 	 * @prop {object} strings - An object containing the strings used by the paging buttons.
 	 * @prop {string} strings.first="&laquo;" - The string used for the 'first' button.
 	 * @prop {string} strings.prev="&lsaquo;" - The string used for the 'previous' button.
@@ -658,6 +706,7 @@
 		limit: 5,
 		position: 'center',
 		size: 10,
+		container: null,
 		strings: {
 			first: '&laquo;',
 			prev: '&lsaquo;',

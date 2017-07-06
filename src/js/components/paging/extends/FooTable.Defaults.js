@@ -8,6 +8,7 @@
 	 * @prop {number} limit=5 - The maximum number of page links to display at once.
 	 * @prop {string} position="center" - The string used to specify the alignment of the pagination control.
 	 * @prop {number} size=10 - The number of rows displayed per page.
+	 * @prop {string} container=null - A selector specifying where to place the paging components UI, if null the UI is displayed within a row in the foot of the table.
 	 * @prop {object} strings - An object containing the strings used by the paging buttons.
 	 * @prop {string} strings.first="&laquo;" - The string used for the 'first' button.
 	 * @prop {string} strings.prev="&lsaquo;" - The string used for the 'previous' button.
@@ -23,6 +24,7 @@
 		limit: 5,
 		position: 'center',
 		size: 10,
+		container: null,
 		strings: {
 			first: '&laquo;',
 			prev: '&lsaquo;',

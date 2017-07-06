@@ -122,6 +122,7 @@ body {
 .example.plural:after { content: "Examples"; }
 .example.default:after { content: "Default"; }
 .example.returns:after { content: "Returns"; }
+.example.params:after { content: "Parameters"; }
 .example.supports:after { content: "Supports"; }
 .example.static:after { content: "Static Example"; }
 .example.static.plural:after { content: "Static Examples"; }

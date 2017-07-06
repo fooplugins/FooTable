@@ -115,23 +115,23 @@
 		 */
 		_construct: function(ready){
 			var self = this;
-			this._preinit().then(function(){
-				return self._init();
-			}).always(function(arg){
-				self.$el.show();
-				if (F.is.error(arg)){
-					console.error('FooTable: unhandled error thrown during initialization.', arg);
-				} else {
+			return this._preinit().then(function(){
+				return self._init().then(function(){
 					/**
-					 * The postinit.ft.table event is raised after the plugin has been initialized and the table drawn.
+					 * The ready.ft.table event is raised after the plugin has been initialized and the table drawn.
 					 * Calling preventDefault on this event will stop the ready callback being executed.
-					 * @event FooTable.Table#"postinit.ft.table"
+					 * @event FooTable.Table#"ready.ft.table"
 					 * @param {jQuery.Event} e - The jQuery.Event object for the event.
 					 * @param {FooTable.Table} ft - The instance of the plugin raising the event.
 					 */
 					return self.raise('ready.ft.table').then(function(){
 						if (F.is.fn(ready)) ready.call(self, self);
 					});
+				});
+			}).always(function(arg){
+				self.$el.show();
+				if (F.is.error(arg)){
+					console.error('FooTable: unhandled error thrown during initialization.', arg);
 				}
 			});
 		},
@@ -238,6 +238,7 @@
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
 					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
+					F.instances[self.id] = null;
 				});
 			}).fail(function(err){
 				if (F.is.error(err)){

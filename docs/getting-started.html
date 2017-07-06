@@ -1473,7 +1473,34 @@
 							<p><code>null</code></p>
 							<p>By default the column will use its <a href="#column-type"><code>type</code></a>s formatter.</p>
 						</div>
-
+						<div class="example params">
+							<table class="table table-striped">
+								<thead>
+								<tr>
+									<th>Name</th>
+									<th>Type</th>
+									<th>Description</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td><code>value</code></td>
+									<td>*</td>
+									<td>The value to format into the cells contents. This value is retrieved using the current columns' <a href="#column-parser"><code>parser</code></a> method.</td>
+								</tr>
+								<tr>
+									<td><code>options</code></td>
+									<td>object</td>
+									<td>The options used for this instance of the plugin.</td>
+								</tr>
+								<tr>
+									<td><code>rowData</code></td>
+									<td>object</td>
+									<td>An object containing the current row data.</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
 						<div class="example returns">
 							<p><code>string</code>, <code>HTMLElement</code> or <code>jQuery object</code></p>
 						</div>
@@ -1484,7 +1511,7 @@
 						<div class="example static">
 							<p>To supply the function through data attributes it must be defined as a named JavaScript function with the name supplied as the attribute value.</p>
 						</div>
-						<pre class="language-javascript" data-lang="javascript"><code>function formatter(value){
+						<pre class="language-javascript" data-lang="javascript"><code>function formatter(value, options, rowData){
 	return &quot;&lt;span&gt;&quot; + value + &quot;&lt;/span&gt;&quot;;
 }</code></pre>
 						<pre class="language-markup" data-lang="markup"><code>&lt;table&gt;
@@ -1505,7 +1532,7 @@
 						<pre class="language-javascript" data-lang="javascript"><code>jQuery(function($){
 	$(&#39;.table&#39;).footable({
 		&quot;columns&quot;: [{
-			&quot;formatter&quot;: function(value){
+			&quot;formatter&quot;: function(value, options, rowData){
 				return &quot;&lt;span&gt;&quot; + value + &quot;&lt;/span&gt;&quot;;
 			}
 		},{
@@ -1827,6 +1854,10 @@
 								<a href="columns/date.html" class="list-group-item">
 									<h4 class="list-group-item-heading">date</h4>
 									<p class="list-group-item-text">Used for columns that contain date data.</p>
+								</a>
+								<a href="columns/object.html" class="list-group-item">
+									<h4 class="list-group-item-heading">object</h4>
+									<p class="list-group-item-text">Used for columns that contain complex data.</p>
 								</a>
 							</div>
 						</div>
