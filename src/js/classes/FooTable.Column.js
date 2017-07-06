@@ -48,6 +48,14 @@
 			 * @default -1
 			 */
 			this.index = F.is.number(definition.index) ? definition.index : -1;
+			/**
+			 * Whether or not this in an internal only column.
+			 * @instance
+			 * @readonly
+			 * @type {boolean}
+			 * @description Internal columns or there cells will not be returned when calling methods such as `FooTable.Row#val`.
+			 */
+			this.internal = false;
 			this.define(definition);
 			this.$create();
 		},

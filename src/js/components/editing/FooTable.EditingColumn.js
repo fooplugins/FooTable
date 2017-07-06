@@ -13,6 +13,7 @@
 		construct: function(instance, editing, definition){
 			this._super(instance, definition, 'editing');
 			this.editing = editing;
+			this.internal = true;
 		},
 		/**
 		 * After the column has been defined this ensures that the $el property is a jQuery object by either creating or updating the current value.

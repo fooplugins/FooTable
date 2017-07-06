@@ -162,7 +162,9 @@
 				if (!F.is.hash(this.value) || F.is.emptyObject(this.value)){
 					this.value = {};
 					F.arr.each(this.cells, function(cell){
-						self.value[cell.column.name] = cell.val();
+						if (!cell.column.internal){
+							self.value[cell.column.name] = cell.val();
+						}
 					});
 				}
 				return this.value;
@@ -197,7 +199,9 @@
 
 			redrawSelf = F.is.boolean(redrawSelf) ? redrawSelf : true;
 			F.arr.each(this.cells, function(cell){
-				if (F.is.defined(self.value[cell.column.name])) cell.val(self.value[cell.column.name], false, redrawSelf);
+				if (!cell.column.internal && F.is.defined(self.value[cell.column.name])){
+					cell.val(self.value[cell.column.name], false, redrawSelf);
+				}
 			});
 
 			if (this.created && redrawSelf){
