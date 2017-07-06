@@ -259,6 +259,7 @@
 				self.$el.attr('data-expanded', true);
 				self.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
 				self.expanded = true;
+				self.ft.raise('expanded.ft.row', [self]);
 			});
 		},
 		/**
@@ -286,6 +287,7 @@
 				self.$el.removeAttr('data-expanded');
 				self.$toggle.removeClass('fooicon-minus').addClass('fooicon-plus');
 				if (F.is.boolean(setExpanded) ? setExpanded : true) self.expanded = false;
+				self.ft.raise('collapsed.ft.row', [self]);
 			});
 		},
 		/**
