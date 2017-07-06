@@ -238,6 +238,7 @@
 					if (F.is.hash(self.o.on)) self.$el.off(self.o.on);
 					$(window).off('resize.ft'+self.id, self._onWindowResize);
 					self.initialized = false;
+					F.instances[self.id] = null;
 				});
 			}).fail(function(err){
 				if (F.is.error(err)){
