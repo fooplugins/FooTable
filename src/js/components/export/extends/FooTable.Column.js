@@ -20,10 +20,12 @@
 		return value + "";
 	};
 
-	// override the base method for DateColumns
-	F.DateColumn.prototype.stringify = function(value, options, rowData){
-		return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
-	};
+	if (F.is.defined(F.DateColumn)){
+		// override the base method for DateColumns
+		F.DateColumn.prototype.stringify = function(value, options, rowData){
+			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
+		};
+	}
 
 	// override the base method for ObjectColumns
 	F.ObjectColumn.prototype.stringify = function(value, options, rowData){

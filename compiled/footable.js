@@ -1,6 +1,6 @@
 /*
 * FooTable v3 - FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.
-* @version 3.1.5
+* @version 3.1.6
 * @link http://fooplugins.com
 * @copyright Steven Usher & Brad Vincent 2015
 * @license Released under the GPLv3 license.
@@ -7327,10 +7327,12 @@
 		return value + "";
 	};
 
-	// override the base method for DateColumns
-	F.DateColumn.prototype.stringify = function(value, options, rowData){
-		return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
-	};
+	if (F.is.defined(F.DateColumn)){
+		// override the base method for DateColumns
+		F.DateColumn.prototype.stringify = function(value, options, rowData){
+			return F.is.object(value) && F.is.boolean(value._isAMomentObject) && value.isValid() ? value.format(this.formatString) : '';
+		};
+	}
 
 	// override the base method for ObjectColumns
 	F.ObjectColumn.prototype.stringify = function(value, options, rowData){

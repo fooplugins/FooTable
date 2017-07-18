@@ -8,6 +8,10 @@ Pull requests need to be made against the [develop branch](https://github.com/fo
 
 # Changelog #
 
+### 3.1.6
+
+- Fixed a critical issue with the new export feature throwing an error if Moment.js and the DateColumn were not included in the page.
+
 ### 3.1.5
 
 - Added two new events `expanded.ft.row` and `collapsed.ft.row` that occur after there complementary `expand.ft.row` and `collapse.ft.row` events.
