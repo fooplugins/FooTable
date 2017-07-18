@@ -4,6 +4,7 @@
   "description": "FooTable is a jQuery plugin that aims to make HTML tables on smaller devices look awesome.",
   "version": "3.1.6",
   "homepage": "http://fooplugins.com",
+  "license": "GPL-3.0",
   "author": {
     "name": "FooPlugins",
     "url": "http://fooplugins.com"
