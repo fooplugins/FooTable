@@ -20,8 +20,15 @@
 	var debug_defaults = {
 		events: []
 	};
-	F.__debug__ = JSON.parse(localStorage.getItem('footable_debug')) || false;
-	F.__debug_options__ = JSON.parse(localStorage.getItem('footable_debug_options')) || debug_defaults;
+
+	try {
+		F.__debug__ = JSON.parse(localStorage.getItem('footable_debug')) || false;
+		F.__debug_options__ = JSON.parse(localStorage.getItem('footable_debug_options')) || debug_defaults;
+	} catch (e) {
+		console.error('FooTable: unhandled error when getting debug options from localStorage', e);
+		F.__debug__ = false;
+		F.__debug_options__ = debug_defaults;
+	}
 
 	/**
 	 * Gets or sets the internal debug variable which enables some additional logging to the console.
