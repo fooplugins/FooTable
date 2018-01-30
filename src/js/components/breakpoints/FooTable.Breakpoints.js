@@ -144,6 +144,7 @@
 			}
 			hidden.push(current.name);
 			self.hidden = hidden.join(' ');
+			this.current = current;
 			return current;
 		},
 		/**
