@@ -118,7 +118,7 @@
 		 * @protected
 		 */
 		draw: function(){
-			this.ft.$el.removeClass(this._classNames).addClass('breakpoint-' + this.current.name);
+			this.current && this.ft.$el.removeClass(this._classNames).addClass('breakpoint-' + this.current.name);
 		},
 
 		/* PUBLIC */
