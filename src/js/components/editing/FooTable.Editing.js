@@ -355,7 +355,9 @@
 		 * Performs the drawing of the component.
 		 */
 		draw: function(){
-			this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			if (this.enabled){
+				this.$cell.attr('colspan', this.ft.columns.visibleColspan);
+			}
 		},
 		/**
 		 * Handles the edit button click event.
