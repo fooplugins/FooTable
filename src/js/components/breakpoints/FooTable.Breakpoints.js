@@ -118,7 +118,7 @@
 		 * @protected
 		 */
 		draw: function(){
-			this.ft.$el.removeClass(this._classNames).addClass('breakpoint-' + this.current.name);
+			this.current && this.ft.$el.removeClass(this._classNames).addClass('breakpoint-' + this.current.name);
 		},
 
 		/* PUBLIC */
@@ -144,6 +144,7 @@
 			}
 			hidden.push(current.name);
 			self.hidden = hidden.join(' ');
+			this.current = current;
 			return current;
 		},
 		/**
