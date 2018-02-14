@@ -425,7 +425,7 @@
 		 * Gets or sets the current page size.
 		 * @instance
 		 * @param {(number|string)} [value] - The new page size to use, this value is supplied to `parseInt` so strings can be used. If not supplied or an invalid valid the current page size is returned.
-		 * @returns {jQuery.Promise}
+		 * @returns {number|jQuery.Promise}
 		 */
 		pageSize: function(value){
 			value = parseInt(value);
