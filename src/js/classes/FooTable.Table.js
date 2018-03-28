@@ -300,9 +300,15 @@
 
 			// Clone the current table and insert it into the original's place
 			var $elCopy = self.$el.clone().insertBefore(self.$el);
+			
+			//Store the position where this item should be in the DOM
+            		var $placeHolder = $("<div>").insertAfter(self.$el) 
 
 			// Detach `self.$el` from the DOM, retaining its event handlers
 			self.$el.detach();
+			
+			//Replace the placeholder with the copy ensuring both $el & $elCopy are not in the DOM at the same time.
+            		$placeHolder.replaceWith($elCopy);
 
 			// when drawing the order that the components are executed is important so chain the methods but use promises to retain async safety.
 			return self.execute(false, true, 'predraw').then(function(){
