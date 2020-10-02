@@ -113,5 +113,62 @@
 		});
 	});
 </script>
+	
+	
+	
+	<script type="text/javascript">
+
+var a=0;
+var b=0;
+var c=0;
+function varlis()
+{
+a=prompt("Enter your first number","");
+}
+function varlis1()
+{
+b=prompt("Enter your second number","");
+}
+function varlis2()
+{
+c=prompt("Enter your choise","");
+function add(one,two)
+{
+	document.write(one+two);
+}
+function subtract(one,two)
+{
+	document.write(one-two);
+}
+function devide(one,two)
+{
+	document.write(one/two);
+}
+function multiply(one,two)
+{
+	document.write(one*two);
+}
+
+switch(c)
+{
+	case "1":
+		add(a,b);
+		break;
+	case "2":
+		subtract(a,b);
+		break;
+	case "3":
+		multiply(a,b);
+		break;
+	case "4":
+		devide(a,b);
+		break;
+	default:
+		document.write("enter valid no.");
+		break;
+}
+}
+
+</script>
 </body>
 </html>
