@@ -38,6 +38,7 @@
 				valueOrElement = F.is.defined(data) ? data : $(valueOrElement).text();
 				if (F.is.string(valueOrElement)) valueOrElement = isNaN(valueOrElement) ? valueOrElement : +valueOrElement;
 			}
+			if (valueOrElement === 0) return null;
 			if (F.is.date(valueOrElement)) return moment(valueOrElement);
 			if (F.is.object(valueOrElement) && F.is.boolean(valueOrElement._isAMomentObject)) return valueOrElement;
 			if (F.is.string(valueOrElement)){
