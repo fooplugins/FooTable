@@ -106,7 +106,9 @@
 			this._setClasses(this.$el);
 			this._setStyle(this.$el);
 
-			this.$detail = $('<tr/>').addClass(this.row.classes.join(' '))
+			/* Non-FooTable column classes should be transferred to the details row */
+			trClasses = this.row.classes.concat(this.column.nonFTClasses)
+			this.$detail = $('<tr/>').addClass(trClasses.join(' '))
 				.data('__FooTableCell__', this)
 				.append($('<th/>'))
 				.append($('<td/>'));
