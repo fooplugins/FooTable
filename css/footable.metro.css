@@ -4,14 +4,14 @@
   width: 100%;
   border: 3px solid #52b9e9;
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
-  color: #444444;
+  color: #444;
   background: #efefef;
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
   border-radius: 0;
 }
 .footable.breakpoint > tbody > tr.footable-row-detail {
-  background: #eeeeee;
+  background: #eee;
 }
 .footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
   cursor: pointer;
@@ -23,16 +23,16 @@
   vertical-align: middle;
 }
 .footable > tbody > tr:hover:not(.footable-row-detail) {
-  background: #dddddd;
+  background: #ddd;
 }
 .footable > tbody > tr:hover:not(.footable-row-detail) > td {
-  color: #000000;
+  color: #000;
 }
 .footable > tbody > tr:last-child > td {
   border-bottom: none;
 }
 .footable > tbody > tr > td {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #ddd;
   padding: 10px;
   text-align: left;
   border-left: none;
@@ -42,7 +42,7 @@
   border-left: none;
 }
 .footable > thead > tr > th {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #ddd;
   padding: 10px;
   text-align: left;
 }
@@ -50,7 +50,7 @@
 .footable > thead > tr > td {
   background-color: #52b9e9;
   border: 1px solid #52b9e9;
-  color: #ffffff;
+  color: #fff;
   border-top: none;
   border-left: none;
   font-weight: normal;
@@ -63,7 +63,7 @@
 .footable > tfoot > tr > td {
   background-color: #52b9e9;
   border: 1px solid #52b9e9;
-  color: #ffffff;
+  color: #fff;
   border-top: none;
   border-left: none;
   padding: 5px;
@@ -88,7 +88,7 @@
   float: left;
   border: 2px solid transparent;
   margin: 0 3px;
-  color: #ffffff;
+  color: #fff;
   background: transparent;
   padding: 1px 5px;
   text-decoration: none;
@@ -97,7 +97,7 @@
   color: #888;
 }
 .footable > tfoot .pagination ul > li.active > a {
-  border-color: #ffffff;
+  border-color: #fff;
 }
 .footable > tfoot .pagination ul > li:first-child > a,
 .footable > tfoot .pagination ul > li:last-child > a,
@@ -148,5 +148,5 @@
   border-color: #1171a3;
 }
 .footable-odd {
-  background-color: #f7f7f7;
+  background-color: #F7F7F7;
 }

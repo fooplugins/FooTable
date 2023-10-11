@@ -1,14 +1,14 @@
 .footable {
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   border-radius: 6px;
   font-family: 'trebuchet MS', 'Lucida sans', Arial;
   font-size: 14px;
-  color: #444444;
-  background: #ffffff;
+  color: #444;
+  background: #fff;
 }
 .footable > thead > tr:first-child > th.footable-first-column,
 .footable > thead > tr:first-child > td.footable-first-column {
@@ -29,8 +29,8 @@
   border-radius: 6px 6px 0 0;
 }
 .footable > thead > tr > th {
-  border-left: 1px solid #cccccc;
-  border-top: 1px solid #cccccc;
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
   padding: 10px;
   text-align: left;
 }
@@ -54,7 +54,7 @@
   border-left: none;
 }
 .footable.breakpoint > tbody > tr.footable-row-detail {
-  background: #eeeeee;
+  background: #eee;
 }
 .footable.breakpoint > tbody > tr.footable-row-detail > .footable-row-detail-cell {
   border-left: none;
@@ -81,8 +81,8 @@
   border-radius: 0 0 6px 6px;
 }
 .footable > tbody > tr > td {
-  border-top: 1px solid #cccccc;
-  border-left: 1px solid #cccccc;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
   padding: 10px;
   text-align: left;
 }
@@ -101,7 +101,7 @@
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  border-top: 1px solid #cccccc;
+  border-top: 1px solid #ccc;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   padding: 10px;
 }
@@ -118,7 +118,7 @@
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .footable .pagination > ul > li {
   display: inline;
@@ -129,7 +129,7 @@
   padding: 4px 12px;
   line-height: 20px;
   text-decoration: none;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   border-left-width: 0;
 }
 .footable .pagination > ul > li:first-child > a,
@@ -155,18 +155,18 @@
 .footable .pagination > ul > li > a:focus,
 .footable .pagination > ul > .active > a,
 .footable .pagination > ul > .active > span {
-  background-color: #eeeeee;
+  background-color: #eee;
 }
 .footable .pagination > ul > .active > a,
 .footable .pagination > ul > .active > span {
-  color: #444444;
+  color: #444;
   cursor: default;
 }
 .footable .pagination > ul > .disabled > span,
 .footable .pagination > ul > .disabled > a,
 .footable .pagination > ul > .disabled > a:hover,
 .footable .pagination > ul > .disabled > a:focus {
-  color: #cccccc;
+  color: #ccc;
   cursor: default;
   background-color: #ebf3fc;
 }
@@ -177,5 +177,5 @@
   text-align: center;
 }
 .footable-odd {
-  background-color: #f7f7f7;
+  background-color: #F7F7F7;
 }

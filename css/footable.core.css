@@ -16,9 +16,7 @@
 .footable {
   width: 100%;
   /** SORTING **/
-
   /** PAGINATION **/
-
 }
 .footable.breakpoint > tbody > tr.footable-detail-show > td {
   border-bottom: none;
@@ -44,7 +42,7 @@
   -webkit-font-smoothing: antialiased;
   padding-right: 5px;
   font-size: 14px;
-  color: #888888;
+  color: #888;
 }
 .footable.breakpoint > tbody > tr > td > span.footable-toggle:before {
   content: "\e000";
@@ -174,5 +172,5 @@
   display: table-cell;
 }
 .footable-odd {
-  background-color: #f7f7f7;
+  background-color: #F7F7F7;
 }

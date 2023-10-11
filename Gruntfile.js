@@ -17,12 +17,6 @@ module.exports = function (grunt) {
         },
         uglify: {
             all : {
-                options: {
-                    preserveComments: 'some',
-                    mangle: {
-                        except: [ "undefined" ]
-                    }
-                },
                 files: {
                     'dist/footable.min.js': [ 'js/footable.js' ],
                     'dist/footable.grid.min.js': [ 'js/footable.grid.js' ],

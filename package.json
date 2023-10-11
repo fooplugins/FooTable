@@ -37,14 +37,14 @@
     "jquery": ">=1.4.4"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-uglify": "~0.1.1",
-    "grunt-contrib-watch": "~0.2.0",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt": "~0.4.1",
-    "grunt-contrib-less": "~0.5.2",
-    "grunt-contrib-csslint": "~0.1.2",
-    "grunt-contrib-concat": "~0.3.0"
+    "grunt-contrib-jshint": "~3.2.0",
+    "grunt-contrib-uglify": "~5.2.2",
+    "grunt-contrib-watch": "~1.1.0",
+    "grunt-contrib-clean": "~2.0.1",
+    "grunt": "~1.6.1",
+    "grunt-contrib-less": "~3.0.0",
+    "grunt-contrib-csslint": "~2.0.0",
+    "grunt-contrib-concat": "~2.1.0"
   },
   "scripts": {
     "test": "grunt test"
