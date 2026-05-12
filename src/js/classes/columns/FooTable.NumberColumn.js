@@ -52,9 +52,7 @@
 		formatter: function(value, options, rowData){
 			if (value == null) return '';
 			var s = (value + '').split('.');
-			if (s.length == 2 && s[0].length > 3) {
-				s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, this.thousandSeparator);
-			}
+			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, this.thousandSeparator);
 			return s.join(this.decimalSeparator);
 		}
 	});
