@@ -140,8 +140,8 @@
 			var self = this, col = self.column;
 			self.ft.rows.array.sort(function (a, b) {
 				return col.direction == 'DESC'
-						? col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue)
-						: col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue);
+						? col.sorter(b.cells[col.index].sortValue, a.cells[col.index].sortValue,col.direction)
+						: col.sorter(a.cells[col.index].sortValue, b.cells[col.index].sortValue,col.direction);
 			});
 		},
 		/**

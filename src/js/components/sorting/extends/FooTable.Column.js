@@ -35,14 +35,37 @@
 	 * 	return 0;
 	 * }
 	 */
-	F.Column.prototype.sorter = function(a, b){
-		if (typeof a === 'string') a = a.toLowerCase();
-		if (typeof b === 'string') b = b.toLowerCase();
-		if (a === b) return 0;
-		if (a < b) return -1;
-		return 1;
+F.Column.prototype.sorter = function(a, b,c){
+		if (c == 'DESC') {
+			if (typeof a === 'string') a = a.toLowerCase().trim();
+			if (typeof b === 'string') b = b.toLowerCase().trim();
+			if (a.trim() === b.trim()) {
+				return 0;
+			}
+			if (a.trim() == "" || typeof a == undefined) {
+				return -1;
+			}
+			if (b.trim() == "" || typeof b == undefined) 
+			{	
+				return 1;
+			}
+			return a.trim().localeCompare(b.trim(),'zh');			
+		} else {
+			if (typeof a === 'string') a = a.toLowerCase();
+			if (typeof b === 'string') b = b.toLowerCase();
+			if (a.trim() === b.trim()) {
+				return 0;
+			}
+			if (a.trim() == "" || typeof a == undefined) {
+				return 1;
+			}
+			if (b.trim() == "" || typeof b == undefined) 
+			{	
+				return -1;
+			}
+			return a.trim().localeCompare(b.trim(),'zh');				
+		}
 	};
-
 	/**
 	 * This is supplied either the cell value or jQuery object to parse. A value must be returned from this method and will be used during sorting operations.
 	 * @param {(*|jQuery)} valueOrElement - The value or jQuery cell object.
