@@ -32,7 +32,7 @@
     "table",
     "responsive"
   ],
-  "dependencies": {
+  "devDependencies": {
     "grunt": "^0.4.1",
     "grunt-contrib-clean": "^0.4.1",
     "grunt-contrib-compress": "^0.13.0",
